@@ -145,7 +145,7 @@ struct ImGui_ImplRedGpuH_Window
 // DEPENDENCY(Constantine): GLFW 3.3.2, commit 0a49ef0a00baa3ab520ddc452f0e3b1e099c5589
 
 // COMPILE(Constantine):
-// g++.exe -c -DREDGPU_2_EXAMPLE_NUMBER=0 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw3/ redgpu_2_examples.cpp -o imgui_impl_redgpu.o
+// g++.exe -c -DREDGPU_2_EXAMPLE_NUMBER=0 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw/include/ redgpu_2_examples.cpp -o imgui_impl_redgpu.o
 
 // FILE(Constantine): imgui_impl_redgpu.cpp
 
@@ -2563,7 +2563,7 @@ void ImGui_ImplRedGpuH_DestroyWindowRenderBuffers(RedContext instance, uint32_t 
 // DEPENDENCY(Constantine): GLFW 3.3.2, commit 0a49ef0a00baa3ab520ddc452f0e3b1e099c5589
 
 // COMPILE(Constantine):
-// g++.exe -fpermissive -DREDGPU_2_EXAMPLE_NUMBER=1 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw3/ redgpu_2_examples.cpp imgui/imgui.cpp imgui/imgui_demo.cpp imgui/imgui_draw.cpp imgui/imgui_tables.cpp imgui/imgui_widgets.cpp imgui_impl_redgpu.o imgui/backends/imgui_impl_glfw.cpp C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib glfw3/glfw3.lib
+// g++.exe -fpermissive -DREDGPU_2_EXAMPLE_NUMBER=1 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw/include/ redgpu_2_examples.cpp imgui/imgui.cpp imgui/imgui_demo.cpp imgui/imgui_draw.cpp imgui/imgui_tables.cpp imgui/imgui_widgets.cpp imgui_impl_redgpu.o imgui/backends/imgui_impl_glfw.cpp C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib glfw/glfw3dll.lib
 
 // FILE(Constantine): main.cpp
 
