@@ -40,6 +40,7 @@ typedef struct Red2InternalTypeStructsMemory {
 
 typedef struct Red2InternalTypeCalls {
   RedHandleCalls                             handle;
+  RedHandleCallsMemory                       memory;
   RedContext                                 context;
   RedHandleGpu                               gpu;
   unsigned                                   currentStructsMemoryIndex;

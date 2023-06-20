@@ -57,9 +57,10 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters  (RedContext c
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateCalls                (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, Red2Calls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateCallsReusable        (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, Red2Calls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
+REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyContext             (RedContext context, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyStructDeclaration   (RedContext context, RedHandleGpu gpu, Red2HandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyProcedureParameters (RedContext context, RedHandleGpu gpu, Red2HandleProcedureParameters procedureParameters, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyCalls               (RedContext context, RedHandleGpu gpu, Red2HandleCalls calls, RedHandleCallsMemory callsMemory, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyCalls               (RedContext context, RedHandleGpu gpu, Red2HandleCalls calls, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 REDGPU_2_DECLSPEC RedHandleStructDeclaration    REDGPU_2_API red2StructDeclarationGetRedHandle      (Red2HandleStructDeclaration structDeclaration);
 REDGPU_2_DECLSPEC Red2StructDeclarationMember * REDGPU_2_API red2StructDeclarationGetMembersPointer (Red2HandleStructDeclaration structDeclaration);
@@ -139,6 +140,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSuballocateAndSetProcedureParameters
   int optionalLine,
   void * optionalUserData
 );
+
+REDGPU_2_DECLSPEC void REDGPU_2_API red2QueueSubmitGpuTimelinesWithSelfDestroyableCalls (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, unsigned callsToDestroyWhenFinishedCount, RedCalls * callsToDestroyWhenFinished, unsigned calls2ToDestroyWhenFinishedCount, Red2HandleCalls * calls2ToDestroyWhenFinished, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 #ifdef __cplusplus
 }
