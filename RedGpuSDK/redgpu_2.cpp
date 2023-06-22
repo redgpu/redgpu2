@@ -210,6 +210,7 @@ void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * 
 void red2DestroyStructDeclaration(RedContext context, RedHandleGpu gpu, Red2HandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   if (handle != NULL) {
+    redDestroyStructDeclaration(context, gpu, handle->handle, optionalFile, optionalLine, optionalUserData);
     delete[] handle->structDeclarationMembers;
     delete handle;
   }
@@ -218,6 +219,7 @@ void red2DestroyStructDeclaration(RedContext context, RedHandleGpu gpu, Red2Hand
 void red2DestroyProcedureParameters(RedContext context, RedHandleGpu gpu, Red2HandleProcedureParameters procedureParameters, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeProcedureParameters * handle = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
   if (handle != NULL) {
+    redDestroyProcedureParameters(context, gpu, handle->handle, optionalFile, optionalLine, optionalUserData);
     delete handle;
   }
 }
@@ -225,16 +227,14 @@ void red2DestroyProcedureParameters(RedContext context, RedHandleGpu gpu, Red2Ha
 void red2DestroyCalls(RedContext context, RedHandleGpu gpu, Red2HandleCalls calls, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   if (handle != NULL) {
-    RedHandleCalls       calls       = handle->handle;
-    RedHandleCallsMemory callsMemory = handle->memory;
     for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
       redStructsMemoryFree(context, gpu, handle->structsMemorys[i].handle, optionalFile, optionalLine, optionalUserData);
     }
     for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
       redStructsMemoryFree(context, gpu, handle->structsMemorysSamplers[i].handle, optionalFile, optionalLine, optionalUserData);
     }
+    redDestroyCalls(context, gpu, handle->handle, handle->memory, optionalFile, optionalLine, optionalUserData);
     delete handle;
-    redDestroyCalls(context, gpu, calls, callsMemory, optionalFile, optionalLine, optionalUserData);
   }
 }
 
