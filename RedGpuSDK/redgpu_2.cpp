@@ -458,7 +458,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory(
 
   // NOTE(Constantine):
   // If the requested structs allocations can't fit in the current structs memorys, allocate them and set the current structs memorys indexes to the new allocations.
-  if (requestedStructsAllocationsCanFitInTheCurrentStructsMemory == 0) {
+  if (requestedStructsMemory == 1 && requestedStructsAllocationsCanFitInTheCurrentStructsMemory == 0) {
     Red2InternalTypeStructsMemory memory = {};
     redStructsMemoryAllocateWithInlineSamplers(
       handle->context,
@@ -499,7 +499,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory(
     structsMemory = memory.handle;
     handle->currentStructsMemoryIndex = handle->structsMemorys.size() - 1;
   }
-  if (requestedStructsAllocationsCanFitInTheCurrentStructsMemorySamplers == 0) {
+  if (requestedStructsMemorySamplers == 1 && requestedStructsAllocationsCanFitInTheCurrentStructsMemorySamplers == 0) {
     Red2InternalTypeStructsMemory memory = {};
     redStructsMemoryAllocateSamplers(
       handle->context,
