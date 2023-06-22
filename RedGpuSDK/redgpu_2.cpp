@@ -813,13 +813,7 @@ static size_t red2InternalSelfDestroyableCallsBatchesGetFreeElementIndex_NonLock
 }
 
 void red2DestroyContext(RedContext context, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  for (unsigned gpuIndex = 0; gpuIndex < context->gpusCount; gpuIndex += 1) {
-    const RedGpuInfo * gpuInfo = &context->gpus[gpuIndex];
-    for (unsigned queueIndex = 0; queueIndex < gpuInfo->queuesCount; queueIndex += 1) {
-      redQueuePresent(context, gpuInfo->gpu, gpuInfo->queues[queueIndex], 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
-    }
-    red2InternalSelfDestroyableCallsBatchesFreeFinishedBatches_Locking(context, gpuInfo->gpu, 1, NULL, optionalFile, optionalLine, optionalUserData);
-  }
+  red2InternalSelfDestroyableCallsBatchesFreeFinishedBatches_Locking(context, gpuInfo->gpu, 1, NULL, optionalFile, optionalLine, optionalUserData);
   redDestroyContext(context, optionalFile, optionalLine, optionalUserData);
 }
 
