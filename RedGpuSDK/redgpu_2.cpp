@@ -665,13 +665,13 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSuballocateAndSetProcedureParameters
       redXStructsMemorySet(
         handle->context,
         handle->gpu,
-        1,               // copyingSamplers
-        1,               // sourceCopiesCount
-        &rAddress,       // sourceCopiesAddressFirst
-        oneCopy,         // sourceCopiesAddressCount
-        1,               // targetCopiesCount
-        &wAddress,       // targetCopiesAddressFirst
-        oneCopy,         // targetCopiesAddressCount
+        isStructOfTypeSamplers, // copyingSamplers
+        1,                      // sourceCopiesCount
+        &rAddress,              // sourceCopiesAddressFirst
+        oneCopy,                // sourceCopiesAddressCount
+        1,                      // targetCopiesCount
+        &wAddress,              // targetCopiesAddressFirst
+        oneCopy,                // targetCopiesAddressCount
         outStatuses,
         optionalFile,
         optionalLine,
