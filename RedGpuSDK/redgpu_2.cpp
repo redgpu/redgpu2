@@ -606,7 +606,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemoryFro
   );
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSuballocateAndSetProcedureParametersInlineStruct(
+REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParametersInlineStruct(
   Red2HandleCalls calls,
   RedProcedureType procedureType,
   Red2HandleProcedureParameters procedureParameters,
@@ -646,7 +646,22 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSuballocateAndSetProcedureParameters
 
 #ifdef REDGPU_USE_REDGPU_X
 
-  unsigned structsMemoryDescriptorsOffsetStart = memory.availableDescriptors - structDeclarationDescriptorsCount;
+  int64_t structsMemoryDescriptorsOffsetStartSigned = (int64_t)memory.availableDescriptors - (int64_t)structDeclarationDescriptorsCount;
+  if (structsMemoryDescriptorsOffsetStartSigned < 0) {
+    if (outStatuses != NULL) {
+      if (outStatuses->statusError == RED_STATUS_SUCCESS) {
+        outStatuses->statusError               = RED_STATUS_ERROR_MEMORY_OVERFLOW;
+        outStatuses->statusErrorCode           = 0;
+        outStatuses->statusErrorHresult        = 0;
+        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorFile           = optionalFile;
+        outStatuses->statusErrorLine           = optionalLine;
+        outStatuses->statusErrorDescription[0] = 0;
+      }
+    }
+    return RED_STATUS_ERROR_MEMORY_OVERFLOW;
+  }
+  unsigned structsMemoryDescriptorsOffsetStart = (unsigned)structsMemoryDescriptorsOffsetStartSigned;
 
   unsigned memberGlobalIndex = 0;
   for (unsigned i = 0; i < structDeclarationHandle->structDeclarationMembersCountWithoutInlineSamplers; i += 1) {
@@ -700,7 +715,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSuballocateAndSetProcedureParameters
     optionalUserData
   );
   if (structHandle == NULL) {
-    return;
+    return RED_STATUS_ERROR_MEMORY_OVERFLOW;
   }
 
   unsigned memberGlobalIndex = 0;
@@ -753,6 +768,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSuballocateAndSetProcedureParameters
   memory.availableStructsMembersOfTypeSamplerCount          -= structDeclarationHandle->membersOfTypeSamplerCount;
 
   pas.redCallSetProcedureParametersStructs(handle->handle, procedureType, parameters->handle, structIndex, 1, &structHandle, 0, 0);
+
+  return RED_STATUS_SUCCESS;
 }
 
 typedef struct Red2InternalSelfDestroyableCallsBatch {

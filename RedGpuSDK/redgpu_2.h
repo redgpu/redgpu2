@@ -129,7 +129,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemoryFro
   void * optionalUserData
 );
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSuballocateAndSetProcedureParametersInlineStruct(
+REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParametersInlineStruct(
   Red2HandleCalls calls,
   RedProcedureType procedureType,
   Red2HandleProcedureParameters procedureParameters,
