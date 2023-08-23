@@ -902,7 +902,8 @@ RedBool32 red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket(RedContext co
   {
     std::lock_guard<std::mutex> __selfDestroyableCallsBatchesMutexLockGuard(__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesMutex);
     for (size_t i = 0, count = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatches.size(); i < count; i += 1) {
-      if (__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesTicket[i] != 0) {
+      uint64_t t = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesTicket[i];
+      if (t != 0 && t <= queueSubmissionTicket) {
         if (__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatches[i].context == context &&
             __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatches[i].gpu     == gpu)
         {
