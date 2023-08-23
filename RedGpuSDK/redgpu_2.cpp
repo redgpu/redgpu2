@@ -897,6 +897,28 @@ RedBool32 red2IsQueueSubmissionFinishedByTicketAlone(uint64_t queueSubmissionTic
   return ticket == queueSubmissionTicket ? 0 : 1; // NOTE(Constantine): Alternatively, (ticket == 0 || ticket > queueSubmissionTicket) ? 1 : 0.
 }
 
+RedBool32 red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket(RedContext context, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedBool32 allQueueSubmissionsAreFinished = 1;
+  {
+    std::lock_guard<std::mutex> __selfDestroyableCallsBatchesMutexLockGuard(__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesMutex);
+    for (size_t i = 0, count = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatches.size(); i < count; i += 1) {
+      if (__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesTicket[i] != 0) {
+        if (__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatches[i].context == context &&
+            __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatches[i].gpu     == gpu)
+        {
+          red2InternalSelfDestroyableCallsBatchesFreeFinishedBatch_NonLocking(context, gpu, i, optionalFile, optionalLine, optionalUserData);
+          uint64_t ticket = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesTicket[i];
+          if (ticket != 0 && ticket <= queueSubmissionTicket) {
+            allQueueSubmissionsAreFinished = 0;
+            break;
+          }
+        }
+      }
+    }
+  }
+  return allQueueSubmissionsAreFinished;
+}
+
 void red2WaitForQueueSubmissionToFinish(uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   std::lock_guard<std::mutex> __selfDestroyableCallsBatchesMutexLockGuard(__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesMutex);
   uint64_t ticket = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableCallsBatchesTicket[queueSubmissionTicketArrayIndex];
