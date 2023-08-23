@@ -248,8 +248,9 @@ Red2StructDeclarationMember * red2StructDeclarationGetMembersPointer(Red2HandleS
   return handle->structDeclarationMembers;
 }
 
-void red2StructDeclarationGetMembersCounts(Red2HandleStructDeclaration structDeclaration, unsigned * outMembersOfTypeArrayROConstantCount, unsigned * outMembersOfTypeArrayROOrArrayRWCount, unsigned * outMembersOfTypeTextureROCount, unsigned * outMembersOfTypeTextureRWCount, unsigned * outMembersOfTypeInlineSamplerCount, unsigned * outMembersOfTypeSamplerCount) {
+void red2StructDeclarationGetMembersCounts(Red2HandleStructDeclaration structDeclaration, unsigned * outStructDeclarationMembersCount, unsigned * outMembersOfTypeArrayROConstantCount, unsigned * outMembersOfTypeArrayROOrArrayRWCount, unsigned * outMembersOfTypeTextureROCount, unsigned * outMembersOfTypeTextureRWCount, unsigned * outMembersOfTypeInlineSamplerCount, unsigned * outMembersOfTypeSamplerCount) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
+  if (outStructDeclarationMembersCount      != NULL) { outStructDeclarationMembersCount[0]      = handle->structDeclarationMembersCount;      }
   if (outMembersOfTypeArrayROConstantCount  != NULL) { outMembersOfTypeArrayROConstantCount[0]  = handle->membersOfTypeArrayROConstantCount;  }
   if (outMembersOfTypeArrayROOrArrayRWCount != NULL) { outMembersOfTypeArrayROOrArrayRWCount[0] = handle->membersOfTypeArrayROOrArrayRWCount; }
   if (outMembersOfTypeTextureROCount        != NULL) { outMembersOfTypeTextureROCount[0]        = handle->membersOfTypeTextureROCount;        }
