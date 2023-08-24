@@ -43,6 +43,7 @@ typedef struct Red2InternalTypeCalls {
   RedHandleCallsMemory                       memory;
   RedContext                                 context;
   RedHandleGpu                               gpu;
+  RedBool32                                  reusable;
   unsigned                                   currentStructsMemoryIndex;
   unsigned                                   currentStructsMemorySamplersIndex;
   std::vector<Red2InternalTypeStructsMemory> structsMemorys;

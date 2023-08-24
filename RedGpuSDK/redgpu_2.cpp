@@ -175,10 +175,11 @@ void red2CreateCalls(RedContext context, RedHandleGpu gpu, const char * handleNa
     return;
   }
   redCreateCalls(context, gpu, handleName, queueFamilyIndex, (RedCalls *)(void *)outCalls, outStatuses, optionalFile, optionalLine, optionalUserData);
-  handle->handle  = outCalls->handle;
-  handle->memory  = outCalls->memory;
-  handle->context = context;
-  handle->gpu     = gpu;
+  handle->handle   = outCalls->handle;
+  handle->memory   = outCalls->memory;
+  handle->context  = context;
+  handle->gpu      = gpu;
+  handle->reusable = outCalls->reusable;
   outCalls->handle2 = (Red2HandleCalls)(void *)handle;
 }
 
@@ -200,10 +201,11 @@ void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * 
     return;
   }
   redCreateCallsReusable(context, gpu, handleName, queueFamilyIndex, (RedCalls *)(void *)outCalls, outStatuses, optionalFile, optionalLine, optionalUserData);
-  handle->handle  = outCalls->handle;
-  handle->memory  = outCalls->memory;
-  handle->context = context;
-  handle->gpu     = gpu;
+  handle->handle   = outCalls->handle;
+  handle->memory   = outCalls->memory;
+  handle->context  = context;
+  handle->gpu      = gpu;
+  handle->reusable = outCalls->reusable;
   outCalls->handle2 = (Red2HandleCalls)(void *)handle;
 }
 
@@ -267,6 +269,17 @@ RedHandleProcedureParameters red2ProcedureParametersGetRedHandle(Red2HandleProce
 Red2HandleStructDeclaration red2ProcedureParametersGetStructDeclaration(Red2HandleProcedureParameters procedureParameters, unsigned structIndex) {
   Red2InternalTypeProcedureParameters * handle = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
   return handle->structsDeclarations[structIndex];
+}
+
+void red2CallsGetRedHandles(Red2HandleCalls calls, RedContext * outContext, RedHandleGpu * outGpu, RedCalls * outCalls) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  if (outContext != 0) { outContext[0] = handle->context; }
+  if (outGpu     != 0) { outGpu[0]     = handle->gpu;     }
+  if (outCalls   != 0) {
+    outCalls->handle   = handle->handle;
+    outCalls->memory   = handle->memory;
+    outCalls->reusable = handle->reusable;
+  }
 }
 
 void red2CallsSet(

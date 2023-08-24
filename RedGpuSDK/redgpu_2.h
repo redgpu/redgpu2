@@ -69,6 +69,8 @@ REDGPU_2_DECLSPEC void                          REDGPU_2_API red2StructDeclarati
 REDGPU_2_DECLSPEC RedHandleProcedureParameters  REDGPU_2_API red2ProcedureParametersGetRedHandle         (Red2HandleProcedureParameters procedureParameters);
 REDGPU_2_DECLSPEC Red2HandleStructDeclaration   REDGPU_2_API red2ProcedureParametersGetStructDeclaration (Red2HandleProcedureParameters procedureParameters, unsigned structIndex);
 
+REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsGetRedHandles                      (Red2HandleCalls calls, RedContext * outContext, RedHandleGpu * outGpu, RedCalls * outCalls);
+
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(
   RedContext context,
   RedHandleGpu gpu,
