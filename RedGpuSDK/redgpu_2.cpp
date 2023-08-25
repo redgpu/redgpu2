@@ -22,6 +22,8 @@
 #include <new>      // For std::nothrow
 #include <map>      // For std::map
 
+#include "misc/np/np_redgpu_2.h" // NOTE(Constantine): np_redgpu_2.h is included here just to check if it compiles correctly.
+
 void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, RedBool32 procedureParametersHandlesDeclaration, Red2HandleStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeStructDeclaration * handle = new(std::nothrow) Red2InternalTypeStructDeclaration();
   if (handle == NULL) {
