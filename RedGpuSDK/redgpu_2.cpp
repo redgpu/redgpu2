@@ -20,6 +20,7 @@
 #include <string.h> // For memcpy
 #include <mutex>    // For std::mutex
 #include <new>      // For std::nothrow
+#include <map>      // For std::map
 
 void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, RedBool32 procedureParametersHandlesDeclaration, Red2HandleStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeStructDeclaration * handle = new(std::nothrow) Red2InternalTypeStructDeclaration();
@@ -209,6 +210,48 @@ void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * 
   handle->gpu      = gpu;
   handle->reusable = calls.reusable;
   outCalls[0] = (Red2HandleCalls)(void *)handle;
+}
+
+typedef struct Red2InternalTransientGpuSignalsPresentImageIndexData {
+  uint64_t                        gpuSignalsCurrentFreeIndex;
+  std::vector<RedHandleGpuSignal> gpuSignals;
+} Red2InternalTransientGpuSignalsPresentImageIndexData;
+
+typedef struct Red2InternalTransientGpuSignalsPresentData {
+  RedContext   context;
+  RedHandleGpu gpu;
+  std::map<unsigned, Red2InternalTransientGpuSignalsPresentImageIndexData> map;
+} Red2InternalTransientGpuSignalsPresentData;
+
+static std::mutex                                                             __REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsDataMutex;
+static std::map<RedHandlePresent, Red2InternalTransientGpuSignalsPresentData> __REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsData;
+
+void red2CreateWsiTransientGpuSignal(RedContext context, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedHandleGpuSignal gpuSignal = NULL;
+  {
+    std::lock_guard<std::mutex> __transientGpuSignalsDataMutexLockGuard(__REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsDataMutex);
+
+    // NOTE(Constantine): These lines initialize the [present] map element if it doesn't exist in the map.
+    __REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsData[present].context = context;
+    __REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsData[present].gpu     = gpu;
+
+    // NOTE(Constantine): This line initializes the [presentImageIndex] map element if it doesn't exist in the map.
+    uint64_t index = __REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsData[present].map[presentImageIndex].gpuSignalsCurrentFreeIndex;
+
+    // NOTE(Constantine): Caching the pointer to the [presentImageIndex] map element.
+    Red2InternalTransientGpuSignalsPresentImageIndexData * data = &__REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsData[present].map[presentImageIndex];
+
+    if (data->gpuSignals.size() < (index + 1)) {
+      RedHandleGpuSignal handle = NULL;
+      redCreateGpuSignal(context, gpu, NULL, &handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+      data->gpuSignals.push_back(handle);
+    }
+
+    gpuSignal = data->gpuSignals[index];
+
+    data->gpuSignalsCurrentFreeIndex += 1;
+  }
+  outGpuSignal[0] = gpuSignal;
 }
 
 void red2DestroyStructDeclaration(RedContext context, RedHandleGpu gpu, Red2HandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -880,7 +923,27 @@ void red2DestroyContext(RedContext context, const char * optionalFile, int optio
       red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatches_NonLocking(context, context->gpus[gpuIndex].gpu, 1, NULL, optionalFile, optionalLine, optionalUserData);
     }
   }
+  {
+    std::lock_guard<std::mutex> __transientGpuSignalsDataMutexLockGuard(__REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsDataMutex);
+    for (auto & [key, value] : __REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsData) { // NOTE(Constantine): This style of loop requires C++17.
+      if (value.context == context) {
+        RedHandleGpu gpu = value.gpu;
+        for (const auto & [dataKey, data] : value.map) {
+          for (const auto & gpuSignal : data.gpuSignals) {
+            redDestroyGpuSignal(context, gpu, gpuSignal, optionalFile, optionalLine, optionalUserData);
+          }
+        }
+        value = {};
+      }
+    }
+  }
   redDestroyContext(context, optionalFile, optionalLine, optionalUserData);
+}
+
+void red2PresentGetImageIndex(RedContext context, RedHandleGpu gpu, RedHandlePresent present, RedHandleCpuSignal signalCpuSignal, RedHandleGpuSignal signalGpuSignal, unsigned * outImageIndex, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  redPresentGetImageIndex(context, gpu, present, signalCpuSignal, signalGpuSignal, outImageIndex, outStatuses, optionalFile, optionalLine, optionalUserData);
+  // NOTE(Constantine): Assuming redPresentGetImageIndex blocks CPU here until a new image index is returned to outImageIndex.
+  __REDGPU_2_GLOBAL_6c1b3b6a_transientGpuSignalsData[present].map[outImageIndex[0]].gpuSignalsCurrentFreeIndex = 0;
 }
 
 void red2QueueSubmit(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, uint64_t whenQueueSubmissionIsFinishedDestroyHandlesCount, void ** whenQueueSubmissionIsFinishedDestroyHandles, unsigned * whenQueueSubmissionIsFinishedDestroyHandlesHandleType, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
