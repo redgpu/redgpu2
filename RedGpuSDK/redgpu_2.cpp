@@ -840,6 +840,7 @@ typedef struct Red2InternalSelfDestroyableHandlesBatch {
   RedContext            context;
   RedHandleGpu          gpu;
   RedHandleCpuSignal    cpuSignal;
+  void *                optionalCustomHandleTypeDestroyCallback;
   std::vector<void *>   whenQueueSubmissionIsFinishedDestroyHandles;
   std::vector<unsigned> whenQueueSubmissionIsFinishedDestroyHandlesHandleType;
 } Red2InternalSelfDestroyableHandlesBatch;
@@ -855,6 +856,7 @@ static void red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLockin
   redCpuSignalGetStatus(context, gpu, cpuSignal, &status, optionalFile, optionalLine, optionalUserData);
   if (status == RED_STATUS_SUCCESS) {
     redDestroyCpuSignal(context, gpu, cpuSignal, optionalFile, optionalLine, optionalUserData);
+    void * optionalCustomHandleTypeDestroyCallback = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[index].optionalCustomHandleTypeDestroyCallback;
     for (size_t i = 0, count = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[index].whenQueueSubmissionIsFinishedDestroyHandles.size(); i < count; i += 1) {
       void *   handle     = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[index].whenQueueSubmissionIsFinishedDestroyHandles[i];
       unsigned handleType = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[index].whenQueueSubmissionIsFinishedDestroyHandlesHandleType[i];
@@ -880,7 +882,10 @@ static void red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLockin
       else if (handleType == RED2_HANDLE_TYPE_STRUCT_DECLARATION)   { red2DestroyStructDeclaration(context, gpu, (Red2HandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
       else if (handleType == RED2_HANDLE_TYPE_PROCEDURE_PARAMETERS) { red2DestroyProcedureParameters(context, gpu, (Red2HandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
       else if (handleType == RED2_HANDLE_TYPE_CALLS)                { red2DestroyCalls(context, gpu, (Red2HandleCalls)handle, optionalFile, optionalLine, optionalUserData); }
-      else {
+      else if (optionalCustomHandleTypeDestroyCallback != NULL) {
+        void (*customHandleTypeDestroyCallback)(void * handle) = (void (*)(void *))optionalCustomHandleTypeDestroyCallback;
+        customHandleTypeDestroyCallback(handle);
+      } else {
         redMark("[REDGPU 2][TODO(Constantine)] The handle is not destroyed, need to implement destruction of the handle type here, in this part of REDGPU 2 code.", optionalFile, optionalLine, optionalUserData);
       }
     }
@@ -954,7 +959,7 @@ void red2PresentGetImageIndex(RedContext context, RedHandleGpu gpu, RedHandlePre
   }
 }
 
-void red2QueueSubmit(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, uint64_t whenQueueSubmissionIsFinishedDestroyHandlesCount, void ** whenQueueSubmissionIsFinishedDestroyHandles, unsigned * whenQueueSubmissionIsFinishedDestroyHandlesHandleType, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2QueueSubmit(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, uint64_t whenQueueSubmissionIsFinishedDestroyHandlesCount, void ** whenQueueSubmissionIsFinishedDestroyHandles, unsigned * whenQueueSubmissionIsFinishedDestroyHandlesHandleType, void * optionalCustomHandleTypeDestroyCallback, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   {
     std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatchesMutex);
     red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatches_NonLocking(context, gpu, 0, outStatuses, optionalFile, optionalLine, optionalUserData);
@@ -968,6 +973,7 @@ void red2QueueSubmit(RedContext context, RedHandleGpu gpu, RedHandleQueue queue,
     __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[i].context                                               = context;
     __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[i].gpu                                                   = gpu;
     __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[i].cpuSignal                                             = cpuSignal;
+    __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[i].optionalCustomHandleTypeDestroyCallback               = optionalCustomHandleTypeDestroyCallback;
     __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[i].whenQueueSubmissionIsFinishedDestroyHandles           = std::vector<void *>(whenQueueSubmissionIsFinishedDestroyHandles, whenQueueSubmissionIsFinishedDestroyHandles + whenQueueSubmissionIsFinishedDestroyHandlesCount);
     __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[i].whenQueueSubmissionIsFinishedDestroyHandlesHandleType = std::vector<unsigned>(whenQueueSubmissionIsFinishedDestroyHandlesHandleType, whenQueueSubmissionIsFinishedDestroyHandlesHandleType + whenQueueSubmissionIsFinishedDestroyHandlesCount);
     __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatchesCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
