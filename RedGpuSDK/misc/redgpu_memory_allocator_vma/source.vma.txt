@@ -1,0 +1,1 @@
+https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator/blob/92e5f2eb8fa1949d849e44d8d1e99244084600de/include/vk_mem_alloc.h
