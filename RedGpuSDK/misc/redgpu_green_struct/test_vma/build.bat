@@ -1,0 +1,1 @@
+cl /EHsc test.cpp C:/github/procedural/redgpu_ultimate/redgpu_ultimate_c.c C:/github/procedural/redgpu_ultimate/redgpu_ultimate_cpp.cpp /link C:/RedGpuSDK/redgpudll.lib
