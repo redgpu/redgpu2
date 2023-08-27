@@ -1,0 +1,9 @@
+commit 49989151e28f82f41802808af8534737dd823cda
+Author: Constantine Tarasenkov <iamvfx@gmail.com>
+Date:   Thu Oct 21 19:18:09 2021 +0300
+
+    Add Windows version
+
+commit 4c689e7e180d0a8c1dbfd244e35f517fd50d3d2d
+Author: Constantine Tarasenkov <iamvfx@gmail.com>
+Date:   Thu Oct 21 00:14:28 2021 +0300
