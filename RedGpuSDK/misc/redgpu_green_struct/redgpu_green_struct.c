@@ -1,7 +1,29 @@
 #include "redgpu_green_struct.h"
 
+#ifdef REDGPU_USE_REDGPU_X
+#include "C:/RedGpuSDK/redgpu_x.h"
+#endif
+
 #include <stdlib.h> // For calloc, free
 #include <string.h> // For memcmp, memcpy, memset
+
+#ifdef REDGPU_USE_REDGPU_X
+static void greenStructsMemorySuballocateStructs(RedContext context, RedHandleGpu gpu, const char ** handleNames, GreenStructHeap * outStructHeap, unsigned structsDeclarationsCount, const GreenStructDeclaration * structsDeclarations, RedHandleStruct * outStructs, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  for (unsigned i = 0; i < structsDeclarationsCount; i += 1) {
+    outStructs[i] = redXGetHandleStruct(context, gpu, outStructHeap->memory, outStructHeap->privateStructsOffset);
+    const GreenStructDeclaration * structDeclaration = &structsDeclarations[i];
+    for (unsigned j = 0; j < structDeclaration->structDeclarationMembersCount; j += 1) {
+      outStructHeap->privateStructsOffset += structDeclaration->structDeclarationMembers[j].count;
+    }
+  }
+}
+#endif
+
+#ifdef REDGPU_USE_REDGPU_X
+static void greenStructsMemoryReset(RedContext context, RedHandleGpu gpu, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  outStructHeap->privateStructsOffset = 0;
+}
+#endif
 
 static void internalGreenStructHeapAllocate(RedHandleStructsMemory keptStructsMemory, RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   GreenStructHeap empty = {0};
@@ -66,7 +88,11 @@ static void internalGreenStructHeapAllocate(RedHandleStructsMemory keptStructsMe
       structsDeclarationsHandle[i] = structDeclarations[i].structDeclaration;
     }
     
+#ifdef REDGPU_USE_REDGPU_X
+    greenStructsMemorySuballocateStructs(context, gpu, 0, outStructHeap, structDeclarationsCount, structDeclarations, outStructHeap->structs, outStatuses, optionalFile, optionalLine, optionalUserData);
+#else
     redStructsMemorySuballocateStructs(context, gpu, 0, outStructHeap->memory, structDeclarationsCount, structsDeclarationsHandle, outStructHeap->structs, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
     
     free(structsDeclarationsHandle);
   }
@@ -139,11 +165,45 @@ REDGPU_DECLSPEC void REDGPU_API greenStructHeapAllocate(RedContext context, RedH
 REDGPU_DECLSPEC void REDGPU_API greenStructHeapReset(RedContext context, RedHandleGpu gpu, unsigned structDeclarationsCount, const GreenStructDeclaration * structDeclarations, GreenStructHeap * outStructHeap, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedHandleStructsMemory memory = outStructHeap->memory;
   internalGreenStructHeapFree(0, context, gpu, outStructHeap, optionalFile, optionalLine, optionalUserData);
+#ifdef REDGPU_USE_REDGPU_X
+  greenStructsMemoryReset(context, gpu, outStructHeap, outStatuses, optionalFile, optionalLine, optionalUserData);
+#else
   redStructsMemoryReset(context, gpu, memory, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
   internalGreenStructHeapAllocate(memory, context, gpu, 0, structDeclarationsCount, structDeclarations, outStructHeap, outStatuses, optionalFile, optionalLine, optionalUserData);
 }
 
 REDGPU_DECLSPEC void REDGPU_API greenStructHeapsSet(RedContext context, RedHandleGpu gpu, unsigned structHeapsSetsCount, const GreenStructHeapSet * structHeapsSets, const char * optionalFile, int optionalLine, void * optionalUserData) {
+#ifdef REDGPU_USE_REDGPU_X
+  for (unsigned j = 0; j < structHeapsSetsCount; j += 1) {
+    GreenStructHeapSet structHeapSet = structHeapsSets[j];
+    for (unsigned i = 0; i < structHeapSet.resourceHandlesCount; i += 1) {
+      const RedStructMember * structsMember = &structHeapSet.structHeap->privateStructsMembers[structHeapSet.structHeapResourceHandlesFirst + i];
+
+      RedBool32 copyingSamplers = 0;
+
+      unsigned oneCopy[1] = {1};
+      RedXMemoryAddress sourceAddress = {0};
+      RedXMemoryAddress targetAddress = {redXGetMemoryAddressStructMember(context, gpu, structHeapSet.structHeap->memory, structHeapSet.structHeapResourceHandlesFirst + i)};
+
+      if (structsMember->type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT ||
+          structsMember->type == RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW       ||
+          structsMember->type == REDX_STRUCT_MEMBER_TYPE_ARRAY_RO)
+      {
+        sourceAddress.memoryAddress = redXGetMemoryAddressArray(context, gpu, (RedHandleArray)structHeapSet.resourceHandles[i]);
+      } else if (structsMember->type == RED_STRUCT_MEMBER_TYPE_SAMPLER) {
+        copyingSamplers = 1;
+        sourceAddress.memoryAddress = redXGetMemoryAddressSampler(context, gpu, (RedHandleSampler)structHeapSet.resourceHandles[i]);
+      } else if (structsMember->type == RED_STRUCT_MEMBER_TYPE_TEXTURE_RO) {
+        sourceAddress.memoryAddress = redXGetMemoryAddressTextureRO(context, gpu, (RedHandleTexture)structHeapSet.resourceHandles[i]);
+      } else if (structsMember->type == RED_STRUCT_MEMBER_TYPE_TEXTURE_RW) {
+        sourceAddress.memoryAddress = redXGetMemoryAddressTextureRW(context, gpu, (RedHandleTexture)structHeapSet.resourceHandles[i]);
+      }
+
+      redXStructsMemorySet(context, gpu, copyingSamplers, 1, &sourceAddress, oneCopy, 1, &targetAddress, oneCopy, NULL, __FILE__, __LINE__, NULL);
+    }
+  }
+#else
   unsigned maxStructsMembersToSetCount = 0;
   for (unsigned i = 0; i < structHeapsSetsCount; i += 1) {
     if (structHeapsSets[i].resourceHandlesCount > maxStructsMembersToSetCount) {
@@ -184,6 +244,7 @@ REDGPU_DECLSPEC void REDGPU_API greenStructHeapsSet(RedContext context, RedHandl
   free(structsMembers);
   free(structsMembersArray);
   free(structsMembersTexture);
+#endif
 }
 
 REDGPU_DECLSPEC void REDGPU_API greenStructHeapFree(RedContext context, RedHandleGpu gpu, const GreenStructHeap * structHeap, const char * optionalFile, int optionalLine, void * optionalUserData) {

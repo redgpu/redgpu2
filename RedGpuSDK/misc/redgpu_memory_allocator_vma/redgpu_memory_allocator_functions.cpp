@@ -51,13 +51,47 @@ REDGPU_DECLSPEC void REDGPU_API rmaVmaVkGetPhysicalDeviceMemoryProperties(RedCon
   out[0] = properties;
 }
 
+#include <mutex>
+#include <map>
+
+static std::mutex                                __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayMutex;
+static std::map<RedHandleMemory, RedHandleArray> __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArray;
+static std::map<RedHandleMemory, uint64_t>       __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount;
+
 REDGPU_DECLSPEC RedStatus REDGPU_API rmaVmaVkAllocateMemory(RedContext context, unsigned gpuIndex, RedHandleGpu device, const void * pVkMemoryAllocateInfo, const void * pVkAllocationCallbacks, RedHandleMemory * pMemory) {
   const VkMemoryAllocateInfo * memoryAllocateInfo = (const VkMemoryAllocateInfo *)pVkMemoryAllocateInfo;
   RedStatuses statuses = {};
   if (context->gpus[gpuIndex].memoryTypes[memoryAllocateInfo->memoryTypeIndex].isCpuMappable == 1) {
     // NOTE(Constantine): Pass array from VMA to RMA in future.
+#ifdef REDGPU_USE_REDGPU_X
+    RedArray array = {};
+    redCreateArray(context, device, "REDGPU Memory Allocator VMA", RED_ARRAY_TYPE_ARRAY_RO, memoryAllocateInfo->allocationSize, 0, 0, 0, 0, &array, &statuses, 0, 0, 0);
+    uint64_t memoryBytesCount = memoryAllocateInfo->allocationSize;
+    if (array.memoryBytesCount > memoryAllocateInfo->allocationSize) {
+      memoryBytesCount = array.memoryBytesCount;
+    }
+    pMemory[0] = 0;
+    if (array.handle != 0) {
+      redMemoryAllocateMappable(context, device, "REDGPU Memory Allocator VMA", 0, array.handle, memoryBytesCount, memoryAllocateInfo->memoryTypeIndex, 0, pMemory, &statuses, 0, 0, 0);
+    }
+    if (pMemory[0] != 0) {
+      RedMemoryArray memoryArray = {};
+      memoryArray.setTo1000157000  = 1000157000;
+      memoryArray.setTo0           = 0;
+      memoryArray.array            = array.handle;
+      memoryArray.memory           = pMemory[0];
+      memoryArray.memoryBytesFirst = 0;
+      redMemorySet(context, device, 1, &memoryArray, 0, 0, &statuses, 0, 0, 0);
+    }
+    if (pMemory[0] != 0) {
+      std::lock_guard<std::mutex> __mappableMemoryArrayMutexLockGuard(__REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayMutex);
+      __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArray[pMemory[0]]           = array.handle;
+      __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount[pMemory[0]] = memoryAllocateInfo->allocationSize;
+    }
+#else
     RedHandleArray array = 0;
     redMemoryAllocateMappable(context, device, "REDGPU Memory Allocator VMA", 0, array, memoryAllocateInfo->allocationSize, memoryAllocateInfo->memoryTypeIndex, 0, pMemory, &statuses, 0, 0, 0);
+#endif
   } else {
     redMemoryAllocate(context, device, "REDGPU Memory Allocator VMA", memoryAllocateInfo->allocationSize, memoryAllocateInfo->memoryTypeIndex, 0, 0, 0, pMemory, &statuses, 0, 0, 0);
   }
@@ -65,11 +99,35 @@ REDGPU_DECLSPEC RedStatus REDGPU_API rmaVmaVkAllocateMemory(RedContext context, 
 }
 
 REDGPU_DECLSPEC void REDGPU_API rmaVmaVkFreeMemory(RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleMemory memory, const void * pVkAllocationCallbacks) {
+#ifdef REDGPU_USE_REDGPU_X
+  {
+    std::lock_guard<std::mutex> __mappableMemoryArrayMutexLockGuard(__REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayMutex);
+    std::map<RedHandleMemory, RedHandleArray>::iterator it1 = __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArray.find(memory);
+    std::map<RedHandleMemory, uint64_t>::iterator       it2 = __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount.find(memory);
+    if (it1 != __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArray.end()) {
+      RedHandleArray array = __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArray[memory];
+      redDestroyArray(context, device, array, 0, 0, 0);
+      __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArray.erase(it1);
+    }
+    if (it2 != __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount.end()) {
+      __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount.erase(it2);
+    }
+  }
+#endif
   redMemoryFree(context, device, memory, 0, 0, 0);
 }
 
 REDGPU_DECLSPEC RedStatus REDGPU_API rmaVmaVkMapMemory(RedContext context, unsigned gpuIndex, RedHandleGpu device, RedHandleMemory memory, uint64_t offset, uint64_t size, unsigned vkMemoryMapFlags, void ** ppData) {
   RedStatuses statuses = {};
+#ifdef REDGPU_USE_REDGPU_X
+  if (size == VK_WHOLE_SIZE) {
+    std::lock_guard<std::mutex> __mappableMemoryArrayMutexLockGuard(__REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayMutex);
+    std::map<RedHandleMemory, uint64_t>::iterator it = __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount.find(memory);
+    if (it != __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount.end()) {
+      size = __REDGPU_RMA_VMA_GLOBAL_ec8b2cdd_mappableMemoryArrayBytesCount[memory];
+    }
+  }
+#endif
   redMemoryMap(context, device, memory, offset, size, ppData, &statuses, 0, 0, 0);
   return statuses.statusError;
 }

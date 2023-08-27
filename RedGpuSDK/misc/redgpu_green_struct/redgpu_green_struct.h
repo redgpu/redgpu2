@@ -31,6 +31,7 @@ typedef struct GreenStructHeap {
   RedStructMember *            privateStructsMembers;
   RedStructMemberArray *       privateStructsMembersArray;
   RedStructMemberTexture *     privateStructsMembersTexture;
+  uint64_t                     privateStructsOffset;
 } GreenStructHeap;
 
 typedef struct GreenStructHeapSet {
