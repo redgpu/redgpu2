@@ -200,7 +200,7 @@ REDGPU_DECLSPEC void REDGPU_API greenStructHeapsSet(RedContext context, RedHandl
         sourceAddress.memoryAddress = redXGetMemoryAddressTextureRW(context, gpu, (RedHandleTexture)structHeapSet.resourceHandles[i]);
       }
 
-      redXStructsMemorySet(context, gpu, copyingSamplers, 1, &sourceAddress, oneCopy, 1, &targetAddress, oneCopy, NULL, __FILE__, __LINE__, NULL);
+      redXStructsMemorySet(context, gpu, copyingSamplers, 1, &sourceAddress, oneCopy, 1, &targetAddress, oneCopy, NULL, optionalFile, optionalLine, optionalUserData);
     }
   }
 #else
