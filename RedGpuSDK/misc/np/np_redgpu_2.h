@@ -492,6 +492,7 @@ void np_red2PresentGetImageIndex(_80ee055a_context & context, _80ee055a_gpu & gp
 #define _24f77dc7_whenQueueSubmissionIsFinishedDestroyHandlesCount(value) value
 #define _24f77dc7_whenQueueSubmissionIsFinishedDestroyHandles(value) value
 #define _24f77dc7_whenQueueSubmissionIsFinishedDestroyHandlesHandleType(value) value
+#define _24f77dc7_optionalCustomHandleTypeDestroyCallback(value) value
 #define _24f77dc7_outStatuses(value) value
 #define _24f77dc7_optionalFile(value) value
 #define _24f77dc7_optionalLine(value) value
