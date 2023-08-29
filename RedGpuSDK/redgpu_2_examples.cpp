@@ -9088,6 +9088,7 @@ unsigned char gDroidSansMonoFont[] = {
 #include "C:/RedGpuSDK/redgpu.h"
 #include "C:/RedGpuSDK/redgpu_wsi.h"
 #include "C:/RedGpuSDK/redgpu_2.h"
+#include "C:/RedGpuSDK/misc/redgpu_green_struct/redgpu_green_struct.h"
 #ifdef REDGPU_USE_REDGPU_X
 #include "C:/RedGpuSDK/redgpu_x.h"
 #endif
@@ -9095,6 +9096,7 @@ unsigned char gDroidSansMonoFont[] = {
 #include "C:/RedGpuSDK/misc/np/np_redgpu.h"
 #include "C:/RedGpuSDK/misc/np/np_redgpu_wsi.h"
 #include "C:/RedGpuSDK/misc/np/np_redgpu_2.h"
+#include "C:/RedGpuSDK/misc/np/misc/redgpu_green_struct/np_redgpu_green_struct.h"
 #ifdef REDGPU_USE_REDGPU_X
 #include "C:/RedGpuSDK/misc/np/np_redgpu_x.h"
 #endif
@@ -9323,16 +9325,47 @@ int main() {
   };
 
   VmaAllocator vma = 0;
-  rmaCreateAllocatorSimple(context, gpuIndex, &vma);
+  rmaCreateAllocatorSimple(
+    /* RedContext     context */         context,
+    /* unsigned       gpuIndex */        gpuIndex,
+    /* VmaAllocator * outVmaAllocator */ &vma
+  );
 
   RmaArray array0 = {};
-  rmaCreateArraySimple(vma, sizeof(float4), 1, RED_ARRAY_TYPE_ARRAY_RO, VMA_MEMORY_USAGE_CPU_TO_GPU, 1, -1, &array0);
+  rmaCreateArraySimple(
+    /* VmaAllocator   allocator */                vma,
+    /* uint64_t       bytesCount */               sizeof(float4),
+    /* RedBool32      alsoAllocateGpuOnlyArray */ 1,
+    /* RedArrayType   arrayType */                RED_ARRAY_TYPE_ARRAY_RO,
+    /* VmaMemoryUsage memoryUsage */              VMA_MEMORY_USAGE_CPU_TO_GPU,
+    /* RedBool32      memoryMapped */             1,
+    /* unsigned       initialQueueFamilyIndex */  -1,
+    /* RmaArray *     outArray */                 &array0
+  );
 
   RmaArray array1 = {};
-  rmaCreateArraySimple(vma, sizeof(float4), 1, RED_ARRAY_TYPE_ARRAY_RO, VMA_MEMORY_USAGE_CPU_TO_GPU, 1, -1, &array1);
+  rmaCreateArraySimple(
+    /* VmaAllocator   allocator */                vma,
+    /* uint64_t       bytesCount */               sizeof(float4),
+    /* RedBool32      alsoAllocateGpuOnlyArray */ 1,
+    /* RedArrayType   arrayType */                RED_ARRAY_TYPE_ARRAY_RO,
+    /* VmaMemoryUsage memoryUsage */              VMA_MEMORY_USAGE_CPU_TO_GPU,
+    /* RedBool32      memoryMapped */             1,
+    /* unsigned       initialQueueFamilyIndex */  -1,
+    /* RmaArray *     outArray */                 &array1
+  );
 
   RmaArray array2 = {};
-  rmaCreateArraySimple(vma, sizeof(float4), 1, RED_ARRAY_TYPE_ARRAY_RO, VMA_MEMORY_USAGE_GPU_TO_CPU, 0, -1, &array2);
+  rmaCreateArraySimple(
+    /* VmaAllocator   allocator */                vma,
+    /* uint64_t       bytesCount */               sizeof(float4),
+    /* RedBool32      alsoAllocateGpuOnlyArray */ 1,
+    /* RedArrayType   arrayType */                RED_ARRAY_TYPE_ARRAY_RO,
+    /* VmaMemoryUsage memoryUsage */              VMA_MEMORY_USAGE_GPU_TO_CPU,
+    /* RedBool32      memoryMapped */             0,
+    /* unsigned       initialQueueFamilyIndex */  -1,
+    /* RmaArray *     outArray */                 &array2
+  );
 
   volatile float4 * array0p = (volatile float4 *)array0.memoryInfo.pMappedData;
   volatile float4 * array1p = (volatile float4 *)array1.memoryInfo.pMappedData;
@@ -9370,9 +9403,29 @@ int main() {
   addStructDeclaration.structDeclarationMembersArrayRO       = 0;
   addStructDeclaration.procedureParametersHandlesDeclaration = 0;
   addStructDeclaration.structDeclaration                     = 0;
-  greenCreateStructDeclaration(context, context->gpus[gpuIndex].gpu, "addStructDeclaration", &addStructDeclaration, 0, __FILE__, __LINE__, 0);
+  np_greenCreateStructDeclaration(
+    _0a8a30e6_context(context),
+    _0a8a30e6_gpu(gpu),
+    _0a8a30e6_handleName("addStructDeclaration"),
+    _0a8a30e6_outStructDeclaration(&addStructDeclaration),
+    _0a8a30e6_outStatuses(0),
+    _0a8a30e6_optionalFile(__FILE__),
+    _0a8a30e6_optionalLine(__LINE__),
+    _0a8a30e6_optionalUserData(0)
+  );
   GreenStructHeap addStructHeap = {};
-  greenStructHeapAllocate(context, context->gpus[gpuIndex].gpu, "addStructHeap", 1, &addStructDeclaration, &addStructHeap, 0, __FILE__, __LINE__, 0);
+  np_greenStructHeapAllocate(
+    _9ceb9cf5_context(context),
+    _9ceb9cf5_gpu(gpu),
+    _9ceb9cf5_handleName("addStructHeap"),
+    _9ceb9cf5_structDeclarationsCount(1),
+    _9ceb9cf5_structDeclarations(&addStructDeclaration),
+    _9ceb9cf5_outStructHeap(&addStructHeap),
+    _9ceb9cf5_outStatuses(0),
+    _9ceb9cf5_optionalFile(__FILE__),
+    _9ceb9cf5_optionalLine(__LINE__),
+    _9ceb9cf5_optionalUserData(0)
+  );
 
   RedProcedureParametersDeclaration addParametersDecl = {};
   addParametersDecl.variablesSlot            = 0;
@@ -9389,14 +9442,49 @@ int main() {
   addParametersDecl.structsDeclarations[7]   = 0;
   addParametersDecl.handlesDeclaration       = 0;
   RedHandleProcedureParameters addParameters = 0;
-  redCreateProcedureParameters(context, context->gpus[gpuIndex].gpu, "addParameters", &addParametersDecl, &addParameters, 0, __FILE__, __LINE__, 0);
-  RedHandleGpuCode   addGpuCode   = 0;
-  RedHandleProcedure addProcedure = 0;
+  np_redCreateProcedureParameters(
+    _7067ad8e_context(context),
+    _7067ad8e_gpu(gpu),
+    _7067ad8e_handleName("addParameters"),
+    _7067ad8e_procedureParametersDeclaration(&addParametersDecl),
+    _7067ad8e_outProcedureParameters(&addParameters),
+    _7067ad8e_outStatuses(0),
+    _7067ad8e_optionalFile(__FILE__),
+    _7067ad8e_optionalLine(__LINE__),
+    _7067ad8e_optionalUserData(0)
+  );
 
-  redCreateGpuCode(context, context->gpus[gpuIndex].gpu, "addGpuCode", add_cs_ir_bytesCount, add_cs_ir, &addGpuCode, 0, __FILE__, __LINE__, 0);
+  RedHandleGpuCode addGpuCode = 0;
+  np_redCreateGpuCode(
+    _01c06284_context(context),
+    _01c06284_gpu(gpu),
+    _01c06284_handleName("addGpuCode"),
+    _01c06284_irBytesCount(add_cs_ir_bytesCount),
+    _01c06284_ir(add_cs_ir),
+    _01c06284_outGpuCode(&addGpuCode),
+    _01c06284_outStatuses(0),
+    _01c06284_optionalFile(__FILE__),
+    _01c06284_optionalLine(__LINE__),
+    _01c06284_optionalUserData(0)
+  );
   msvcFree(add_cs_ir);
   add_cs_ir = 0;
-  redCreateProcedureCompute(context, context->gpus[gpuIndex].gpu, "addProcedure", 0, addParameters, "main", addGpuCode, &addProcedure, 0, __FILE__, __LINE__, 0);
+  
+  RedHandleProcedure addProcedure = 0;
+  np_redCreateProcedureCompute(
+    _bd6d24cf_context(context),
+    _bd6d24cf_gpu(gpu),
+    _bd6d24cf_handleName("addProcedure"),
+    _bd6d24cf_procedureCache(0),
+    _bd6d24cf_procedureParameters(addParameters),
+    _bd6d24cf_gpuCodeMainProcedureName("main"),
+    _bd6d24cf_gpuCode(addGpuCode),
+    _bd6d24cf_outProcedure(&addProcedure),
+    _bd6d24cf_outStatuses(0),
+    _bd6d24cf_optionalFile(__FILE__),
+    _bd6d24cf_optionalLine(__LINE__),
+    _bd6d24cf_optionalUserData(0)
+  );
 
   GreenStructHeapSet updates[3] = {};
   updates[0].structHeap                     = &addStructHeap;
@@ -9411,23 +9499,129 @@ int main() {
   updates[2].structHeapResourceHandlesFirst = 2;
   updates[2].resourceHandlesCount           = 1;
   updates[2].resourceHandles                = (void **)&array2.gpuOnlyArray.handle;
-  greenStructHeapsSet(context, context->gpus[gpuIndex].gpu, sizeof(updates) / sizeof(updates[0]), updates, __FILE__, __LINE__, 0);
+  np_greenStructHeapsSet(
+    _6a2e38c0_context(context),
+    _6a2e38c0_gpu(gpu),
+    _6a2e38c0_structHeapsSetsCount(sizeof(updates) / sizeof(updates[0])),
+    _6a2e38c0_structHeapsSets(updates),
+    _6a2e38c0_optionalFile(__FILE__),
+    _6a2e38c0_optionalLine(__LINE__),
+    _6a2e38c0_optionalUserData(0)
+  );
 
   RedCalls calls = {};
-  redCreateCallsReusable(context, context->gpus[gpuIndex].gpu, "calls", queueFamilyIndex, &calls, 0, __FILE__, __LINE__, 0);
-  redCallsSet(context, context->gpus[gpuIndex].gpu, calls.handle, calls.memory, calls.reusable, 0, __FILE__, __LINE__, 0);
-  rmaCallCopyCpuToGpuArrayToGpuOnlyArray(&callPAs, calls.handle, context, gpu, &array0, 0, 0, RED_ACCESS_STAGE_BITFLAG_COMPUTE, RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R);
-  rmaCallCopyCpuToGpuArrayToGpuOnlyArray(&callPAs, calls.handle, context, gpu, &array1, 0, 0, RED_ACCESS_STAGE_BITFLAG_COMPUTE, RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R);
-  redCallSetStructsMemory(callPAs.redCallSetStructsMemory, calls.handle, addStructHeap.memory, 0);
-  redCallSetProcedureParameters(callPAs.redCallSetProcedureParameters, calls.handle, RED_PROCEDURE_TYPE_COMPUTE, addParameters);
-  callPAs.redCallSetProcedureParametersStructs(calls.handle, RED_PROCEDURE_TYPE_COMPUTE, addParameters, 0, 1, addStructHeap.structs, 0, 0);
-  callPAs.redCallSetProcedure(calls.handle, RED_PROCEDURE_TYPE_COMPUTE, addProcedure);
-  callPAs.redCallProcedureCompute(calls.handle, 1, 1, 1);
-  rmaCallCopyGpuOnlyArrayToGpuToCpuArray(&callPAs, calls.handle, context, gpu, &array2, RED_ACCESS_STAGE_BITFLAG_COMPUTE, RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W);
-  redCallsEnd(context, context->gpus[gpuIndex].gpu, calls.handle, calls.memory, 0, __FILE__, __LINE__, 0);
+  np_redCreateCallsReusable(
+    _abac7e66_context(context),
+    _abac7e66_gpu(gpu),
+    _abac7e66_handleName("calls"),
+    _abac7e66_queueFamilyIndex(queueFamilyIndex),
+    _abac7e66_outCalls(&calls),
+    _abac7e66_outStatuses(0),
+    _abac7e66_optionalFile(__FILE__),
+    _abac7e66_optionalLine(__LINE__),
+    _abac7e66_optionalUserData(0)
+  );
+  np_redCallsSet(
+    _23514538_context(context),
+    _23514538_gpu(gpu),
+    _23514538_calls(calls.handle),
+    _23514538_callsMemory(calls.memory),
+    _23514538_callsReusable(calls.reusable),
+    _23514538_outStatuses(0),
+    _23514538_optionalFile(__FILE__),
+    _23514538_optionalLine(__LINE__),
+    _23514538_optionalUserData(0)
+  );
+  rmaCallCopyCpuToGpuArrayToGpuOnlyArray(
+    /* const RedCallProceduresAndAddresses * callPAs */       &callPAs,
+    /* RedHandleCalls         calls */                        calls.handle,
+    /* RedContext             context */                      context,
+    /* RedHandleGpu           gpu */                          gpu,
+    /* const RmaArray *       array */                        &array0,
+    /* RedAccessStageBitflags gpuOnlyArray_oldAccessStages */ 0,
+    /* RedAccessBitflags      gpuOnlyArray_oldAccess */       0,
+    /* RedAccessStageBitflags gpuOnlyArray_newAccessStages */ RED_ACCESS_STAGE_BITFLAG_COMPUTE,
+    /* RedAccessBitflags      gpuOnlyArray_newAccess */       RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R
+  );
+  rmaCallCopyCpuToGpuArrayToGpuOnlyArray(
+    /* const RedCallProceduresAndAddresses * callPAs */       &callPAs,
+    /* RedHandleCalls         calls */                        calls.handle,
+    /* RedContext             context */                      context,
+    /* RedHandleGpu           gpu */                          gpu,
+    /* const RmaArray *       array */                        &array1,
+    /* RedAccessStageBitflags gpuOnlyArray_oldAccessStages */ 0,
+    /* RedAccessBitflags      gpuOnlyArray_oldAccess */       0,
+    /* RedAccessStageBitflags gpuOnlyArray_newAccessStages */ RED_ACCESS_STAGE_BITFLAG_COMPUTE,
+    /* RedAccessBitflags      gpuOnlyArray_newAccess */       RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R
+  );
+  np_redCallSetStructsMemory(
+    _e5f0da72_address(callPAs.redCallSetStructsMemory),
+    _e5f0da72_calls(calls.handle),
+    _e5f0da72_structsMemory(addStructHeap.memory),
+    _e5f0da72_structsMemorySamplers(0)
+  );
+  np_redCallSetProcedureParameters(
+    _a823169a_address(callPAs.redCallSetProcedureParameters),
+    _a823169a_calls(calls.handle),
+    _a823169a_procedureType(RED_PROCEDURE_TYPE_COMPUTE),
+    _a823169a_procedureParameters(addParameters)
+  );
+  np_redCallSetProcedureParametersStructs(
+    _b6fcba5e_address(callPAs.redCallSetProcedureParametersStructs),
+    _b6fcba5e_calls(calls.handle),
+    _b6fcba5e_procedureType(RED_PROCEDURE_TYPE_COMPUTE),
+    _b6fcba5e_procedureParameters(addParameters),
+    _b6fcba5e_procedureParametersDeclarationStructsDeclarationsFirst(0),
+    _b6fcba5e_structsCount(1),
+    _b6fcba5e_structs(addStructHeap.structs),
+    _b6fcba5e_setTo0(0),
+    _b6fcba5e_setTo00(0)
+  );
+  np_redCallSetProcedure(
+    _16d79404_address(callPAs.redCallSetProcedure),
+    _16d79404_calls(calls.handle),
+    _16d79404_procedureType(RED_PROCEDURE_TYPE_COMPUTE),
+    _16d79404_procedure(addProcedure)
+  );
+  np_redCallProcedureCompute(
+    _17fa22b3_address(callPAs.redCallProcedureCompute),
+    _17fa22b3_calls(calls.handle),
+    _17fa22b3_workgroupsCountX(1),
+    _17fa22b3_workgroupsCountY(1),
+    _17fa22b3_workgroupsCountZ(1)
+  );
+  rmaCallCopyGpuOnlyArrayToGpuToCpuArray(
+    /* const RedCallProceduresAndAddresses * callPAs */       &callPAs,
+    /* RedHandleCalls         calls */                        calls.handle,
+    /* RedContext             context */                      context,
+    /* RedHandleGpu           gpu */                          gpu,
+    /* const RmaArray *       array */                        &array2,
+    /* RedAccessStageBitflags gpuOnlyArray_oldAccessStages */ RED_ACCESS_STAGE_BITFLAG_COMPUTE,
+    /* RedAccessBitflags      gpuOnlyArray_oldAccess */       RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W
+  );
+  np_redCallsEnd(
+    _2566f99f_context(context),
+    _2566f99f_gpu(gpu),
+    _2566f99f_calls(calls.handle),
+    _2566f99f_callsMemory(calls.memory),
+    _2566f99f_outStatuses(0),
+    _2566f99f_optionalFile(__FILE__),
+    _2566f99f_optionalLine(__LINE__),
+    _2566f99f_optionalUserData(0)
+  );
 
   RedHandleCpuSignal cpuSignal = 0;
-  redCreateCpuSignal(context, context->gpus[gpuIndex].gpu, "cpuSignal", 0, &cpuSignal, 0, __FILE__, __LINE__, 0);
+  np_redCreateCpuSignal(
+    _9dcf3e68_context(context),
+    _9dcf3e68_gpu(gpu),
+    _9dcf3e68_handleName("cpuSignal"),
+    _9dcf3e68_createSignaled(0),
+    _9dcf3e68_outCpuSignal(&cpuSignal),
+    _9dcf3e68_outStatuses(0),
+    _9dcf3e68_optionalFile(__FILE__),
+    _9dcf3e68_optionalLine(__LINE__),
+    _9dcf3e68_optionalUserData(0)
+  );
   RedGpuTimeline timeline = {};
   timeline.setTo4                            = 4;
   timeline.setTo0                            = 0;
@@ -9438,9 +9632,39 @@ int main() {
   timeline.calls                             = &calls.handle;
   timeline.signalGpuSignalsCount             = 0;
   timeline.signalGpuSignals                  = 0;
-  redQueueSubmit(context, context->gpus[gpuIndex].gpu, queue, 1, &timeline, cpuSignal, 0, __FILE__, __LINE__, 0);
-  redCpuSignalWait(context, context->gpus[gpuIndex].gpu, 1, &cpuSignal, 1, 0, __FILE__, __LINE__, 0);
-  redCpuSignalUnsignal(context, context->gpus[gpuIndex].gpu, 1, &cpuSignal, 0, __FILE__, __LINE__, 0);
+  np_redQueueSubmit(
+    _dcc70647_context(context),
+    _dcc70647_gpu(gpu),
+    _dcc70647_queue(queue),
+    _dcc70647_timelinesCount(1),
+    _dcc70647_timelines(&timeline),
+    _dcc70647_signalCpuSignal(cpuSignal),
+    _dcc70647_outStatuses(0),
+    _dcc70647_optionalFile(__FILE__),
+    _dcc70647_optionalLine(__LINE__),
+    _dcc70647_optionalUserData(0)
+  );
+  np_redCpuSignalWait(
+    _4a826452_context(context),
+    _4a826452_gpu(gpu),
+    _4a826452_cpuSignalsCount(1),
+    _4a826452_cpuSignals(&cpuSignal),
+    _4a826452_waitAll(1),
+    _4a826452_outStatuses(0),
+    _4a826452_optionalFile(__FILE__),
+    _4a826452_optionalLine(__LINE__),
+    _4a826452_optionalUserData(0)
+  );
+  np_redCpuSignalUnsignal(
+    _fd52e10b_context(context),
+    _fd52e10b_gpu(gpu),
+    _fd52e10b_cpuSignalsCount(1),
+    _fd52e10b_cpuSignals(&cpuSignal),
+    _fd52e10b_outStatuses(0),
+    _fd52e10b_optionalFile(__FILE__),
+    _fd52e10b_optionalLine(__LINE__),
+    _fd52e10b_optionalUserData(0)
+  );
 
   volatile float4 * array2p = 0;
   vmaMapMemory(vma, array2.memory, (void **)&array2p);
@@ -9452,13 +9676,13 @@ int main() {
     glfwPollEvents();
   }
 
-  redDestroyCpuSignal(context, context->gpus[gpuIndex].gpu, cpuSignal, __FILE__, __LINE__, 0);
-  redDestroyCalls(context, context->gpus[gpuIndex].gpu, calls.handle, calls.memory, __FILE__, __LINE__, 0);
-  redDestroyProcedure(context, context->gpus[gpuIndex].gpu, addProcedure, __FILE__, __LINE__, 0);
-  redDestroyGpuCode(context, context->gpus[gpuIndex].gpu, addGpuCode, __FILE__, __LINE__, 0);
-  redDestroyProcedureParameters(context, context->gpus[gpuIndex].gpu, addParameters, __FILE__, __LINE__, 0);
-  greenStructHeapFree(context, context->gpus[gpuIndex].gpu, &addStructHeap, __FILE__, __LINE__, 0);
-  redDestroyStructDeclaration(context, context->gpus[gpuIndex].gpu, addStructDeclaration.structDeclaration, __FILE__, __LINE__, 0);
+  redDestroyCpuSignal(context, gpu, cpuSignal, __FILE__, __LINE__, 0);
+  redDestroyCalls(context, gpu, calls.handle, calls.memory, __FILE__, __LINE__, 0);
+  redDestroyProcedure(context, gpu, addProcedure, __FILE__, __LINE__, 0);
+  redDestroyGpuCode(context, gpu, addGpuCode, __FILE__, __LINE__, 0);
+  redDestroyProcedureParameters(context, gpu, addParameters, __FILE__, __LINE__, 0);
+  greenStructHeapFree(context, gpu, &addStructHeap, __FILE__, __LINE__, 0);
+  redDestroyStructDeclaration(context, gpu, addStructDeclaration.structDeclaration, __FILE__, __LINE__, 0);
   rmaDestroyArray(&array0);
   rmaDestroyArray(&array1);
   rmaDestroyArray(&array2);
@@ -9775,20 +9999,6 @@ void rmaDestroyArray(const RmaArray * array) {
 }
 
 void rmaCallCopyCpuToGpuArrayToGpuOnlyArray(const RedCallProceduresAndAddresses * callPAs, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, const RmaArray * array, RedAccessStageBitflags gpuOnlyArray_oldAccessStages, RedAccessBitflags gpuOnlyArray_oldAccess, RedAccessStageBitflags gpuOnlyArray_newAccessStages, RedAccessBitflags gpuOnlyArray_newAccess) {
-#ifdef REDGPU_USE_REDGPU_X
-  {
-    RedXBarrier arrayUsages[1] = {};
-
-    arrayUsages[0].usage.setTo0      = 0;
-    arrayUsages[0].usage.split       = RED_BARRIER_SPLIT_NONE;
-    arrayUsages[0].usage.resource    = redXGetHandleResourceArray(context, gpu, array->gpuOnlyArray.handle);
-    arrayUsages[0].usage.level       = -1;
-    arrayUsages[0].usage.oldAccesses = REDX_ACCESS_BITFLAG_COMMON;
-    arrayUsages[0].usage.newAccesses = REDX_ACCESS_BITFLAG_COPY_W;
-
-    redXCallUsageAliasOrderBarrier(calls, 1, arrayUsages);
-  }
-#else
   {
     RedUsageArray arrayUsages[2] = {};
 
@@ -9814,9 +10024,8 @@ void rmaCallCopyCpuToGpuArrayToGpuOnlyArray(const RedCallProceduresAndAddresses 
     arrayUsages[1].arrayBytesFirst        = 0;
     arrayUsages[1].arrayBytesCount        =-1;
 
-    redCallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, 2, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
+    red2CallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, gpu, 2, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
   }
-#endif
 
   {
     RedCopyArrayRange range = {};
@@ -9826,20 +10035,6 @@ void rmaCallCopyCpuToGpuArrayToGpuOnlyArray(const RedCallProceduresAndAddresses 
     callPAs->redCallCopyArrayToArray(calls, array->array.handle, array->gpuOnlyArray.handle, 1, &range);
   }
 
-#ifdef REDGPU_USE_REDGPU_X
-  {
-    RedXBarrier arrayUsages[1] = {};
-
-    arrayUsages[0].usage.setTo0      = 0;
-    arrayUsages[0].usage.split       = RED_BARRIER_SPLIT_NONE;
-    arrayUsages[0].usage.resource    = redXGetHandleResourceArray(context, gpu, array->gpuOnlyArray.handle);
-    arrayUsages[0].usage.level       = -1;
-    arrayUsages[0].usage.oldAccesses = REDX_ACCESS_BITFLAG_COPY_W;
-    arrayUsages[0].usage.newAccesses = REDX_ACCESS_BITFLAG_COMMON;
-
-    redXCallUsageAliasOrderBarrier(calls, 1, arrayUsages);
-  }
-#else
   {
     RedUsageArray arrayUsages[1] = {};
 
@@ -9854,35 +10049,11 @@ void rmaCallCopyCpuToGpuArrayToGpuOnlyArray(const RedCallProceduresAndAddresses 
     arrayUsages[0].arrayBytesFirst        = 0;
     arrayUsages[0].arrayBytesCount        =-1;
 
-    redCallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, 1, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
+    red2CallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, gpu, 1, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
   }
-#endif
 }
 
 void rmaCallCopyGpuOnlyArrayToGpuToCpuArray(const RedCallProceduresAndAddresses * callPAs, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, const RmaArray * array, RedAccessStageBitflags gpuOnlyArray_oldAccessStages, RedAccessBitflags gpuOnlyArray_oldAccess) {
-#ifdef REDGPU_USE_REDGPU_X
-  {
-    RedXBarrier arrayOrders[1] = {};
-
-    arrayOrders[0].order.setTo2   = 2;
-    arrayOrders[0].order.split    = RED_BARRIER_SPLIT_NONE;
-    arrayOrders[0].order.resource = redXGetHandleResourceArray(context, gpu, array->gpuOnlyArray.handle);
-
-    redXCallUsageAliasOrderBarrier(calls, 1, arrayOrders);
-  }
-  {
-    RedXBarrier arrayUsages[1] = {};
-
-    arrayUsages[0].usage.setTo0      = 0;
-    arrayUsages[0].usage.split       = RED_BARRIER_SPLIT_NONE;
-    arrayUsages[0].usage.resource    = redXGetHandleResourceArray(context, gpu, array->gpuOnlyArray.handle);
-    arrayUsages[0].usage.level       = -1;
-    arrayUsages[0].usage.oldAccesses = REDX_ACCESS_BITFLAG_COMMON;
-    arrayUsages[0].usage.newAccesses = REDX_ACCESS_BITFLAG_COPY_R;
-
-    redXCallUsageAliasOrderBarrier(calls, 1, arrayUsages);
-  }
-#else
   {
     RedUsageArray arrayUsages[2] = {};
 
@@ -9908,9 +10079,8 @@ void rmaCallCopyGpuOnlyArrayToGpuToCpuArray(const RedCallProceduresAndAddresses 
     arrayUsages[1].arrayBytesFirst        = 0;
     arrayUsages[1].arrayBytesCount        =-1;
 
-    redCallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, 2, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
+    red2CallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, gpu, 2, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
   }
-#endif
 
   {
     RedCopyArrayRange range = {};
@@ -9920,20 +10090,6 @@ void rmaCallCopyGpuOnlyArrayToGpuToCpuArray(const RedCallProceduresAndAddresses 
     callPAs->redCallCopyArrayToArray(calls, array->gpuOnlyArray.handle, array->array.handle, 1, &range);
   }
 
-#ifdef REDGPU_USE_REDGPU_X
-  {
-    RedXBarrier arrayUsages[1] = {};
-
-    arrayUsages[0].usage.setTo0      = 0;
-    arrayUsages[0].usage.split       = RED_BARRIER_SPLIT_NONE;
-    arrayUsages[0].usage.resource    = redXGetHandleResourceArray(context, gpu, array->gpuOnlyArray.handle);
-    arrayUsages[0].usage.level       = -1;
-    arrayUsages[0].usage.oldAccesses = REDX_ACCESS_BITFLAG_COPY_R;
-    arrayUsages[0].usage.newAccesses = REDX_ACCESS_BITFLAG_COMMON;
-
-    redXCallUsageAliasOrderBarrier(calls, 1, arrayUsages);
-  }
-#else
   {
     RedUsageArray arrayUsages[1] = {};
 
@@ -9948,9 +10104,8 @@ void rmaCallCopyGpuOnlyArrayToGpuToCpuArray(const RedCallProceduresAndAddresses 
     arrayUsages[0].arrayBytesFirst        = 0;
     arrayUsages[0].arrayBytesCount        =-1;
 
-    redCallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, 1, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
+    red2CallUsageAliasOrderBarrier(callPAs->redCallUsageAliasOrderBarrier, calls, context, gpu, 1, arrayUsages, 0, 0, 0, 0, 0, 0, 0);
   }
-#endif
 }
 
 #endif // #if defined(REDGPU_2_EXAMPLE_NUMBER_2)

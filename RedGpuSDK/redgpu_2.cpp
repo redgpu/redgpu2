@@ -14,11 +14,14 @@
 #include "/opt/RedGpuSDK/redgpu.h"
 #include "/opt/RedGpuSDK/redgpu_wsi.h"
 #endif
+#include <vector>   // For std::vector
 #ifdef REDGPU_USE_REDGPU_X
+#include <string>   // For std::string
 #include "C:/RedGpuSDK/redgpu_x.h"
+#include "C:/RedGpuSDK/redgpu_x12.h"
+#include "C:/RedGpuSDK/redgpu_x_internal_types.h"
 #endif
 #include "redgpu_2.h"
-#include <vector>   // For std::vector
 #include "redgpu_2_internal_types.h"
 #include <string.h> // For memcpy
 #include <mutex>    // For std::mutex
@@ -1094,4 +1097,213 @@ void red2WaitForAllQueueSubmissionsToFinish(RedContext context, RedHandleGpu gpu
       }
     }
   }
+}
+
+#ifdef REDGPU_USE_REDGPU_X
+static RedXAccessBitflags red2InternalRedAccessBitflagsToRedXAccessBitflags(RedAccessBitflags access) {
+  if (access == 0) {
+    return REDX_ACCESS_BITFLAG_COMMON;
+  }
+  RedXAccessBitflags out = 0;
+  if ((access & RED_ACCESS_BITFLAG_COPY_R)                               == RED_ACCESS_BITFLAG_COPY_R)                               { out |= REDX_ACCESS_BITFLAG_COPY_R;                               }
+  if ((access & RED_ACCESS_BITFLAG_COPY_W)                               == RED_ACCESS_BITFLAG_COPY_W)                               { out |= REDX_ACCESS_BITFLAG_COPY_W;                               }
+  if ((access & RED_ACCESS_BITFLAG_INDEX_R)                              == RED_ACCESS_BITFLAG_INDEX_R)                              { out |= REDX_ACCESS_BITFLAG_INDEX_R;                              }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           == RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           { out |= REDX_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R;           }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R; }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R;     }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_RW;                   }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R;               }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW;              }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R;               }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW;              }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       == RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       { out |= REDX_ACCESS_BITFLAG_OUTPUT_COLOR_W;                       }
+  if ((access & RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     == RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     { out |= REDX_ACCESS_BITFLAG_RESOLVE_SOURCE_R;                     }
+  if ((access & RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     == RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     { out |= REDX_ACCESS_BITFLAG_RESOLVE_TARGET_W;                     }
+  return out;
+}
+#endif
+
+void red2CallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, unsigned aliasesCount, const RedAlias * aliases, unsigned ordersCount, const RedOrder * orders, RedBool32 dependencyByRegion) {
+#ifdef REDGPU_USE_REDGPU_X
+  unsigned barriersCount = arrayUsagesCount + imageUsagesCount + aliasesCount + ordersCount;
+  if (barriersCount == 0) {
+    return;
+  }
+  for (unsigned i = 0; i < imageUsagesCount; i += 1) {
+    RedXInternalTypeImage * image = (RedXInternalTypeImage *)(void *)imageUsages[i].image;
+    unsigned imageLayersCount = image->layersCount;
+    unsigned imageLevelsCount = image->levelsCount;
+    unsigned layersCount      = (imageUsages[i].imageLayersCount == (unsigned)-1) ? imageLayersCount : imageUsages[i].imageLayersCount;
+    unsigned levelsCount      = (imageUsages[i].imageLevelsCount == (unsigned)-1) ? imageLevelsCount : imageUsages[i].imageLevelsCount;
+    barriersCount += layersCount * levelsCount;
+  }
+  RedXBarrier * barriers = new(std::nothrow) RedXBarrier[barriersCount];
+  if (barriers == NULL) {
+    return;
+  }
+
+  unsigned index = 0;
+
+  for (unsigned i = 0; i < ordersCount; i += 1) {
+    RedXBarrier *    barrier = &barriers[index];
+    const RedOrder * order   = &orders[i];
+
+    barrier->order.setTo2   = 2;
+    barrier->order.split    = order->barrierSplit;
+    barrier->order.resource = (RedXHandleResource)(void *)order->resourceHandle;
+
+    index += 1;
+  }
+
+  for (unsigned i = 0; i < aliasesCount; i += 1) {
+    RedXBarrier *    barrier = &barriers[index];
+    const RedAlias * alias   = &aliases[i];
+
+    barrier->alias.setTo1      = 1;
+    barrier->alias.split       = alias->barrierSplit;
+    barrier->alias.oldResource = (RedXHandleResource)(void *)alias->oldResourceHandle;
+    barrier->alias.newResource = (RedXHandleResource)(void *)alias->newResourceHandle;
+
+    index += 1;
+  }
+
+  for (unsigned i = 0; i < arrayUsagesCount; i += 1) {
+    RedXBarrier         * barrier = &barriers[index];
+    const RedUsageArray * usage   = &arrayUsages[i];
+
+    // NOTE(Constantine): 6 memory types assumption for the current REDGPU X implementation.
+    const unsigned memoryType0OnlyBuffers          = 0;
+    const unsigned memoryType1OnlyTextures         = 1;
+    const unsigned memoryType2OnlyRtDsTextures     = 2;
+    const unsigned memoryType3OnlyRtDsTexturesMsaa = 3;
+    const unsigned memoryType4Upload               = 4;
+    const unsigned memoryType5Readback             = 5;
+
+    RedXInternalTypeArray * array = (RedXInternalTypeArray *)(void *)usage->array;
+
+    if (array->memoryTypeIndex == memoryType4Upload ||
+        array->memoryTypeIndex == memoryType5Readback)
+    {
+      // NOTE(Constantine): No need to barrier upload and readback arrays in X12. Skipping the barrier.
+      continue;
+    }
+
+    RedXAccessBitflags oldAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(usage->oldAccess);
+    RedXAccessBitflags newAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(usage->newAccess);
+
+    if (oldAccesses == newAccesses) {
+      // NOTE(Constantine): For ordering reads and writes between the same usages, in REDGPU X, use order barriers instead. Skipping the barrier.
+      continue;
+    }
+
+    barrier->usage.setTo0      = 0;
+    barrier->usage.split       = usage->barrierSplit;
+    barrier->usage.resource    = redXGetHandleResourceArray(context, gpu, usage->array);
+    barrier->usage.level       = (unsigned)-1;
+    barrier->usage.oldAccesses = oldAccesses;
+    barrier->usage.newAccesses = newAccesses;
+
+    index += 1;
+  }
+
+  for (unsigned i = 0; i < imageUsagesCount; i += 1) {
+    const RedUsageImage * usage = &imageUsages[i];
+
+    RedXAccessBitflags oldAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(usage->oldAccess);
+    RedXAccessBitflags newAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(usage->newAccess);
+
+    if (oldAccesses == newAccesses) {
+      // NOTE(Constantine): For ordering reads and writes between the same usages, in REDGPU X, use order barriers instead. Skipping the barrier.
+      continue;
+    }
+
+    RedXBarrier barrierTemplate = {};
+    barrierTemplate.usage.setTo0      = 0;
+    barrierTemplate.usage.split       = usage->barrierSplit;
+    barrierTemplate.usage.resource    = redXGetHandleResourceImage(context, gpu, usage->image);
+    barrierTemplate.usage.level       = (unsigned)-1;
+    barrierTemplate.usage.oldAccesses = oldAccesses;
+    barrierTemplate.usage.newAccesses = newAccesses;
+
+    if (usage->imageLevelsFirst ==            0 &&
+        usage->imageLevelsCount == (unsigned)-1 &&
+        usage->imageLayersFirst ==            0 &&
+        usage->imageLayersCount == (unsigned)-1)
+    {
+      RedXBarrier * barrier = &barriers[index];
+
+      barrier[0] = barrierTemplate;
+
+      index += 1;
+    } else {
+      RedXInternalTypeImage * image = (RedXInternalTypeImage *)(void *)usage->image;
+      unsigned imageLayersCount = image->layersCount;
+      unsigned imageLevelsCount = image->levelsCount;
+      unsigned layersCount      = (usage->imageLayersCount == (unsigned)-1) ? imageLayersCount : usage->imageLayersCount;
+      unsigned levelsCount      = (usage->imageLevelsCount == (unsigned)-1) ? imageLevelsCount : usage->imageLevelsCount;
+
+      for (unsigned layerIndex = 0; layerIndex < layersCount; layerIndex += 1) {
+        for (unsigned levelIndex = 0; levelIndex < levelsCount; levelIndex += 1) {
+          RedXBarrier * barrier = &barriers[index];
+
+          unsigned level = ((usage->imageLayersFirst + layerIndex) * imageLevelsCount) + (usage->imageLevelsFirst + levelIndex);
+
+          barrier[0] = barrierTemplate;
+          barrier->usage.level = level;
+
+          index += 1;
+        }
+      }
+    }
+  }
+
+  if (index > 0) {
+    redXCallUsageAliasOrderBarrier(calls, index, barriers);
+  }
+
+  delete[] barriers;
+  barriers = NULL;
+#else
+  unsigned barriersCount = arrayUsagesCount + imageUsagesCount;
+  if (barriersCount == 0) {
+    return;
+  }
+  RedUsageArray * arrayBarriers = new(std::nothrow) RedUsageArray[arrayUsagesCount];
+  if (arrayBarriers == NULL) {
+    return;
+  }
+  RedUsageImage * imageBarriers = new(std::nothrow) RedUsageImage[imageUsagesCount];
+  if (imageBarriers == NULL) {
+    return;
+  }
+
+  unsigned arrayIndex = 0;
+  for (unsigned i = 0; i < arrayUsagesCount; i += 1) {
+    if (arrayUsages[i].barrierSplit == RED_BARRIER_SPLIT_SET) {
+      // NOTE(Constantine): Skipping SPLIT_SET barriers for the current REDGPU implementation that doesn't support split barriers yet.
+      continue;
+    }
+    arrayBarriers[arrayIndex] = arrayUsages[i];
+    arrayIndex += 1;
+  }
+
+  unsigned imageIndex = 0;
+  for (unsigned i = 0; i < imageUsagesCount; i += 1) {
+    if (imageUsages[i].barrierSplit == RED_BARRIER_SPLIT_SET) {
+      // NOTE(Constantine): Skipping SPLIT_SET barriers for the current REDGPU implementation that doesn't support split barriers yet.
+      continue;
+    }
+    imageBarriers[imageIndex] = imageUsages[i];
+    imageIndex += 1;
+  }
+
+  if (arrayIndex > 0 || imageIndex > 0) { // NOTE(Constantine): Also check aliasesCount and ordersCount in future.
+    redCallUsageAliasOrderBarrier(address, calls, context, arrayIndex, arrayUsages, imageIndex, imageUsages, aliasesCount, aliases, ordersCount, orders, dependencyByRegion);
+  }
+
+  delete[] arrayBarriers;
+  delete[] imageBarriers;
+  arrayBarriers = NULL;
+  imageBarriers = NULL;
+#endif
 }

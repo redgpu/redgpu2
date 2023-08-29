@@ -653,3 +653,37 @@ void np_red2WaitForAllQueueSubmissionsToFinish(_005c3675_context & context, _005
 }
 #endif
 
+#ifdef REDGPU_DISABLE_NAMED_PARAMETERS
+#define np_red2CallUsageAliasOrderBarrier red2CallUsageAliasOrderBarrier
+#define _8d323fdd_address(value) value
+#define _8d323fdd_calls(value) value
+#define _8d323fdd_context(value) value
+#define _8d323fdd_gpu(value) value
+#define _8d323fdd_arrayUsagesCount(value) value
+#define _8d323fdd_arrayUsages(value) value
+#define _8d323fdd_imageUsagesCount(value) value
+#define _8d323fdd_imageUsages(value) value
+#define _8d323fdd_aliasesCount(value) value
+#define _8d323fdd_aliases(value) value
+#define _8d323fdd_ordersCount(value) value
+#define _8d323fdd_orders(value) value
+#define _8d323fdd_dependencyByRegion(value) value
+#else
+typedef struct _8d323fdd_address { _8d323fdd_address(RedTypeProcedureAddressCallUsageAliasOrderBarrier value): value(value) {}; RedTypeProcedureAddressCallUsageAliasOrderBarrier value; _8d323fdd_address(const _8d323fdd_address &) = delete; } _8d323fdd_address;
+typedef struct _8d323fdd_calls { _8d323fdd_calls(RedHandleCalls value): value(value) {}; RedHandleCalls value; _8d323fdd_calls(const _8d323fdd_calls &) = delete; } _8d323fdd_calls;
+typedef struct _8d323fdd_context { _8d323fdd_context(RedContext value): value(value) {}; RedContext value; _8d323fdd_context(const _8d323fdd_context &) = delete; } _8d323fdd_context;
+typedef struct _8d323fdd_gpu { _8d323fdd_gpu(RedHandleGpu value): value(value) {}; RedHandleGpu value; _8d323fdd_gpu(const _8d323fdd_gpu &) = delete; } _8d323fdd_gpu;
+typedef struct _8d323fdd_arrayUsagesCount { _8d323fdd_arrayUsagesCount(unsigned value): value(value) {}; unsigned value; _8d323fdd_arrayUsagesCount(const _8d323fdd_arrayUsagesCount &) = delete; } _8d323fdd_arrayUsagesCount;
+typedef struct _8d323fdd_arrayUsages { _8d323fdd_arrayUsages(RedUsageArray* value): value(value) {}; RedUsageArray* value; _8d323fdd_arrayUsages(const _8d323fdd_arrayUsages &) = delete; } _8d323fdd_arrayUsages;
+typedef struct _8d323fdd_imageUsagesCount { _8d323fdd_imageUsagesCount(unsigned value): value(value) {}; unsigned value; _8d323fdd_imageUsagesCount(const _8d323fdd_imageUsagesCount &) = delete; } _8d323fdd_imageUsagesCount;
+typedef struct _8d323fdd_imageUsages { _8d323fdd_imageUsages(RedUsageImage* value): value(value) {}; RedUsageImage* value; _8d323fdd_imageUsages(const _8d323fdd_imageUsages &) = delete; } _8d323fdd_imageUsages;
+typedef struct _8d323fdd_aliasesCount { _8d323fdd_aliasesCount(unsigned value): value(value) {}; unsigned value; _8d323fdd_aliasesCount(const _8d323fdd_aliasesCount &) = delete; } _8d323fdd_aliasesCount;
+typedef struct _8d323fdd_aliases { _8d323fdd_aliases(RedAlias* value): value(value) {}; RedAlias* value; _8d323fdd_aliases(const _8d323fdd_aliases &) = delete; } _8d323fdd_aliases;
+typedef struct _8d323fdd_ordersCount { _8d323fdd_ordersCount(unsigned value): value(value) {}; unsigned value; _8d323fdd_ordersCount(const _8d323fdd_ordersCount &) = delete; } _8d323fdd_ordersCount;
+typedef struct _8d323fdd_orders { _8d323fdd_orders(RedOrder* value): value(value) {}; RedOrder* value; _8d323fdd_orders(const _8d323fdd_orders &) = delete; } _8d323fdd_orders;
+typedef struct _8d323fdd_dependencyByRegion { _8d323fdd_dependencyByRegion(RedBool32 value): value(value) {}; RedBool32 value; _8d323fdd_dependencyByRegion(const _8d323fdd_dependencyByRegion &) = delete; } _8d323fdd_dependencyByRegion;
+void np_red2CallUsageAliasOrderBarrier(_8d323fdd_address & address, _8d323fdd_calls & calls, _8d323fdd_context & context, _8d323fdd_gpu & gpu, _8d323fdd_arrayUsagesCount & arrayUsagesCount, _8d323fdd_arrayUsages & arrayUsages, _8d323fdd_imageUsagesCount & imageUsagesCount, _8d323fdd_imageUsages & imageUsages, _8d323fdd_aliasesCount & aliasesCount, _8d323fdd_aliases & aliases, _8d323fdd_ordersCount & ordersCount, _8d323fdd_orders & orders, _8d323fdd_dependencyByRegion & dependencyByRegion) {
+  red2CallUsageAliasOrderBarrier(address.value, calls.value, context.value, gpu.value, arrayUsagesCount.value, arrayUsages.value, imageUsagesCount.value, imageUsages.value, aliasesCount.value, aliases.value, ordersCount.value, orders.value, dependencyByRegion.value);
+}
+#endif
+
