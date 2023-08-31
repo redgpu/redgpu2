@@ -1284,6 +1284,10 @@ void red2CallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBa
       continue;
     }
     arrayBarriers[arrayIndex] = arrayUsages[i];
+    if (arrayUsages[i].barrierSplit == RED_BARRIER_SPLIT_END) {
+      // NOTE(Constantine): Converting SPLIT_END barriers to SPLIT_NONE barriers for the current REDGPU implementation that doesn't support split barriers yet.
+      arrayBarriers[arrayIndex].barrierSplit = RED_BARRIER_SPLIT_NONE;
+    }
     arrayIndex += 1;
   }
 
@@ -1294,6 +1298,10 @@ void red2CallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBa
       continue;
     }
     imageBarriers[imageIndex] = imageUsages[i];
+    if (imageUsages[i].barrierSplit == RED_BARRIER_SPLIT_END) {
+      // NOTE(Constantine): Converting SPLIT_END barriers to SPLIT_NONE barriers for the current REDGPU implementation that doesn't support split barriers yet.
+      imageBarriers[imageIndex].barrierSplit = RED_BARRIER_SPLIT_NONE;
+    }
     imageIndex += 1;
   }
 
