@@ -1,2 +1,5 @@
 RedGpuSDK/CMakeLists.txt
 RedGpuSDK/build/*
+RedGpuSDK/imgui/*
+RedGpuSDK/glfw-3.3.2.bin.WIN64/*
+RedGpuSDK/glfw-3.3.8.bin.WIN64/*

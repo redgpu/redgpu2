@@ -145,7 +145,7 @@ struct ImGui_ImplRedGpuH_Window
 // DEPENDENCY(Constantine): GLFW 3.3.2, commit 0a49ef0a00baa3ab520ddc452f0e3b1e099c5589
 
 // COMPILE(Constantine):
-// g++.exe -c -DREDGPU_2_EXAMPLE_NUMBER_0 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw/include/ redgpu_2_examples.cpp -o imgui_impl_redgpu.o
+// g++.exe -c -DREDGPU_2_EXAMPLE_NUMBER_0 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw-3.3.2.bin.WIN64/include/ redgpu_2_examples.cpp -o imgui_impl_redgpu.o
 
 // FILE(Constantine): imgui_impl_redgpu.cpp
 
@@ -2563,7 +2563,7 @@ void ImGui_ImplRedGpuH_DestroyWindowRenderBuffers(RedContext instance, uint32_t 
 // DEPENDENCY(Constantine): GLFW 3.3.2, commit 0a49ef0a00baa3ab520ddc452f0e3b1e099c5589
 
 // COMPILE(Constantine):
-// g++.exe -fpermissive -DREDGPU_2_EXAMPLE_NUMBER_1 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw/include/ redgpu_2_examples.cpp imgui/imgui.cpp imgui/imgui_demo.cpp imgui/imgui_draw.cpp imgui/imgui_tables.cpp imgui/imgui_widgets.cpp imgui_impl_redgpu.o imgui/backends/imgui_impl_glfw.cpp C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib glfw/glfw3dll.lib
+// g++.exe -fpermissive -DREDGPU_2_EXAMPLE_NUMBER_0 -DREDGPU_2_EXAMPLE_NUMBER_1 -DREDGPU_USE_REDGPU_X -DImTextureID=ImU64 -DImDrawIdx=unsigned -Iimgui/ -Iglfw-3.3.2.bin.WIN64/include/ redgpu_2_examples.cpp imgui/imgui.cpp imgui/imgui_demo.cpp imgui/imgui_draw.cpp imgui/imgui_tables.cpp imgui/imgui_widgets.cpp imgui/backends/imgui_impl_glfw.cpp C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib glfw-3.3.2.bin.WIN64/lib-vc2019/glfw3dll.lib
 
 // FILE(Constantine): main.cpp
 
@@ -9045,6 +9045,9 @@ unsigned char gDroidSansMonoFont[] = {
 
 #if defined(REDGPU_2_EXAMPLE_NUMBER_2)
 
+// COMPILE(Constantine):
+// cl /std:c++17 /DREDGPU_DISABLE_NAMED_PARAMETERS /DREDGPU_2_EXAMPLE_NUMBER_0 /DREDGPU_2_EXAMPLE_NUMBER_2 /DREDGPU_USE_REDGPU_X /DImTextureID=ImU64 /DImDrawIdx=unsigned /Iimgui/ /Iglfw-3.3.8.bin.WIN64/include/ /IC:/VulkanSDK/1.3.261.0/Include redgpu_2_examples.cpp imgui/imgui.cpp imgui/imgui_demo.cpp imgui/imgui_draw.cpp imgui/imgui_tables.cpp imgui/imgui_widgets.cpp imgui/backends/imgui_impl_glfw.cpp redgpu_2.cpp misc/redgpu_memory_allocator_vma/redgpu_memory_allocator.cpp misc/redgpu_memory_allocator_vma/redgpu_memory_allocator_functions.cpp misc/redgpu_green_struct/redgpu_green_struct.c C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib glfw-3.3.8.bin.WIN64/lib-vc2019/glfw3dll.lib
+
 // DEFINE(Constantine): REDGPU_USE_REDGPU_X
 
 // COMPILE(Constantine): C:/RedGpuSDK/misc/redgpu_memory_allocator_vma/redgpu_memory_allocator.cpp
@@ -9059,10 +9062,8 @@ unsigned char gDroidSansMonoFont[] = {
 
 #ifdef REDGPU_USE_REDGPU_X
 #pragma comment(lib, "C:/RedGpuSDK/redgpu_x.lib")
-#pragma comment(lib, "C:/RedGpuSDK/redgpu_2_x.lib")
 #else
 #pragma comment(lib, "C:/RedGpuSDK/redgpudll.lib")
-#pragma comment(lib, "C:/RedGpuSDK/redgpu_2.lib")
 #endif
 #pragma comment(lib, "glfw-3.3.8.bin.WIN64/lib-vc2019/glfw3dll.lib")
 
@@ -9692,12 +9693,6 @@ int main() {
 
   return 0;
 }
-
-typedef enum RedHelperMemoryType {
-  RED_HELPER_MEMORY_TYPE_VRAM     = 0,
-  RED_HELPER_MEMORY_TYPE_UPLOAD   = 1,
-  RED_HELPER_MEMORY_TYPE_READBACK = 2,
-} RedHelperMemoryType;
 
 unsigned redHelperGetMemoryTypeIndex(const RedGpuInfo * gpuInfo, RedHelperMemoryType memoryType, unsigned memoryTypesSupported) {
   const unsigned        memoryTypesCount = gpuInfo->memoryTypesCount;
