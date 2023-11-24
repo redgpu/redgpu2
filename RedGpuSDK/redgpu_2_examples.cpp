@@ -2567,8 +2567,9 @@ void ImGui_ImplRedGpuH_DestroyWindowRenderBuffers(RedContext instance, uint32_t 
 
 // FILE(Constantine): main.cpp
 
-//#define REDGPU_DISABLE_NAMED_PARAMETERS
 #include "C:/RedGpuSDK/redgpu_x.h"
+
+#define REDGPU_DISABLE_NAMED_PARAMETERS
 #include "C:/RedGpuSDK/misc/np/np_redgpu.h"
 #include "C:/RedGpuSDK/misc/np/np_redgpu_x.h"
 #include "C:/RedGpuSDK/misc/np/np_redgpu_wsi.h"
@@ -9094,6 +9095,7 @@ unsigned char gDroidSansMonoFont[] = {
 #include "C:/RedGpuSDK/redgpu_x.h"
 #endif
 
+#define REDGPU_DISABLE_NAMED_PARAMETERS
 #include "C:/RedGpuSDK/misc/np/np_redgpu.h"
 #include "C:/RedGpuSDK/misc/np/np_redgpu_wsi.h"
 #include "C:/RedGpuSDK/misc/np/np_redgpu_2.h"

@@ -1,5 +1,13 @@
 #pragma once
 
+#ifndef REDGPU_NP_DECLSPEC
+#define REDGPU_NP_DECLSPEC
+#endif
+
+#ifndef REDGPU_NP_API
+#define REDGPU_NP_API
+#endif
+
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
 #define np_greenCreateStructDeclaration greenCreateStructDeclaration
 #define _0a8a30e6_context(value) value
@@ -19,7 +27,7 @@ typedef struct _0a8a30e6_outStatuses { _0a8a30e6_outStatuses(RedStatuses* value)
 typedef struct _0a8a30e6_optionalFile { _0a8a30e6_optionalFile(char* value): value(value) {}; char* value; _0a8a30e6_optionalFile(const _0a8a30e6_optionalFile &) = delete; } _0a8a30e6_optionalFile;
 typedef struct _0a8a30e6_optionalLine { _0a8a30e6_optionalLine(int value): value(value) {}; int value; _0a8a30e6_optionalLine(const _0a8a30e6_optionalLine &) = delete; } _0a8a30e6_optionalLine;
 typedef struct _0a8a30e6_optionalUserData { _0a8a30e6_optionalUserData(void* value): value(value) {}; void* value; _0a8a30e6_optionalUserData(const _0a8a30e6_optionalUserData &) = delete; } _0a8a30e6_optionalUserData;
-void np_greenCreateStructDeclaration(_0a8a30e6_context & context, _0a8a30e6_gpu & gpu, _0a8a30e6_handleName & handleName, _0a8a30e6_outStructDeclaration & outStructDeclaration, _0a8a30e6_outStatuses & outStatuses, _0a8a30e6_optionalFile & optionalFile, _0a8a30e6_optionalLine & optionalLine, _0a8a30e6_optionalUserData & optionalUserData) {
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_greenCreateStructDeclaration(_0a8a30e6_context & context, _0a8a30e6_gpu & gpu, _0a8a30e6_handleName & handleName, _0a8a30e6_outStructDeclaration & outStructDeclaration, _0a8a30e6_outStatuses & outStatuses, _0a8a30e6_optionalFile & optionalFile, _0a8a30e6_optionalLine & optionalLine, _0a8a30e6_optionalUserData & optionalUserData) {
   greenCreateStructDeclaration(context.value, gpu.value, handleName.value, outStructDeclaration.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
@@ -47,7 +55,7 @@ typedef struct _9ceb9cf5_outStatuses { _9ceb9cf5_outStatuses(RedStatuses* value)
 typedef struct _9ceb9cf5_optionalFile { _9ceb9cf5_optionalFile(char* value): value(value) {}; char* value; _9ceb9cf5_optionalFile(const _9ceb9cf5_optionalFile &) = delete; } _9ceb9cf5_optionalFile;
 typedef struct _9ceb9cf5_optionalLine { _9ceb9cf5_optionalLine(int value): value(value) {}; int value; _9ceb9cf5_optionalLine(const _9ceb9cf5_optionalLine &) = delete; } _9ceb9cf5_optionalLine;
 typedef struct _9ceb9cf5_optionalUserData { _9ceb9cf5_optionalUserData(void* value): value(value) {}; void* value; _9ceb9cf5_optionalUserData(const _9ceb9cf5_optionalUserData &) = delete; } _9ceb9cf5_optionalUserData;
-void np_greenStructHeapAllocate(_9ceb9cf5_context & context, _9ceb9cf5_gpu & gpu, _9ceb9cf5_handleName & handleName, _9ceb9cf5_structDeclarationsCount & structDeclarationsCount, _9ceb9cf5_structDeclarations & structDeclarations, _9ceb9cf5_outStructHeap & outStructHeap, _9ceb9cf5_outStatuses & outStatuses, _9ceb9cf5_optionalFile & optionalFile, _9ceb9cf5_optionalLine & optionalLine, _9ceb9cf5_optionalUserData & optionalUserData) {
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_greenStructHeapAllocate(_9ceb9cf5_context & context, _9ceb9cf5_gpu & gpu, _9ceb9cf5_handleName & handleName, _9ceb9cf5_structDeclarationsCount & structDeclarationsCount, _9ceb9cf5_structDeclarations & structDeclarations, _9ceb9cf5_outStructHeap & outStructHeap, _9ceb9cf5_outStatuses & outStatuses, _9ceb9cf5_optionalFile & optionalFile, _9ceb9cf5_optionalLine & optionalLine, _9ceb9cf5_optionalUserData & optionalUserData) {
   greenStructHeapAllocate(context.value, gpu.value, handleName.value, structDeclarationsCount.value, structDeclarations.value, outStructHeap.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
@@ -73,7 +81,7 @@ typedef struct _fa1824e1_outStatuses { _fa1824e1_outStatuses(RedStatuses* value)
 typedef struct _fa1824e1_optionalFile { _fa1824e1_optionalFile(char* value): value(value) {}; char* value; _fa1824e1_optionalFile(const _fa1824e1_optionalFile &) = delete; } _fa1824e1_optionalFile;
 typedef struct _fa1824e1_optionalLine { _fa1824e1_optionalLine(int value): value(value) {}; int value; _fa1824e1_optionalLine(const _fa1824e1_optionalLine &) = delete; } _fa1824e1_optionalLine;
 typedef struct _fa1824e1_optionalUserData { _fa1824e1_optionalUserData(void* value): value(value) {}; void* value; _fa1824e1_optionalUserData(const _fa1824e1_optionalUserData &) = delete; } _fa1824e1_optionalUserData;
-void np_greenStructHeapReset(_fa1824e1_context & context, _fa1824e1_gpu & gpu, _fa1824e1_structDeclarationsCount & structDeclarationsCount, _fa1824e1_structDeclarations & structDeclarations, _fa1824e1_outStructHeap & outStructHeap, _fa1824e1_outStatuses & outStatuses, _fa1824e1_optionalFile & optionalFile, _fa1824e1_optionalLine & optionalLine, _fa1824e1_optionalUserData & optionalUserData) {
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_greenStructHeapReset(_fa1824e1_context & context, _fa1824e1_gpu & gpu, _fa1824e1_structDeclarationsCount & structDeclarationsCount, _fa1824e1_structDeclarations & structDeclarations, _fa1824e1_outStructHeap & outStructHeap, _fa1824e1_outStatuses & outStatuses, _fa1824e1_optionalFile & optionalFile, _fa1824e1_optionalLine & optionalLine, _fa1824e1_optionalUserData & optionalUserData) {
   greenStructHeapReset(context.value, gpu.value, structDeclarationsCount.value, structDeclarations.value, outStructHeap.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
@@ -95,7 +103,7 @@ typedef struct _6a2e38c0_structHeapsSets { _6a2e38c0_structHeapsSets(GreenStruct
 typedef struct _6a2e38c0_optionalFile { _6a2e38c0_optionalFile(char* value): value(value) {}; char* value; _6a2e38c0_optionalFile(const _6a2e38c0_optionalFile &) = delete; } _6a2e38c0_optionalFile;
 typedef struct _6a2e38c0_optionalLine { _6a2e38c0_optionalLine(int value): value(value) {}; int value; _6a2e38c0_optionalLine(const _6a2e38c0_optionalLine &) = delete; } _6a2e38c0_optionalLine;
 typedef struct _6a2e38c0_optionalUserData { _6a2e38c0_optionalUserData(void* value): value(value) {}; void* value; _6a2e38c0_optionalUserData(const _6a2e38c0_optionalUserData &) = delete; } _6a2e38c0_optionalUserData;
-void np_greenStructHeapsSet(_6a2e38c0_context & context, _6a2e38c0_gpu & gpu, _6a2e38c0_structHeapsSetsCount & structHeapsSetsCount, _6a2e38c0_structHeapsSets & structHeapsSets, _6a2e38c0_optionalFile & optionalFile, _6a2e38c0_optionalLine & optionalLine, _6a2e38c0_optionalUserData & optionalUserData) {
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_greenStructHeapsSet(_6a2e38c0_context & context, _6a2e38c0_gpu & gpu, _6a2e38c0_structHeapsSetsCount & structHeapsSetsCount, _6a2e38c0_structHeapsSets & structHeapsSets, _6a2e38c0_optionalFile & optionalFile, _6a2e38c0_optionalLine & optionalLine, _6a2e38c0_optionalUserData & optionalUserData) {
   greenStructHeapsSet(context.value, gpu.value, structHeapsSetsCount.value, structHeapsSets.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
@@ -115,7 +123,7 @@ typedef struct _56605c20_structHeap { _56605c20_structHeap(GreenStructHeap* valu
 typedef struct _56605c20_optionalFile { _56605c20_optionalFile(char* value): value(value) {}; char* value; _56605c20_optionalFile(const _56605c20_optionalFile &) = delete; } _56605c20_optionalFile;
 typedef struct _56605c20_optionalLine { _56605c20_optionalLine(int value): value(value) {}; int value; _56605c20_optionalLine(const _56605c20_optionalLine &) = delete; } _56605c20_optionalLine;
 typedef struct _56605c20_optionalUserData { _56605c20_optionalUserData(void* value): value(value) {}; void* value; _56605c20_optionalUserData(const _56605c20_optionalUserData &) = delete; } _56605c20_optionalUserData;
-void np_greenStructHeapFree(_56605c20_context & context, _56605c20_gpu & gpu, _56605c20_structHeap & structHeap, _56605c20_optionalFile & optionalFile, _56605c20_optionalLine & optionalLine, _56605c20_optionalUserData & optionalUserData) {
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_greenStructHeapFree(_56605c20_context & context, _56605c20_gpu & gpu, _56605c20_structHeap & structHeap, _56605c20_optionalFile & optionalFile, _56605c20_optionalLine & optionalLine, _56605c20_optionalUserData & optionalUserData) {
   greenStructHeapFree(context.value, gpu.value, structHeap.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
