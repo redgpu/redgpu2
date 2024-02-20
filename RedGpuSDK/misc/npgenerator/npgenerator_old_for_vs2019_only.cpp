@@ -34,6 +34,14 @@ int main() {
   } else {
      printf("#pragma once\n");
      printf("\n");
+     printf("#ifndef REDGPU_NP_DECLSPEC\n");
+     printf("#define REDGPU_NP_DECLSPEC\n");
+     printf("#endif\n");
+     printf("\n");
+     printf("#ifndef REDGPU_NP_API\n");
+     printf("#define REDGPU_NP_API\n");
+     printf("#endif\n");
+     printf("\n");
      while (getline(file, line)) {
 
       std::string string = line;

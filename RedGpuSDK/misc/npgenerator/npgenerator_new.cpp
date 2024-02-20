@@ -34,6 +34,14 @@ int main() {
   } else {
      printf("#pragma once\n");
      printf("\n");
+     printf("#ifndef REDGPU_NP_DECLSPEC\n");
+     printf("#define REDGPU_NP_DECLSPEC\n");
+     printf("#endif\n");
+     printf("\n");
+     printf("#ifndef REDGPU_NP_API\n");
+     printf("#define REDGPU_NP_API\n");
+     printf("#endif\n");
+     printf("\n");
      printf("#ifndef REDGPU_NP_STRUCT_INIT\n");
      printf("#ifdef __cplusplus\n");
      printf("#define REDGPU_NP_STRUCT_INIT(x) x\n");
