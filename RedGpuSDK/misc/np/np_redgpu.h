@@ -424,7 +424,7 @@ REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redStructsMemoryAllocateSamplers(_s_fbd
 #else
 typedef struct _s_50bd92a7_context { RedContext value; } _s_50bd92a7_context;
 typedef struct _s_50bd92a7_gpu { RedHandleGpu value; } _s_50bd92a7_gpu;
-typedef struct _s_50bd92a7_handleNames { char** value; } _s_50bd92a7_handleNames;
+typedef struct _s_50bd92a7_handleNames { const char** value; } _s_50bd92a7_handleNames;
 typedef struct _s_50bd92a7_structsMemory { RedHandleStructsMemory value; } _s_50bd92a7_structsMemory;
 typedef struct _s_50bd92a7_structsDeclarationsCount { unsigned value; } _s_50bd92a7_structsDeclarationsCount;
 typedef struct _s_50bd92a7_structsDeclarations { RedHandleStructDeclaration* value; } _s_50bd92a7_structsDeclarations;
@@ -435,7 +435,7 @@ typedef struct _s_50bd92a7_optionalLine { int value; } _s_50bd92a7_optionalLine;
 typedef struct _s_50bd92a7_optionalUserData { void* value; } _s_50bd92a7_optionalUserData;
 static inline _s_50bd92a7_context _50bd92a7_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_50bd92a7_context){value}; }
 static inline _s_50bd92a7_gpu _50bd92a7_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_50bd92a7_gpu){value}; }
-static inline _s_50bd92a7_handleNames _50bd92a7_handleNames(char** value) { return REDGPU_NP_STRUCT_INIT(_s_50bd92a7_handleNames){value}; }
+static inline _s_50bd92a7_handleNames _50bd92a7_handleNames(const char** value) { return REDGPU_NP_STRUCT_INIT(_s_50bd92a7_handleNames){value}; }
 static inline _s_50bd92a7_structsMemory _50bd92a7_structsMemory(RedHandleStructsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_50bd92a7_structsMemory){value}; }
 static inline _s_50bd92a7_structsDeclarationsCount _50bd92a7_structsDeclarationsCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_50bd92a7_structsDeclarationsCount){value}; }
 static inline _s_50bd92a7_structsDeclarations _50bd92a7_structsDeclarations(RedHandleStructDeclaration* value) { return REDGPU_NP_STRUCT_INIT(_s_50bd92a7_structsDeclarations){value}; }
