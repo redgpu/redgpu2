@@ -17,805 +17,730 @@
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _7b02b7a9_RedContext(value) value
-#define _7b02b7a9_RedHandleGpu(value) value
-#define _7b02b7a9_void*(value) value
-#define _7b02b7a9_RedXHandleMemoryCallbackBudgetChange*(value) value
-#define _7b02b7a9_RedStatuses*(value) value
-#define _7b02b7a9_char*(value) value
-#define _7b02b7a9_int(value) value
-#define _7b02b7a9_void*(value) value
-#define _7b02b7a9_(value) value
+#define np_redXMemoryCallbackBudgetChangeRegister redXMemoryCallbackBudgetChangeRegister
+#define _071cccc6_context(value) value
+#define _071cccc6_gpu(value) value
+#define _071cccc6_eventHandle(value) value
+#define _071cccc6_outMemoryCallbackBudgetChange(value) value
+#define _071cccc6_outStatuses(value) value
+#define _071cccc6_optionalFile(value) value
+#define _071cccc6_optionalLine(value) value
+#define _071cccc6_optionalUserData(value) value
 #else
-typedef struct _s_7b02b7a9_RedContext { redXMemoryCallbackBudgetChangeRegister value; } _s_7b02b7a9_RedContext;
-typedef struct _s_7b02b7a9_RedHandleGpu { context value; } _s_7b02b7a9_RedHandleGpu;
-typedef struct _s_7b02b7a9_void* { gpu value; } _s_7b02b7a9_void*;
-typedef struct _s_7b02b7a9_RedXHandleMemoryCallbackBudgetChange* { eventHandle value; } _s_7b02b7a9_RedXHandleMemoryCallbackBudgetChange*;
-typedef struct _s_7b02b7a9_RedStatuses* { outMemoryCallbackBudgetChange value; } _s_7b02b7a9_RedStatuses*;
-typedef struct _s_7b02b7a9_char* { outStatuses value; } _s_7b02b7a9_char*;
-typedef struct _s_7b02b7a9_int { optionalFile value; } _s_7b02b7a9_int;
-typedef struct _s_7b02b7a9_void* { optionalLine value; } _s_7b02b7a9_void*;
-typedef struct _s_7b02b7a9_ { optionalUserData value; } _s_7b02b7a9_;
-static inline _s_7b02b7a9_RedContext _7b02b7a9_RedContext(redXMemoryCallbackBudgetChangeRegister value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_RedContext){value}; }
-static inline _s_7b02b7a9_RedHandleGpu _7b02b7a9_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_RedHandleGpu){value}; }
-static inline _s_7b02b7a9_void* _7b02b7a9_void*(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_void*){value}; }
-static inline _s_7b02b7a9_RedXHandleMemoryCallbackBudgetChange* _7b02b7a9_RedXHandleMemoryCallbackBudgetChange*(eventHandle value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_RedXHandleMemoryCallbackBudgetChange*){value}; }
-static inline _s_7b02b7a9_RedStatuses* _7b02b7a9_RedStatuses*(outMemoryCallbackBudgetChange value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_RedStatuses*){value}; }
-static inline _s_7b02b7a9_char* _7b02b7a9_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_char*){value}; }
-static inline _s_7b02b7a9_int _7b02b7a9_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_int){value}; }
-static inline _s_7b02b7a9_void* _7b02b7a9_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_void*){value}; }
-static inline _s_7b02b7a9_ _7b02b7a9_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_7b02b7a9_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_7b02b7a9_RedContext RedContext, _s_7b02b7a9_RedHandleGpu RedHandleGpu, _s_7b02b7a9_void* void*, _s_7b02b7a9_RedXHandleMemoryCallbackBudgetChange* RedXHandleMemoryCallbackBudgetChange*, _s_7b02b7a9_RedStatuses* RedStatuses*, _s_7b02b7a9_char* char*, _s_7b02b7a9_int int, _s_7b02b7a9_void* void*, _s_7b02b7a9_ ) {
-  return void(RedContext.value, RedHandleGpu.value, void*.value, RedXHandleMemoryCallbackBudgetChange*.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_071cccc6_context { RedContext value; } _s_071cccc6_context;
+typedef struct _s_071cccc6_gpu { RedHandleGpu value; } _s_071cccc6_gpu;
+typedef struct _s_071cccc6_eventHandle { void* value; } _s_071cccc6_eventHandle;
+typedef struct _s_071cccc6_outMemoryCallbackBudgetChange { RedXHandleMemoryCallbackBudgetChange* value; } _s_071cccc6_outMemoryCallbackBudgetChange;
+typedef struct _s_071cccc6_outStatuses { RedStatuses* value; } _s_071cccc6_outStatuses;
+typedef struct _s_071cccc6_optionalFile { char* value; } _s_071cccc6_optionalFile;
+typedef struct _s_071cccc6_optionalLine { int value; } _s_071cccc6_optionalLine;
+typedef struct _s_071cccc6_optionalUserData { void* value; } _s_071cccc6_optionalUserData;
+static inline _s_071cccc6_context _071cccc6_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_context){value}; }
+static inline _s_071cccc6_gpu _071cccc6_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_gpu){value}; }
+static inline _s_071cccc6_eventHandle _071cccc6_eventHandle(void* value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_eventHandle){value}; }
+static inline _s_071cccc6_outMemoryCallbackBudgetChange _071cccc6_outMemoryCallbackBudgetChange(RedXHandleMemoryCallbackBudgetChange* value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_outMemoryCallbackBudgetChange){value}; }
+static inline _s_071cccc6_outStatuses _071cccc6_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_outStatuses){value}; }
+static inline _s_071cccc6_optionalFile _071cccc6_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_optionalFile){value}; }
+static inline _s_071cccc6_optionalLine _071cccc6_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_optionalLine){value}; }
+static inline _s_071cccc6_optionalUserData _071cccc6_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_071cccc6_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXMemoryCallbackBudgetChangeRegister(_s_071cccc6_context context, _s_071cccc6_gpu gpu, _s_071cccc6_eventHandle eventHandle, _s_071cccc6_outMemoryCallbackBudgetChange outMemoryCallbackBudgetChange, _s_071cccc6_outStatuses outStatuses, _s_071cccc6_optionalFile optionalFile, _s_071cccc6_optionalLine optionalLine, _s_071cccc6_optionalUserData optionalUserData) {
+  redXMemoryCallbackBudgetChangeRegister(context.value, gpu.value, eventHandle.value, outMemoryCallbackBudgetChange.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _c2045a3f_RedContext(value) value
-#define _c2045a3f_RedHandleGpu(value) value
-#define _c2045a3f_RedXHandleMemoryCallbackBudgetChange(value) value
-#define _c2045a3f_char*(value) value
-#define _c2045a3f_int(value) value
-#define _c2045a3f_void*(value) value
-#define _c2045a3f_(value) value
+#define np_redXMemoryCallbackBudgetChangeUnregister redXMemoryCallbackBudgetChangeUnregister
+#define _ef987d6d_context(value) value
+#define _ef987d6d_gpu(value) value
+#define _ef987d6d_memoryCallbackBudgetChange(value) value
+#define _ef987d6d_optionalFile(value) value
+#define _ef987d6d_optionalLine(value) value
+#define _ef987d6d_optionalUserData(value) value
 #else
-typedef struct _s_c2045a3f_RedContext { redXMemoryCallbackBudgetChangeUnregister value; } _s_c2045a3f_RedContext;
-typedef struct _s_c2045a3f_RedHandleGpu { context value; } _s_c2045a3f_RedHandleGpu;
-typedef struct _s_c2045a3f_RedXHandleMemoryCallbackBudgetChange { gpu value; } _s_c2045a3f_RedXHandleMemoryCallbackBudgetChange;
-typedef struct _s_c2045a3f_char* { memoryCallbackBudgetChange value; } _s_c2045a3f_char*;
-typedef struct _s_c2045a3f_int { optionalFile value; } _s_c2045a3f_int;
-typedef struct _s_c2045a3f_void* { optionalLine value; } _s_c2045a3f_void*;
-typedef struct _s_c2045a3f_ { optionalUserData value; } _s_c2045a3f_;
-static inline _s_c2045a3f_RedContext _c2045a3f_RedContext(redXMemoryCallbackBudgetChangeUnregister value) { return REDGPU_NP_STRUCT_INIT(_s_c2045a3f_RedContext){value}; }
-static inline _s_c2045a3f_RedHandleGpu _c2045a3f_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_c2045a3f_RedHandleGpu){value}; }
-static inline _s_c2045a3f_RedXHandleMemoryCallbackBudgetChange _c2045a3f_RedXHandleMemoryCallbackBudgetChange(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_c2045a3f_RedXHandleMemoryCallbackBudgetChange){value}; }
-static inline _s_c2045a3f_char* _c2045a3f_char*(memoryCallbackBudgetChange value) { return REDGPU_NP_STRUCT_INIT(_s_c2045a3f_char*){value}; }
-static inline _s_c2045a3f_int _c2045a3f_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_c2045a3f_int){value}; }
-static inline _s_c2045a3f_void* _c2045a3f_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_c2045a3f_void*){value}; }
-static inline _s_c2045a3f_ _c2045a3f_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_c2045a3f_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_c2045a3f_RedContext RedContext, _s_c2045a3f_RedHandleGpu RedHandleGpu, _s_c2045a3f_RedXHandleMemoryCallbackBudgetChange RedXHandleMemoryCallbackBudgetChange, _s_c2045a3f_char* char*, _s_c2045a3f_int int, _s_c2045a3f_void* void*, _s_c2045a3f_ ) {
-  return void(RedContext.value, RedHandleGpu.value, RedXHandleMemoryCallbackBudgetChange.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_ef987d6d_context { RedContext value; } _s_ef987d6d_context;
+typedef struct _s_ef987d6d_gpu { RedHandleGpu value; } _s_ef987d6d_gpu;
+typedef struct _s_ef987d6d_memoryCallbackBudgetChange { RedXHandleMemoryCallbackBudgetChange value; } _s_ef987d6d_memoryCallbackBudgetChange;
+typedef struct _s_ef987d6d_optionalFile { char* value; } _s_ef987d6d_optionalFile;
+typedef struct _s_ef987d6d_optionalLine { int value; } _s_ef987d6d_optionalLine;
+typedef struct _s_ef987d6d_optionalUserData { void* value; } _s_ef987d6d_optionalUserData;
+static inline _s_ef987d6d_context _ef987d6d_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_ef987d6d_context){value}; }
+static inline _s_ef987d6d_gpu _ef987d6d_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_ef987d6d_gpu){value}; }
+static inline _s_ef987d6d_memoryCallbackBudgetChange _ef987d6d_memoryCallbackBudgetChange(RedXHandleMemoryCallbackBudgetChange value) { return REDGPU_NP_STRUCT_INIT(_s_ef987d6d_memoryCallbackBudgetChange){value}; }
+static inline _s_ef987d6d_optionalFile _ef987d6d_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_ef987d6d_optionalFile){value}; }
+static inline _s_ef987d6d_optionalLine _ef987d6d_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_ef987d6d_optionalLine){value}; }
+static inline _s_ef987d6d_optionalUserData _ef987d6d_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_ef987d6d_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXMemoryCallbackBudgetChangeUnregister(_s_ef987d6d_context context, _s_ef987d6d_gpu gpu, _s_ef987d6d_memoryCallbackBudgetChange memoryCallbackBudgetChange, _s_ef987d6d_optionalFile optionalFile, _s_ef987d6d_optionalLine optionalLine, _s_ef987d6d_optionalUserData optionalUserData) {
+  redXMemoryCallbackBudgetChangeUnregister(context.value, gpu.value, memoryCallbackBudgetChange.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _f208f968_RedContext(value) value
-#define _f208f968_RedHandleGpu(value) value
-#define _f208f968_RedBool32(value) value
-#define _f208f968_uint64_t(value) value
-#define _f208f968_RedStatuses*(value) value
-#define _f208f968_char*(value) value
-#define _f208f968_int(value) value
-#define _f208f968_void*(value) value
-#define _f208f968_(value) value
+#define np_redXMemoryReserve redXMemoryReserve
+#define _aba70d38_context(value) value
+#define _aba70d38_gpu(value) value
+#define _aba70d38_sharedMemory(value) value
+#define _aba70d38_bytesCount(value) value
+#define _aba70d38_outStatuses(value) value
+#define _aba70d38_optionalFile(value) value
+#define _aba70d38_optionalLine(value) value
+#define _aba70d38_optionalUserData(value) value
 #else
-typedef struct _s_f208f968_RedContext { redXMemoryReserve value; } _s_f208f968_RedContext;
-typedef struct _s_f208f968_RedHandleGpu { context value; } _s_f208f968_RedHandleGpu;
-typedef struct _s_f208f968_RedBool32 { gpu value; } _s_f208f968_RedBool32;
-typedef struct _s_f208f968_uint64_t { sharedMemory value; } _s_f208f968_uint64_t;
-typedef struct _s_f208f968_RedStatuses* { bytesCount value; } _s_f208f968_RedStatuses*;
-typedef struct _s_f208f968_char* { outStatuses value; } _s_f208f968_char*;
-typedef struct _s_f208f968_int { optionalFile value; } _s_f208f968_int;
-typedef struct _s_f208f968_void* { optionalLine value; } _s_f208f968_void*;
-typedef struct _s_f208f968_ { optionalUserData value; } _s_f208f968_;
-static inline _s_f208f968_RedContext _f208f968_RedContext(redXMemoryReserve value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_RedContext){value}; }
-static inline _s_f208f968_RedHandleGpu _f208f968_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_RedHandleGpu){value}; }
-static inline _s_f208f968_RedBool32 _f208f968_RedBool32(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_RedBool32){value}; }
-static inline _s_f208f968_uint64_t _f208f968_uint64_t(sharedMemory value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_uint64_t){value}; }
-static inline _s_f208f968_RedStatuses* _f208f968_RedStatuses*(bytesCount value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_RedStatuses*){value}; }
-static inline _s_f208f968_char* _f208f968_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_char*){value}; }
-static inline _s_f208f968_int _f208f968_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_int){value}; }
-static inline _s_f208f968_void* _f208f968_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_void*){value}; }
-static inline _s_f208f968_ _f208f968_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_f208f968_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_f208f968_RedContext RedContext, _s_f208f968_RedHandleGpu RedHandleGpu, _s_f208f968_RedBool32 RedBool32, _s_f208f968_uint64_t uint64_t, _s_f208f968_RedStatuses* RedStatuses*, _s_f208f968_char* char*, _s_f208f968_int int, _s_f208f968_void* void*, _s_f208f968_ ) {
-  return void(RedContext.value, RedHandleGpu.value, RedBool32.value, uint64_t.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_aba70d38_context { RedContext value; } _s_aba70d38_context;
+typedef struct _s_aba70d38_gpu { RedHandleGpu value; } _s_aba70d38_gpu;
+typedef struct _s_aba70d38_sharedMemory { RedBool32 value; } _s_aba70d38_sharedMemory;
+typedef struct _s_aba70d38_bytesCount { uint64_t value; } _s_aba70d38_bytesCount;
+typedef struct _s_aba70d38_outStatuses { RedStatuses* value; } _s_aba70d38_outStatuses;
+typedef struct _s_aba70d38_optionalFile { char* value; } _s_aba70d38_optionalFile;
+typedef struct _s_aba70d38_optionalLine { int value; } _s_aba70d38_optionalLine;
+typedef struct _s_aba70d38_optionalUserData { void* value; } _s_aba70d38_optionalUserData;
+static inline _s_aba70d38_context _aba70d38_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_context){value}; }
+static inline _s_aba70d38_gpu _aba70d38_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_gpu){value}; }
+static inline _s_aba70d38_sharedMemory _aba70d38_sharedMemory(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_sharedMemory){value}; }
+static inline _s_aba70d38_bytesCount _aba70d38_bytesCount(uint64_t value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_bytesCount){value}; }
+static inline _s_aba70d38_outStatuses _aba70d38_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_outStatuses){value}; }
+static inline _s_aba70d38_optionalFile _aba70d38_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_optionalFile){value}; }
+static inline _s_aba70d38_optionalLine _aba70d38_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_optionalLine){value}; }
+static inline _s_aba70d38_optionalUserData _aba70d38_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_aba70d38_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXMemoryReserve(_s_aba70d38_context context, _s_aba70d38_gpu gpu, _s_aba70d38_sharedMemory sharedMemory, _s_aba70d38_bytesCount bytesCount, _s_aba70d38_outStatuses outStatuses, _s_aba70d38_optionalFile optionalFile, _s_aba70d38_optionalLine optionalLine, _s_aba70d38_optionalUserData optionalUserData) {
+  redXMemoryReserve(context.value, gpu.value, sharedMemory.value, bytesCount.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_uint64_t uint64_t
-#define _914598f1_RedContext(value) value
-#define _914598f1_RedHandleGpu(value) value
-#define _914598f1_RedHandleArray(value) value
-#define _914598f1_(value) value
+#define np_redXGetMemoryAddressArray redXGetMemoryAddressArray
+#define _1ffb68d7_context(value) value
+#define _1ffb68d7_gpu(value) value
+#define _1ffb68d7_array(value) value
 #else
-typedef struct _s_914598f1_RedContext { redXGetMemoryAddressArray value; } _s_914598f1_RedContext;
-typedef struct _s_914598f1_RedHandleGpu { context value; } _s_914598f1_RedHandleGpu;
-typedef struct _s_914598f1_RedHandleArray { gpu value; } _s_914598f1_RedHandleArray;
-typedef struct _s_914598f1_ { array value; } _s_914598f1_;
-static inline _s_914598f1_RedContext _914598f1_RedContext(redXGetMemoryAddressArray value) { return REDGPU_NP_STRUCT_INIT(_s_914598f1_RedContext){value}; }
-static inline _s_914598f1_RedHandleGpu _914598f1_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_914598f1_RedHandleGpu){value}; }
-static inline _s_914598f1_RedHandleArray _914598f1_RedHandleArray(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_914598f1_RedHandleArray){value}; }
-static inline _s_914598f1_ _914598f1_(array value) { return REDGPU_NP_STRUCT_INIT(_s_914598f1_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_uint64_t(_s_914598f1_RedContext RedContext, _s_914598f1_RedHandleGpu RedHandleGpu, _s_914598f1_RedHandleArray RedHandleArray, _s_914598f1_ ) {
-  return uint64_t(RedContext.value, RedHandleGpu.value, RedHandleArray.value, .value);
+typedef struct _s_1ffb68d7_context { RedContext value; } _s_1ffb68d7_context;
+typedef struct _s_1ffb68d7_gpu { RedHandleGpu value; } _s_1ffb68d7_gpu;
+typedef struct _s_1ffb68d7_array { RedHandleArray value; } _s_1ffb68d7_array;
+static inline _s_1ffb68d7_context _1ffb68d7_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_1ffb68d7_context){value}; }
+static inline _s_1ffb68d7_gpu _1ffb68d7_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_1ffb68d7_gpu){value}; }
+static inline _s_1ffb68d7_array _1ffb68d7_array(RedHandleArray value) { return REDGPU_NP_STRUCT_INIT(_s_1ffb68d7_array){value}; }
+REDGPU_NP_DECLSPEC uint64_t REDGPU_NP_API np_redXGetMemoryAddressArray(_s_1ffb68d7_context context, _s_1ffb68d7_gpu gpu, _s_1ffb68d7_array array) {
+  return redXGetMemoryAddressArray(context.value, gpu.value, array.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_uint64_t uint64_t
-#define _303f7e83_RedContext(value) value
-#define _303f7e83_RedHandleGpu(value) value
-#define _303f7e83_RedHandleSampler(value) value
-#define _303f7e83_(value) value
+#define np_redXGetMemoryAddressSampler redXGetMemoryAddressSampler
+#define _fe3baf28_context(value) value
+#define _fe3baf28_gpu(value) value
+#define _fe3baf28_sampler(value) value
 #else
-typedef struct _s_303f7e83_RedContext { redXGetMemoryAddressSampler value; } _s_303f7e83_RedContext;
-typedef struct _s_303f7e83_RedHandleGpu { context value; } _s_303f7e83_RedHandleGpu;
-typedef struct _s_303f7e83_RedHandleSampler { gpu value; } _s_303f7e83_RedHandleSampler;
-typedef struct _s_303f7e83_ { sampler value; } _s_303f7e83_;
-static inline _s_303f7e83_RedContext _303f7e83_RedContext(redXGetMemoryAddressSampler value) { return REDGPU_NP_STRUCT_INIT(_s_303f7e83_RedContext){value}; }
-static inline _s_303f7e83_RedHandleGpu _303f7e83_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_303f7e83_RedHandleGpu){value}; }
-static inline _s_303f7e83_RedHandleSampler _303f7e83_RedHandleSampler(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_303f7e83_RedHandleSampler){value}; }
-static inline _s_303f7e83_ _303f7e83_(sampler value) { return REDGPU_NP_STRUCT_INIT(_s_303f7e83_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_uint64_t(_s_303f7e83_RedContext RedContext, _s_303f7e83_RedHandleGpu RedHandleGpu, _s_303f7e83_RedHandleSampler RedHandleSampler, _s_303f7e83_ ) {
-  return uint64_t(RedContext.value, RedHandleGpu.value, RedHandleSampler.value, .value);
+typedef struct _s_fe3baf28_context { RedContext value; } _s_fe3baf28_context;
+typedef struct _s_fe3baf28_gpu { RedHandleGpu value; } _s_fe3baf28_gpu;
+typedef struct _s_fe3baf28_sampler { RedHandleSampler value; } _s_fe3baf28_sampler;
+static inline _s_fe3baf28_context _fe3baf28_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_fe3baf28_context){value}; }
+static inline _s_fe3baf28_gpu _fe3baf28_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_fe3baf28_gpu){value}; }
+static inline _s_fe3baf28_sampler _fe3baf28_sampler(RedHandleSampler value) { return REDGPU_NP_STRUCT_INIT(_s_fe3baf28_sampler){value}; }
+REDGPU_NP_DECLSPEC uint64_t REDGPU_NP_API np_redXGetMemoryAddressSampler(_s_fe3baf28_context context, _s_fe3baf28_gpu gpu, _s_fe3baf28_sampler sampler) {
+  return redXGetMemoryAddressSampler(context.value, gpu.value, sampler.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_uint64_t uint64_t
-#define _08763b52_RedContext(value) value
-#define _08763b52_RedHandleGpu(value) value
-#define _08763b52_RedHandleTexture(value) value
-#define _08763b52_(value) value
+#define np_redXGetMemoryAddressTextureRO redXGetMemoryAddressTextureRO
+#define _eb058632_context(value) value
+#define _eb058632_gpu(value) value
+#define _eb058632_texture(value) value
 #else
-typedef struct _s_08763b52_RedContext { redXGetMemoryAddressTextureRO value; } _s_08763b52_RedContext;
-typedef struct _s_08763b52_RedHandleGpu { context value; } _s_08763b52_RedHandleGpu;
-typedef struct _s_08763b52_RedHandleTexture { gpu value; } _s_08763b52_RedHandleTexture;
-typedef struct _s_08763b52_ { texture value; } _s_08763b52_;
-static inline _s_08763b52_RedContext _08763b52_RedContext(redXGetMemoryAddressTextureRO value) { return REDGPU_NP_STRUCT_INIT(_s_08763b52_RedContext){value}; }
-static inline _s_08763b52_RedHandleGpu _08763b52_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_08763b52_RedHandleGpu){value}; }
-static inline _s_08763b52_RedHandleTexture _08763b52_RedHandleTexture(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_08763b52_RedHandleTexture){value}; }
-static inline _s_08763b52_ _08763b52_(texture value) { return REDGPU_NP_STRUCT_INIT(_s_08763b52_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_uint64_t(_s_08763b52_RedContext RedContext, _s_08763b52_RedHandleGpu RedHandleGpu, _s_08763b52_RedHandleTexture RedHandleTexture, _s_08763b52_ ) {
-  return uint64_t(RedContext.value, RedHandleGpu.value, RedHandleTexture.value, .value);
+typedef struct _s_eb058632_context { RedContext value; } _s_eb058632_context;
+typedef struct _s_eb058632_gpu { RedHandleGpu value; } _s_eb058632_gpu;
+typedef struct _s_eb058632_texture { RedHandleTexture value; } _s_eb058632_texture;
+static inline _s_eb058632_context _eb058632_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_eb058632_context){value}; }
+static inline _s_eb058632_gpu _eb058632_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_eb058632_gpu){value}; }
+static inline _s_eb058632_texture _eb058632_texture(RedHandleTexture value) { return REDGPU_NP_STRUCT_INIT(_s_eb058632_texture){value}; }
+REDGPU_NP_DECLSPEC uint64_t REDGPU_NP_API np_redXGetMemoryAddressTextureRO(_s_eb058632_context context, _s_eb058632_gpu gpu, _s_eb058632_texture texture) {
+  return redXGetMemoryAddressTextureRO(context.value, gpu.value, texture.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_uint64_t uint64_t
-#define _d5acf148_RedContext(value) value
-#define _d5acf148_RedHandleGpu(value) value
-#define _d5acf148_RedHandleTexture(value) value
-#define _d5acf148_(value) value
+#define np_redXGetMemoryAddressTextureRW redXGetMemoryAddressTextureRW
+#define _1da2bdac_context(value) value
+#define _1da2bdac_gpu(value) value
+#define _1da2bdac_texture(value) value
 #else
-typedef struct _s_d5acf148_RedContext { redXGetMemoryAddressTextureRW value; } _s_d5acf148_RedContext;
-typedef struct _s_d5acf148_RedHandleGpu { context value; } _s_d5acf148_RedHandleGpu;
-typedef struct _s_d5acf148_RedHandleTexture { gpu value; } _s_d5acf148_RedHandleTexture;
-typedef struct _s_d5acf148_ { texture value; } _s_d5acf148_;
-static inline _s_d5acf148_RedContext _d5acf148_RedContext(redXGetMemoryAddressTextureRW value) { return REDGPU_NP_STRUCT_INIT(_s_d5acf148_RedContext){value}; }
-static inline _s_d5acf148_RedHandleGpu _d5acf148_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_d5acf148_RedHandleGpu){value}; }
-static inline _s_d5acf148_RedHandleTexture _d5acf148_RedHandleTexture(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_d5acf148_RedHandleTexture){value}; }
-static inline _s_d5acf148_ _d5acf148_(texture value) { return REDGPU_NP_STRUCT_INIT(_s_d5acf148_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_uint64_t(_s_d5acf148_RedContext RedContext, _s_d5acf148_RedHandleGpu RedHandleGpu, _s_d5acf148_RedHandleTexture RedHandleTexture, _s_d5acf148_ ) {
-  return uint64_t(RedContext.value, RedHandleGpu.value, RedHandleTexture.value, .value);
+typedef struct _s_1da2bdac_context { RedContext value; } _s_1da2bdac_context;
+typedef struct _s_1da2bdac_gpu { RedHandleGpu value; } _s_1da2bdac_gpu;
+typedef struct _s_1da2bdac_texture { RedHandleTexture value; } _s_1da2bdac_texture;
+static inline _s_1da2bdac_context _1da2bdac_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_1da2bdac_context){value}; }
+static inline _s_1da2bdac_gpu _1da2bdac_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_1da2bdac_gpu){value}; }
+static inline _s_1da2bdac_texture _1da2bdac_texture(RedHandleTexture value) { return REDGPU_NP_STRUCT_INIT(_s_1da2bdac_texture){value}; }
+REDGPU_NP_DECLSPEC uint64_t REDGPU_NP_API np_redXGetMemoryAddressTextureRW(_s_1da2bdac_context context, _s_1da2bdac_gpu gpu, _s_1da2bdac_texture texture) {
+  return redXGetMemoryAddressTextureRW(context.value, gpu.value, texture.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_uint64_t uint64_t
-#define _28dc0dd4_RedContext(value) value
-#define _28dc0dd4_RedHandleGpu(value) value
-#define _28dc0dd4_RedHandleStructsMemory(value) value
-#define _28dc0dd4_unsigned(value) value
-#define _28dc0dd4_(value) value
+#define np_redXGetMemoryAddressStructMember redXGetMemoryAddressStructMember
+#define _c97314a1_context(value) value
+#define _c97314a1_gpu(value) value
+#define _c97314a1_structsMemory(value) value
+#define _c97314a1_structMemberIndex(value) value
 #else
-typedef struct _s_28dc0dd4_RedContext { redXGetMemoryAddressStructMember value; } _s_28dc0dd4_RedContext;
-typedef struct _s_28dc0dd4_RedHandleGpu { context value; } _s_28dc0dd4_RedHandleGpu;
-typedef struct _s_28dc0dd4_RedHandleStructsMemory { gpu value; } _s_28dc0dd4_RedHandleStructsMemory;
-typedef struct _s_28dc0dd4_unsigned { structsMemory value; } _s_28dc0dd4_unsigned;
-typedef struct _s_28dc0dd4_ { structMemberIndex value; } _s_28dc0dd4_;
-static inline _s_28dc0dd4_RedContext _28dc0dd4_RedContext(redXGetMemoryAddressStructMember value) { return REDGPU_NP_STRUCT_INIT(_s_28dc0dd4_RedContext){value}; }
-static inline _s_28dc0dd4_RedHandleGpu _28dc0dd4_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_28dc0dd4_RedHandleGpu){value}; }
-static inline _s_28dc0dd4_RedHandleStructsMemory _28dc0dd4_RedHandleStructsMemory(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_28dc0dd4_RedHandleStructsMemory){value}; }
-static inline _s_28dc0dd4_unsigned _28dc0dd4_unsigned(structsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_28dc0dd4_unsigned){value}; }
-static inline _s_28dc0dd4_ _28dc0dd4_(structMemberIndex value) { return REDGPU_NP_STRUCT_INIT(_s_28dc0dd4_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_uint64_t(_s_28dc0dd4_RedContext RedContext, _s_28dc0dd4_RedHandleGpu RedHandleGpu, _s_28dc0dd4_RedHandleStructsMemory RedHandleStructsMemory, _s_28dc0dd4_unsigned unsigned, _s_28dc0dd4_ ) {
-  return uint64_t(RedContext.value, RedHandleGpu.value, RedHandleStructsMemory.value, unsigned.value, .value);
+typedef struct _s_c97314a1_context { RedContext value; } _s_c97314a1_context;
+typedef struct _s_c97314a1_gpu { RedHandleGpu value; } _s_c97314a1_gpu;
+typedef struct _s_c97314a1_structsMemory { RedHandleStructsMemory value; } _s_c97314a1_structsMemory;
+typedef struct _s_c97314a1_structMemberIndex { unsigned value; } _s_c97314a1_structMemberIndex;
+static inline _s_c97314a1_context _c97314a1_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_c97314a1_context){value}; }
+static inline _s_c97314a1_gpu _c97314a1_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_c97314a1_gpu){value}; }
+static inline _s_c97314a1_structsMemory _c97314a1_structsMemory(RedHandleStructsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_c97314a1_structsMemory){value}; }
+static inline _s_c97314a1_structMemberIndex _c97314a1_structMemberIndex(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_c97314a1_structMemberIndex){value}; }
+REDGPU_NP_DECLSPEC uint64_t REDGPU_NP_API np_redXGetMemoryAddressStructMember(_s_c97314a1_context context, _s_c97314a1_gpu gpu, _s_c97314a1_structsMemory structsMemory, _s_c97314a1_structMemberIndex structMemberIndex) {
+  return redXGetMemoryAddressStructMember(context.value, gpu.value, structsMemory.value, structMemberIndex.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _d034eb7f_RedContext(value) value
-#define _d034eb7f_RedHandleGpu(value) value
-#define _d034eb7f_RedBool32(value) value
-#define _d034eb7f_unsigned(value) value
-#define _d034eb7f_RedXMemoryAddress*(value) value
-#define _d034eb7f_unsigned*(value) value
-#define _d034eb7f_unsigned(value) value
-#define _d034eb7f_RedXMemoryAddress*(value) value
-#define _d034eb7f_unsigned*(value) value
-#define _d034eb7f_RedStatuses*(value) value
-#define _d034eb7f_char*(value) value
-#define _d034eb7f_int(value) value
-#define _d034eb7f_void*(value) value
-#define _d034eb7f_(value) value
+#define np_redXStructsMemorySet redXStructsMemorySet
+#define _3dcdce6b_context(value) value
+#define _3dcdce6b_gpu(value) value
+#define _3dcdce6b_copyingSamplers(value) value
+#define _3dcdce6b_sourceCopiesCount(value) value
+#define _3dcdce6b_sourceCopiesAddressFirst(value) value
+#define _3dcdce6b_sourceCopiesAddressCount(value) value
+#define _3dcdce6b_targetCopiesCount(value) value
+#define _3dcdce6b_targetCopiesAddressFirst(value) value
+#define _3dcdce6b_targetCopiesAddressCount(value) value
+#define _3dcdce6b_outStatuses(value) value
+#define _3dcdce6b_optionalFile(value) value
+#define _3dcdce6b_optionalLine(value) value
+#define _3dcdce6b_optionalUserData(value) value
 #else
-typedef struct _s_d034eb7f_RedContext { redXStructsMemorySet value; } _s_d034eb7f_RedContext;
-typedef struct _s_d034eb7f_RedHandleGpu { context value; } _s_d034eb7f_RedHandleGpu;
-typedef struct _s_d034eb7f_RedBool32 { gpu value; } _s_d034eb7f_RedBool32;
-typedef struct _s_d034eb7f_unsigned { copyingSamplers value; } _s_d034eb7f_unsigned;
-typedef struct _s_d034eb7f_RedXMemoryAddress* { sourceCopiesCount value; } _s_d034eb7f_RedXMemoryAddress*;
-typedef struct _s_d034eb7f_unsigned* { sourceCopiesAddressFirst value; } _s_d034eb7f_unsigned*;
-typedef struct _s_d034eb7f_unsigned { sourceCopiesAddressCount value; } _s_d034eb7f_unsigned;
-typedef struct _s_d034eb7f_RedXMemoryAddress* { targetCopiesCount value; } _s_d034eb7f_RedXMemoryAddress*;
-typedef struct _s_d034eb7f_unsigned* { targetCopiesAddressFirst value; } _s_d034eb7f_unsigned*;
-typedef struct _s_d034eb7f_RedStatuses* { targetCopiesAddressCount value; } _s_d034eb7f_RedStatuses*;
-typedef struct _s_d034eb7f_char* { outStatuses value; } _s_d034eb7f_char*;
-typedef struct _s_d034eb7f_int { optionalFile value; } _s_d034eb7f_int;
-typedef struct _s_d034eb7f_void* { optionalLine value; } _s_d034eb7f_void*;
-typedef struct _s_d034eb7f_ { optionalUserData value; } _s_d034eb7f_;
-static inline _s_d034eb7f_RedContext _d034eb7f_RedContext(redXStructsMemorySet value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_RedContext){value}; }
-static inline _s_d034eb7f_RedHandleGpu _d034eb7f_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_RedHandleGpu){value}; }
-static inline _s_d034eb7f_RedBool32 _d034eb7f_RedBool32(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_RedBool32){value}; }
-static inline _s_d034eb7f_unsigned _d034eb7f_unsigned(copyingSamplers value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_unsigned){value}; }
-static inline _s_d034eb7f_RedXMemoryAddress* _d034eb7f_RedXMemoryAddress*(sourceCopiesCount value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_RedXMemoryAddress*){value}; }
-static inline _s_d034eb7f_unsigned* _d034eb7f_unsigned*(sourceCopiesAddressFirst value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_unsigned*){value}; }
-static inline _s_d034eb7f_unsigned _d034eb7f_unsigned(sourceCopiesAddressCount value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_unsigned){value}; }
-static inline _s_d034eb7f_RedXMemoryAddress* _d034eb7f_RedXMemoryAddress*(targetCopiesCount value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_RedXMemoryAddress*){value}; }
-static inline _s_d034eb7f_unsigned* _d034eb7f_unsigned*(targetCopiesAddressFirst value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_unsigned*){value}; }
-static inline _s_d034eb7f_RedStatuses* _d034eb7f_RedStatuses*(targetCopiesAddressCount value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_RedStatuses*){value}; }
-static inline _s_d034eb7f_char* _d034eb7f_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_char*){value}; }
-static inline _s_d034eb7f_int _d034eb7f_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_int){value}; }
-static inline _s_d034eb7f_void* _d034eb7f_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_void*){value}; }
-static inline _s_d034eb7f_ _d034eb7f_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_d034eb7f_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_d034eb7f_RedContext RedContext, _s_d034eb7f_RedHandleGpu RedHandleGpu, _s_d034eb7f_RedBool32 RedBool32, _s_d034eb7f_unsigned unsigned, _s_d034eb7f_RedXMemoryAddress* RedXMemoryAddress*, _s_d034eb7f_unsigned* unsigned*, _s_d034eb7f_unsigned unsigned, _s_d034eb7f_RedXMemoryAddress* RedXMemoryAddress*, _s_d034eb7f_unsigned* unsigned*, _s_d034eb7f_RedStatuses* RedStatuses*, _s_d034eb7f_char* char*, _s_d034eb7f_int int, _s_d034eb7f_void* void*, _s_d034eb7f_ ) {
-  return void(RedContext.value, RedHandleGpu.value, RedBool32.value, unsigned.value, RedXMemoryAddress*.value, unsigned*.value, unsigned.value, RedXMemoryAddress*.value, unsigned*.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_3dcdce6b_context { RedContext value; } _s_3dcdce6b_context;
+typedef struct _s_3dcdce6b_gpu { RedHandleGpu value; } _s_3dcdce6b_gpu;
+typedef struct _s_3dcdce6b_copyingSamplers { RedBool32 value; } _s_3dcdce6b_copyingSamplers;
+typedef struct _s_3dcdce6b_sourceCopiesCount { unsigned value; } _s_3dcdce6b_sourceCopiesCount;
+typedef struct _s_3dcdce6b_sourceCopiesAddressFirst { RedXMemoryAddress* value; } _s_3dcdce6b_sourceCopiesAddressFirst;
+typedef struct _s_3dcdce6b_sourceCopiesAddressCount { unsigned* value; } _s_3dcdce6b_sourceCopiesAddressCount;
+typedef struct _s_3dcdce6b_targetCopiesCount { unsigned value; } _s_3dcdce6b_targetCopiesCount;
+typedef struct _s_3dcdce6b_targetCopiesAddressFirst { RedXMemoryAddress* value; } _s_3dcdce6b_targetCopiesAddressFirst;
+typedef struct _s_3dcdce6b_targetCopiesAddressCount { unsigned* value; } _s_3dcdce6b_targetCopiesAddressCount;
+typedef struct _s_3dcdce6b_outStatuses { RedStatuses* value; } _s_3dcdce6b_outStatuses;
+typedef struct _s_3dcdce6b_optionalFile { char* value; } _s_3dcdce6b_optionalFile;
+typedef struct _s_3dcdce6b_optionalLine { int value; } _s_3dcdce6b_optionalLine;
+typedef struct _s_3dcdce6b_optionalUserData { void* value; } _s_3dcdce6b_optionalUserData;
+static inline _s_3dcdce6b_context _3dcdce6b_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_context){value}; }
+static inline _s_3dcdce6b_gpu _3dcdce6b_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_gpu){value}; }
+static inline _s_3dcdce6b_copyingSamplers _3dcdce6b_copyingSamplers(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_copyingSamplers){value}; }
+static inline _s_3dcdce6b_sourceCopiesCount _3dcdce6b_sourceCopiesCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_sourceCopiesCount){value}; }
+static inline _s_3dcdce6b_sourceCopiesAddressFirst _3dcdce6b_sourceCopiesAddressFirst(RedXMemoryAddress* value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_sourceCopiesAddressFirst){value}; }
+static inline _s_3dcdce6b_sourceCopiesAddressCount _3dcdce6b_sourceCopiesAddressCount(unsigned* value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_sourceCopiesAddressCount){value}; }
+static inline _s_3dcdce6b_targetCopiesCount _3dcdce6b_targetCopiesCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_targetCopiesCount){value}; }
+static inline _s_3dcdce6b_targetCopiesAddressFirst _3dcdce6b_targetCopiesAddressFirst(RedXMemoryAddress* value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_targetCopiesAddressFirst){value}; }
+static inline _s_3dcdce6b_targetCopiesAddressCount _3dcdce6b_targetCopiesAddressCount(unsigned* value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_targetCopiesAddressCount){value}; }
+static inline _s_3dcdce6b_outStatuses _3dcdce6b_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_outStatuses){value}; }
+static inline _s_3dcdce6b_optionalFile _3dcdce6b_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_optionalFile){value}; }
+static inline _s_3dcdce6b_optionalLine _3dcdce6b_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_optionalLine){value}; }
+static inline _s_3dcdce6b_optionalUserData _3dcdce6b_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_3dcdce6b_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXStructsMemorySet(_s_3dcdce6b_context context, _s_3dcdce6b_gpu gpu, _s_3dcdce6b_copyingSamplers copyingSamplers, _s_3dcdce6b_sourceCopiesCount sourceCopiesCount, _s_3dcdce6b_sourceCopiesAddressFirst sourceCopiesAddressFirst, _s_3dcdce6b_sourceCopiesAddressCount sourceCopiesAddressCount, _s_3dcdce6b_targetCopiesCount targetCopiesCount, _s_3dcdce6b_targetCopiesAddressFirst targetCopiesAddressFirst, _s_3dcdce6b_targetCopiesAddressCount targetCopiesAddressCount, _s_3dcdce6b_outStatuses outStatuses, _s_3dcdce6b_optionalFile optionalFile, _s_3dcdce6b_optionalLine optionalLine, _s_3dcdce6b_optionalUserData optionalUserData) {
+  redXStructsMemorySet(context.value, gpu.value, copyingSamplers.value, sourceCopiesCount.value, sourceCopiesAddressFirst.value, sourceCopiesAddressCount.value, targetCopiesCount.value, targetCopiesAddressFirst.value, targetCopiesAddressCount.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_RedHandleStruct RedHandleStruct
-#define _4e579a96_RedContext(value) value
-#define _4e579a96_RedHandleGpu(value) value
-#define _4e579a96_RedHandleStructsMemory(value) value
-#define _4e579a96_unsigned(value) value
-#define _4e579a96_(value) value
+#define np_redXGetHandleStruct redXGetHandleStruct
+#define _9602d34e_context(value) value
+#define _9602d34e_gpu(value) value
+#define _9602d34e_structsMemory(value) value
+#define _9602d34e_structMemberIndex(value) value
 #else
-typedef struct _s_4e579a96_RedContext { redXGetHandleStruct value; } _s_4e579a96_RedContext;
-typedef struct _s_4e579a96_RedHandleGpu { context value; } _s_4e579a96_RedHandleGpu;
-typedef struct _s_4e579a96_RedHandleStructsMemory { gpu value; } _s_4e579a96_RedHandleStructsMemory;
-typedef struct _s_4e579a96_unsigned { structsMemory value; } _s_4e579a96_unsigned;
-typedef struct _s_4e579a96_ { structMemberIndex value; } _s_4e579a96_;
-static inline _s_4e579a96_RedContext _4e579a96_RedContext(redXGetHandleStruct value) { return REDGPU_NP_STRUCT_INIT(_s_4e579a96_RedContext){value}; }
-static inline _s_4e579a96_RedHandleGpu _4e579a96_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_4e579a96_RedHandleGpu){value}; }
-static inline _s_4e579a96_RedHandleStructsMemory _4e579a96_RedHandleStructsMemory(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_4e579a96_RedHandleStructsMemory){value}; }
-static inline _s_4e579a96_unsigned _4e579a96_unsigned(structsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_4e579a96_unsigned){value}; }
-static inline _s_4e579a96_ _4e579a96_(structMemberIndex value) { return REDGPU_NP_STRUCT_INIT(_s_4e579a96_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_RedHandleStruct(_s_4e579a96_RedContext RedContext, _s_4e579a96_RedHandleGpu RedHandleGpu, _s_4e579a96_RedHandleStructsMemory RedHandleStructsMemory, _s_4e579a96_unsigned unsigned, _s_4e579a96_ ) {
-  return RedHandleStruct(RedContext.value, RedHandleGpu.value, RedHandleStructsMemory.value, unsigned.value, .value);
+typedef struct _s_9602d34e_context { RedContext value; } _s_9602d34e_context;
+typedef struct _s_9602d34e_gpu { RedHandleGpu value; } _s_9602d34e_gpu;
+typedef struct _s_9602d34e_structsMemory { RedHandleStructsMemory value; } _s_9602d34e_structsMemory;
+typedef struct _s_9602d34e_structMemberIndex { unsigned value; } _s_9602d34e_structMemberIndex;
+static inline _s_9602d34e_context _9602d34e_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_9602d34e_context){value}; }
+static inline _s_9602d34e_gpu _9602d34e_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_9602d34e_gpu){value}; }
+static inline _s_9602d34e_structsMemory _9602d34e_structsMemory(RedHandleStructsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_9602d34e_structsMemory){value}; }
+static inline _s_9602d34e_structMemberIndex _9602d34e_structMemberIndex(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_9602d34e_structMemberIndex){value}; }
+REDGPU_NP_DECLSPEC RedHandleStruct REDGPU_NP_API np_redXGetHandleStruct(_s_9602d34e_context context, _s_9602d34e_gpu gpu, _s_9602d34e_structsMemory structsMemory, _s_9602d34e_structMemberIndex structMemberIndex) {
+  return redXGetHandleStruct(context.value, gpu.value, structsMemory.value, structMemberIndex.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _f32e4677_RedContext(value) value
-#define _f32e4677_RedHandleGpu(value) value
-#define _f32e4677_char*(value) value
-#define _f32e4677_RedBool32(value) value
-#define _f32e4677_RedBool32(value) value
-#define _f32e4677_RedBool32(value) value
-#define _f32e4677_unsigned(value) value
-#define _f32e4677_RedBool32(value) value
-#define _f32e4677_RedStatuses*(value) value
-#define _f32e4677_char*(value) value
-#define _f32e4677_int(value) value
-#define _f32e4677_void*(value) value
-#define _f32e4677_(value) value
+#define np_redXCreateQueue redXCreateQueue
+#define _1e0cca88_context(value) value
+#define _1e0cca88_gpu(value) value
+#define _1e0cca88_handleName(value) value
+#define _1e0cca88_canCopy(value) value
+#define _1e0cca88_canDraw(value) value
+#define _1e0cca88_canCompute(value) value
+#define _1e0cca88_priority(value) value
+#define _1e0cca88_disableGpuTimeout(value) value
+#define _1e0cca88_outStatuses(value) value
+#define _1e0cca88_optionalFile(value) value
+#define _1e0cca88_optionalLine(value) value
+#define _1e0cca88_optionalUserData(value) value
 #else
-typedef struct _s_f32e4677_RedContext { redXCreateQueue value; } _s_f32e4677_RedContext;
-typedef struct _s_f32e4677_RedHandleGpu { context value; } _s_f32e4677_RedHandleGpu;
-typedef struct _s_f32e4677_char* { gpu value; } _s_f32e4677_char*;
-typedef struct _s_f32e4677_RedBool32 { handleName value; } _s_f32e4677_RedBool32;
-typedef struct _s_f32e4677_RedBool32 { canCopy value; } _s_f32e4677_RedBool32;
-typedef struct _s_f32e4677_RedBool32 { canDraw value; } _s_f32e4677_RedBool32;
-typedef struct _s_f32e4677_unsigned { canCompute value; } _s_f32e4677_unsigned;
-typedef struct _s_f32e4677_RedBool32 { priority value; } _s_f32e4677_RedBool32;
-typedef struct _s_f32e4677_RedStatuses* { disableGpuTimeout value; } _s_f32e4677_RedStatuses*;
-typedef struct _s_f32e4677_char* { outStatuses value; } _s_f32e4677_char*;
-typedef struct _s_f32e4677_int { optionalFile value; } _s_f32e4677_int;
-typedef struct _s_f32e4677_void* { optionalLine value; } _s_f32e4677_void*;
-typedef struct _s_f32e4677_ { optionalUserData value; } _s_f32e4677_;
-static inline _s_f32e4677_RedContext _f32e4677_RedContext(redXCreateQueue value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_RedContext){value}; }
-static inline _s_f32e4677_RedHandleGpu _f32e4677_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_RedHandleGpu){value}; }
-static inline _s_f32e4677_char* _f32e4677_char*(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_char*){value}; }
-static inline _s_f32e4677_RedBool32 _f32e4677_RedBool32(handleName value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_RedBool32){value}; }
-static inline _s_f32e4677_RedBool32 _f32e4677_RedBool32(canCopy value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_RedBool32){value}; }
-static inline _s_f32e4677_RedBool32 _f32e4677_RedBool32(canDraw value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_RedBool32){value}; }
-static inline _s_f32e4677_unsigned _f32e4677_unsigned(canCompute value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_unsigned){value}; }
-static inline _s_f32e4677_RedBool32 _f32e4677_RedBool32(priority value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_RedBool32){value}; }
-static inline _s_f32e4677_RedStatuses* _f32e4677_RedStatuses*(disableGpuTimeout value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_RedStatuses*){value}; }
-static inline _s_f32e4677_char* _f32e4677_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_char*){value}; }
-static inline _s_f32e4677_int _f32e4677_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_int){value}; }
-static inline _s_f32e4677_void* _f32e4677_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_void*){value}; }
-static inline _s_f32e4677_ _f32e4677_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_f32e4677_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_f32e4677_RedContext RedContext, _s_f32e4677_RedHandleGpu RedHandleGpu, _s_f32e4677_char* char*, _s_f32e4677_RedBool32 RedBool32, _s_f32e4677_RedBool32 RedBool32, _s_f32e4677_RedBool32 RedBool32, _s_f32e4677_unsigned unsigned, _s_f32e4677_RedBool32 RedBool32, _s_f32e4677_RedStatuses* RedStatuses*, _s_f32e4677_char* char*, _s_f32e4677_int int, _s_f32e4677_void* void*, _s_f32e4677_ ) {
-  return void(RedContext.value, RedHandleGpu.value, char*.value, RedBool32.value, RedBool32.value, RedBool32.value, unsigned.value, RedBool32.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_1e0cca88_context { RedContext value; } _s_1e0cca88_context;
+typedef struct _s_1e0cca88_gpu { RedHandleGpu value; } _s_1e0cca88_gpu;
+typedef struct _s_1e0cca88_handleName { char* value; } _s_1e0cca88_handleName;
+typedef struct _s_1e0cca88_canCopy { RedBool32 value; } _s_1e0cca88_canCopy;
+typedef struct _s_1e0cca88_canDraw { RedBool32 value; } _s_1e0cca88_canDraw;
+typedef struct _s_1e0cca88_canCompute { RedBool32 value; } _s_1e0cca88_canCompute;
+typedef struct _s_1e0cca88_priority { unsigned value; } _s_1e0cca88_priority;
+typedef struct _s_1e0cca88_disableGpuTimeout { RedBool32 value; } _s_1e0cca88_disableGpuTimeout;
+typedef struct _s_1e0cca88_outStatuses { RedStatuses* value; } _s_1e0cca88_outStatuses;
+typedef struct _s_1e0cca88_optionalFile { char* value; } _s_1e0cca88_optionalFile;
+typedef struct _s_1e0cca88_optionalLine { int value; } _s_1e0cca88_optionalLine;
+typedef struct _s_1e0cca88_optionalUserData { void* value; } _s_1e0cca88_optionalUserData;
+static inline _s_1e0cca88_context _1e0cca88_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_context){value}; }
+static inline _s_1e0cca88_gpu _1e0cca88_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_gpu){value}; }
+static inline _s_1e0cca88_handleName _1e0cca88_handleName(char* value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_handleName){value}; }
+static inline _s_1e0cca88_canCopy _1e0cca88_canCopy(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_canCopy){value}; }
+static inline _s_1e0cca88_canDraw _1e0cca88_canDraw(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_canDraw){value}; }
+static inline _s_1e0cca88_canCompute _1e0cca88_canCompute(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_canCompute){value}; }
+static inline _s_1e0cca88_priority _1e0cca88_priority(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_priority){value}; }
+static inline _s_1e0cca88_disableGpuTimeout _1e0cca88_disableGpuTimeout(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_disableGpuTimeout){value}; }
+static inline _s_1e0cca88_outStatuses _1e0cca88_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_outStatuses){value}; }
+static inline _s_1e0cca88_optionalFile _1e0cca88_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_optionalFile){value}; }
+static inline _s_1e0cca88_optionalLine _1e0cca88_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_optionalLine){value}; }
+static inline _s_1e0cca88_optionalUserData _1e0cca88_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_1e0cca88_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCreateQueue(_s_1e0cca88_context context, _s_1e0cca88_gpu gpu, _s_1e0cca88_handleName handleName, _s_1e0cca88_canCopy canCopy, _s_1e0cca88_canDraw canDraw, _s_1e0cca88_canCompute canCompute, _s_1e0cca88_priority priority, _s_1e0cca88_disableGpuTimeout disableGpuTimeout, _s_1e0cca88_outStatuses outStatuses, _s_1e0cca88_optionalFile optionalFile, _s_1e0cca88_optionalLine optionalLine, _s_1e0cca88_optionalUserData optionalUserData) {
+  redXCreateQueue(context.value, gpu.value, handleName.value, canCopy.value, canDraw.value, canCompute.value, priority.value, disableGpuTimeout.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _e43f103e_RedContext(value) value
-#define _e43f103e_RedHandleGpu(value) value
-#define _e43f103e_char*(value) value
-#define _e43f103e_RedImageDimensions(value) value
-#define _e43f103e_RedFormat(value) value
-#define _e43f103e_unsigned(value) value
-#define _e43f103e_unsigned(value) value
-#define _e43f103e_unsigned(value) value
-#define _e43f103e_unsigned(value) value
-#define _e43f103e_unsigned(value) value
-#define _e43f103e_unsigned(value) value
-#define _e43f103e_RedMultisampleCountBitflag(value) value
-#define _e43f103e_RedAccessBitflags(value) value
-#define _e43f103e_RedAccessBitflags(value) value
-#define _e43f103e_unsigned(value) value
-#define _e43f103e_RedBool32(value) value
-#define _e43f103e_RedImage*(value) value
-#define _e43f103e_RedStatuses*(value) value
-#define _e43f103e_char*(value) value
-#define _e43f103e_int(value) value
-#define _e43f103e_void*(value) value
-#define _e43f103e_(value) value
+#define np_redXCreateImage redXCreateImage
+#define _4fb53566_context(value) value
+#define _4fb53566_gpu(value) value
+#define _4fb53566_handleName(value) value
+#define _4fb53566_dimensions(value) value
+#define _4fb53566_format(value) value
+#define _4fb53566_xformat(value) value
+#define _4fb53566_width(value) value
+#define _4fb53566_height(value) value
+#define _4fb53566_depth(value) value
+#define _4fb53566_levelsCount(value) value
+#define _4fb53566_layersCount(value) value
+#define _4fb53566_multisampleCount(value) value
+#define _4fb53566_restrictToAccess(value) value
+#define _4fb53566_initialAccess(value) value
+#define _4fb53566_initialQueueFamilyIndex(value) value
+#define _4fb53566_dedicate(value) value
+#define _4fb53566_outImage(value) value
+#define _4fb53566_outStatuses(value) value
+#define _4fb53566_optionalFile(value) value
+#define _4fb53566_optionalLine(value) value
+#define _4fb53566_optionalUserData(value) value
 #else
-typedef struct _s_e43f103e_RedContext { redXCreateImage value; } _s_e43f103e_RedContext;
-typedef struct _s_e43f103e_RedHandleGpu { context value; } _s_e43f103e_RedHandleGpu;
-typedef struct _s_e43f103e_char* { gpu value; } _s_e43f103e_char*;
-typedef struct _s_e43f103e_RedImageDimensions { handleName value; } _s_e43f103e_RedImageDimensions;
-typedef struct _s_e43f103e_RedFormat { dimensions value; } _s_e43f103e_RedFormat;
-typedef struct _s_e43f103e_unsigned { format value; } _s_e43f103e_unsigned;
-typedef struct _s_e43f103e_unsigned { xformat value; } _s_e43f103e_unsigned;
-typedef struct _s_e43f103e_unsigned { width value; } _s_e43f103e_unsigned;
-typedef struct _s_e43f103e_unsigned { height value; } _s_e43f103e_unsigned;
-typedef struct _s_e43f103e_unsigned { depth value; } _s_e43f103e_unsigned;
-typedef struct _s_e43f103e_unsigned { levelsCount value; } _s_e43f103e_unsigned;
-typedef struct _s_e43f103e_RedMultisampleCountBitflag { layersCount value; } _s_e43f103e_RedMultisampleCountBitflag;
-typedef struct _s_e43f103e_RedAccessBitflags { multisampleCount value; } _s_e43f103e_RedAccessBitflags;
-typedef struct _s_e43f103e_RedAccessBitflags { restrictToAccess value; } _s_e43f103e_RedAccessBitflags;
-typedef struct _s_e43f103e_unsigned { initialAccess value; } _s_e43f103e_unsigned;
-typedef struct _s_e43f103e_RedBool32 { initialQueueFamilyIndex value; } _s_e43f103e_RedBool32;
-typedef struct _s_e43f103e_RedImage* { dedicate value; } _s_e43f103e_RedImage*;
-typedef struct _s_e43f103e_RedStatuses* { outImage value; } _s_e43f103e_RedStatuses*;
-typedef struct _s_e43f103e_char* { outStatuses value; } _s_e43f103e_char*;
-typedef struct _s_e43f103e_int { optionalFile value; } _s_e43f103e_int;
-typedef struct _s_e43f103e_void* { optionalLine value; } _s_e43f103e_void*;
-typedef struct _s_e43f103e_ { optionalUserData value; } _s_e43f103e_;
-static inline _s_e43f103e_RedContext _e43f103e_RedContext(redXCreateImage value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedContext){value}; }
-static inline _s_e43f103e_RedHandleGpu _e43f103e_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedHandleGpu){value}; }
-static inline _s_e43f103e_char* _e43f103e_char*(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_char*){value}; }
-static inline _s_e43f103e_RedImageDimensions _e43f103e_RedImageDimensions(handleName value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedImageDimensions){value}; }
-static inline _s_e43f103e_RedFormat _e43f103e_RedFormat(dimensions value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedFormat){value}; }
-static inline _s_e43f103e_unsigned _e43f103e_unsigned(format value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_unsigned){value}; }
-static inline _s_e43f103e_unsigned _e43f103e_unsigned(xformat value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_unsigned){value}; }
-static inline _s_e43f103e_unsigned _e43f103e_unsigned(width value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_unsigned){value}; }
-static inline _s_e43f103e_unsigned _e43f103e_unsigned(height value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_unsigned){value}; }
-static inline _s_e43f103e_unsigned _e43f103e_unsigned(depth value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_unsigned){value}; }
-static inline _s_e43f103e_unsigned _e43f103e_unsigned(levelsCount value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_unsigned){value}; }
-static inline _s_e43f103e_RedMultisampleCountBitflag _e43f103e_RedMultisampleCountBitflag(layersCount value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedMultisampleCountBitflag){value}; }
-static inline _s_e43f103e_RedAccessBitflags _e43f103e_RedAccessBitflags(multisampleCount value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedAccessBitflags){value}; }
-static inline _s_e43f103e_RedAccessBitflags _e43f103e_RedAccessBitflags(restrictToAccess value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedAccessBitflags){value}; }
-static inline _s_e43f103e_unsigned _e43f103e_unsigned(initialAccess value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_unsigned){value}; }
-static inline _s_e43f103e_RedBool32 _e43f103e_RedBool32(initialQueueFamilyIndex value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedBool32){value}; }
-static inline _s_e43f103e_RedImage* _e43f103e_RedImage*(dedicate value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedImage*){value}; }
-static inline _s_e43f103e_RedStatuses* _e43f103e_RedStatuses*(outImage value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_RedStatuses*){value}; }
-static inline _s_e43f103e_char* _e43f103e_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_char*){value}; }
-static inline _s_e43f103e_int _e43f103e_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_int){value}; }
-static inline _s_e43f103e_void* _e43f103e_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_void*){value}; }
-static inline _s_e43f103e_ _e43f103e_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_e43f103e_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_e43f103e_RedContext RedContext, _s_e43f103e_RedHandleGpu RedHandleGpu, _s_e43f103e_char* char*, _s_e43f103e_RedImageDimensions RedImageDimensions, _s_e43f103e_RedFormat RedFormat, _s_e43f103e_unsigned unsigned, _s_e43f103e_unsigned unsigned, _s_e43f103e_unsigned unsigned, _s_e43f103e_unsigned unsigned, _s_e43f103e_unsigned unsigned, _s_e43f103e_unsigned unsigned, _s_e43f103e_RedMultisampleCountBitflag RedMultisampleCountBitflag, _s_e43f103e_RedAccessBitflags RedAccessBitflags, _s_e43f103e_RedAccessBitflags RedAccessBitflags, _s_e43f103e_unsigned unsigned, _s_e43f103e_RedBool32 RedBool32, _s_e43f103e_RedImage* RedImage*, _s_e43f103e_RedStatuses* RedStatuses*, _s_e43f103e_char* char*, _s_e43f103e_int int, _s_e43f103e_void* void*, _s_e43f103e_ ) {
-  return void(RedContext.value, RedHandleGpu.value, char*.value, RedImageDimensions.value, RedFormat.value, unsigned.value, unsigned.value, unsigned.value, unsigned.value, unsigned.value, unsigned.value, RedMultisampleCountBitflag.value, RedAccessBitflags.value, RedAccessBitflags.value, unsigned.value, RedBool32.value, RedImage*.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_4fb53566_context { RedContext value; } _s_4fb53566_context;
+typedef struct _s_4fb53566_gpu { RedHandleGpu value; } _s_4fb53566_gpu;
+typedef struct _s_4fb53566_handleName { char* value; } _s_4fb53566_handleName;
+typedef struct _s_4fb53566_dimensions { RedImageDimensions value; } _s_4fb53566_dimensions;
+typedef struct _s_4fb53566_format { RedFormat value; } _s_4fb53566_format;
+typedef struct _s_4fb53566_xformat { unsigned value; } _s_4fb53566_xformat;
+typedef struct _s_4fb53566_width { unsigned value; } _s_4fb53566_width;
+typedef struct _s_4fb53566_height { unsigned value; } _s_4fb53566_height;
+typedef struct _s_4fb53566_depth { unsigned value; } _s_4fb53566_depth;
+typedef struct _s_4fb53566_levelsCount { unsigned value; } _s_4fb53566_levelsCount;
+typedef struct _s_4fb53566_layersCount { unsigned value; } _s_4fb53566_layersCount;
+typedef struct _s_4fb53566_multisampleCount { RedMultisampleCountBitflag value; } _s_4fb53566_multisampleCount;
+typedef struct _s_4fb53566_restrictToAccess { RedAccessBitflags value; } _s_4fb53566_restrictToAccess;
+typedef struct _s_4fb53566_initialAccess { RedAccessBitflags value; } _s_4fb53566_initialAccess;
+typedef struct _s_4fb53566_initialQueueFamilyIndex { unsigned value; } _s_4fb53566_initialQueueFamilyIndex;
+typedef struct _s_4fb53566_dedicate { RedBool32 value; } _s_4fb53566_dedicate;
+typedef struct _s_4fb53566_outImage { RedImage* value; } _s_4fb53566_outImage;
+typedef struct _s_4fb53566_outStatuses { RedStatuses* value; } _s_4fb53566_outStatuses;
+typedef struct _s_4fb53566_optionalFile { char* value; } _s_4fb53566_optionalFile;
+typedef struct _s_4fb53566_optionalLine { int value; } _s_4fb53566_optionalLine;
+typedef struct _s_4fb53566_optionalUserData { void* value; } _s_4fb53566_optionalUserData;
+static inline _s_4fb53566_context _4fb53566_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_context){value}; }
+static inline _s_4fb53566_gpu _4fb53566_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_gpu){value}; }
+static inline _s_4fb53566_handleName _4fb53566_handleName(char* value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_handleName){value}; }
+static inline _s_4fb53566_dimensions _4fb53566_dimensions(RedImageDimensions value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_dimensions){value}; }
+static inline _s_4fb53566_format _4fb53566_format(RedFormat value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_format){value}; }
+static inline _s_4fb53566_xformat _4fb53566_xformat(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_xformat){value}; }
+static inline _s_4fb53566_width _4fb53566_width(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_width){value}; }
+static inline _s_4fb53566_height _4fb53566_height(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_height){value}; }
+static inline _s_4fb53566_depth _4fb53566_depth(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_depth){value}; }
+static inline _s_4fb53566_levelsCount _4fb53566_levelsCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_levelsCount){value}; }
+static inline _s_4fb53566_layersCount _4fb53566_layersCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_layersCount){value}; }
+static inline _s_4fb53566_multisampleCount _4fb53566_multisampleCount(RedMultisampleCountBitflag value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_multisampleCount){value}; }
+static inline _s_4fb53566_restrictToAccess _4fb53566_restrictToAccess(RedAccessBitflags value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_restrictToAccess){value}; }
+static inline _s_4fb53566_initialAccess _4fb53566_initialAccess(RedAccessBitflags value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_initialAccess){value}; }
+static inline _s_4fb53566_initialQueueFamilyIndex _4fb53566_initialQueueFamilyIndex(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_initialQueueFamilyIndex){value}; }
+static inline _s_4fb53566_dedicate _4fb53566_dedicate(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_dedicate){value}; }
+static inline _s_4fb53566_outImage _4fb53566_outImage(RedImage* value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_outImage){value}; }
+static inline _s_4fb53566_outStatuses _4fb53566_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_outStatuses){value}; }
+static inline _s_4fb53566_optionalFile _4fb53566_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_optionalFile){value}; }
+static inline _s_4fb53566_optionalLine _4fb53566_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_optionalLine){value}; }
+static inline _s_4fb53566_optionalUserData _4fb53566_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_4fb53566_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCreateImage(_s_4fb53566_context context, _s_4fb53566_gpu gpu, _s_4fb53566_handleName handleName, _s_4fb53566_dimensions dimensions, _s_4fb53566_format format, _s_4fb53566_xformat xformat, _s_4fb53566_width width, _s_4fb53566_height height, _s_4fb53566_depth depth, _s_4fb53566_levelsCount levelsCount, _s_4fb53566_layersCount layersCount, _s_4fb53566_multisampleCount multisampleCount, _s_4fb53566_restrictToAccess restrictToAccess, _s_4fb53566_initialAccess initialAccess, _s_4fb53566_initialQueueFamilyIndex initialQueueFamilyIndex, _s_4fb53566_dedicate dedicate, _s_4fb53566_outImage outImage, _s_4fb53566_outStatuses outStatuses, _s_4fb53566_optionalFile optionalFile, _s_4fb53566_optionalLine optionalLine, _s_4fb53566_optionalUserData optionalUserData) {
+  redXCreateImage(context.value, gpu.value, handleName.value, dimensions.value, format.value, xformat.value, width.value, height.value, depth.value, levelsCount.value, layersCount.value, multisampleCount.value, restrictToAccess.value, initialAccess.value, initialQueueFamilyIndex.value, dedicate.value, outImage.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _062f19e5_RedContext(value) value
-#define _062f19e5_RedHandleGpu(value) value
-#define _062f19e5_char*(value) value
-#define _062f19e5_RedHandleImage(value) value
-#define _062f19e5_RedImagePartBitflags(value) value
-#define _062f19e5_RedTextureDimensions(value) value
-#define _062f19e5_RedFormat(value) value
-#define _062f19e5_unsigned(value) value
-#define _062f19e5_unsigned(value) value
-#define _062f19e5_unsigned(value) value
-#define _062f19e5_unsigned(value) value
-#define _062f19e5_unsigned(value) value
-#define _062f19e5_RedAccessBitflags(value) value
-#define _062f19e5_RedHandleTexture*(value) value
-#define _062f19e5_RedStatuses*(value) value
-#define _062f19e5_char*(value) value
-#define _062f19e5_int(value) value
-#define _062f19e5_void*(value) value
-#define _062f19e5_(value) value
+#define np_redXCreateTexture redXCreateTexture
+#define _234f1aab_context(value) value
+#define _234f1aab_gpu(value) value
+#define _234f1aab_handleName(value) value
+#define _234f1aab_image(value) value
+#define _234f1aab_parts(value) value
+#define _234f1aab_dimensions(value) value
+#define _234f1aab_format(value) value
+#define _234f1aab_xformat(value) value
+#define _234f1aab_levelsFirst(value) value
+#define _234f1aab_levelsCount(value) value
+#define _234f1aab_layersFirst(value) value
+#define _234f1aab_layersCount(value) value
+#define _234f1aab_restrictToAccess(value) value
+#define _234f1aab_outTexture(value) value
+#define _234f1aab_outStatuses(value) value
+#define _234f1aab_optionalFile(value) value
+#define _234f1aab_optionalLine(value) value
+#define _234f1aab_optionalUserData(value) value
 #else
-typedef struct _s_062f19e5_RedContext { redXCreateTexture value; } _s_062f19e5_RedContext;
-typedef struct _s_062f19e5_RedHandleGpu { context value; } _s_062f19e5_RedHandleGpu;
-typedef struct _s_062f19e5_char* { gpu value; } _s_062f19e5_char*;
-typedef struct _s_062f19e5_RedHandleImage { handleName value; } _s_062f19e5_RedHandleImage;
-typedef struct _s_062f19e5_RedImagePartBitflags { image value; } _s_062f19e5_RedImagePartBitflags;
-typedef struct _s_062f19e5_RedTextureDimensions { parts value; } _s_062f19e5_RedTextureDimensions;
-typedef struct _s_062f19e5_RedFormat { dimensions value; } _s_062f19e5_RedFormat;
-typedef struct _s_062f19e5_unsigned { format value; } _s_062f19e5_unsigned;
-typedef struct _s_062f19e5_unsigned { xformat value; } _s_062f19e5_unsigned;
-typedef struct _s_062f19e5_unsigned { levelsFirst value; } _s_062f19e5_unsigned;
-typedef struct _s_062f19e5_unsigned { levelsCount value; } _s_062f19e5_unsigned;
-typedef struct _s_062f19e5_unsigned { layersFirst value; } _s_062f19e5_unsigned;
-typedef struct _s_062f19e5_RedAccessBitflags { layersCount value; } _s_062f19e5_RedAccessBitflags;
-typedef struct _s_062f19e5_RedHandleTexture* { restrictToAccess value; } _s_062f19e5_RedHandleTexture*;
-typedef struct _s_062f19e5_RedStatuses* { outTexture value; } _s_062f19e5_RedStatuses*;
-typedef struct _s_062f19e5_char* { outStatuses value; } _s_062f19e5_char*;
-typedef struct _s_062f19e5_int { optionalFile value; } _s_062f19e5_int;
-typedef struct _s_062f19e5_void* { optionalLine value; } _s_062f19e5_void*;
-typedef struct _s_062f19e5_ { optionalUserData value; } _s_062f19e5_;
-static inline _s_062f19e5_RedContext _062f19e5_RedContext(redXCreateTexture value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedContext){value}; }
-static inline _s_062f19e5_RedHandleGpu _062f19e5_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedHandleGpu){value}; }
-static inline _s_062f19e5_char* _062f19e5_char*(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_char*){value}; }
-static inline _s_062f19e5_RedHandleImage _062f19e5_RedHandleImage(handleName value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedHandleImage){value}; }
-static inline _s_062f19e5_RedImagePartBitflags _062f19e5_RedImagePartBitflags(image value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedImagePartBitflags){value}; }
-static inline _s_062f19e5_RedTextureDimensions _062f19e5_RedTextureDimensions(parts value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedTextureDimensions){value}; }
-static inline _s_062f19e5_RedFormat _062f19e5_RedFormat(dimensions value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedFormat){value}; }
-static inline _s_062f19e5_unsigned _062f19e5_unsigned(format value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_unsigned){value}; }
-static inline _s_062f19e5_unsigned _062f19e5_unsigned(xformat value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_unsigned){value}; }
-static inline _s_062f19e5_unsigned _062f19e5_unsigned(levelsFirst value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_unsigned){value}; }
-static inline _s_062f19e5_unsigned _062f19e5_unsigned(levelsCount value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_unsigned){value}; }
-static inline _s_062f19e5_unsigned _062f19e5_unsigned(layersFirst value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_unsigned){value}; }
-static inline _s_062f19e5_RedAccessBitflags _062f19e5_RedAccessBitflags(layersCount value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedAccessBitflags){value}; }
-static inline _s_062f19e5_RedHandleTexture* _062f19e5_RedHandleTexture*(restrictToAccess value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedHandleTexture*){value}; }
-static inline _s_062f19e5_RedStatuses* _062f19e5_RedStatuses*(outTexture value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_RedStatuses*){value}; }
-static inline _s_062f19e5_char* _062f19e5_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_char*){value}; }
-static inline _s_062f19e5_int _062f19e5_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_int){value}; }
-static inline _s_062f19e5_void* _062f19e5_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_void*){value}; }
-static inline _s_062f19e5_ _062f19e5_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_062f19e5_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_062f19e5_RedContext RedContext, _s_062f19e5_RedHandleGpu RedHandleGpu, _s_062f19e5_char* char*, _s_062f19e5_RedHandleImage RedHandleImage, _s_062f19e5_RedImagePartBitflags RedImagePartBitflags, _s_062f19e5_RedTextureDimensions RedTextureDimensions, _s_062f19e5_RedFormat RedFormat, _s_062f19e5_unsigned unsigned, _s_062f19e5_unsigned unsigned, _s_062f19e5_unsigned unsigned, _s_062f19e5_unsigned unsigned, _s_062f19e5_unsigned unsigned, _s_062f19e5_RedAccessBitflags RedAccessBitflags, _s_062f19e5_RedHandleTexture* RedHandleTexture*, _s_062f19e5_RedStatuses* RedStatuses*, _s_062f19e5_char* char*, _s_062f19e5_int int, _s_062f19e5_void* void*, _s_062f19e5_ ) {
-  return void(RedContext.value, RedHandleGpu.value, char*.value, RedHandleImage.value, RedImagePartBitflags.value, RedTextureDimensions.value, RedFormat.value, unsigned.value, unsigned.value, unsigned.value, unsigned.value, unsigned.value, RedAccessBitflags.value, RedHandleTexture*.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_234f1aab_context { RedContext value; } _s_234f1aab_context;
+typedef struct _s_234f1aab_gpu { RedHandleGpu value; } _s_234f1aab_gpu;
+typedef struct _s_234f1aab_handleName { char* value; } _s_234f1aab_handleName;
+typedef struct _s_234f1aab_image { RedHandleImage value; } _s_234f1aab_image;
+typedef struct _s_234f1aab_parts { RedImagePartBitflags value; } _s_234f1aab_parts;
+typedef struct _s_234f1aab_dimensions { RedTextureDimensions value; } _s_234f1aab_dimensions;
+typedef struct _s_234f1aab_format { RedFormat value; } _s_234f1aab_format;
+typedef struct _s_234f1aab_xformat { unsigned value; } _s_234f1aab_xformat;
+typedef struct _s_234f1aab_levelsFirst { unsigned value; } _s_234f1aab_levelsFirst;
+typedef struct _s_234f1aab_levelsCount { unsigned value; } _s_234f1aab_levelsCount;
+typedef struct _s_234f1aab_layersFirst { unsigned value; } _s_234f1aab_layersFirst;
+typedef struct _s_234f1aab_layersCount { unsigned value; } _s_234f1aab_layersCount;
+typedef struct _s_234f1aab_restrictToAccess { RedAccessBitflags value; } _s_234f1aab_restrictToAccess;
+typedef struct _s_234f1aab_outTexture { RedHandleTexture* value; } _s_234f1aab_outTexture;
+typedef struct _s_234f1aab_outStatuses { RedStatuses* value; } _s_234f1aab_outStatuses;
+typedef struct _s_234f1aab_optionalFile { char* value; } _s_234f1aab_optionalFile;
+typedef struct _s_234f1aab_optionalLine { int value; } _s_234f1aab_optionalLine;
+typedef struct _s_234f1aab_optionalUserData { void* value; } _s_234f1aab_optionalUserData;
+static inline _s_234f1aab_context _234f1aab_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_context){value}; }
+static inline _s_234f1aab_gpu _234f1aab_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_gpu){value}; }
+static inline _s_234f1aab_handleName _234f1aab_handleName(char* value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_handleName){value}; }
+static inline _s_234f1aab_image _234f1aab_image(RedHandleImage value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_image){value}; }
+static inline _s_234f1aab_parts _234f1aab_parts(RedImagePartBitflags value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_parts){value}; }
+static inline _s_234f1aab_dimensions _234f1aab_dimensions(RedTextureDimensions value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_dimensions){value}; }
+static inline _s_234f1aab_format _234f1aab_format(RedFormat value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_format){value}; }
+static inline _s_234f1aab_xformat _234f1aab_xformat(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_xformat){value}; }
+static inline _s_234f1aab_levelsFirst _234f1aab_levelsFirst(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_levelsFirst){value}; }
+static inline _s_234f1aab_levelsCount _234f1aab_levelsCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_levelsCount){value}; }
+static inline _s_234f1aab_layersFirst _234f1aab_layersFirst(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_layersFirst){value}; }
+static inline _s_234f1aab_layersCount _234f1aab_layersCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_layersCount){value}; }
+static inline _s_234f1aab_restrictToAccess _234f1aab_restrictToAccess(RedAccessBitflags value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_restrictToAccess){value}; }
+static inline _s_234f1aab_outTexture _234f1aab_outTexture(RedHandleTexture* value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_outTexture){value}; }
+static inline _s_234f1aab_outStatuses _234f1aab_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_outStatuses){value}; }
+static inline _s_234f1aab_optionalFile _234f1aab_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_optionalFile){value}; }
+static inline _s_234f1aab_optionalLine _234f1aab_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_optionalLine){value}; }
+static inline _s_234f1aab_optionalUserData _234f1aab_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_234f1aab_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCreateTexture(_s_234f1aab_context context, _s_234f1aab_gpu gpu, _s_234f1aab_handleName handleName, _s_234f1aab_image image, _s_234f1aab_parts parts, _s_234f1aab_dimensions dimensions, _s_234f1aab_format format, _s_234f1aab_xformat xformat, _s_234f1aab_levelsFirst levelsFirst, _s_234f1aab_levelsCount levelsCount, _s_234f1aab_layersFirst layersFirst, _s_234f1aab_layersCount layersCount, _s_234f1aab_restrictToAccess restrictToAccess, _s_234f1aab_outTexture outTexture, _s_234f1aab_outStatuses outStatuses, _s_234f1aab_optionalFile optionalFile, _s_234f1aab_optionalLine optionalLine, _s_234f1aab_optionalUserData optionalUserData) {
+  redXCreateTexture(context.value, gpu.value, handleName.value, image.value, parts.value, dimensions.value, format.value, xformat.value, levelsFirst.value, levelsCount.value, layersFirst.value, layersCount.value, restrictToAccess.value, outTexture.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_RedXHandlePageable RedXHandlePageable
-#define _83c1d58c_RedContext(value) value
-#define _83c1d58c_RedHandleGpu(value) value
-#define _83c1d58c_RedHandleMemory(value) value
-#define _83c1d58c_(value) value
+#define np_redXGetHandlePageableMemory redXGetHandlePageableMemory
+#define _0adde1cf_context(value) value
+#define _0adde1cf_gpu(value) value
+#define _0adde1cf_memory(value) value
 #else
-typedef struct _s_83c1d58c_RedContext { redXGetHandlePageableMemory value; } _s_83c1d58c_RedContext;
-typedef struct _s_83c1d58c_RedHandleGpu { context value; } _s_83c1d58c_RedHandleGpu;
-typedef struct _s_83c1d58c_RedHandleMemory { gpu value; } _s_83c1d58c_RedHandleMemory;
-typedef struct _s_83c1d58c_ { memory value; } _s_83c1d58c_;
-static inline _s_83c1d58c_RedContext _83c1d58c_RedContext(redXGetHandlePageableMemory value) { return REDGPU_NP_STRUCT_INIT(_s_83c1d58c_RedContext){value}; }
-static inline _s_83c1d58c_RedHandleGpu _83c1d58c_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_83c1d58c_RedHandleGpu){value}; }
-static inline _s_83c1d58c_RedHandleMemory _83c1d58c_RedHandleMemory(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_83c1d58c_RedHandleMemory){value}; }
-static inline _s_83c1d58c_ _83c1d58c_(memory value) { return REDGPU_NP_STRUCT_INIT(_s_83c1d58c_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_RedXHandlePageable(_s_83c1d58c_RedContext RedContext, _s_83c1d58c_RedHandleGpu RedHandleGpu, _s_83c1d58c_RedHandleMemory RedHandleMemory, _s_83c1d58c_ ) {
-  return RedXHandlePageable(RedContext.value, RedHandleGpu.value, RedHandleMemory.value, .value);
+typedef struct _s_0adde1cf_context { RedContext value; } _s_0adde1cf_context;
+typedef struct _s_0adde1cf_gpu { RedHandleGpu value; } _s_0adde1cf_gpu;
+typedef struct _s_0adde1cf_memory { RedHandleMemory value; } _s_0adde1cf_memory;
+static inline _s_0adde1cf_context _0adde1cf_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_0adde1cf_context){value}; }
+static inline _s_0adde1cf_gpu _0adde1cf_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_0adde1cf_gpu){value}; }
+static inline _s_0adde1cf_memory _0adde1cf_memory(RedHandleMemory value) { return REDGPU_NP_STRUCT_INIT(_s_0adde1cf_memory){value}; }
+REDGPU_NP_DECLSPEC RedXHandlePageable REDGPU_NP_API np_redXGetHandlePageableMemory(_s_0adde1cf_context context, _s_0adde1cf_gpu gpu, _s_0adde1cf_memory memory) {
+  return redXGetHandlePageableMemory(context.value, gpu.value, memory.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_RedXHandlePageable RedXHandlePageable
-#define _9abd124f_RedContext(value) value
-#define _9abd124f_RedHandleGpu(value) value
-#define _9abd124f_RedHandleStructsMemory(value) value
-#define _9abd124f_(value) value
+#define np_redXGetHandlePageableStructsMemory redXGetHandlePageableStructsMemory
+#define _0cbc734b_context(value) value
+#define _0cbc734b_gpu(value) value
+#define _0cbc734b_structsMemory(value) value
 #else
-typedef struct _s_9abd124f_RedContext { redXGetHandlePageableStructsMemory value; } _s_9abd124f_RedContext;
-typedef struct _s_9abd124f_RedHandleGpu { context value; } _s_9abd124f_RedHandleGpu;
-typedef struct _s_9abd124f_RedHandleStructsMemory { gpu value; } _s_9abd124f_RedHandleStructsMemory;
-typedef struct _s_9abd124f_ { structsMemory value; } _s_9abd124f_;
-static inline _s_9abd124f_RedContext _9abd124f_RedContext(redXGetHandlePageableStructsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_9abd124f_RedContext){value}; }
-static inline _s_9abd124f_RedHandleGpu _9abd124f_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_9abd124f_RedHandleGpu){value}; }
-static inline _s_9abd124f_RedHandleStructsMemory _9abd124f_RedHandleStructsMemory(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_9abd124f_RedHandleStructsMemory){value}; }
-static inline _s_9abd124f_ _9abd124f_(structsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_9abd124f_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_RedXHandlePageable(_s_9abd124f_RedContext RedContext, _s_9abd124f_RedHandleGpu RedHandleGpu, _s_9abd124f_RedHandleStructsMemory RedHandleStructsMemory, _s_9abd124f_ ) {
-  return RedXHandlePageable(RedContext.value, RedHandleGpu.value, RedHandleStructsMemory.value, .value);
+typedef struct _s_0cbc734b_context { RedContext value; } _s_0cbc734b_context;
+typedef struct _s_0cbc734b_gpu { RedHandleGpu value; } _s_0cbc734b_gpu;
+typedef struct _s_0cbc734b_structsMemory { RedHandleStructsMemory value; } _s_0cbc734b_structsMemory;
+static inline _s_0cbc734b_context _0cbc734b_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_0cbc734b_context){value}; }
+static inline _s_0cbc734b_gpu _0cbc734b_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_0cbc734b_gpu){value}; }
+static inline _s_0cbc734b_structsMemory _0cbc734b_structsMemory(RedHandleStructsMemory value) { return REDGPU_NP_STRUCT_INIT(_s_0cbc734b_structsMemory){value}; }
+REDGPU_NP_DECLSPEC RedXHandlePageable REDGPU_NP_API np_redXGetHandlePageableStructsMemory(_s_0cbc734b_context context, _s_0cbc734b_gpu gpu, _s_0cbc734b_structsMemory structsMemory) {
+  return redXGetHandlePageableStructsMemory(context.value, gpu.value, structsMemory.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _67e87168_RedContext(value) value
-#define _67e87168_RedHandleGpu(value) value
-#define _67e87168_unsigned(value) value
-#define _67e87168_RedXHandlePageable*(value) value
-#define _67e87168_RedXPageableResidencyPriorityBitflags*(value) value
-#define _67e87168_RedStatuses*(value) value
-#define _67e87168_char*(value) value
-#define _67e87168_int(value) value
-#define _67e87168_void*(value) value
-#define _67e87168_(value) value
+#define np_redXPageableSetResidencyPriority redXPageableSetResidencyPriority
+#define _200557c8_context(value) value
+#define _200557c8_gpu(value) value
+#define _200557c8_pageablesCount(value) value
+#define _200557c8_pageables(value) value
+#define _200557c8_pageablesResidencyPriority(value) value
+#define _200557c8_outStatuses(value) value
+#define _200557c8_optionalFile(value) value
+#define _200557c8_optionalLine(value) value
+#define _200557c8_optionalUserData(value) value
 #else
-typedef struct _s_67e87168_RedContext { redXPageableSetResidencyPriority value; } _s_67e87168_RedContext;
-typedef struct _s_67e87168_RedHandleGpu { context value; } _s_67e87168_RedHandleGpu;
-typedef struct _s_67e87168_unsigned { gpu value; } _s_67e87168_unsigned;
-typedef struct _s_67e87168_RedXHandlePageable* { pageablesCount value; } _s_67e87168_RedXHandlePageable*;
-typedef struct _s_67e87168_RedXPageableResidencyPriorityBitflags* { pageables value; } _s_67e87168_RedXPageableResidencyPriorityBitflags*;
-typedef struct _s_67e87168_RedStatuses* { pageablesResidencyPriority value; } _s_67e87168_RedStatuses*;
-typedef struct _s_67e87168_char* { outStatuses value; } _s_67e87168_char*;
-typedef struct _s_67e87168_int { optionalFile value; } _s_67e87168_int;
-typedef struct _s_67e87168_void* { optionalLine value; } _s_67e87168_void*;
-typedef struct _s_67e87168_ { optionalUserData value; } _s_67e87168_;
-static inline _s_67e87168_RedContext _67e87168_RedContext(redXPageableSetResidencyPriority value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_RedContext){value}; }
-static inline _s_67e87168_RedHandleGpu _67e87168_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_RedHandleGpu){value}; }
-static inline _s_67e87168_unsigned _67e87168_unsigned(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_unsigned){value}; }
-static inline _s_67e87168_RedXHandlePageable* _67e87168_RedXHandlePageable*(pageablesCount value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_RedXHandlePageable*){value}; }
-static inline _s_67e87168_RedXPageableResidencyPriorityBitflags* _67e87168_RedXPageableResidencyPriorityBitflags*(pageables value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_RedXPageableResidencyPriorityBitflags*){value}; }
-static inline _s_67e87168_RedStatuses* _67e87168_RedStatuses*(pageablesResidencyPriority value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_RedStatuses*){value}; }
-static inline _s_67e87168_char* _67e87168_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_char*){value}; }
-static inline _s_67e87168_int _67e87168_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_int){value}; }
-static inline _s_67e87168_void* _67e87168_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_void*){value}; }
-static inline _s_67e87168_ _67e87168_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_67e87168_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_67e87168_RedContext RedContext, _s_67e87168_RedHandleGpu RedHandleGpu, _s_67e87168_unsigned unsigned, _s_67e87168_RedXHandlePageable* RedXHandlePageable*, _s_67e87168_RedXPageableResidencyPriorityBitflags* RedXPageableResidencyPriorityBitflags*, _s_67e87168_RedStatuses* RedStatuses*, _s_67e87168_char* char*, _s_67e87168_int int, _s_67e87168_void* void*, _s_67e87168_ ) {
-  return void(RedContext.value, RedHandleGpu.value, unsigned.value, RedXHandlePageable*.value, RedXPageableResidencyPriorityBitflags*.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_200557c8_context { RedContext value; } _s_200557c8_context;
+typedef struct _s_200557c8_gpu { RedHandleGpu value; } _s_200557c8_gpu;
+typedef struct _s_200557c8_pageablesCount { unsigned value; } _s_200557c8_pageablesCount;
+typedef struct _s_200557c8_pageables { RedXHandlePageable* value; } _s_200557c8_pageables;
+typedef struct _s_200557c8_pageablesResidencyPriority { RedXPageableResidencyPriorityBitflags* value; } _s_200557c8_pageablesResidencyPriority;
+typedef struct _s_200557c8_outStatuses { RedStatuses* value; } _s_200557c8_outStatuses;
+typedef struct _s_200557c8_optionalFile { char* value; } _s_200557c8_optionalFile;
+typedef struct _s_200557c8_optionalLine { int value; } _s_200557c8_optionalLine;
+typedef struct _s_200557c8_optionalUserData { void* value; } _s_200557c8_optionalUserData;
+static inline _s_200557c8_context _200557c8_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_context){value}; }
+static inline _s_200557c8_gpu _200557c8_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_gpu){value}; }
+static inline _s_200557c8_pageablesCount _200557c8_pageablesCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_pageablesCount){value}; }
+static inline _s_200557c8_pageables _200557c8_pageables(RedXHandlePageable* value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_pageables){value}; }
+static inline _s_200557c8_pageablesResidencyPriority _200557c8_pageablesResidencyPriority(RedXPageableResidencyPriorityBitflags* value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_pageablesResidencyPriority){value}; }
+static inline _s_200557c8_outStatuses _200557c8_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_outStatuses){value}; }
+static inline _s_200557c8_optionalFile _200557c8_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_optionalFile){value}; }
+static inline _s_200557c8_optionalLine _200557c8_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_optionalLine){value}; }
+static inline _s_200557c8_optionalUserData _200557c8_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_200557c8_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXPageableSetResidencyPriority(_s_200557c8_context context, _s_200557c8_gpu gpu, _s_200557c8_pageablesCount pageablesCount, _s_200557c8_pageables pageables, _s_200557c8_pageablesResidencyPriority pageablesResidencyPriority, _s_200557c8_outStatuses outStatuses, _s_200557c8_optionalFile optionalFile, _s_200557c8_optionalLine optionalLine, _s_200557c8_optionalUserData optionalUserData) {
+  redXPageableSetResidencyPriority(context.value, gpu.value, pageablesCount.value, pageables.value, pageablesResidencyPriority.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _797925ea_RedContext(value) value
-#define _797925ea_RedHandleGpu(value) value
-#define _797925ea_unsigned(value) value
-#define _797925ea_RedXHandlePageable*(value) value
-#define _797925ea_RedBool32(value) value
-#define _797925ea_RedHandleCpuSignal(value) value
-#define _797925ea_RedStatuses*(value) value
-#define _797925ea_char*(value) value
-#define _797925ea_int(value) value
-#define _797925ea_void*(value) value
-#define _797925ea_(value) value
+#define np_redXPageableMakeResident redXPageableMakeResident
+#define _a07ba16a_context(value) value
+#define _a07ba16a_gpu(value) value
+#define _a07ba16a_pageablesCount(value) value
+#define _a07ba16a_pageables(value) value
+#define _a07ba16a_denyOverbudget(value) value
+#define _a07ba16a_signalCpuSignal(value) value
+#define _a07ba16a_outStatuses(value) value
+#define _a07ba16a_optionalFile(value) value
+#define _a07ba16a_optionalLine(value) value
+#define _a07ba16a_optionalUserData(value) value
 #else
-typedef struct _s_797925ea_RedContext { redXPageableMakeResident value; } _s_797925ea_RedContext;
-typedef struct _s_797925ea_RedHandleGpu { context value; } _s_797925ea_RedHandleGpu;
-typedef struct _s_797925ea_unsigned { gpu value; } _s_797925ea_unsigned;
-typedef struct _s_797925ea_RedXHandlePageable* { pageablesCount value; } _s_797925ea_RedXHandlePageable*;
-typedef struct _s_797925ea_RedBool32 { pageables value; } _s_797925ea_RedBool32;
-typedef struct _s_797925ea_RedHandleCpuSignal { denyOverbudget value; } _s_797925ea_RedHandleCpuSignal;
-typedef struct _s_797925ea_RedStatuses* { signalCpuSignal value; } _s_797925ea_RedStatuses*;
-typedef struct _s_797925ea_char* { outStatuses value; } _s_797925ea_char*;
-typedef struct _s_797925ea_int { optionalFile value; } _s_797925ea_int;
-typedef struct _s_797925ea_void* { optionalLine value; } _s_797925ea_void*;
-typedef struct _s_797925ea_ { optionalUserData value; } _s_797925ea_;
-static inline _s_797925ea_RedContext _797925ea_RedContext(redXPageableMakeResident value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_RedContext){value}; }
-static inline _s_797925ea_RedHandleGpu _797925ea_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_RedHandleGpu){value}; }
-static inline _s_797925ea_unsigned _797925ea_unsigned(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_unsigned){value}; }
-static inline _s_797925ea_RedXHandlePageable* _797925ea_RedXHandlePageable*(pageablesCount value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_RedXHandlePageable*){value}; }
-static inline _s_797925ea_RedBool32 _797925ea_RedBool32(pageables value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_RedBool32){value}; }
-static inline _s_797925ea_RedHandleCpuSignal _797925ea_RedHandleCpuSignal(denyOverbudget value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_RedHandleCpuSignal){value}; }
-static inline _s_797925ea_RedStatuses* _797925ea_RedStatuses*(signalCpuSignal value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_RedStatuses*){value}; }
-static inline _s_797925ea_char* _797925ea_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_char*){value}; }
-static inline _s_797925ea_int _797925ea_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_int){value}; }
-static inline _s_797925ea_void* _797925ea_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_void*){value}; }
-static inline _s_797925ea_ _797925ea_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_797925ea_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_797925ea_RedContext RedContext, _s_797925ea_RedHandleGpu RedHandleGpu, _s_797925ea_unsigned unsigned, _s_797925ea_RedXHandlePageable* RedXHandlePageable*, _s_797925ea_RedBool32 RedBool32, _s_797925ea_RedHandleCpuSignal RedHandleCpuSignal, _s_797925ea_RedStatuses* RedStatuses*, _s_797925ea_char* char*, _s_797925ea_int int, _s_797925ea_void* void*, _s_797925ea_ ) {
-  return void(RedContext.value, RedHandleGpu.value, unsigned.value, RedXHandlePageable*.value, RedBool32.value, RedHandleCpuSignal.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_a07ba16a_context { RedContext value; } _s_a07ba16a_context;
+typedef struct _s_a07ba16a_gpu { RedHandleGpu value; } _s_a07ba16a_gpu;
+typedef struct _s_a07ba16a_pageablesCount { unsigned value; } _s_a07ba16a_pageablesCount;
+typedef struct _s_a07ba16a_pageables { RedXHandlePageable* value; } _s_a07ba16a_pageables;
+typedef struct _s_a07ba16a_denyOverbudget { RedBool32 value; } _s_a07ba16a_denyOverbudget;
+typedef struct _s_a07ba16a_signalCpuSignal { RedHandleCpuSignal value; } _s_a07ba16a_signalCpuSignal;
+typedef struct _s_a07ba16a_outStatuses { RedStatuses* value; } _s_a07ba16a_outStatuses;
+typedef struct _s_a07ba16a_optionalFile { char* value; } _s_a07ba16a_optionalFile;
+typedef struct _s_a07ba16a_optionalLine { int value; } _s_a07ba16a_optionalLine;
+typedef struct _s_a07ba16a_optionalUserData { void* value; } _s_a07ba16a_optionalUserData;
+static inline _s_a07ba16a_context _a07ba16a_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_context){value}; }
+static inline _s_a07ba16a_gpu _a07ba16a_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_gpu){value}; }
+static inline _s_a07ba16a_pageablesCount _a07ba16a_pageablesCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_pageablesCount){value}; }
+static inline _s_a07ba16a_pageables _a07ba16a_pageables(RedXHandlePageable* value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_pageables){value}; }
+static inline _s_a07ba16a_denyOverbudget _a07ba16a_denyOverbudget(RedBool32 value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_denyOverbudget){value}; }
+static inline _s_a07ba16a_signalCpuSignal _a07ba16a_signalCpuSignal(RedHandleCpuSignal value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_signalCpuSignal){value}; }
+static inline _s_a07ba16a_outStatuses _a07ba16a_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_outStatuses){value}; }
+static inline _s_a07ba16a_optionalFile _a07ba16a_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_optionalFile){value}; }
+static inline _s_a07ba16a_optionalLine _a07ba16a_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_optionalLine){value}; }
+static inline _s_a07ba16a_optionalUserData _a07ba16a_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_a07ba16a_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXPageableMakeResident(_s_a07ba16a_context context, _s_a07ba16a_gpu gpu, _s_a07ba16a_pageablesCount pageablesCount, _s_a07ba16a_pageables pageables, _s_a07ba16a_denyOverbudget denyOverbudget, _s_a07ba16a_signalCpuSignal signalCpuSignal, _s_a07ba16a_outStatuses outStatuses, _s_a07ba16a_optionalFile optionalFile, _s_a07ba16a_optionalLine optionalLine, _s_a07ba16a_optionalUserData optionalUserData) {
+  redXPageableMakeResident(context.value, gpu.value, pageablesCount.value, pageables.value, denyOverbudget.value, signalCpuSignal.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _8bc50419_RedContext(value) value
-#define _8bc50419_RedHandleGpu(value) value
-#define _8bc50419_unsigned(value) value
-#define _8bc50419_RedXHandlePageable*(value) value
-#define _8bc50419_RedStatuses*(value) value
-#define _8bc50419_char*(value) value
-#define _8bc50419_int(value) value
-#define _8bc50419_void*(value) value
-#define _8bc50419_(value) value
+#define np_redXPageableEvict redXPageableEvict
+#define _b3895485_context(value) value
+#define _b3895485_gpu(value) value
+#define _b3895485_pageablesCount(value) value
+#define _b3895485_pageables(value) value
+#define _b3895485_outStatuses(value) value
+#define _b3895485_optionalFile(value) value
+#define _b3895485_optionalLine(value) value
+#define _b3895485_optionalUserData(value) value
 #else
-typedef struct _s_8bc50419_RedContext { redXPageableEvict value; } _s_8bc50419_RedContext;
-typedef struct _s_8bc50419_RedHandleGpu { context value; } _s_8bc50419_RedHandleGpu;
-typedef struct _s_8bc50419_unsigned { gpu value; } _s_8bc50419_unsigned;
-typedef struct _s_8bc50419_RedXHandlePageable* { pageablesCount value; } _s_8bc50419_RedXHandlePageable*;
-typedef struct _s_8bc50419_RedStatuses* { pageables value; } _s_8bc50419_RedStatuses*;
-typedef struct _s_8bc50419_char* { outStatuses value; } _s_8bc50419_char*;
-typedef struct _s_8bc50419_int { optionalFile value; } _s_8bc50419_int;
-typedef struct _s_8bc50419_void* { optionalLine value; } _s_8bc50419_void*;
-typedef struct _s_8bc50419_ { optionalUserData value; } _s_8bc50419_;
-static inline _s_8bc50419_RedContext _8bc50419_RedContext(redXPageableEvict value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_RedContext){value}; }
-static inline _s_8bc50419_RedHandleGpu _8bc50419_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_RedHandleGpu){value}; }
-static inline _s_8bc50419_unsigned _8bc50419_unsigned(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_unsigned){value}; }
-static inline _s_8bc50419_RedXHandlePageable* _8bc50419_RedXHandlePageable*(pageablesCount value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_RedXHandlePageable*){value}; }
-static inline _s_8bc50419_RedStatuses* _8bc50419_RedStatuses*(pageables value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_RedStatuses*){value}; }
-static inline _s_8bc50419_char* _8bc50419_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_char*){value}; }
-static inline _s_8bc50419_int _8bc50419_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_int){value}; }
-static inline _s_8bc50419_void* _8bc50419_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_void*){value}; }
-static inline _s_8bc50419_ _8bc50419_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_8bc50419_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_8bc50419_RedContext RedContext, _s_8bc50419_RedHandleGpu RedHandleGpu, _s_8bc50419_unsigned unsigned, _s_8bc50419_RedXHandlePageable* RedXHandlePageable*, _s_8bc50419_RedStatuses* RedStatuses*, _s_8bc50419_char* char*, _s_8bc50419_int int, _s_8bc50419_void* void*, _s_8bc50419_ ) {
-  return void(RedContext.value, RedHandleGpu.value, unsigned.value, RedXHandlePageable*.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_b3895485_context { RedContext value; } _s_b3895485_context;
+typedef struct _s_b3895485_gpu { RedHandleGpu value; } _s_b3895485_gpu;
+typedef struct _s_b3895485_pageablesCount { unsigned value; } _s_b3895485_pageablesCount;
+typedef struct _s_b3895485_pageables { RedXHandlePageable* value; } _s_b3895485_pageables;
+typedef struct _s_b3895485_outStatuses { RedStatuses* value; } _s_b3895485_outStatuses;
+typedef struct _s_b3895485_optionalFile { char* value; } _s_b3895485_optionalFile;
+typedef struct _s_b3895485_optionalLine { int value; } _s_b3895485_optionalLine;
+typedef struct _s_b3895485_optionalUserData { void* value; } _s_b3895485_optionalUserData;
+static inline _s_b3895485_context _b3895485_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_context){value}; }
+static inline _s_b3895485_gpu _b3895485_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_gpu){value}; }
+static inline _s_b3895485_pageablesCount _b3895485_pageablesCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_pageablesCount){value}; }
+static inline _s_b3895485_pageables _b3895485_pageables(RedXHandlePageable* value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_pageables){value}; }
+static inline _s_b3895485_outStatuses _b3895485_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_outStatuses){value}; }
+static inline _s_b3895485_optionalFile _b3895485_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_optionalFile){value}; }
+static inline _s_b3895485_optionalLine _b3895485_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_optionalLine){value}; }
+static inline _s_b3895485_optionalUserData _b3895485_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_b3895485_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXPageableEvict(_s_b3895485_context context, _s_b3895485_gpu gpu, _s_b3895485_pageablesCount pageablesCount, _s_b3895485_pageables pageables, _s_b3895485_outStatuses outStatuses, _s_b3895485_optionalFile optionalFile, _s_b3895485_optionalLine optionalLine, _s_b3895485_optionalUserData optionalUserData) {
+  redXPageableEvict(context.value, gpu.value, pageablesCount.value, pageables.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_RedXHandleResource RedXHandleResource
-#define _ec7febf5_RedContext(value) value
-#define _ec7febf5_RedHandleGpu(value) value
-#define _ec7febf5_RedHandleArray(value) value
-#define _ec7febf5_(value) value
+#define np_redXGetHandleResourceArray redXGetHandleResourceArray
+#define _03176528_context(value) value
+#define _03176528_gpu(value) value
+#define _03176528_array(value) value
 #else
-typedef struct _s_ec7febf5_RedContext { redXGetHandleResourceArray value; } _s_ec7febf5_RedContext;
-typedef struct _s_ec7febf5_RedHandleGpu { context value; } _s_ec7febf5_RedHandleGpu;
-typedef struct _s_ec7febf5_RedHandleArray { gpu value; } _s_ec7febf5_RedHandleArray;
-typedef struct _s_ec7febf5_ { array value; } _s_ec7febf5_;
-static inline _s_ec7febf5_RedContext _ec7febf5_RedContext(redXGetHandleResourceArray value) { return REDGPU_NP_STRUCT_INIT(_s_ec7febf5_RedContext){value}; }
-static inline _s_ec7febf5_RedHandleGpu _ec7febf5_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_ec7febf5_RedHandleGpu){value}; }
-static inline _s_ec7febf5_RedHandleArray _ec7febf5_RedHandleArray(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_ec7febf5_RedHandleArray){value}; }
-static inline _s_ec7febf5_ _ec7febf5_(array value) { return REDGPU_NP_STRUCT_INIT(_s_ec7febf5_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_RedXHandleResource(_s_ec7febf5_RedContext RedContext, _s_ec7febf5_RedHandleGpu RedHandleGpu, _s_ec7febf5_RedHandleArray RedHandleArray, _s_ec7febf5_ ) {
-  return RedXHandleResource(RedContext.value, RedHandleGpu.value, RedHandleArray.value, .value);
+typedef struct _s_03176528_context { RedContext value; } _s_03176528_context;
+typedef struct _s_03176528_gpu { RedHandleGpu value; } _s_03176528_gpu;
+typedef struct _s_03176528_array { RedHandleArray value; } _s_03176528_array;
+static inline _s_03176528_context _03176528_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_03176528_context){value}; }
+static inline _s_03176528_gpu _03176528_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_03176528_gpu){value}; }
+static inline _s_03176528_array _03176528_array(RedHandleArray value) { return REDGPU_NP_STRUCT_INIT(_s_03176528_array){value}; }
+REDGPU_NP_DECLSPEC RedXHandleResource REDGPU_NP_API np_redXGetHandleResourceArray(_s_03176528_context context, _s_03176528_gpu gpu, _s_03176528_array array) {
+  return redXGetHandleResourceArray(context.value, gpu.value, array.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_RedXHandleResource RedXHandleResource
-#define _3ddaf326_RedContext(value) value
-#define _3ddaf326_RedHandleGpu(value) value
-#define _3ddaf326_RedHandleImage(value) value
-#define _3ddaf326_(value) value
+#define np_redXGetHandleResourceImage redXGetHandleResourceImage
+#define _53ebaa34_context(value) value
+#define _53ebaa34_gpu(value) value
+#define _53ebaa34_image(value) value
 #else
-typedef struct _s_3ddaf326_RedContext { redXGetHandleResourceImage value; } _s_3ddaf326_RedContext;
-typedef struct _s_3ddaf326_RedHandleGpu { context value; } _s_3ddaf326_RedHandleGpu;
-typedef struct _s_3ddaf326_RedHandleImage { gpu value; } _s_3ddaf326_RedHandleImage;
-typedef struct _s_3ddaf326_ { image value; } _s_3ddaf326_;
-static inline _s_3ddaf326_RedContext _3ddaf326_RedContext(redXGetHandleResourceImage value) { return REDGPU_NP_STRUCT_INIT(_s_3ddaf326_RedContext){value}; }
-static inline _s_3ddaf326_RedHandleGpu _3ddaf326_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_3ddaf326_RedHandleGpu){value}; }
-static inline _s_3ddaf326_RedHandleImage _3ddaf326_RedHandleImage(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_3ddaf326_RedHandleImage){value}; }
-static inline _s_3ddaf326_ _3ddaf326_(image value) { return REDGPU_NP_STRUCT_INIT(_s_3ddaf326_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_RedXHandleResource(_s_3ddaf326_RedContext RedContext, _s_3ddaf326_RedHandleGpu RedHandleGpu, _s_3ddaf326_RedHandleImage RedHandleImage, _s_3ddaf326_ ) {
-  return RedXHandleResource(RedContext.value, RedHandleGpu.value, RedHandleImage.value, .value);
+typedef struct _s_53ebaa34_context { RedContext value; } _s_53ebaa34_context;
+typedef struct _s_53ebaa34_gpu { RedHandleGpu value; } _s_53ebaa34_gpu;
+typedef struct _s_53ebaa34_image { RedHandleImage value; } _s_53ebaa34_image;
+static inline _s_53ebaa34_context _53ebaa34_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_53ebaa34_context){value}; }
+static inline _s_53ebaa34_gpu _53ebaa34_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_53ebaa34_gpu){value}; }
+static inline _s_53ebaa34_image _53ebaa34_image(RedHandleImage value) { return REDGPU_NP_STRUCT_INIT(_s_53ebaa34_image){value}; }
+REDGPU_NP_DECLSPEC RedXHandleResource REDGPU_NP_API np_redXGetHandleResourceImage(_s_53ebaa34_context context, _s_53ebaa34_gpu gpu, _s_53ebaa34_image image) {
+  return redXGetHandleResourceImage(context.value, gpu.value, image.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _c9ffee96_RedHandleCalls(value) value
-#define _c9ffee96_RedHandleTexture(value) value
-#define _c9ffee96_unsigned(value) value
-#define _c9ffee96_RedHandleTexture*(value) value
-#define _c9ffee96_RedSetProcedureOutputOp(value) value
-#define _c9ffee96_RedSetProcedureOutputOp(value) value
-#define _c9ffee96_RedSetProcedureOutputOp*(value) value
-#define _c9ffee96_float(value) value
-#define _c9ffee96_unsigned(value) value
-#define _c9ffee96_RedColorsClearValuesFloat*(value) value
-#define _c9ffee96_(value) value
+#define np_redXCallSetProcedureOutput redXCallSetProcedureOutput
+#define _aaf4b6e6_calls(value) value
+#define _aaf4b6e6_depthStencil(value) value
+#define _aaf4b6e6_colorsCount(value) value
+#define _aaf4b6e6_colors(value) value
+#define _aaf4b6e6_depthSetProcedureOutputOp(value) value
+#define _aaf4b6e6_stencilSetProcedureOutputOp(value) value
+#define _aaf4b6e6_colorsSetProcedureOutputOp(value) value
+#define _aaf4b6e6_depthClearValue(value) value
+#define _aaf4b6e6_stencilClearValue(value) value
+#define _aaf4b6e6_colorsClearValuesFloat(value) value
 #else
-typedef struct _s_c9ffee96_RedHandleCalls { redXCallSetProcedureOutput value; } _s_c9ffee96_RedHandleCalls;
-typedef struct _s_c9ffee96_RedHandleTexture { calls value; } _s_c9ffee96_RedHandleTexture;
-typedef struct _s_c9ffee96_unsigned { depthStencil value; } _s_c9ffee96_unsigned;
-typedef struct _s_c9ffee96_RedHandleTexture* { colorsCount value; } _s_c9ffee96_RedHandleTexture*;
-typedef struct _s_c9ffee96_RedSetProcedureOutputOp { colors value; } _s_c9ffee96_RedSetProcedureOutputOp;
-typedef struct _s_c9ffee96_RedSetProcedureOutputOp { depthSetProcedureOutputOp value; } _s_c9ffee96_RedSetProcedureOutputOp;
-typedef struct _s_c9ffee96_RedSetProcedureOutputOp* { stencilSetProcedureOutputOp value; } _s_c9ffee96_RedSetProcedureOutputOp*;
-typedef struct _s_c9ffee96_float { colorsSetProcedureOutputOp value; } _s_c9ffee96_float;
-typedef struct _s_c9ffee96_unsigned { depthClearValue value; } _s_c9ffee96_unsigned;
-typedef struct _s_c9ffee96_RedColorsClearValuesFloat* { stencilClearValue value; } _s_c9ffee96_RedColorsClearValuesFloat*;
-typedef struct _s_c9ffee96_ { colorsClearValuesFloat value; } _s_c9ffee96_;
-static inline _s_c9ffee96_RedHandleCalls _c9ffee96_RedHandleCalls(redXCallSetProcedureOutput value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_RedHandleCalls){value}; }
-static inline _s_c9ffee96_RedHandleTexture _c9ffee96_RedHandleTexture(calls value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_RedHandleTexture){value}; }
-static inline _s_c9ffee96_unsigned _c9ffee96_unsigned(depthStencil value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_unsigned){value}; }
-static inline _s_c9ffee96_RedHandleTexture* _c9ffee96_RedHandleTexture*(colorsCount value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_RedHandleTexture*){value}; }
-static inline _s_c9ffee96_RedSetProcedureOutputOp _c9ffee96_RedSetProcedureOutputOp(colors value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_RedSetProcedureOutputOp){value}; }
-static inline _s_c9ffee96_RedSetProcedureOutputOp _c9ffee96_RedSetProcedureOutputOp(depthSetProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_RedSetProcedureOutputOp){value}; }
-static inline _s_c9ffee96_RedSetProcedureOutputOp* _c9ffee96_RedSetProcedureOutputOp*(stencilSetProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_RedSetProcedureOutputOp*){value}; }
-static inline _s_c9ffee96_float _c9ffee96_float(colorsSetProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_float){value}; }
-static inline _s_c9ffee96_unsigned _c9ffee96_unsigned(depthClearValue value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_unsigned){value}; }
-static inline _s_c9ffee96_RedColorsClearValuesFloat* _c9ffee96_RedColorsClearValuesFloat*(stencilClearValue value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_RedColorsClearValuesFloat*){value}; }
-static inline _s_c9ffee96_ _c9ffee96_(colorsClearValuesFloat value) { return REDGPU_NP_STRUCT_INIT(_s_c9ffee96_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_c9ffee96_RedHandleCalls RedHandleCalls, _s_c9ffee96_RedHandleTexture RedHandleTexture, _s_c9ffee96_unsigned unsigned, _s_c9ffee96_RedHandleTexture* RedHandleTexture*, _s_c9ffee96_RedSetProcedureOutputOp RedSetProcedureOutputOp, _s_c9ffee96_RedSetProcedureOutputOp RedSetProcedureOutputOp, _s_c9ffee96_RedSetProcedureOutputOp* RedSetProcedureOutputOp*, _s_c9ffee96_float float, _s_c9ffee96_unsigned unsigned, _s_c9ffee96_RedColorsClearValuesFloat* RedColorsClearValuesFloat*, _s_c9ffee96_ ) {
-  return void(RedHandleCalls.value, RedHandleTexture.value, unsigned.value, RedHandleTexture*.value, RedSetProcedureOutputOp.value, RedSetProcedureOutputOp.value, RedSetProcedureOutputOp*.value, float.value, unsigned.value, RedColorsClearValuesFloat*.value, .value);
+typedef struct _s_aaf4b6e6_calls { RedHandleCalls value; } _s_aaf4b6e6_calls;
+typedef struct _s_aaf4b6e6_depthStencil { RedHandleTexture value; } _s_aaf4b6e6_depthStencil;
+typedef struct _s_aaf4b6e6_colorsCount { unsigned value; } _s_aaf4b6e6_colorsCount;
+typedef struct _s_aaf4b6e6_colors { RedHandleTexture* value; } _s_aaf4b6e6_colors;
+typedef struct _s_aaf4b6e6_depthSetProcedureOutputOp { RedSetProcedureOutputOp value; } _s_aaf4b6e6_depthSetProcedureOutputOp;
+typedef struct _s_aaf4b6e6_stencilSetProcedureOutputOp { RedSetProcedureOutputOp value; } _s_aaf4b6e6_stencilSetProcedureOutputOp;
+typedef struct _s_aaf4b6e6_colorsSetProcedureOutputOp { RedSetProcedureOutputOp* value; } _s_aaf4b6e6_colorsSetProcedureOutputOp;
+typedef struct _s_aaf4b6e6_depthClearValue { float value; } _s_aaf4b6e6_depthClearValue;
+typedef struct _s_aaf4b6e6_stencilClearValue { unsigned value; } _s_aaf4b6e6_stencilClearValue;
+typedef struct _s_aaf4b6e6_colorsClearValuesFloat { RedColorsClearValuesFloat* value; } _s_aaf4b6e6_colorsClearValuesFloat;
+static inline _s_aaf4b6e6_calls _aaf4b6e6_calls(RedHandleCalls value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_calls){value}; }
+static inline _s_aaf4b6e6_depthStencil _aaf4b6e6_depthStencil(RedHandleTexture value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_depthStencil){value}; }
+static inline _s_aaf4b6e6_colorsCount _aaf4b6e6_colorsCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_colorsCount){value}; }
+static inline _s_aaf4b6e6_colors _aaf4b6e6_colors(RedHandleTexture* value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_colors){value}; }
+static inline _s_aaf4b6e6_depthSetProcedureOutputOp _aaf4b6e6_depthSetProcedureOutputOp(RedSetProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_depthSetProcedureOutputOp){value}; }
+static inline _s_aaf4b6e6_stencilSetProcedureOutputOp _aaf4b6e6_stencilSetProcedureOutputOp(RedSetProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_stencilSetProcedureOutputOp){value}; }
+static inline _s_aaf4b6e6_colorsSetProcedureOutputOp _aaf4b6e6_colorsSetProcedureOutputOp(RedSetProcedureOutputOp* value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_colorsSetProcedureOutputOp){value}; }
+static inline _s_aaf4b6e6_depthClearValue _aaf4b6e6_depthClearValue(float value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_depthClearValue){value}; }
+static inline _s_aaf4b6e6_stencilClearValue _aaf4b6e6_stencilClearValue(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_stencilClearValue){value}; }
+static inline _s_aaf4b6e6_colorsClearValuesFloat _aaf4b6e6_colorsClearValuesFloat(RedColorsClearValuesFloat* value) { return REDGPU_NP_STRUCT_INIT(_s_aaf4b6e6_colorsClearValuesFloat){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCallSetProcedureOutput(_s_aaf4b6e6_calls calls, _s_aaf4b6e6_depthStencil depthStencil, _s_aaf4b6e6_colorsCount colorsCount, _s_aaf4b6e6_colors colors, _s_aaf4b6e6_depthSetProcedureOutputOp depthSetProcedureOutputOp, _s_aaf4b6e6_stencilSetProcedureOutputOp stencilSetProcedureOutputOp, _s_aaf4b6e6_colorsSetProcedureOutputOp colorsSetProcedureOutputOp, _s_aaf4b6e6_depthClearValue depthClearValue, _s_aaf4b6e6_stencilClearValue stencilClearValue, _s_aaf4b6e6_colorsClearValuesFloat colorsClearValuesFloat) {
+  redXCallSetProcedureOutput(calls.value, depthStencil.value, colorsCount.value, colors.value, depthSetProcedureOutputOp.value, stencilSetProcedureOutputOp.value, colorsSetProcedureOutputOp.value, depthClearValue.value, stencilClearValue.value, colorsClearValuesFloat.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _95b99d38_RedHandleCalls(value) value
-#define _95b99d38_RedHandleTexture*(value) value
-#define _95b99d38_unsigned*(value) value
-#define _95b99d38_RedEndProcedureOutputOp(value) value
-#define _95b99d38_RedEndProcedureOutputOp(value) value
-#define _95b99d38_RedEndProcedureOutputOp*(value) value
-#define _95b99d38_(value) value
+#define np_redXCallEndProcedureOutput redXCallEndProcedureOutput
+#define _960ea83b_calls(value) value
+#define _960ea83b_resolveTargetColors(value) value
+#define _960ea83b_resolveTargetColorsFormat(value) value
+#define _960ea83b_depthEndProcedureOutputOp(value) value
+#define _960ea83b_stencilEndProcedureOutputOp(value) value
+#define _960ea83b_colorsEndProcedureOutputOp(value) value
 #else
-typedef struct _s_95b99d38_RedHandleCalls { redXCallEndProcedureOutput value; } _s_95b99d38_RedHandleCalls;
-typedef struct _s_95b99d38_RedHandleTexture* { calls value; } _s_95b99d38_RedHandleTexture*;
-typedef struct _s_95b99d38_unsigned* { resolveTargetColors value; } _s_95b99d38_unsigned*;
-typedef struct _s_95b99d38_RedEndProcedureOutputOp { resolveTargetColorsFormat value; } _s_95b99d38_RedEndProcedureOutputOp;
-typedef struct _s_95b99d38_RedEndProcedureOutputOp { depthEndProcedureOutputOp value; } _s_95b99d38_RedEndProcedureOutputOp;
-typedef struct _s_95b99d38_RedEndProcedureOutputOp* { stencilEndProcedureOutputOp value; } _s_95b99d38_RedEndProcedureOutputOp*;
-typedef struct _s_95b99d38_ { colorsEndProcedureOutputOp value; } _s_95b99d38_;
-static inline _s_95b99d38_RedHandleCalls _95b99d38_RedHandleCalls(redXCallEndProcedureOutput value) { return REDGPU_NP_STRUCT_INIT(_s_95b99d38_RedHandleCalls){value}; }
-static inline _s_95b99d38_RedHandleTexture* _95b99d38_RedHandleTexture*(calls value) { return REDGPU_NP_STRUCT_INIT(_s_95b99d38_RedHandleTexture*){value}; }
-static inline _s_95b99d38_unsigned* _95b99d38_unsigned*(resolveTargetColors value) { return REDGPU_NP_STRUCT_INIT(_s_95b99d38_unsigned*){value}; }
-static inline _s_95b99d38_RedEndProcedureOutputOp _95b99d38_RedEndProcedureOutputOp(resolveTargetColorsFormat value) { return REDGPU_NP_STRUCT_INIT(_s_95b99d38_RedEndProcedureOutputOp){value}; }
-static inline _s_95b99d38_RedEndProcedureOutputOp _95b99d38_RedEndProcedureOutputOp(depthEndProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_95b99d38_RedEndProcedureOutputOp){value}; }
-static inline _s_95b99d38_RedEndProcedureOutputOp* _95b99d38_RedEndProcedureOutputOp*(stencilEndProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_95b99d38_RedEndProcedureOutputOp*){value}; }
-static inline _s_95b99d38_ _95b99d38_(colorsEndProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_95b99d38_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_95b99d38_RedHandleCalls RedHandleCalls, _s_95b99d38_RedHandleTexture* RedHandleTexture*, _s_95b99d38_unsigned* unsigned*, _s_95b99d38_RedEndProcedureOutputOp RedEndProcedureOutputOp, _s_95b99d38_RedEndProcedureOutputOp RedEndProcedureOutputOp, _s_95b99d38_RedEndProcedureOutputOp* RedEndProcedureOutputOp*, _s_95b99d38_ ) {
-  return void(RedHandleCalls.value, RedHandleTexture*.value, unsigned*.value, RedEndProcedureOutputOp.value, RedEndProcedureOutputOp.value, RedEndProcedureOutputOp*.value, .value);
+typedef struct _s_960ea83b_calls { RedHandleCalls value; } _s_960ea83b_calls;
+typedef struct _s_960ea83b_resolveTargetColors { RedHandleTexture* value; } _s_960ea83b_resolveTargetColors;
+typedef struct _s_960ea83b_resolveTargetColorsFormat { unsigned* value; } _s_960ea83b_resolveTargetColorsFormat;
+typedef struct _s_960ea83b_depthEndProcedureOutputOp { RedEndProcedureOutputOp value; } _s_960ea83b_depthEndProcedureOutputOp;
+typedef struct _s_960ea83b_stencilEndProcedureOutputOp { RedEndProcedureOutputOp value; } _s_960ea83b_stencilEndProcedureOutputOp;
+typedef struct _s_960ea83b_colorsEndProcedureOutputOp { RedEndProcedureOutputOp* value; } _s_960ea83b_colorsEndProcedureOutputOp;
+static inline _s_960ea83b_calls _960ea83b_calls(RedHandleCalls value) { return REDGPU_NP_STRUCT_INIT(_s_960ea83b_calls){value}; }
+static inline _s_960ea83b_resolveTargetColors _960ea83b_resolveTargetColors(RedHandleTexture* value) { return REDGPU_NP_STRUCT_INIT(_s_960ea83b_resolveTargetColors){value}; }
+static inline _s_960ea83b_resolveTargetColorsFormat _960ea83b_resolveTargetColorsFormat(unsigned* value) { return REDGPU_NP_STRUCT_INIT(_s_960ea83b_resolveTargetColorsFormat){value}; }
+static inline _s_960ea83b_depthEndProcedureOutputOp _960ea83b_depthEndProcedureOutputOp(RedEndProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_960ea83b_depthEndProcedureOutputOp){value}; }
+static inline _s_960ea83b_stencilEndProcedureOutputOp _960ea83b_stencilEndProcedureOutputOp(RedEndProcedureOutputOp value) { return REDGPU_NP_STRUCT_INIT(_s_960ea83b_stencilEndProcedureOutputOp){value}; }
+static inline _s_960ea83b_colorsEndProcedureOutputOp _960ea83b_colorsEndProcedureOutputOp(RedEndProcedureOutputOp* value) { return REDGPU_NP_STRUCT_INIT(_s_960ea83b_colorsEndProcedureOutputOp){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCallEndProcedureOutput(_s_960ea83b_calls calls, _s_960ea83b_resolveTargetColors resolveTargetColors, _s_960ea83b_resolveTargetColorsFormat resolveTargetColorsFormat, _s_960ea83b_depthEndProcedureOutputOp depthEndProcedureOutputOp, _s_960ea83b_stencilEndProcedureOutputOp stencilEndProcedureOutputOp, _s_960ea83b_colorsEndProcedureOutputOp colorsEndProcedureOutputOp) {
+  redXCallEndProcedureOutput(calls.value, resolveTargetColors.value, resolveTargetColorsFormat.value, depthEndProcedureOutputOp.value, stencilEndProcedureOutputOp.value, colorsEndProcedureOutputOp.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _9a7856d8_RedHandleCalls(value) value
-#define _9a7856d8_unsigned(value) value
-#define _9a7856d8_void*(value) value
-#define _9a7856d8_(value) value
+#define np_redXCallUsageAliasOrderBarrier redXCallUsageAliasOrderBarrier
+#define _c422a5bf_calls(value) value
+#define _c422a5bf_barriersCount(value) value
+#define _c422a5bf_barriers(value) value
 #else
-typedef struct _s_9a7856d8_RedHandleCalls { redXCallUsageAliasOrderBarrier value; } _s_9a7856d8_RedHandleCalls;
-typedef struct _s_9a7856d8_unsigned { calls value; } _s_9a7856d8_unsigned;
-typedef struct _s_9a7856d8_void* { barriersCount value; } _s_9a7856d8_void*;
-typedef struct _s_9a7856d8_ { barriers value; } _s_9a7856d8_;
-static inline _s_9a7856d8_RedHandleCalls _9a7856d8_RedHandleCalls(redXCallUsageAliasOrderBarrier value) { return REDGPU_NP_STRUCT_INIT(_s_9a7856d8_RedHandleCalls){value}; }
-static inline _s_9a7856d8_unsigned _9a7856d8_unsigned(calls value) { return REDGPU_NP_STRUCT_INIT(_s_9a7856d8_unsigned){value}; }
-static inline _s_9a7856d8_void* _9a7856d8_void*(barriersCount value) { return REDGPU_NP_STRUCT_INIT(_s_9a7856d8_void*){value}; }
-static inline _s_9a7856d8_ _9a7856d8_(barriers value) { return REDGPU_NP_STRUCT_INIT(_s_9a7856d8_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_9a7856d8_RedHandleCalls RedHandleCalls, _s_9a7856d8_unsigned unsigned, _s_9a7856d8_void* void*, _s_9a7856d8_ ) {
-  return void(RedHandleCalls.value, unsigned.value, void*.value, .value);
+typedef struct _s_c422a5bf_calls { RedHandleCalls value; } _s_c422a5bf_calls;
+typedef struct _s_c422a5bf_barriersCount { unsigned value; } _s_c422a5bf_barriersCount;
+typedef struct _s_c422a5bf_barriers { void* value; } _s_c422a5bf_barriers;
+static inline _s_c422a5bf_calls _c422a5bf_calls(RedHandleCalls value) { return REDGPU_NP_STRUCT_INIT(_s_c422a5bf_calls){value}; }
+static inline _s_c422a5bf_barriersCount _c422a5bf_barriersCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_c422a5bf_barriersCount){value}; }
+static inline _s_c422a5bf_barriers _c422a5bf_barriers(void* value) { return REDGPU_NP_STRUCT_INIT(_s_c422a5bf_barriers){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCallUsageAliasOrderBarrier(_s_c422a5bf_calls calls, _s_c422a5bf_barriersCount barriersCount, _s_c422a5bf_barriers barriers) {
+  redXCallUsageAliasOrderBarrier(calls.value, barriersCount.value, barriers.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _4a33d59a_RedHandleCalls(value) value
-#define _4a33d59a_unsigned(value) value
-#define _4a33d59a_void*(value) value
-#define _4a33d59a_(value) value
+#define np_redXCallCopyImageRegion redXCallCopyImageRegion
+#define _89a23d6d_calls(value) value
+#define _89a23d6d_copiesCount(value) value
+#define _89a23d6d_copies(value) value
 #else
-typedef struct _s_4a33d59a_RedHandleCalls { redXCallCopyImageRegion value; } _s_4a33d59a_RedHandleCalls;
-typedef struct _s_4a33d59a_unsigned { calls value; } _s_4a33d59a_unsigned;
-typedef struct _s_4a33d59a_void* { copiesCount value; } _s_4a33d59a_void*;
-typedef struct _s_4a33d59a_ { copies value; } _s_4a33d59a_;
-static inline _s_4a33d59a_RedHandleCalls _4a33d59a_RedHandleCalls(redXCallCopyImageRegion value) { return REDGPU_NP_STRUCT_INIT(_s_4a33d59a_RedHandleCalls){value}; }
-static inline _s_4a33d59a_unsigned _4a33d59a_unsigned(calls value) { return REDGPU_NP_STRUCT_INIT(_s_4a33d59a_unsigned){value}; }
-static inline _s_4a33d59a_void* _4a33d59a_void*(copiesCount value) { return REDGPU_NP_STRUCT_INIT(_s_4a33d59a_void*){value}; }
-static inline _s_4a33d59a_ _4a33d59a_(copies value) { return REDGPU_NP_STRUCT_INIT(_s_4a33d59a_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_4a33d59a_RedHandleCalls RedHandleCalls, _s_4a33d59a_unsigned unsigned, _s_4a33d59a_void* void*, _s_4a33d59a_ ) {
-  return void(RedHandleCalls.value, unsigned.value, void*.value, .value);
+typedef struct _s_89a23d6d_calls { RedHandleCalls value; } _s_89a23d6d_calls;
+typedef struct _s_89a23d6d_copiesCount { unsigned value; } _s_89a23d6d_copiesCount;
+typedef struct _s_89a23d6d_copies { void* value; } _s_89a23d6d_copies;
+static inline _s_89a23d6d_calls _89a23d6d_calls(RedHandleCalls value) { return REDGPU_NP_STRUCT_INIT(_s_89a23d6d_calls){value}; }
+static inline _s_89a23d6d_copiesCount _89a23d6d_copiesCount(unsigned value) { return REDGPU_NP_STRUCT_INIT(_s_89a23d6d_copiesCount){value}; }
+static inline _s_89a23d6d_copies _89a23d6d_copies(void* value) { return REDGPU_NP_STRUCT_INIT(_s_89a23d6d_copies){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCallCopyImageRegion(_s_89a23d6d_calls calls, _s_89a23d6d_copiesCount copiesCount, _s_89a23d6d_copies copies) {
+  redXCallCopyImageRegion(calls.value, copiesCount.value, copies.value);
 }
 #endif
 
 #ifdef REDGPU_DISABLE_NAMED_PARAMETERS
-#define np_void void
-#define _f99d7240_RedContext(value) value
-#define _f99d7240_RedHandleGpu(value) value
-#define _f99d7240_char*(value) value
-#define _f99d7240_void*(value) value
-#define _f99d7240_RedHandleSurface*(value) value
-#define _f99d7240_RedStatuses*(value) value
-#define _f99d7240_char*(value) value
-#define _f99d7240_int(value) value
-#define _f99d7240_void*(value) value
-#define _f99d7240_(value) value
+#define np_redXCreateSurfaceWinRT redXCreateSurfaceWinRT
+#define _7512bf95_context(value) value
+#define _7512bf95_gpu(value) value
+#define _7512bf95_handleName(value) value
+#define _7512bf95_winrtIUnknownPointerCoreWindow(value) value
+#define _7512bf95_outSurface(value) value
+#define _7512bf95_outStatuses(value) value
+#define _7512bf95_optionalFile(value) value
+#define _7512bf95_optionalLine(value) value
+#define _7512bf95_optionalUserData(value) value
 #else
-typedef struct _s_f99d7240_RedContext { redXCreateSurfaceWinRT value; } _s_f99d7240_RedContext;
-typedef struct _s_f99d7240_RedHandleGpu { context value; } _s_f99d7240_RedHandleGpu;
-typedef struct _s_f99d7240_char* { gpu value; } _s_f99d7240_char*;
-typedef struct _s_f99d7240_void* { handleName value; } _s_f99d7240_void*;
-typedef struct _s_f99d7240_RedHandleSurface* { winrtIUnknownPointerCoreWindow value; } _s_f99d7240_RedHandleSurface*;
-typedef struct _s_f99d7240_RedStatuses* { outSurface value; } _s_f99d7240_RedStatuses*;
-typedef struct _s_f99d7240_char* { outStatuses value; } _s_f99d7240_char*;
-typedef struct _s_f99d7240_int { optionalFile value; } _s_f99d7240_int;
-typedef struct _s_f99d7240_void* { optionalLine value; } _s_f99d7240_void*;
-typedef struct _s_f99d7240_ { optionalUserData value; } _s_f99d7240_;
-static inline _s_f99d7240_RedContext _f99d7240_RedContext(redXCreateSurfaceWinRT value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_RedContext){value}; }
-static inline _s_f99d7240_RedHandleGpu _f99d7240_RedHandleGpu(context value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_RedHandleGpu){value}; }
-static inline _s_f99d7240_char* _f99d7240_char*(gpu value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_char*){value}; }
-static inline _s_f99d7240_void* _f99d7240_void*(handleName value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_void*){value}; }
-static inline _s_f99d7240_RedHandleSurface* _f99d7240_RedHandleSurface*(winrtIUnknownPointerCoreWindow value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_RedHandleSurface*){value}; }
-static inline _s_f99d7240_RedStatuses* _f99d7240_RedStatuses*(outSurface value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_RedStatuses*){value}; }
-static inline _s_f99d7240_char* _f99d7240_char*(outStatuses value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_char*){value}; }
-static inline _s_f99d7240_int _f99d7240_int(optionalFile value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_int){value}; }
-static inline _s_f99d7240_void* _f99d7240_void*(optionalLine value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_void*){value}; }
-static inline _s_f99d7240_ _f99d7240_(optionalUserData value) { return REDGPU_NP_STRUCT_INIT(_s_f99d7240_){value}; }
-REDGPU_NP_DECLSPEC REDGPU_X_DECLSPEC REDGPU_NP_API np_void(_s_f99d7240_RedContext RedContext, _s_f99d7240_RedHandleGpu RedHandleGpu, _s_f99d7240_char* char*, _s_f99d7240_void* void*, _s_f99d7240_RedHandleSurface* RedHandleSurface*, _s_f99d7240_RedStatuses* RedStatuses*, _s_f99d7240_char* char*, _s_f99d7240_int int, _s_f99d7240_void* void*, _s_f99d7240_ ) {
-  return void(RedContext.value, RedHandleGpu.value, char*.value, void*.value, RedHandleSurface*.value, RedStatuses*.value, char*.value, int.value, void*.value, .value);
+typedef struct _s_7512bf95_context { RedContext value; } _s_7512bf95_context;
+typedef struct _s_7512bf95_gpu { RedHandleGpu value; } _s_7512bf95_gpu;
+typedef struct _s_7512bf95_handleName { char* value; } _s_7512bf95_handleName;
+typedef struct _s_7512bf95_winrtIUnknownPointerCoreWindow { void* value; } _s_7512bf95_winrtIUnknownPointerCoreWindow;
+typedef struct _s_7512bf95_outSurface { RedHandleSurface* value; } _s_7512bf95_outSurface;
+typedef struct _s_7512bf95_outStatuses { RedStatuses* value; } _s_7512bf95_outStatuses;
+typedef struct _s_7512bf95_optionalFile { char* value; } _s_7512bf95_optionalFile;
+typedef struct _s_7512bf95_optionalLine { int value; } _s_7512bf95_optionalLine;
+typedef struct _s_7512bf95_optionalUserData { void* value; } _s_7512bf95_optionalUserData;
+static inline _s_7512bf95_context _7512bf95_context(RedContext value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_context){value}; }
+static inline _s_7512bf95_gpu _7512bf95_gpu(RedHandleGpu value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_gpu){value}; }
+static inline _s_7512bf95_handleName _7512bf95_handleName(char* value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_handleName){value}; }
+static inline _s_7512bf95_winrtIUnknownPointerCoreWindow _7512bf95_winrtIUnknownPointerCoreWindow(void* value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_winrtIUnknownPointerCoreWindow){value}; }
+static inline _s_7512bf95_outSurface _7512bf95_outSurface(RedHandleSurface* value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_outSurface){value}; }
+static inline _s_7512bf95_outStatuses _7512bf95_outStatuses(RedStatuses* value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_outStatuses){value}; }
+static inline _s_7512bf95_optionalFile _7512bf95_optionalFile(char* value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_optionalFile){value}; }
+static inline _s_7512bf95_optionalLine _7512bf95_optionalLine(int value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_optionalLine){value}; }
+static inline _s_7512bf95_optionalUserData _7512bf95_optionalUserData(void* value) { return REDGPU_NP_STRUCT_INIT(_s_7512bf95_optionalUserData){value}; }
+REDGPU_NP_DECLSPEC void REDGPU_NP_API np_redXCreateSurfaceWinRT(_s_7512bf95_context context, _s_7512bf95_gpu gpu, _s_7512bf95_handleName handleName, _s_7512bf95_winrtIUnknownPointerCoreWindow winrtIUnknownPointerCoreWindow, _s_7512bf95_outSurface outSurface, _s_7512bf95_outStatuses outStatuses, _s_7512bf95_optionalFile optionalFile, _s_7512bf95_optionalLine optionalLine, _s_7512bf95_optionalUserData optionalUserData) {
+  redXCreateSurfaceWinRT(context.value, gpu.value, handleName.value, winrtIUnknownPointerCoreWindow.value, outSurface.value, outStatuses.value, optionalFile.value, optionalLine.value, optionalUserData.value);
 }
 #endif
 
