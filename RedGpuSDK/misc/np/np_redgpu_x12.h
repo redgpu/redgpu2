@@ -1,5 +1,13 @@
 #pragma once
 
+#ifndef REDGPU_NP_DECLSPEC
+#define REDGPU_NP_DECLSPEC
+#endif
+
+#ifndef REDGPU_NP_API
+#define REDGPU_NP_API
+#endif
+
 #ifndef REDGPU_NP_STRUCT_INIT
 #ifdef __cplusplus
 #define REDGPU_NP_STRUCT_INIT(x) x
