@@ -1,5 +1,4 @@
 // pub type size_t = usize;
-// pub type uint8_t = u8;
 // pub type uint64_t = u64;
 
 #include <stddef.h> // For size_t
@@ -7,30 +6,30 @@
 
 typedef unsigned RedBool32;
 
-typedef struct RedTypeContext                   * RedContext;
-typedef struct RedTypeHandleContext             * RedHandleContext;
-typedef struct RedTypeHandleGpu                 * RedHandleGpu;
-typedef struct RedTypeHandleGpuDevice           * RedHandleGpuDevice;
-typedef struct RedTypeHandleQueue               * RedHandleQueue;
-typedef struct RedTypeHandleMemory              * RedHandleMemory;
-typedef struct RedTypeHandleArray               * RedHandleArray;
-typedef struct RedTypeHandleImage               * RedHandleImage;
-typedef struct RedTypeHandleSampler             * RedHandleSampler;
-typedef struct RedTypeHandleTexture             * RedHandleTexture;
-typedef struct RedTypeHandleGpuCode             * RedHandleGpuCode;
-typedef struct RedTypeHandleOutputDeclaration   * RedHandleOutputDeclaration;
-typedef struct RedTypeHandleStructDeclaration   * RedHandleStructDeclaration;
-typedef struct RedTypeHandleProcedureParameters * RedHandleProcedureParameters;
-typedef struct RedTypeHandleProcedureCache      * RedHandleProcedureCache;
-typedef struct RedTypeHandleProcedure           * RedHandleProcedure;
-typedef struct RedTypeHandleOutput              * RedHandleOutput;
-typedef struct RedTypeHandleStruct              * RedHandleStruct;
-typedef struct RedTypeHandleStructsMemory       * RedHandleStructsMemory;
-typedef struct RedTypeHandleCalls               * RedHandleCalls;
-typedef struct RedTypeHandleCallsMemory         * RedHandleCallsMemory;
-typedef struct RedTypeHandleCpuSignal           * RedHandleCpuSignal;
-typedef struct RedTypeHandleGpuSignal           * RedHandleGpuSignal;
-typedef struct RedTypeHandleGpuToCpuSignal      * RedHandleGpuToCpuSignal;
+typedef const struct RedTypeContext                   * RedContext;
+typedef const struct RedTypeHandleContext             * RedHandleContext;
+typedef const struct RedTypeHandleGpu                 * RedHandleGpu;
+typedef const struct RedTypeHandleGpuDevice           * RedHandleGpuDevice;
+typedef const struct RedTypeHandleQueue               * RedHandleQueue;
+typedef const struct RedTypeHandleMemory              * RedHandleMemory;
+typedef const struct RedTypeHandleArray               * RedHandleArray;
+typedef const struct RedTypeHandleImage               * RedHandleImage;
+typedef const struct RedTypeHandleSampler             * RedHandleSampler;
+typedef const struct RedTypeHandleTexture             * RedHandleTexture;
+typedef const struct RedTypeHandleGpuCode             * RedHandleGpuCode;
+typedef const struct RedTypeHandleOutputDeclaration   * RedHandleOutputDeclaration;
+typedef const struct RedTypeHandleStructDeclaration   * RedHandleStructDeclaration;
+typedef const struct RedTypeHandleProcedureParameters * RedHandleProcedureParameters;
+typedef const struct RedTypeHandleProcedureCache      * RedHandleProcedureCache;
+typedef const struct RedTypeHandleProcedure           * RedHandleProcedure;
+typedef const struct RedTypeHandleOutput              * RedHandleOutput;
+typedef const struct RedTypeHandleStruct              * RedHandleStruct;
+typedef const struct RedTypeHandleStructsMemory       * RedHandleStructsMemory;
+typedef const struct RedTypeHandleCalls               * RedHandleCalls;
+typedef const struct RedTypeHandleCallsMemory         * RedHandleCallsMemory;
+typedef const struct RedTypeHandleCpuSignal           * RedHandleCpuSignal;
+typedef const struct RedTypeHandleGpuSignal           * RedHandleGpuSignal;
+typedef const struct RedTypeHandleGpuToCpuSignal      * RedHandleGpuToCpuSignal;
 
 typedef struct RedArray {
   RedHandleArray       handle;
@@ -235,7 +234,7 @@ typedef struct RedImageFormatFeatures {
 typedef struct RedGpuInfo {
   RedHandleGpu                   gpu;
   RedHandleGpuDevice             gpuDevice;
-  uint8_t                        gpuName[256];
+  unsigned char                  gpuName[256];
   RedGpuType                     gpuType;
   unsigned                       gpuVendorId;
   unsigned                       gpuDeviceId;
@@ -244,14 +243,14 @@ typedef struct RedGpuInfo {
   // Memory
   unsigned                       memoryTypesCount;
   const RedMemoryType *          memoryTypes;            // Array of memoryTypesCount
-  const char **                  memoryTypesDescription; // Array of memoryTypesCount, can be NULL
+  const char * const *           memoryTypesDescription; // Array of memoryTypesCount, can be NULL
   unsigned                       memoryHeapsCount;
   const RedMemoryHeap *          memoryHeaps;            // Array of memoryHeapsCount
-  const char **                  memoryHeapsDescription; // Array of memoryHeapsCount, can be NULL
+  const char * const *           memoryHeapsDescription; // Array of memoryHeapsCount, can be NULL
   // Queues
   unsigned                       queuesCount;
   const RedHandleQueue *         queues;
-  const char **                  queuesDescription; // Array of queuesCount, can be NULL
+  const char * const *           queuesDescription; // Array of queuesCount, can be NULL
   const unsigned *               queuesFamilyIndex; // Array of queuesCount
   const RedBool32 *              queuesCanCopy;     // Array of queuesCount
   const RedBool32 *              queuesCanDraw;     // Array of queuesCount
@@ -401,7 +400,7 @@ typedef struct RedStatuses {
   RedProcedureId statusErrorProcedureId;
   const char *   statusErrorFile;
   int            statusErrorLine;
-  uint8_t        statusErrorDescription[512];
+  unsigned char  statusErrorDescription[512];
 } RedStatuses;
 
 struct RedTypeContext {
@@ -481,8 +480,8 @@ typedef struct RedGpuInfoOptionalInfoDriverProperties {
   RedGpuInfoOptionalInfo optionalInfo;
   const void *           next;
   RedDriverId            id;
-  uint8_t                name[256];
-  uint8_t                info[256];
+  unsigned char          name[256];
+  unsigned char          info[256];
   unsigned char          compliantWithConformanceTestSuiteVersionMajor;
   unsigned char          compliantWithConformanceTestSuiteVersionMinor;
   unsigned char          compliantWithConformanceTestSuiteVersionSubminor;
@@ -629,7 +628,7 @@ typedef struct RedDebugCallbackData {
 } RedDebugCallbackData;
 
 typedef struct RedMemoryAllocationTag {
-  uint8_t tag[512];
+  unsigned char tag[512];
 } RedMemoryAllocationTag;
 
 typedef void * (*RedTypeProcedureMalloc)       (size_t bytesCount);

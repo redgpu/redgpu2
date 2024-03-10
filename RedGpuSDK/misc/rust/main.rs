@@ -8,7 +8,6 @@ extern "C" {
   pub type RedTypeHandleGpu;
 }
 pub type size_t = usize;
-pub type uint8_t = u8;
 pub type uint64_t = u64;
 pub type RedBool32 = libc::c_uint;
 #[derive(Copy, Clone)]
@@ -20,7 +19,7 @@ pub struct RedTypeContext {
   pub handle: RedHandleContext,
   pub userData: *mut libc::c_void,
 }
-pub type RedHandleContext = *mut RedTypeHandleContext;
+pub type RedHandleContext = *const RedTypeHandleContext;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedStatuses {
@@ -36,7 +35,7 @@ pub struct RedStatuses {
   pub statusErrorProcedureId: RedProcedureId,
   pub statusErrorFile: *const libc::c_char,
   pub statusErrorLine: libc::c_int,
-  pub statusErrorDescription: [uint8_t; 512],
+  pub statusErrorDescription: [libc::c_uchar; 512],
 }
 pub type RedProcedureId = libc::c_uint;
 pub const RED_PROCEDURE_ID_redStructsMemoryAllocateSamplersWithInlineSamplers: RedProcedureId = 81;
@@ -148,7 +147,7 @@ pub const RED_STATUS_SUCCESS: RedStatus = 0;
 pub struct RedGpuInfo {
   pub gpu: RedHandleGpu,
   pub gpuDevice: RedHandleGpuDevice,
-  pub gpuName: [uint8_t; 256],
+  pub gpuName: [libc::c_uchar; 256],
   pub gpuType: RedGpuType,
   pub gpuVendorId: libc::c_uint,
   pub gpuDeviceId: libc::c_uint,
@@ -156,13 +155,13 @@ pub struct RedGpuInfo {
   pub gpuProcedureCacheUuid: [libc::c_uchar; 16],
   pub memoryTypesCount: libc::c_uint,
   pub memoryTypes: *const RedMemoryType,
-  pub memoryTypesDescription: *mut *const libc::c_char,
+  pub memoryTypesDescription: *const *const libc::c_char,
   pub memoryHeapsCount: libc::c_uint,
   pub memoryHeaps: *const RedMemoryHeap,
-  pub memoryHeapsDescription: *mut *const libc::c_char,
+  pub memoryHeapsDescription: *const *const libc::c_char,
   pub queuesCount: libc::c_uint,
   pub queues: *const RedHandleQueue,
-  pub queuesDescription: *mut *const libc::c_char,
+  pub queuesDescription: *const *const libc::c_char,
   pub queuesFamilyIndex: *const libc::c_uint,
   pub queuesCanCopy: *const RedBool32,
   pub queuesCanDraw: *const RedBool32,
@@ -317,7 +316,7 @@ pub struct RedQueueCopyLimits {
   pub copyBlockTexelsCountHeight: libc::c_uint,
   pub copyBlockTexelsCountDepth: libc::c_uint,
 }
-pub type RedHandleQueue = *mut RedTypeHandleQueue;
+pub type RedHandleQueue = *const RedTypeHandleQueue;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedMemoryHeap {
@@ -339,9 +338,9 @@ pub const RED_GPU_TYPE_VIRTUAL: RedGpuType = 3;
 pub const RED_GPU_TYPE_DISCRETE: RedGpuType = 2;
 pub const RED_GPU_TYPE_INTEGRATED: RedGpuType = 1;
 pub const RED_GPU_TYPE_OTHER: RedGpuType = 0;
-pub type RedHandleGpuDevice = *mut RedTypeHandleGpuDevice;
-pub type RedHandleGpu = *mut RedTypeHandleGpu;
-pub type RedContext = *mut RedTypeContext;
+pub type RedHandleGpuDevice = *const RedTypeHandleGpuDevice;
+pub type RedHandleGpu = *const RedTypeHandleGpu;
+pub type RedContext = *const RedTypeContext;
 pub type RedSdkVersion = libc::c_uint;
 pub const RED_SDK_VERSION_1_0_135: RedSdkVersion = 0;
 pub type RedDebugCallbackSeverity = libc::c_uint;
@@ -402,7 +401,7 @@ pub struct RedDebugCallbackData {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedMemoryAllocationTag {
-  pub tag: [uint8_t; 512],
+  pub tag: [libc::c_uchar; 512],
 }
 pub type RedTypeProcedureMalloc = Option::<
   unsafe extern "C" fn(size_t) -> *mut libc::c_void,
@@ -463,8 +462,18 @@ extern "C" {
   );
 }
 
+// NOTE(Constantine): https://github.com/rust-lang/libs-team/issues/350
+pub const unsafe fn slice_from_raw_parts_or_empty<'a, T>(data: *const T, len: usize) -> &'a [T] {
+  if len == 0 { &[] } else { std::slice::from_raw_parts(data, len) }
+}
+
+// NOTE(Constantine): https://github.com/rust-lang/libs-team/issues/350
+pub unsafe fn slice_from_raw_parts_mut_or_empty<'a, T>(data: *mut T, len: usize) -> &'a mut [T] {
+  if len == 0 { &mut [] } else { std::slice::from_raw_parts_mut(data, len) }
+}
+
 fn main() {
-  let mut ctx: RedContext = std::ptr::null_mut();
+  let mut redcontext: RedContext = std::ptr::null();
   let mut statuses = RedStatuses {
     status: RED_STATUS_SUCCESS,
     statusCode: 0,
@@ -495,19 +504,16 @@ fn main() {
       std::ptr::null(),
       0,
       std::ptr::null(),
-      &mut ctx,
+      &mut redcontext,
       &mut statuses,
       std::ptr::null(),
       0,
       std::ptr::null_mut()
     );
   }
-  if ctx.is_null() == false {
-    let gpusCount = unsafe { (*ctx).gpusCount };
-    let gpus = unsafe { (*ctx).gpus };
-    for i in 0..gpusCount as usize {
-      let gpu0 = gpus;
-      let gpu = unsafe { *gpu0.add(i) };
+  if let Some(ctx) = unsafe { redcontext.as_ref() } {
+    let gpus = unsafe { slice_from_raw_parts_or_empty(ctx.gpus, ctx.gpusCount as usize) };
+    for gpu in gpus {
       let _gpuName = std::str::from_utf8(&gpu.gpuName).unwrap();
       let _ = 1 + 1;
     }
