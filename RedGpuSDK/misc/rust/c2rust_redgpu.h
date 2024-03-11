@@ -534,6 +534,87 @@ typedef struct RedGpuInfoOptionalInfoRayTracing {
   RedBool32              supportsRayTracing;
 } RedGpuInfoOptionalInfoRayTracing;
 
+// redMemoryGetBudget
+
+typedef struct RedMemoryBudget {
+  unsigned setTo1000237000;
+  size_t   setTo0;
+  uint64_t memoryHeapsBudget[16]; // Array of RedGpuInfo::memoryHeapsCount
+  uint64_t memoryHeapsUsage[16];  // Array of RedGpuInfo::memoryHeapsCount
+} RedMemoryBudget;
+
+// redMemoryAllocate
+// redMemoryAllocateMappable
+
+typedef unsigned RedMemoryBitflags;
+typedef enum RedMemoryBitflag {
+  RED_MEMORY_BITFLAG_ALLOW_ATOMICS = 0b00000000000000000000000000000001,
+} RedMemoryBitflag;
+
+// redMemorySet
+
+typedef struct RedMemoryArray {
+  unsigned        setTo1000157000;
+  size_t          setTo0;
+  RedHandleArray  array;
+  RedHandleMemory memory;
+  uint64_t        memoryBytesFirst;
+} RedMemoryArray;
+
+typedef struct RedMemoryImage {
+  unsigned        setTo1000157001;
+  size_t          setTo0;
+  RedHandleImage  image;
+  RedHandleMemory memory;
+  uint64_t        memoryBytesFirst;
+} RedMemoryImage;
+
+// redMemoryNonCoherentFlush
+// redMemoryNonCoherentInvalidate
+
+typedef struct RedMappableMemoryRange {
+  unsigned        setTo6;
+  size_t          setTo0;
+  RedHandleMemory mappableMemory;
+  uint64_t        mappableMemoryRangeBytesFirst;
+  uint64_t        mappableMemoryRangeBytesCount;
+} RedMappableMemoryRange;
+
+// redStructsSet
+
+typedef enum RedStructMemberType {
+  RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT = 6,
+  RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW       = 7,
+  RED_STRUCT_MEMBER_TYPE_SAMPLER           = 0,
+  RED_STRUCT_MEMBER_TYPE_TEXTURE_RO        = 2,
+  RED_STRUCT_MEMBER_TYPE_TEXTURE_RW        = 3,
+} RedStructMemberType;
+
+typedef struct RedStructMemberTexture {
+  RedHandleSampler sampler;
+  RedHandleTexture texture;
+  unsigned         setTo1;
+} RedStructMemberTexture;
+
+typedef struct RedStructMemberArray {
+  RedHandleArray   array;
+  uint64_t         arrayRangeBytesFirst;
+  uint64_t         arrayRangeBytesCount;
+} RedStructMemberArray;
+
+typedef struct RedStructMember {
+  unsigned                       setTo35;
+  size_t                         setTo0;
+  RedHandleStruct                structure;
+  unsigned                       slot;
+  unsigned                       first;
+  unsigned                       count;
+  RedStructMemberType            type;
+  const RedStructMemberTexture * textures; // Array of count
+  const RedStructMemberArray *   arrays;   // Array of count
+  size_t                         setTo00;
+} RedStructMember;
+
 // redCreateContext
 
 typedef enum RedSdkVersion {
@@ -637,6 +718,27 @@ typedef void * (*RedTypeProcedureMallocTagged) (size_t bytesCount, unsigned proc
 typedef void   (*RedTypeProcedureFreeTagged)   (void * pointer, unsigned procedureId, uint64_t memoryAllocationCode, const RedMemoryAllocationTag * optionalMemoryAllocationTag, const char * optionalFile, int optionalLine, void * optionalUserData);
 typedef RedBool32 (*RedTypeProcedureDebugCallback) (RedDebugCallbackSeverity severity, RedDebugCallbackTypeBitflags types, const RedDebugCallbackData * data, RedContext context);
 
+// Memory
+
+void redMemoryGetBudget                 (RedContext context, RedHandleGpu gpu, RedMemoryBudget * outMemoryBudget, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemoryAllocate                  (RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, RedHandleArray dedicateToArray, RedHandleImage dedicateToImage, unsigned memoryBitflags, RedHandleMemory * outMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemoryAllocateMappable          (RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 dedicate, RedHandleArray array, uint64_t arrayMemoryBytesCount, unsigned memoryTypeIndex, unsigned memoryBitflags, RedHandleMemory * outMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemoryFree                      (RedContext context, RedHandleGpu gpu, RedHandleMemory memory, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemorySet                       (RedContext context, RedHandleGpu gpu, unsigned memoryArraysCount, const RedMemoryArray * memoryArrays, unsigned memoryImagesCount, const RedMemoryImage * memoryImages, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemoryMap                       (RedContext context, RedHandleGpu gpu, RedHandleMemory mappableMemory, uint64_t mappableMemoryBytesFirst, uint64_t mappableMemoryBytesCount, void ** outVolatilePointer, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemoryUnmap                     (RedContext context, RedHandleGpu gpu, RedHandleMemory mappableMemory, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemoryNonCoherentFlush          (RedContext context, RedHandleGpu gpu, unsigned mappableMemoryRangesCount, const RedMappableMemoryRange * mappableMemoryRanges, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMemoryNonCoherentInvalidate     (RedContext context, RedHandleGpu gpu, unsigned mappableMemoryRangesCount, const RedMappableMemoryRange * mappableMemoryRanges, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Struct
+
+void redStructsMemoryAllocate           (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redStructsMemoryAllocateSamplers   (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redStructsMemorySuballocateStructs (RedContext context, RedHandleGpu gpu, const char * const * handleNames, RedHandleStructsMemory structsMemory, unsigned structsDeclarationsCount, const RedHandleStructDeclaration * structsDeclarations, RedHandleStruct * outStructs, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redStructsMemoryReset              (RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redStructsMemoryFree               (RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redStructsSet                      (RedContext context, RedHandleGpu gpu, unsigned structsMembersCount, const RedStructMember * structsMembers, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
 // Create
 
-void redCreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free, RedTypeProcedureMallocTagged optionalMallocTagged, RedTypeProcedureFreeTagged optionalFreeTagged, RedTypeProcedureDebugCallback debugCallback, RedSdkVersion sdkVersion, unsigned sdkExtensionsCount, const unsigned * sdkExtensions, const char * optionalProgramName, unsigned optionalProgramVersion, const char * optionalEngineName, unsigned optionalEngineVersion, const void * optionalSettings, RedContext * outContext, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateContext                   (RedTypeProcedureMalloc malloc, RedTypeProcedureFree free, RedTypeProcedureMallocTagged optionalMallocTagged, RedTypeProcedureFreeTagged optionalFreeTagged, RedTypeProcedureDebugCallback debugCallback, RedSdkVersion sdkVersion, unsigned sdkExtensionsCount, const unsigned * sdkExtensions, const char * optionalProgramName, unsigned optionalProgramVersion, const char * optionalEngineName, unsigned optionalEngineVersion, const void * optionalSettings, RedContext * outContext, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}

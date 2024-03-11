@@ -6,6 +6,14 @@ extern "C" {
   pub type RedTypeHandleQueue;
   pub type RedTypeHandleGpuDevice;
   pub type RedTypeHandleGpu;
+  pub type RedTypeHandleMemory;
+  pub type RedTypeHandleArray;
+  pub type RedTypeHandleImage;
+  pub type RedTypeHandleSampler;
+  pub type RedTypeHandleTexture;
+  pub type RedTypeHandleStructDeclaration;
+  pub type RedTypeHandleStruct;
+  pub type RedTypeHandleStructsMemory;
 }
 pub type size_t = usize;
 pub type uint64_t = u64;
@@ -341,6 +349,83 @@ pub const RED_GPU_TYPE_OTHER: RedGpuType = 0;
 pub type RedHandleGpuDevice = *const RedTypeHandleGpuDevice;
 pub type RedHandleGpu = *const RedTypeHandleGpu;
 pub type RedContext = *const RedTypeContext;
+pub type RedHandleMemory = *const RedTypeHandleMemory;
+pub type RedHandleArray = *const RedTypeHandleArray;
+pub type RedHandleImage = *const RedTypeHandleImage;
+pub type RedHandleSampler = *const RedTypeHandleSampler;
+pub type RedHandleTexture = *const RedTypeHandleTexture;
+pub type RedHandleStructDeclaration = *const RedTypeHandleStructDeclaration;
+pub type RedHandleStruct = *const RedTypeHandleStruct;
+pub type RedHandleStructsMemory = *const RedTypeHandleStructsMemory;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedMemoryBudget {
+  pub setTo1000237000: libc::c_uint,
+  pub setTo0: size_t,
+  pub memoryHeapsBudget: [uint64_t; 16],
+  pub memoryHeapsUsage: [uint64_t; 16],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedMemoryArray {
+  pub setTo1000157000: libc::c_uint,
+  pub setTo0: size_t,
+  pub array: RedHandleArray,
+  pub memory: RedHandleMemory,
+  pub memoryBytesFirst: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedMemoryImage {
+  pub setTo1000157001: libc::c_uint,
+  pub setTo0: size_t,
+  pub image: RedHandleImage,
+  pub memory: RedHandleMemory,
+  pub memoryBytesFirst: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedMappableMemoryRange {
+  pub setTo6: libc::c_uint,
+  pub setTo0: size_t,
+  pub mappableMemory: RedHandleMemory,
+  pub mappableMemoryRangeBytesFirst: uint64_t,
+  pub mappableMemoryRangeBytesCount: uint64_t,
+}
+pub type RedStructMemberType = libc::c_uint;
+pub const RED_STRUCT_MEMBER_TYPE_TEXTURE_RW: RedStructMemberType = 3;
+pub const RED_STRUCT_MEMBER_TYPE_TEXTURE_RO: RedStructMemberType = 2;
+pub const RED_STRUCT_MEMBER_TYPE_SAMPLER: RedStructMemberType = 0;
+pub const RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW: RedStructMemberType = 7;
+pub const RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT: RedStructMemberType = 6;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedStructMemberTexture {
+  pub sampler: RedHandleSampler,
+  pub texture: RedHandleTexture,
+  pub setTo1: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedStructMemberArray {
+  pub array: RedHandleArray,
+  pub arrayRangeBytesFirst: uint64_t,
+  pub arrayRangeBytesCount: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedStructMember {
+  pub setTo35: libc::c_uint,
+  pub setTo0: size_t,
+  pub structure: RedHandleStruct,
+  pub slot: libc::c_uint,
+  pub first: libc::c_uint,
+  pub count: libc::c_uint,
+  pub type_0: RedStructMemberType,
+  pub textures: *const RedStructMemberTexture,
+  pub arrays: *const RedStructMemberArray,
+  pub setTo00: size_t,
+}
 pub type RedSdkVersion = libc::c_uint;
 pub const RED_SDK_VERSION_1_0_135: RedSdkVersion = 0;
 pub type RedDebugCallbackSeverity = libc::c_uint;
@@ -440,6 +525,171 @@ pub type RedTypeProcedureDebugCallback = Option::<
 
 #[link(name = "C:/RedGpuSDK/redgpudll")]
 extern "C" {
+  pub fn redMemoryGetBudget(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    outMemoryBudget: *mut RedMemoryBudget,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemoryAllocate(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    bytesCount: uint64_t,
+    memoryTypeIndex: libc::c_uint,
+    dedicateToArray: RedHandleArray,
+    dedicateToImage: RedHandleImage,
+    memoryBitflags: libc::c_uint,
+    outMemory: *mut RedHandleMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemoryAllocateMappable(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    dedicate: RedBool32,
+    array: RedHandleArray,
+    arrayMemoryBytesCount: uint64_t,
+    memoryTypeIndex: libc::c_uint,
+    memoryBitflags: libc::c_uint,
+    outMemory: *mut RedHandleMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemoryFree(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    memory: RedHandleMemory,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemorySet(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    memoryArraysCount: libc::c_uint,
+    memoryArrays: *const RedMemoryArray,
+    memoryImagesCount: libc::c_uint,
+    memoryImages: *const RedMemoryImage,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemoryMap(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    mappableMemory: RedHandleMemory,
+    mappableMemoryBytesFirst: uint64_t,
+    mappableMemoryBytesCount: uint64_t,
+    outVolatilePointer: *mut *mut libc::c_void,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemoryUnmap(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    mappableMemory: RedHandleMemory,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemoryNonCoherentFlush(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    mappableMemoryRangesCount: libc::c_uint,
+    mappableMemoryRanges: *const RedMappableMemoryRange,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMemoryNonCoherentInvalidate(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    mappableMemoryRangesCount: libc::c_uint,
+    mappableMemoryRanges: *const RedMappableMemoryRange,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsMemoryAllocate(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    maxStructsCount: libc::c_uint,
+    maxStructsMembersOfTypeArrayROConstantCount: libc::c_uint,
+    maxStructsMembersOfTypeArrayROOrArrayRWCount: libc::c_uint,
+    maxStructsMembersOfTypeTextureROCount: libc::c_uint,
+    maxStructsMembersOfTypeTextureRWCount: libc::c_uint,
+    outStructsMemory: *mut RedHandleStructsMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsMemoryAllocateSamplers(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    maxStructsCount: libc::c_uint,
+    maxStructsMembersOfTypeSamplerCount: libc::c_uint,
+    outStructsMemory: *mut RedHandleStructsMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsMemorySuballocateStructs(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleNames: *const *const libc::c_char,
+    structsMemory: RedHandleStructsMemory,
+    structsDeclarationsCount: libc::c_uint,
+    structsDeclarations: *const RedHandleStructDeclaration,
+    outStructs: *mut RedHandleStruct,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsMemoryReset(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    structsMemory: RedHandleStructsMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsMemoryFree(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    structsMemory: RedHandleStructsMemory,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsSet(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    structsMembersCount: libc::c_uint,
+    structsMembers: *const RedStructMember,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
   pub fn redCreateContext(
     malloc: RedTypeProcedureMalloc,
     free: RedTypeProcedureFree,
@@ -511,11 +761,43 @@ fn main() {
       std::ptr::null_mut()
     );
   }
-  if let Some(ctx) = unsafe { redcontext.as_ref() } {
-    let gpus = unsafe { slice_from_raw_parts_or_empty(ctx.gpus, ctx.gpusCount as usize) };
-    for gpu in gpus {
-      let _gpuName = std::str::from_utf8(&gpu.gpuName).unwrap();
-      let _ = 1 + 1;
+
+  let ctx = unsafe { redcontext.as_ref().unwrap() };
+  assert!(ctx.gpusCount > 0);
+
+  let mut gpu: RedHandleGpu = std::ptr::null();
+
+  let gpus = unsafe { slice_from_raw_parts_or_empty(ctx.gpus, ctx.gpusCount as usize) };
+  for _gpu in gpus {
+    let _gpuName = std::str::from_utf8(&_gpu.gpuName).unwrap();
+    let _ = 1 + 1;
+    if _gpu.gpu.is_null() == false {
+      // Pick the first valid GPU.
+      gpu = _gpu.gpu;
+      break;
     }
+  }
+
+  let mut memoryBudget = RedMemoryBudget{
+    setTo1000237000: 1000237000,
+    setTo0: 0,
+    memoryHeapsBudget: [0; 16],
+    memoryHeapsUsage: [0; 16]
+  };
+
+  unsafe {
+    redMemoryGetBudget(
+      ctx,
+      gpu,
+      &mut memoryBudget,
+      std::ptr::null_mut(),
+      std::ptr::null(),
+      0,
+      std::ptr::null_mut()
+    );
+  }
+
+  {
+    let _ = 1 + 1;
   }
 }
