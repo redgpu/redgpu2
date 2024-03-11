@@ -1527,3 +1527,14 @@ void redMarkEnd                         (const char * optionalFile, int optional
 
 void redStructsMemoryAllocateWithInlineSamplers         (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
 void redStructsMemoryAllocateSamplersWithInlineSamplers (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeSamplerCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+void forcegen() {
+  { RedMemoryBitflags _; }
+  { RedMemoryBitflag _; }
+  { RedDebugCallbackTypeBitflag _; }
+  { RedImagePartBitflag _; }
+  { RedVisibleToStageBitflag _; }
+  { RedColorComponentBitflag _; }
+  { RedAccessStageBitflag _; }
+  { RedAccessBitflag _; }
+}

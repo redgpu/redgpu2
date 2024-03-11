@@ -435,6 +435,9 @@ pub struct RedMemoryBudget {
   pub memoryHeapsBudget: [uint64_t; 16],
   pub memoryHeapsUsage: [uint64_t; 16],
 }
+pub type RedMemoryBitflags = libc::c_uint;
+pub type RedMemoryBitflag = libc::c_uint;
+pub const RED_MEMORY_BITFLAG_ALLOW_ATOMICS: RedMemoryBitflag = 1;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedMemoryArray {
@@ -502,6 +505,9 @@ pub type RedDebugCallbackSeverity = libc::c_uint;
 pub const RED_DEBUG_CALLBACK_SEVERITY_ERROR: RedDebugCallbackSeverity = 4096;
 pub const RED_DEBUG_CALLBACK_SEVERITY_WARNING: RedDebugCallbackSeverity = 256;
 pub type RedDebugCallbackTypeBitflags = libc::c_uint;
+pub type RedDebugCallbackTypeBitflag = libc::c_uint;
+pub const RED_DEBUG_CALLBACK_TYPE_BITFLAG_VALIDATION: RedDebugCallbackTypeBitflag = 2;
+pub const RED_DEBUG_CALLBACK_TYPE_BITFLAG_GENERAL: RedDebugCallbackTypeBitflag = 1;
 pub type RedHandleType = libc::c_uint;
 pub const RED_HANDLE_TYPE_PRESENT: RedHandleType = 1000001000;
 pub const RED_HANDLE_TYPE_SURFACE: RedHandleType = 1000000000;
@@ -640,6 +646,10 @@ pub const RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_CLAMP_TO_EDGE_VALUE: R
 pub const RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_REPEAT_MIRRORED: RedSamplerBehaviorOutsideTextureCoordinate = 1;
 pub const RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_REPEAT: RedSamplerBehaviorOutsideTextureCoordinate = 0;
 pub type RedImagePartBitflags = libc::c_uint;
+pub type RedImagePartBitflag = libc::c_uint;
+pub const RED_IMAGE_PART_BITFLAG_STENCIL: RedImagePartBitflag = 4;
+pub const RED_IMAGE_PART_BITFLAG_DEPTH: RedImagePartBitflag = 2;
+pub const RED_IMAGE_PART_BITFLAG_COLOR: RedImagePartBitflag = 1;
 pub type RedTextureDimensions = libc::c_uint;
 pub const RED_TEXTURE_DIMENSIONS_CUBE_LAYERED: RedTextureDimensions = 6;
 pub const RED_TEXTURE_DIMENSIONS_CUBE: RedTextureDimensions = 3;
@@ -688,6 +698,10 @@ pub struct RedOutputDeclarationMembersResolveSources {
   pub resolveColors: RedBool32,
 }
 pub type RedVisibleToStageBitflags = libc::c_uint;
+pub type RedVisibleToStageBitflag = libc::c_uint;
+pub const RED_VISIBLE_TO_STAGE_BITFLAG_COMPUTE: RedVisibleToStageBitflag = 32;
+pub const RED_VISIBLE_TO_STAGE_BITFLAG_FRAGMENT: RedVisibleToStageBitflag = 16;
+pub const RED_VISIBLE_TO_STAGE_BITFLAG_VERTEX: RedVisibleToStageBitflag = 1;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedStructDeclarationMember {
@@ -758,6 +772,11 @@ pub const RED_LOGIC_OP_AND_REVERSE: RedLogicOp = 2;
 pub const RED_LOGIC_OP_AND: RedLogicOp = 1;
 pub const RED_LOGIC_OP_CLEAR: RedLogicOp = 0;
 pub type RedColorComponentBitflags = libc::c_uint;
+pub type RedColorComponentBitflag = libc::c_uint;
+pub const RED_COLOR_COMPONENT_BITFLAG_A: RedColorComponentBitflag = 8;
+pub const RED_COLOR_COMPONENT_BITFLAG_B: RedColorComponentBitflag = 4;
+pub const RED_COLOR_COMPONENT_BITFLAG_G: RedColorComponentBitflag = 2;
+pub const RED_COLOR_COMPONENT_BITFLAG_R: RedColorComponentBitflag = 1;
 pub type RedBlendFactor = libc::c_uint;
 pub const RED_BLEND_FACTOR_ONE_MINUS_SOURCE1_ALPHA: RedBlendFactor = 18;
 pub const RED_BLEND_FACTOR_SOURCE1_ALPHA: RedBlendFactor = 17;
@@ -1144,7 +1163,33 @@ pub const RED_BARRIER_SPLIT_END: RedBarrierSplit = 2;
 pub const RED_BARRIER_SPLIT_SET: RedBarrierSplit = 1;
 pub const RED_BARRIER_SPLIT_NONE: RedBarrierSplit = 0;
 pub type RedAccessStageBitflags = libc::c_uint;
+pub type RedAccessStageBitflag = libc::c_uint;
+pub const RED_ACCESS_STAGE_BITFLAG_CPU: RedAccessStageBitflag = 256;
+pub const RED_ACCESS_STAGE_BITFLAG_RESOLVE: RedAccessStageBitflag = 128;
+pub const RED_ACCESS_STAGE_BITFLAG_OUTPUT_COLOR: RedAccessStageBitflag = 64;
+pub const RED_ACCESS_STAGE_BITFLAG_OUTPUT_DEPTH_STENCIL: RedAccessStageBitflag = 32;
+pub const RED_ACCESS_STAGE_BITFLAG_FRAGMENT: RedAccessStageBitflag = 16;
+pub const RED_ACCESS_STAGE_BITFLAG_VERTEX: RedAccessStageBitflag = 8;
+pub const RED_ACCESS_STAGE_BITFLAG_INDEX: RedAccessStageBitflag = 4;
+pub const RED_ACCESS_STAGE_BITFLAG_COMPUTE: RedAccessStageBitflag = 2;
+pub const RED_ACCESS_STAGE_BITFLAG_COPY: RedAccessStageBitflag = 1;
 pub type RedAccessBitflags = libc::c_uint;
+pub type RedAccessBitflag = libc::c_uint;
+pub const RED_ACCESS_BITFLAG_CPU_RW: RedAccessBitflag = 16384;
+pub const RED_ACCESS_BITFLAG_RESOLVE_TARGET_W: RedAccessBitflag = 8192;
+pub const RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R: RedAccessBitflag = 4096;
+pub const RED_ACCESS_BITFLAG_OUTPUT_COLOR_W: RedAccessBitflag = 2048;
+pub const RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW: RedAccessBitflag = 1024;
+pub const RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R: RedAccessBitflag = 512;
+pub const RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW: RedAccessBitflag = 256;
+pub const RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R: RedAccessBitflag = 128;
+pub const RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W: RedAccessBitflag = 64;
+pub const RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R: RedAccessBitflag = 32;
+pub const RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R: RedAccessBitflag = 16;
+pub const RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R: RedAccessBitflag = 8;
+pub const RED_ACCESS_BITFLAG_INDEX_R: RedAccessBitflag = 4;
+pub const RED_ACCESS_BITFLAG_COPY_W: RedAccessBitflag = 2;
+pub const RED_ACCESS_BITFLAG_COPY_R: RedAccessBitflag = 1;
 pub type RedState = libc::c_uint;
 pub const RED_STATE_PRESENT: RedState = 1000001002;
 pub const RED_STATE_USABLE: RedState = 1;
