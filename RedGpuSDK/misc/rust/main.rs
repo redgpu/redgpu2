@@ -25,6 +25,16 @@ extern "C" {
   pub type RedTypeHandleCpuSignal;
   pub type RedTypeHandleGpuSignal;
   pub type RedTypeHandleGpuToCpuSignal;
+  pub type RedTypeProcedureCallSetDynamicViewport;
+  pub type RedTypeProcedureCallSetDynamicScissor;
+  pub type RedTypeProcedureCallSetStructsMemory;
+  pub type RedTypeProcedureCallSetProcedureParameters;
+  pub type RedTypeProcedureCallSetProcedureOutput;
+  pub type RedTypeProcedureCallEndProcedureOutput;
+  pub type RedTypeProcedureCallUsageAliasOrderBarrier;
+  pub type RedTypeProcedureCallMark;
+  pub type RedTypeProcedureCallMarkSet;
+  pub type RedTypeProcedureCallMarkEnd;
 }
 pub type size_t = usize;
 pub type uint64_t = u64;
@@ -853,6 +863,351 @@ pub struct RedOutputMembersResolveTargets {
   pub depthStencil: RedHandleTexture,
   pub colors: [RedHandleTexture; 8],
 }
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCopyArrayRange {
+  pub arrayRBytesFirst: uint64_t,
+  pub arrayWBytesFirst: uint64_t,
+  pub bytesCount: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCopyImageParts {
+  pub allParts: RedImagePartBitflags,
+  pub level: libc::c_uint,
+  pub layersFirst: libc::c_uint,
+  pub layersCount: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCopyImageOffset {
+  pub texelX: libc::c_int,
+  pub texelY: libc::c_int,
+  pub texelZ: libc::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCopyImageExtent {
+  pub texelsCountWidth: libc::c_uint,
+  pub texelsCountHeight: libc::c_uint,
+  pub texelsCountDepth: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCopyImageRange {
+  pub imageRParts: RedCopyImageParts,
+  pub imageROffset: RedCopyImageOffset,
+  pub imageWParts: RedCopyImageParts,
+  pub imageWOffset: RedCopyImageOffset,
+  pub extent: RedCopyImageExtent,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCopyArrayImageRange {
+  pub arrayBytesFirst: uint64_t,
+  pub arrayTexelsCountToNextRow: libc::c_uint,
+  pub arrayTexelsCountToNextLayerOr3DDepthSliceDividedByTexelsCountToNextRow: libc::c_uint,
+  pub imageParts: RedCopyImageParts,
+  pub imageOffset: RedCopyImageOffset,
+  pub imageExtent: RedCopyImageExtent,
+}
+pub type RedProcedureType = libc::c_uint;
+pub const RED_PROCEDURE_TYPE_COMPUTE: RedProcedureType = 1;
+pub const RED_PROCEDURE_TYPE_DRAW: RedProcedureType = 0;
+pub type RedProcedureParametersHandleType = libc::c_uint;
+pub const RED_PROCEDURE_PARAMETERS_HANDLE_TYPE_ARRAY_RO_RW: RedProcedureParametersHandleType = 7;
+pub const RED_PROCEDURE_PARAMETERS_HANDLE_TYPE_ARRAY_RO_CONSTANT: RedProcedureParametersHandleType = 6;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedProcedureParametersHandleArray {
+  pub array: RedHandleArray,
+  pub setTo0: uint64_t,
+  pub setToMaxValue: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedProcedureParametersHandle {
+  pub setTo35: libc::c_uint,
+  pub setTo0: size_t,
+  pub setTo00: uint64_t,
+  pub slot: libc::c_uint,
+  pub setTo000: libc::c_uint,
+  pub setTo1: libc::c_uint,
+  pub type_0: RedProcedureParametersHandleType,
+  pub setTo0000: size_t,
+  pub array: *const RedProcedureParametersHandleArray,
+  pub setTo00000: size_t,
+}
+pub type RedStencilFace = libc::c_uint;
+pub const RED_STENCIL_FACE_FRONT_AND_BACK: RedStencilFace = 3;
+pub type RedTypeProcedureCallGpuToCpuSignalSignal = Option::<
+  unsafe extern "C" fn(RedHandleCalls, RedHandleGpuToCpuSignal, libc::c_uint) -> (),
+>;
+pub type RedTypeProcedureCallCopyArrayToArray = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    RedHandleArray,
+    RedHandleArray,
+    libc::c_uint,
+    *const RedCopyArrayRange,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallCopyImageToImage = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    RedHandleImage,
+    libc::c_uint,
+    RedHandleImage,
+    libc::c_uint,
+    libc::c_uint,
+    *const RedCopyImageRange,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallCopyArrayToImage = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    RedHandleArray,
+    RedHandleImage,
+    libc::c_uint,
+    libc::c_uint,
+    *const RedCopyArrayImageRange,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallCopyImageToArray = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    RedHandleImage,
+    libc::c_uint,
+    RedHandleArray,
+    libc::c_uint,
+    *const RedCopyArrayImageRange,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallProcedure = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    libc::c_uint,
+    libc::c_uint,
+    libc::c_uint,
+    libc::c_uint,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallProcedureIndexed = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    libc::c_uint,
+    libc::c_uint,
+    libc::c_uint,
+    libc::c_int,
+    libc::c_uint,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallProcedureCompute = Option::<
+  unsafe extern "C" fn(RedHandleCalls, libc::c_uint, libc::c_uint, libc::c_uint) -> (),
+>;
+pub type RedTypeProcedureCallSetProcedure = Option::<
+  unsafe extern "C" fn(RedHandleCalls, RedProcedureType, RedHandleProcedure) -> (),
+>;
+pub type RedTypeProcedureCallSetProcedureIndices = Option::<
+  unsafe extern "C" fn(RedHandleCalls, RedHandleArray, uint64_t, libc::c_uint) -> (),
+>;
+pub type RedTypeProcedureCallSetProcedureParametersVariables = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    RedHandleProcedureParameters,
+    RedVisibleToStageBitflags,
+    libc::c_uint,
+    libc::c_uint,
+    *const libc::c_void,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallSetProcedureParametersStructs = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    RedProcedureType,
+    RedHandleProcedureParameters,
+    libc::c_uint,
+    libc::c_uint,
+    *const RedHandleStruct,
+    libc::c_uint,
+    size_t,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallSetProcedureParametersHandles = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    RedProcedureType,
+    RedHandleProcedureParameters,
+    libc::c_uint,
+    libc::c_uint,
+    *const RedProcedureParametersHandle,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallSetDynamicDepthBias = Option::<
+  unsafe extern "C" fn(
+    RedHandleCalls,
+    libc::c_float,
+    libc::c_float,
+    libc::c_float,
+  ) -> (),
+>;
+pub type RedTypeProcedureCallSetDynamicDepthBounds = Option::<
+  unsafe extern "C" fn(RedHandleCalls, libc::c_float, libc::c_float) -> (),
+>;
+pub type RedTypeProcedureCallSetDynamicStencilCompareMask = Option::<
+  unsafe extern "C" fn(RedHandleCalls, RedStencilFace, libc::c_uint) -> (),
+>;
+pub type RedTypeProcedureCallSetDynamicStencilWriteMask = Option::<
+  unsafe extern "C" fn(RedHandleCalls, RedStencilFace, libc::c_uint) -> (),
+>;
+pub type RedTypeProcedureCallSetDynamicStencilReference = Option::<
+  unsafe extern "C" fn(RedHandleCalls, RedStencilFace, libc::c_uint) -> (),
+>;
+pub type RedTypeProcedureCallSetDynamicBlendConstants = Option::<
+  unsafe extern "C" fn(RedHandleCalls, *const libc::c_float) -> (),
+>;
+pub type RedTypeProcedureAddressCallSetDynamicViewport = *const RedTypeProcedureCallSetDynamicViewport;
+pub type RedTypeProcedureAddressCallSetDynamicScissor = *const RedTypeProcedureCallSetDynamicScissor;
+pub type RedTypeProcedureAddressCallSetStructsMemory = *const RedTypeProcedureCallSetStructsMemory;
+pub type RedTypeProcedureAddressCallSetProcedureParameters = *const RedTypeProcedureCallSetProcedureParameters;
+pub type RedTypeProcedureAddressCallSetProcedureOutput = *const RedTypeProcedureCallSetProcedureOutput;
+pub type RedTypeProcedureAddressCallEndProcedureOutput = *const RedTypeProcedureCallEndProcedureOutput;
+pub type RedTypeProcedureAddressCallUsageAliasOrderBarrier = *const RedTypeProcedureCallUsageAliasOrderBarrier;
+pub type RedTypeProcedureAddressCallMark = *const RedTypeProcedureCallMark;
+pub type RedTypeProcedureAddressCallMarkSet = *const RedTypeProcedureCallMarkSet;
+pub type RedTypeProcedureAddressCallMarkEnd = *const RedTypeProcedureCallMarkEnd;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCallProceduresAndAddresses {
+  pub redCallGpuToCpuSignalSignal: RedTypeProcedureCallGpuToCpuSignalSignal,
+  pub redCallCopyArrayToArray: RedTypeProcedureCallCopyArrayToArray,
+  pub redCallCopyImageToImage: RedTypeProcedureCallCopyImageToImage,
+  pub redCallCopyArrayToImage: RedTypeProcedureCallCopyArrayToImage,
+  pub redCallCopyImageToArray: RedTypeProcedureCallCopyImageToArray,
+  pub redCallProcedure: RedTypeProcedureCallProcedure,
+  pub redCallProcedureIndexed: RedTypeProcedureCallProcedureIndexed,
+  pub redCallProcedureCompute: RedTypeProcedureCallProcedureCompute,
+  pub redCallSetProcedure: RedTypeProcedureCallSetProcedure,
+  pub redCallSetProcedureIndices: RedTypeProcedureCallSetProcedureIndices,
+  pub redCallSetProcedureParametersVariables: RedTypeProcedureCallSetProcedureParametersVariables,
+  pub redCallSetProcedureParametersStructs: RedTypeProcedureCallSetProcedureParametersStructs,
+  pub redCallSetProcedureParametersHandles: RedTypeProcedureCallSetProcedureParametersHandles,
+  pub redCallSetDynamicDepthBias: RedTypeProcedureCallSetDynamicDepthBias,
+  pub redCallSetDynamicDepthBounds: RedTypeProcedureCallSetDynamicDepthBounds,
+  pub redCallSetDynamicStencilCompareMask: RedTypeProcedureCallSetDynamicStencilCompareMask,
+  pub redCallSetDynamicStencilWriteMask: RedTypeProcedureCallSetDynamicStencilWriteMask,
+  pub redCallSetDynamicStencilReference: RedTypeProcedureCallSetDynamicStencilReference,
+  pub redCallSetDynamicBlendConstants: RedTypeProcedureCallSetDynamicBlendConstants,
+  pub redCallSetDynamicViewport: RedTypeProcedureAddressCallSetDynamicViewport,
+  pub redCallSetDynamicScissor: RedTypeProcedureAddressCallSetDynamicScissor,
+  pub redCallSetStructsMemory: RedTypeProcedureAddressCallSetStructsMemory,
+  pub redCallSetProcedureParameters: RedTypeProcedureAddressCallSetProcedureParameters,
+  pub redCallSetProcedureOutput: RedTypeProcedureAddressCallSetProcedureOutput,
+  pub redCallEndProcedureOutput: RedTypeProcedureAddressCallEndProcedureOutput,
+  pub redCallUsageAliasOrderBarrier: RedTypeProcedureAddressCallUsageAliasOrderBarrier,
+  pub redCallMark: RedTypeProcedureAddressCallMark,
+  pub redCallMarkSet: RedTypeProcedureAddressCallMarkSet,
+  pub redCallMarkEnd: RedTypeProcedureAddressCallMarkEnd,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedInlineOutput {
+  pub outputMembers: *const RedOutputMembers,
+  pub outputMembersResolveTargets: *const RedOutputMembersResolveTargets,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedColorsClearValuesFloat {
+  pub r: [libc::c_float; 8],
+  pub g: [libc::c_float; 8],
+  pub b: [libc::c_float; 8],
+  pub a: [libc::c_float; 8],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedColorsClearValuesSint {
+  pub r: [libc::c_int; 8],
+  pub g: [libc::c_int; 8],
+  pub b: [libc::c_int; 8],
+  pub a: [libc::c_int; 8],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedColorsClearValuesUint {
+  pub r: [libc::c_uint; 8],
+  pub g: [libc::c_uint; 8],
+  pub b: [libc::c_uint; 8],
+  pub a: [libc::c_uint; 8],
+}
+pub type RedBarrierSplit = libc::c_uint;
+pub const RED_BARRIER_SPLIT_END: RedBarrierSplit = 2;
+pub const RED_BARRIER_SPLIT_SET: RedBarrierSplit = 1;
+pub const RED_BARRIER_SPLIT_NONE: RedBarrierSplit = 0;
+pub type RedAccessStageBitflags = libc::c_uint;
+pub type RedAccessBitflags = libc::c_uint;
+pub type RedState = libc::c_uint;
+pub const RED_STATE_PRESENT: RedState = 1000001002;
+pub const RED_STATE_USABLE: RedState = 1;
+pub const RED_STATE_UNUSABLE: RedState = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedUsageArray {
+  pub barrierSplit: RedBarrierSplit,
+  pub oldAccessStages: RedAccessStageBitflags,
+  pub newAccessStages: RedAccessStageBitflags,
+  pub oldAccess: RedAccessBitflags,
+  pub newAccess: RedAccessBitflags,
+  pub queueFamilyIndexSource: libc::c_uint,
+  pub queueFamilyIndexTarget: libc::c_uint,
+  pub array: RedHandleArray,
+  pub arrayBytesFirst: uint64_t,
+  pub arrayBytesCount: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedUsageImage {
+  pub barrierSplit: RedBarrierSplit,
+  pub oldAccessStages: RedAccessStageBitflags,
+  pub newAccessStages: RedAccessStageBitflags,
+  pub oldAccess: RedAccessBitflags,
+  pub newAccess: RedAccessBitflags,
+  pub oldState: RedState,
+  pub newState: RedState,
+  pub queueFamilyIndexSource: libc::c_uint,
+  pub queueFamilyIndexTarget: libc::c_uint,
+  pub image: RedHandleImage,
+  pub imageAllParts: RedImagePartBitflags,
+  pub imageLevelsFirst: libc::c_uint,
+  pub imageLevelsCount: libc::c_uint,
+  pub imageLayersFirst: libc::c_uint,
+  pub imageLayersCount: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedAlias {
+  pub barrierSplit: RedBarrierSplit,
+  pub oldResourceHandle: uint64_t,
+  pub newResourceHandle: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedOrder {
+  pub barrierSplit: RedBarrierSplit,
+  pub resourceHandle: uint64_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuTimeline {
+  pub setTo4: libc::c_uint,
+  pub setTo0: size_t,
+  pub waitForAndUnsignalGpuSignalsCount: libc::c_uint,
+  pub waitForAndUnsignalGpuSignals: *const RedHandleGpuSignal,
+  pub setTo65536: *const libc::c_uint,
+  pub callsCount: libc::c_uint,
+  pub calls: *const RedHandleCalls,
+  pub signalGpuSignalsCount: libc::c_uint,
+  pub signalGpuSignals: *const RedHandleGpuSignal,
+}
 
 #[link(name = "C:/RedGpuSDK/redgpudll")]
 extern "C" {
@@ -1501,6 +1856,151 @@ extern "C" {
     gpu: RedHandleGpu,
     calls: RedHandleCalls,
     callsMemory: RedHandleCallsMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redGetCallProceduresAndAddresses(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    outCallProceduresAndAddresses: *mut RedCallProceduresAndAddresses,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCallSetDynamicViewport(
+    address: RedTypeProcedureAddressCallSetDynamicViewport,
+    calls: RedHandleCalls,
+    x: libc::c_float,
+    y: libc::c_float,
+    width: libc::c_float,
+    height: libc::c_float,
+    depthMin: libc::c_float,
+    depthMax: libc::c_float,
+  );
+  pub fn redCallSetDynamicScissor(
+    address: RedTypeProcedureAddressCallSetDynamicScissor,
+    calls: RedHandleCalls,
+    x: libc::c_int,
+    y: libc::c_int,
+    width: libc::c_uint,
+    height: libc::c_uint,
+  );
+  pub fn redCallSetStructsMemory(
+    address: RedTypeProcedureAddressCallSetStructsMemory,
+    calls: RedHandleCalls,
+    structsMemory: RedHandleStructsMemory,
+    structsMemorySamplers: RedHandleStructsMemory,
+  );
+  pub fn redCallSetProcedureParameters(
+    address: RedTypeProcedureAddressCallSetProcedureParameters,
+    calls: RedHandleCalls,
+    procedureType: RedProcedureType,
+    procedureParameters: RedHandleProcedureParameters,
+  );
+  pub fn redCallSetProcedureOutput(
+    address: RedTypeProcedureAddressCallSetProcedureOutput,
+    calls: RedHandleCalls,
+    outputDeclaration: RedHandleOutputDeclaration,
+    output: RedHandleOutput,
+    inlineOutput: *const RedInlineOutput,
+    outputWidth: libc::c_uint,
+    outputHeight: libc::c_uint,
+    outputDepthStencilEnable: RedBool32,
+    outputColorsCount: libc::c_uint,
+    depthClearValue: libc::c_float,
+    stencilClearValue: libc::c_uint,
+    colorsClearValuesFloat: *const RedColorsClearValuesFloat,
+    colorsClearValuesSint: *const RedColorsClearValuesSint,
+    colorsClearValuesUint: *const RedColorsClearValuesUint,
+  );
+  pub fn redCallEndProcedureOutput(
+    address: RedTypeProcedureAddressCallEndProcedureOutput,
+    calls: RedHandleCalls,
+  );
+  pub fn redCallUsageAliasOrderBarrier(
+    address: RedTypeProcedureAddressCallUsageAliasOrderBarrier,
+    calls: RedHandleCalls,
+    context: RedContext,
+    arrayUsagesCount: libc::c_uint,
+    arrayUsages: *const RedUsageArray,
+    imageUsagesCount: libc::c_uint,
+    imageUsages: *const RedUsageImage,
+    aliasesCount: libc::c_uint,
+    aliases: *const RedAlias,
+    ordersCount: libc::c_uint,
+    orders: *const RedOrder,
+    dependencyByRegion: RedBool32,
+  );
+  pub fn redCallMark(
+    address: RedTypeProcedureAddressCallMark,
+    calls: RedHandleCalls,
+    mark: *const libc::c_char,
+  );
+  pub fn redCallMarkSet(
+    address: RedTypeProcedureAddressCallMarkSet,
+    calls: RedHandleCalls,
+    mark: *const libc::c_char,
+  );
+  pub fn redCallMarkEnd(
+    address: RedTypeProcedureAddressCallMarkEnd,
+    calls: RedHandleCalls,
+  );
+  pub fn redQueueSubmit(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    queue: RedHandleQueue,
+    timelinesCount: libc::c_uint,
+    timelines: *const RedGpuTimeline,
+    signalCpuSignal: RedHandleCpuSignal,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMark(
+    mark: *const libc::c_char,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMarkSet(
+    mark: *const libc::c_char,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redMarkEnd(
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsMemoryAllocateWithInlineSamplers(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    maxStructsCount: libc::c_uint,
+    maxStructsMembersOfTypeArrayROConstantCount: libc::c_uint,
+    maxStructsMembersOfTypeArrayROOrArrayRWCount: libc::c_uint,
+    maxStructsMembersOfTypeTextureROCount: libc::c_uint,
+    maxStructsMembersOfTypeTextureRWCount: libc::c_uint,
+    maxStructsMembersOfTypeInlineSamplerCount: libc::c_uint,
+    outStructsMemory: *mut RedHandleStructsMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redStructsMemoryAllocateSamplersWithInlineSamplers(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    maxStructsCount: libc::c_uint,
+    maxStructsMembersOfTypeSamplerCount: libc::c_uint,
+    maxStructsMembersOfTypeInlineSamplerCount: libc::c_uint,
+    outStructsMemory: *mut RedHandleStructsMemory,
     outStatuses: *mut RedStatuses,
     optionalFile: *const libc::c_char,
     optionalLine: libc::c_int,

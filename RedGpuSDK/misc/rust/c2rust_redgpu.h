@@ -1076,6 +1076,347 @@ typedef struct RedOutputMembersResolveTargets {
   RedHandleTexture colors[8];
 } RedOutputMembersResolveTargets;
 
+// redCallCopyArrayToArray
+
+typedef struct RedCopyArrayRange {
+  uint64_t arrayRBytesFirst;
+  uint64_t arrayWBytesFirst;
+  uint64_t bytesCount;
+} RedCopyArrayRange;
+
+// redCallCopyImageToImage
+
+typedef struct RedCopyImageParts {
+  RedImagePartBitflags allParts;
+  unsigned             level;
+  unsigned             layersFirst; // Set to 0 for RED_IMAGE_DIMENSIONS_3D and RED_IMAGE_DIMENSIONS_3D_WITH_TEXTURE_DIMENSIONS_2D_AND_2D_LAYERED images
+  unsigned             layersCount; // Set to 1 for RED_IMAGE_DIMENSIONS_3D and RED_IMAGE_DIMENSIONS_3D_WITH_TEXTURE_DIMENSIONS_2D_AND_2D_LAYERED images
+} RedCopyImageParts;
+
+typedef struct RedCopyImageOffset {
+  int texelX;
+  int texelY;
+  int texelZ;
+} RedCopyImageOffset;
+
+typedef struct RedCopyImageExtent {
+  unsigned texelsCountWidth;
+  unsigned texelsCountHeight; // Set to 1 for RED_IMAGE_DIMENSIONS_1D images
+  unsigned texelsCountDepth;  // Set to 1 for RED_IMAGE_DIMENSIONS_1D, RED_IMAGE_DIMENSIONS_2D and RED_IMAGE_DIMENSIONS_2D_WITH_TEXTURE_DIMENSIONS_CUBE_AND_CUBE_LAYERED images
+} RedCopyImageExtent;
+
+typedef struct RedCopyImageRange {
+  RedCopyImageParts  imageRParts;
+  RedCopyImageOffset imageROffset;
+  RedCopyImageParts  imageWParts;
+  RedCopyImageOffset imageWOffset;
+  RedCopyImageExtent extent;
+} RedCopyImageRange;
+
+// redCallCopyArrayToImage
+// redCallCopyImageToArray
+
+typedef struct RedCopyArrayImageRange {
+  uint64_t           arrayBytesFirst;
+  unsigned           arrayTexelsCountToNextRow;
+  unsigned           arrayTexelsCountToNextLayerOr3DDepthSliceDividedByTexelsCountToNextRow;
+  RedCopyImageParts  imageParts;
+  RedCopyImageOffset imageOffset;
+  RedCopyImageExtent imageExtent;
+} RedCopyArrayImageRange;
+
+// Example code for copying 2x2 texels from an array to a 2D color image with redCallCopyArrayToImage:
+//
+// ```
+// RedCopyArrayImageRange range;
+//
+// range.arrayBytesFirst               = 0 * sizeof(texel);
+// range.arrayTexelsCountToNextRow     = 5;
+// range.arrayTexelsCountToNextLayerOr3DDepthSliceDividedByTexelsCountToNextRow = 0;
+//
+// range.imageParts.allParts           = RED_IMAGE_PART_BITFLAG_COLOR;
+// range.imageParts.level              = 0;
+// range.imageParts.layersFirst        = 0;
+// range.imageParts.layersCount        = 1;
+//
+// range.imageOffset.texelX            = 1;
+// range.imageOffset.texelY            = 2;
+// range.imageOffset.texelZ            = 0;
+//
+// range.imageExtent.texelsCountWidth  = 2;
+// range.imageExtent.texelsCountHeight = 2;
+// range.imageExtent.texelsCountDepth  = 1;
+// ```
+//
+// Example diagram for the code above (requires monospaced font):
+//
+//             Array            |        Image
+// -----------------------------+----------------------
+//                              |
+//   arrayTexelsCountToNextRow  |
+//         ______|______        |  [.][.][.][.][.][.]
+//        |             |       |  [.][.][.][.][.][.]
+//        [x][x][.][.][.]       |  [.][x][x][.][.][.]
+//        [x][x][.][.][.]       |  [.][x][x][.][.][.]
+//                              |  [.][.][.][.][.][.]
+//                              |  [.][.][.][.][.][.]
+//                              |
+//                              |
+// -----------------------------+----------------------
+//
+// Example code for array addressing:
+//
+// ```
+// texelsCountToNextRow = range.arrayTexelsCountToNextRow != 0 ? range.arrayTexelsCountToNextRow : range.imageExtent.texelsCountWidth;
+// texelsCountToNextLayerOrSliceDividedByTexelsCountToNextRow = range.arrayTexelsCountToNextLayerOr3DDepthSliceDividedByTexelsCountToNextRow != 0 ? range.arrayTexelsCountToNextLayerOr3DDepthSliceDividedByTexelsCountToNextRow : range.imageExtent.texelsCountHeight;
+//
+// for (unsigned l = 0; l < range.imageParts.layersCount; l += 1) {
+//   for (unsigned z = 0; z < range.imageExtent.texelsCountDepth; z += 1) {
+//     for (unsigned y = 0; y < range.imageExtent.texelsCountHeight; y += 1) {
+//       for (unsigned x = 0; x < range.imageExtent.texelsCountWidth; x += 1) {
+//         unsigned zy = (l + z) * texelsCountToNextLayerOrSliceDividedByTexelsCountToNextRow + y;
+//         uint64_t arrayAddress = range.arrayBytesFirst + (zy * texelsCountToNextRow + x) * sizeof(texel);
+//       }
+//     }
+//   }
+// }
+// ```
+
+// redCallSetProcedure
+// redCallSetProcedureParametersStructs
+// redCallSetProcedureParametersHandles
+
+typedef enum RedProcedureType {
+  RED_PROCEDURE_TYPE_DRAW    = 0,
+  RED_PROCEDURE_TYPE_COMPUTE = 1,
+} RedProcedureType;
+
+// redCallSetProcedureParametersHandles
+
+typedef enum RedProcedureParametersHandleType {
+  RED_PROCEDURE_PARAMETERS_HANDLE_TYPE_ARRAY_RO_CONSTANT = 6,
+  RED_PROCEDURE_PARAMETERS_HANDLE_TYPE_ARRAY_RO_RW       = 7,
+} RedProcedureParametersHandleType;
+
+typedef struct RedProcedureParametersHandleArray {
+  RedHandleArray array;
+  uint64_t       setTo0;
+  uint64_t       setToMaxValue;
+} RedProcedureParametersHandleArray;
+
+typedef struct RedProcedureParametersHandle {
+  unsigned                                  setTo35;
+  size_t                                    setTo0;
+  uint64_t                                  setTo00;
+  unsigned                                  slot;
+  unsigned                                  setTo000;
+  unsigned                                  setTo1;
+  RedProcedureParametersHandleType          type;
+  size_t                                    setTo0000;
+  const RedProcedureParametersHandleArray * array;
+  size_t                                    setTo00000;
+} RedProcedureParametersHandle;
+
+// redCallSetDynamicStencilCompareMask
+// redCallSetDynamicStencilWriteMask
+// redCallSetDynamicStencilReference
+
+typedef enum RedStencilFace {
+  RED_STENCIL_FACE_FRONT_AND_BACK = 0b00000000000000000000000000000011,
+} RedStencilFace;
+
+typedef void (*RedTypeProcedureCallGpuToCpuSignalSignal)            (RedHandleCalls calls, RedHandleGpuToCpuSignal signalGpuToCpuSignal, unsigned setTo8192);
+typedef void (*RedTypeProcedureCallCopyArrayToArray)                (RedHandleCalls calls, RedHandleArray arrayR, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayRange * ranges);
+typedef void (*RedTypeProcedureCallCopyImageToImage)                (RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleImage imageW, unsigned setTo01, unsigned rangesCount, const RedCopyImageRange * ranges);
+typedef void (*RedTypeProcedureCallCopyArrayToImage)                (RedHandleCalls calls, RedHandleArray arrayR, RedHandleImage imageW, unsigned setTo1, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
+typedef void (*RedTypeProcedureCallCopyImageToArray)                (RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
+typedef void (*RedTypeProcedureCallProcedure)                       (RedHandleCalls calls, unsigned vertexCount, unsigned instanceCount, unsigned vertexFirst, unsigned instanceFirst);
+typedef void (*RedTypeProcedureCallProcedureIndexed)                (RedHandleCalls calls, unsigned indexCount, unsigned instanceCount, unsigned indexFirst, int vertexBase, unsigned instanceFirst);
+typedef void (*RedTypeProcedureCallProcedureCompute)                (RedHandleCalls calls, unsigned workgroupsCountX, unsigned workgroupsCountY, unsigned workgroupsCountZ);
+typedef void (*RedTypeProcedureCallSetProcedure)                    (RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedure procedure);
+typedef void (*RedTypeProcedureCallSetProcedureIndices)             (RedHandleCalls calls, RedHandleArray array, uint64_t setTo0, unsigned setTo1);
+typedef void (*RedTypeProcedureCallSetProcedureParametersVariables) (RedHandleCalls calls, RedHandleProcedureParameters procedureParameters, RedVisibleToStageBitflags visibleToStages, unsigned variablesBytesFirst, unsigned dataBytesCount, const void * data);
+typedef void (*RedTypeProcedureCallSetProcedureParametersStructs)   (RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsFirst, unsigned structsCount, const RedHandleStruct * structs, unsigned setTo0, size_t setTo00);
+typedef void (*RedTypeProcedureCallSetProcedureParametersHandles)   (RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsCount, unsigned handlesCount, const RedProcedureParametersHandle * handles); // One redCallSetProcedureParametersHandles call should set all the handles
+typedef void (*RedTypeProcedureCallSetDynamicDepthBias)             (RedHandleCalls calls, float constantFactor, float clamp, float slopeFactor); // Depends on RedGpuInfo::supportsProcedureStateRasterizationDepthBiasClamp
+typedef void (*RedTypeProcedureCallSetDynamicDepthBounds)           (RedHandleCalls calls, float min, float max);                                 // Depends on RedGpuInfo::supportsProcedureStateDepthTestBoundsTest
+typedef void (*RedTypeProcedureCallSetDynamicStencilCompareMask)    (RedHandleCalls calls, RedStencilFace face, unsigned compareMask);
+typedef void (*RedTypeProcedureCallSetDynamicStencilWriteMask)      (RedHandleCalls calls, RedStencilFace face, unsigned writeMask);
+typedef void (*RedTypeProcedureCallSetDynamicStencilReference)      (RedHandleCalls calls, RedStencilFace face, unsigned reference);
+typedef void (*RedTypeProcedureCallSetDynamicBlendConstants)        (RedHandleCalls calls, const float * blendConstants);
+typedef const struct RedTypeProcedureCallSetDynamicViewport *                                        RedTypeProcedureAddressCallSetDynamicViewport;
+typedef const struct RedTypeProcedureCallSetDynamicScissor *                                         RedTypeProcedureAddressCallSetDynamicScissor;
+typedef const struct RedTypeProcedureCallSetStructsMemory *                                          RedTypeProcedureAddressCallSetStructsMemory;
+typedef const struct RedTypeProcedureCallSetProcedureParameters *                                    RedTypeProcedureAddressCallSetProcedureParameters;
+typedef const struct RedTypeProcedureCallSetProcedureOutput *                                        RedTypeProcedureAddressCallSetProcedureOutput;
+typedef const struct RedTypeProcedureCallEndProcedureOutput *                                        RedTypeProcedureAddressCallEndProcedureOutput;
+typedef const struct RedTypeProcedureCallUsageAliasOrderBarrier *                                    RedTypeProcedureAddressCallUsageAliasOrderBarrier;
+typedef const struct RedTypeProcedureCallMark *                                                      RedTypeProcedureAddressCallMark;
+typedef const struct RedTypeProcedureCallMarkSet *                                                   RedTypeProcedureAddressCallMarkSet;
+typedef const struct RedTypeProcedureCallMarkEnd *                                                   RedTypeProcedureAddressCallMarkEnd;
+
+typedef struct RedCallProceduresAndAddresses {
+  RedTypeProcedureCallGpuToCpuSignalSignal            redCallGpuToCpuSignalSignal;
+  RedTypeProcedureCallCopyArrayToArray                redCallCopyArrayToArray;
+  RedTypeProcedureCallCopyImageToImage                redCallCopyImageToImage;
+  RedTypeProcedureCallCopyArrayToImage                redCallCopyArrayToImage;
+  RedTypeProcedureCallCopyImageToArray                redCallCopyImageToArray;
+  RedTypeProcedureCallProcedure                       redCallProcedure;
+  RedTypeProcedureCallProcedureIndexed                redCallProcedureIndexed;
+  RedTypeProcedureCallProcedureCompute                redCallProcedureCompute;
+  RedTypeProcedureCallSetProcedure                    redCallSetProcedure;
+  RedTypeProcedureCallSetProcedureIndices             redCallSetProcedureIndices;
+  RedTypeProcedureCallSetProcedureParametersVariables redCallSetProcedureParametersVariables;
+  RedTypeProcedureCallSetProcedureParametersStructs   redCallSetProcedureParametersStructs;
+  RedTypeProcedureCallSetProcedureParametersHandles   redCallSetProcedureParametersHandles;
+  RedTypeProcedureCallSetDynamicDepthBias             redCallSetDynamicDepthBias;
+  RedTypeProcedureCallSetDynamicDepthBounds           redCallSetDynamicDepthBounds;
+  RedTypeProcedureCallSetDynamicStencilCompareMask    redCallSetDynamicStencilCompareMask;
+  RedTypeProcedureCallSetDynamicStencilWriteMask      redCallSetDynamicStencilWriteMask;
+  RedTypeProcedureCallSetDynamicStencilReference      redCallSetDynamicStencilReference;
+  RedTypeProcedureCallSetDynamicBlendConstants        redCallSetDynamicBlendConstants;
+  RedTypeProcedureAddressCallSetDynamicViewport       redCallSetDynamicViewport;
+  RedTypeProcedureAddressCallSetDynamicScissor        redCallSetDynamicScissor;
+  RedTypeProcedureAddressCallSetStructsMemory         redCallSetStructsMemory;
+  RedTypeProcedureAddressCallSetProcedureParameters   redCallSetProcedureParameters;
+  RedTypeProcedureAddressCallSetProcedureOutput       redCallSetProcedureOutput;
+  RedTypeProcedureAddressCallEndProcedureOutput       redCallEndProcedureOutput;
+  RedTypeProcedureAddressCallUsageAliasOrderBarrier   redCallUsageAliasOrderBarrier;
+  RedTypeProcedureAddressCallMark                     redCallMark;
+  RedTypeProcedureAddressCallMarkSet                  redCallMarkSet;
+  RedTypeProcedureAddressCallMarkEnd                  redCallMarkEnd;
+} RedCallProceduresAndAddresses;
+
+// redCallSetProcedureOutput
+
+typedef struct RedInlineOutput {
+  const RedOutputMembers *               outputMembers;
+  const RedOutputMembersResolveTargets * outputMembersResolveTargets;
+} RedInlineOutput;
+
+typedef struct RedColorsClearValuesFloat {
+  float    r[8];
+  float    g[8];
+  float    b[8];
+  float    a[8];
+} RedColorsClearValuesFloat;
+
+typedef struct RedColorsClearValuesSint {
+  int      r[8];
+  int      g[8];
+  int      b[8];
+  int      a[8];
+} RedColorsClearValuesSint;
+
+typedef struct RedColorsClearValuesUint {
+  unsigned r[8];
+  unsigned g[8];
+  unsigned b[8];
+  unsigned a[8];
+} RedColorsClearValuesUint;
+
+// redCallUsageAliasOrderBarrier
+
+typedef enum RedBarrierSplit {
+  RED_BARRIER_SPLIT_NONE = 0,
+  RED_BARRIER_SPLIT_SET  = 1,
+  RED_BARRIER_SPLIT_END  = 2,
+} RedBarrierSplit;
+
+typedef unsigned RedAccessStageBitflags;
+typedef enum RedAccessStageBitflag {
+  RED_ACCESS_STAGE_BITFLAG_COPY                 = 0b00000000000000000000000000000001,
+  RED_ACCESS_STAGE_BITFLAG_COMPUTE              = 0b00000000000000000000000000000010,
+  RED_ACCESS_STAGE_BITFLAG_INDEX                = 0b00000000000000000000000000000100,
+  RED_ACCESS_STAGE_BITFLAG_VERTEX               = 0b00000000000000000000000000001000,
+  RED_ACCESS_STAGE_BITFLAG_FRAGMENT             = 0b00000000000000000000000000010000,
+  RED_ACCESS_STAGE_BITFLAG_OUTPUT_DEPTH_STENCIL = 0b00000000000000000000000000100000,
+  RED_ACCESS_STAGE_BITFLAG_OUTPUT_COLOR         = 0b00000000000000000000000001000000,
+  RED_ACCESS_STAGE_BITFLAG_RESOLVE              = 0b00000000000000000000000010000000,
+  RED_ACCESS_STAGE_BITFLAG_CPU                  = 0b00000000000000000000000100000000,
+} RedAccessStageBitflag;
+
+typedef unsigned RedAccessBitflags;
+typedef enum RedAccessBitflag {
+  RED_ACCESS_BITFLAG_COPY_R                               = 0b00000000000000000000000000000001,
+  RED_ACCESS_BITFLAG_COPY_W                               = 0b00000000000000000000000000000010,
+  RED_ACCESS_BITFLAG_INDEX_R                              = 0b00000000000000000000000000000100,
+  RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R           = 0b00000000000000000000000000001000,
+  RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R = 0b00000000000000000000000000010000,
+  RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R     = 0b00000000000000000000000000100000,
+  RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W                    = 0b00000000000000000000000001000000,
+  RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R                       = 0b00000000000000000000000010000000,
+  RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW                      = 0b00000000000000000000000100000000,
+  RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R                     = 0b00000000000000000000001000000000,
+  RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW                    = 0b00000000000000000000010000000000,
+  RED_ACCESS_BITFLAG_OUTPUT_COLOR_W                       = 0b00000000000000000000100000000000,
+  RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R                     = 0b00000000000000000001000000000000,
+  RED_ACCESS_BITFLAG_RESOLVE_TARGET_W                     = 0b00000000000000000010000000000000,
+  RED_ACCESS_BITFLAG_CPU_RW                               = 0b00000000000000000100000000000000,
+} RedAccessBitflag;
+
+typedef enum RedState {
+  RED_STATE_UNUSABLE = 0,
+  RED_STATE_USABLE   = 1,
+  RED_STATE_PRESENT  = 1000001002, // WSI specific
+} RedState;
+
+typedef struct RedUsageArray {
+  RedBarrierSplit        barrierSplit;
+  RedAccessStageBitflags oldAccessStages;
+  RedAccessStageBitflags newAccessStages;
+  RedAccessBitflags      oldAccess;
+  RedAccessBitflags      newAccess;
+  unsigned               queueFamilyIndexSource; // Set to max value to ignore
+  unsigned               queueFamilyIndexTarget; // Set to max value to ignore
+  RedHandleArray         array;
+  uint64_t               arrayBytesFirst;
+  uint64_t               arrayBytesCount;
+} RedUsageArray;
+
+typedef struct RedUsageImage {
+  RedBarrierSplit        barrierSplit;
+  RedAccessStageBitflags oldAccessStages;
+  RedAccessStageBitflags newAccessStages;
+  RedAccessBitflags      oldAccess;
+  RedAccessBitflags      newAccess;
+  RedState               oldState;
+  RedState               newState;
+  unsigned               queueFamilyIndexSource; // Set to max value to ignore
+  unsigned               queueFamilyIndexTarget; // Set to max value to ignore
+  RedHandleImage         image;
+  RedImagePartBitflags   imageAllParts;
+  unsigned               imageLevelsFirst;
+  unsigned               imageLevelsCount;
+  unsigned               imageLayersFirst;
+  unsigned               imageLayersCount;
+} RedUsageImage;
+
+typedef struct RedAlias {
+  RedBarrierSplit        barrierSplit;
+  uint64_t               oldResourceHandle;
+  uint64_t               newResourceHandle;
+} RedAlias;
+
+typedef struct RedOrder {
+  RedBarrierSplit        barrierSplit;
+  uint64_t               resourceHandle;
+} RedOrder;
+
+// redQueueSubmit
+
+typedef struct RedGpuTimeline {
+  unsigned                   setTo4;
+  size_t                     setTo0;
+  unsigned                   waitForAndUnsignalGpuSignalsCount;
+  const RedHandleGpuSignal * waitForAndUnsignalGpuSignals;
+  const unsigned *           setTo65536;                        // Array of waitForAndUnsignalGpuSignalsCount
+  unsigned                   callsCount;
+  const RedHandleCalls *     calls;
+  unsigned                   signalGpuSignalsCount;
+  const RedHandleGpuSignal * signalGpuSignals;
+} RedGpuTimeline;
+
 // Memory
 
 void redMemoryGetBudget                 (RedContext context, RedHandleGpu gpu, RedMemoryBudget * outMemoryBudget, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
@@ -1157,3 +1498,32 @@ void redGpuToCpuSignalUnsignal          (RedContext context, RedHandleGpu gpu, R
 
 void redCallsSet                        (RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
 void redCallsEnd                        (RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Calls recording
+
+void redGetCallProceduresAndAddresses   (RedContext context, RedHandleGpu gpu, RedCallProceduresAndAddresses * outCallProceduresAndAddresses, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCallSetDynamicViewport          (RedTypeProcedureAddressCallSetDynamicViewport     address, RedHandleCalls calls, float x, float y, float width, float height, float depthMin, float depthMax) {}
+void redCallSetDynamicScissor           (RedTypeProcedureAddressCallSetDynamicScissor      address, RedHandleCalls calls, int x, int y, unsigned width, unsigned height) {}
+void redCallSetStructsMemory            (RedTypeProcedureAddressCallSetStructsMemory       address, RedHandleCalls calls, RedHandleStructsMemory structsMemory, RedHandleStructsMemory structsMemorySamplers) {}
+void redCallSetProcedureParameters      (RedTypeProcedureAddressCallSetProcedureParameters address, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters) {}
+void redCallSetProcedureOutput          (RedTypeProcedureAddressCallSetProcedureOutput     address, RedHandleCalls calls, RedHandleOutputDeclaration outputDeclaration, RedHandleOutput output, const RedInlineOutput * inlineOutput, unsigned outputWidth, unsigned outputHeight, RedBool32 outputDepthStencilEnable, unsigned outputColorsCount, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint) {}
+void redCallEndProcedureOutput          (RedTypeProcedureAddressCallEndProcedureOutput     address, RedHandleCalls calls) {}
+void redCallUsageAliasOrderBarrier      (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, unsigned aliasesCount, const RedAlias * aliases, unsigned ordersCount, const RedOrder * orders, RedBool32 dependencyByRegion) {}
+void redCallMark                        (RedTypeProcedureAddressCallMark                   address, RedHandleCalls calls, const char * mark) {}
+void redCallMarkSet                     (RedTypeProcedureAddressCallMarkSet                address, RedHandleCalls calls, const char * mark) {}
+void redCallMarkEnd                     (RedTypeProcedureAddressCallMarkEnd                address, RedHandleCalls calls) {}
+
+// Queue
+
+void redQueueSubmit                     (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, RedHandleCpuSignal signalCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Mark
+
+void redMark                            (const char * mark, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMarkSet                         (const char * mark, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redMarkEnd                         (const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Struct extended (18 May 2023)
+
+void redStructsMemoryAllocateWithInlineSamplers         (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redStructsMemoryAllocateSamplersWithInlineSamplers (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeSamplerCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
