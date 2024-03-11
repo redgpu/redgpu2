@@ -11,9 +11,20 @@ extern "C" {
   pub type RedTypeHandleImage;
   pub type RedTypeHandleSampler;
   pub type RedTypeHandleTexture;
+  pub type RedTypeHandleGpuCode;
+  pub type RedTypeHandleOutputDeclaration;
   pub type RedTypeHandleStructDeclaration;
+  pub type RedTypeHandleProcedureParameters;
+  pub type RedTypeHandleProcedureCache;
+  pub type RedTypeHandleProcedure;
+  pub type RedTypeHandleOutput;
   pub type RedTypeHandleStruct;
   pub type RedTypeHandleStructsMemory;
+  pub type RedTypeHandleCalls;
+  pub type RedTypeHandleCallsMemory;
+  pub type RedTypeHandleCpuSignal;
+  pub type RedTypeHandleGpuSignal;
+  pub type RedTypeHandleGpuToCpuSignal;
 }
 pub type size_t = usize;
 pub type uint64_t = u64;
@@ -354,9 +365,58 @@ pub type RedHandleArray = *const RedTypeHandleArray;
 pub type RedHandleImage = *const RedTypeHandleImage;
 pub type RedHandleSampler = *const RedTypeHandleSampler;
 pub type RedHandleTexture = *const RedTypeHandleTexture;
+pub type RedHandleGpuCode = *const RedTypeHandleGpuCode;
+pub type RedHandleOutputDeclaration = *const RedTypeHandleOutputDeclaration;
 pub type RedHandleStructDeclaration = *const RedTypeHandleStructDeclaration;
+pub type RedHandleProcedureParameters = *const RedTypeHandleProcedureParameters;
+pub type RedHandleProcedureCache = *const RedTypeHandleProcedureCache;
+pub type RedHandleProcedure = *const RedTypeHandleProcedure;
+pub type RedHandleOutput = *const RedTypeHandleOutput;
 pub type RedHandleStruct = *const RedTypeHandleStruct;
 pub type RedHandleStructsMemory = *const RedTypeHandleStructsMemory;
+pub type RedHandleCalls = *const RedTypeHandleCalls;
+pub type RedHandleCallsMemory = *const RedTypeHandleCallsMemory;
+pub type RedHandleCpuSignal = *const RedTypeHandleCpuSignal;
+pub type RedHandleGpuSignal = *const RedTypeHandleGpuSignal;
+pub type RedHandleGpuToCpuSignal = *const RedTypeHandleGpuToCpuSignal;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedArray {
+  pub handle: RedHandleArray,
+  pub memoryBytesAlignment: uint64_t,
+  pub memoryBytesCount: uint64_t,
+  pub memoryTypesSupported: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedImage {
+  pub handle: RedHandleImage,
+  pub memoryBytesAlignment: uint64_t,
+  pub memoryBytesCount: uint64_t,
+  pub memoryTypesSupported: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedOutput {
+  pub handle: RedHandleOutput,
+  pub width: libc::c_uint,
+  pub height: libc::c_uint,
+  pub depthStencilEnable: RedBool32,
+  pub colorsCount: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedCalls {
+  pub handle: RedHandleCalls,
+  pub memory: RedHandleCallsMemory,
+  pub reusable: RedBool32,
+}
+pub type RedMultisampleCountBitflag = libc::c_uint;
+pub const RED_MULTISAMPLE_COUNT_BITFLAG_16: RedMultisampleCountBitflag = 16;
+pub const RED_MULTISAMPLE_COUNT_BITFLAG_8: RedMultisampleCountBitflag = 8;
+pub const RED_MULTISAMPLE_COUNT_BITFLAG_4: RedMultisampleCountBitflag = 4;
+pub const RED_MULTISAMPLE_COUNT_BITFLAG_2: RedMultisampleCountBitflag = 2;
+pub const RED_MULTISAMPLE_COUNT_BITFLAG_1: RedMultisampleCountBitflag = 1;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedMemoryBudget {
@@ -522,6 +582,277 @@ pub type RedTypeProcedureDebugCallback = Option::<
     RedContext,
   ) -> RedBool32,
 >;
+pub type RedArrayType = libc::c_uint;
+pub const RED_ARRAY_TYPE_INDEX_RO: RedArrayType = 66;
+pub const RED_ARRAY_TYPE_ARRAY_RO_CONSTANT: RedArrayType = 18;
+pub const RED_ARRAY_TYPE_ARRAY_RO: RedArrayType = 2147483648;
+pub const RED_ARRAY_TYPE_ARRAY_RW: RedArrayType = 35;
+pub type RedImageDimensions = libc::c_uint;
+pub const RED_IMAGE_DIMENSIONS_3D_WITH_TEXTURE_DIMENSIONS_2D_AND_2D_LAYERED: RedImageDimensions = 4;
+pub const RED_IMAGE_DIMENSIONS_3D: RedImageDimensions = 2;
+pub const RED_IMAGE_DIMENSIONS_2D_WITH_TEXTURE_DIMENSIONS_CUBE_AND_CUBE_LAYERED: RedImageDimensions = 3;
+pub const RED_IMAGE_DIMENSIONS_2D: RedImageDimensions = 1;
+pub const RED_IMAGE_DIMENSIONS_1D: RedImageDimensions = 0;
+pub type RedFormat = libc::c_uint;
+pub const RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT: RedFormat = 130;
+pub const RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT: RedFormat = 129;
+pub const RED_FORMAT_DEPTH_32_FLOAT: RedFormat = 126;
+pub const RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1: RedFormat = 124;
+pub const RED_FORMAT_RGBA_32_32_32_32_FLOAT: RedFormat = 109;
+pub const RED_FORMAT_RGBA_32_32_32_32_SINT: RedFormat = 108;
+pub const RED_FORMAT_RGBA_32_32_32_32_UINT: RedFormat = 107;
+pub const RED_FORMAT_R_32_FLOAT: RedFormat = 100;
+pub const RED_FORMAT_R_32_SINT: RedFormat = 99;
+pub const RED_FORMAT_R_32_UINT: RedFormat = 98;
+pub const RED_FORMAT_RGBA_16_16_16_16_FLOAT: RedFormat = 97;
+pub const RED_FORMAT_RGBA_16_16_16_16_SINT: RedFormat = 96;
+pub const RED_FORMAT_RGBA_16_16_16_16_UINT: RedFormat = 95;
+pub const RED_FORMAT_R_16_FLOAT: RedFormat = 76;
+pub const RED_FORMAT_R_16_SINT: RedFormat = 75;
+pub const RED_FORMAT_R_16_UINT: RedFormat = 74;
+pub const RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1: RedFormat = 50;
+pub const RED_FORMAT_RGBA_8_8_8_8_SINT: RedFormat = 42;
+pub const RED_FORMAT_RGBA_8_8_8_8_UINT: RedFormat = 41;
+pub const RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED: RedFormat = 43;
+pub const RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1: RedFormat = 37;
+pub const RED_FORMAT_R_8_SINT: RedFormat = 14;
+pub const RED_FORMAT_R_8_UINT: RedFormat = 13;
+pub const RED_FORMAT_R_8_UINT_TO_FLOAT_0_1: RedFormat = 9;
+pub const RED_FORMAT_UNDEFINED: RedFormat = 0;
+pub type RedSamplerFiltering = libc::c_uint;
+pub const RED_SAMPLER_FILTERING_LINEAR: RedSamplerFiltering = 1;
+pub const RED_SAMPLER_FILTERING_NEAREST: RedSamplerFiltering = 0;
+pub type RedSamplerFilteringMip = libc::c_uint;
+pub const RED_SAMPLER_FILTERING_MIP_LINEAR: RedSamplerFilteringMip = 1;
+pub const RED_SAMPLER_FILTERING_MIP_NEAREST: RedSamplerFilteringMip = 0;
+pub type RedSamplerBehaviorOutsideTextureCoordinate = libc::c_uint;
+pub const RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_CLAMP_TO_EDGE_VALUE: RedSamplerBehaviorOutsideTextureCoordinate = 2;
+pub const RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_REPEAT_MIRRORED: RedSamplerBehaviorOutsideTextureCoordinate = 1;
+pub const RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_REPEAT: RedSamplerBehaviorOutsideTextureCoordinate = 0;
+pub type RedImagePartBitflags = libc::c_uint;
+pub type RedTextureDimensions = libc::c_uint;
+pub const RED_TEXTURE_DIMENSIONS_CUBE_LAYERED: RedTextureDimensions = 6;
+pub const RED_TEXTURE_DIMENSIONS_CUBE: RedTextureDimensions = 3;
+pub const RED_TEXTURE_DIMENSIONS_3D: RedTextureDimensions = 2;
+pub const RED_TEXTURE_DIMENSIONS_2D_LAYERED: RedTextureDimensions = 5;
+pub const RED_TEXTURE_DIMENSIONS_2D: RedTextureDimensions = 1;
+pub const RED_TEXTURE_DIMENSIONS_1D_LAYERED: RedTextureDimensions = 4;
+pub const RED_TEXTURE_DIMENSIONS_1D: RedTextureDimensions = 0;
+pub type RedSetProcedureOutputOp = libc::c_uint;
+pub const RED_SET_PROCEDURE_OUTPUT_OP_DISCARD: RedSetProcedureOutputOp = 2;
+pub const RED_SET_PROCEDURE_OUTPUT_OP_CLEAR: RedSetProcedureOutputOp = 1;
+pub const RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE: RedSetProcedureOutputOp = 0;
+pub type RedEndProcedureOutputOp = libc::c_uint;
+pub const RED_END_PROCEDURE_OUTPUT_OP_DISCARD: RedEndProcedureOutputOp = 1;
+pub const RED_END_PROCEDURE_OUTPUT_OP_PRESERVE: RedEndProcedureOutputOp = 0;
+pub type RedResolveMode = libc::c_uint;
+pub const RED_RESOLVE_MODE_MAX: RedResolveMode = 8;
+pub const RED_RESOLVE_MODE_MIN: RedResolveMode = 4;
+pub const RED_RESOLVE_MODE_AVERAGE: RedResolveMode = 2;
+pub const RED_RESOLVE_MODE_SAMPLE_INDEX_ZERO: RedResolveMode = 1;
+pub const RED_RESOLVE_MODE_NONE: RedResolveMode = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedOutputDeclarationMembers {
+  pub depthStencilEnable: RedBool32,
+  pub depthStencilFormat: RedFormat,
+  pub depthStencilMultisampleCount: RedMultisampleCountBitflag,
+  pub depthStencilDepthSetProcedureOutputOp: RedSetProcedureOutputOp,
+  pub depthStencilDepthEndProcedureOutputOp: RedEndProcedureOutputOp,
+  pub depthStencilStencilSetProcedureOutputOp: RedSetProcedureOutputOp,
+  pub depthStencilStencilEndProcedureOutputOp: RedEndProcedureOutputOp,
+  pub depthStencilSharesMemoryWithAnotherMember: RedBool32,
+  pub colorsCount: libc::c_uint,
+  pub colorsFormat: [RedFormat; 8],
+  pub colorsMultisampleCount: [RedMultisampleCountBitflag; 8],
+  pub colorsSetProcedureOutputOp: [RedSetProcedureOutputOp; 8],
+  pub colorsEndProcedureOutputOp: [RedEndProcedureOutputOp; 8],
+  pub colorsSharesMemoryWithAnotherMember: [RedBool32; 8],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedOutputDeclarationMembersResolveSources {
+  pub resolveModeDepth: RedResolveMode,
+  pub resolveModeStencil: RedResolveMode,
+  pub resolveDepthStencil: RedBool32,
+  pub resolveColors: RedBool32,
+}
+pub type RedVisibleToStageBitflags = libc::c_uint;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedStructDeclarationMember {
+  pub slot: libc::c_uint,
+  pub type_0: RedStructMemberType,
+  pub count: libc::c_uint,
+  pub visibleToStages: RedVisibleToStageBitflags,
+  pub inlineSampler: *const RedHandleSampler,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedStructDeclarationMemberArrayRO {
+  pub slot: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedProcedureParametersDeclaration {
+  pub variablesSlot: libc::c_uint,
+  pub variablesVisibleToStages: RedVisibleToStageBitflags,
+  pub variablesBytesCount: libc::c_uint,
+  pub structsDeclarationsCount: libc::c_uint,
+  pub structsDeclarations: [RedHandleStructDeclaration; 7],
+  pub handlesDeclaration: RedHandleStructDeclaration,
+}
+pub type RedPrimitiveTopology = libc::c_uint;
+pub const RED_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP: RedPrimitiveTopology = 4;
+pub const RED_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST: RedPrimitiveTopology = 3;
+pub type RedCullMode = libc::c_uint;
+pub const RED_CULL_MODE_BACK: RedCullMode = 2;
+pub const RED_CULL_MODE_FRONT: RedCullMode = 1;
+pub const RED_CULL_MODE_NONE: RedCullMode = 0;
+pub type RedFrontFace = libc::c_uint;
+pub const RED_FRONT_FACE_CLOCKWISE: RedFrontFace = 1;
+pub const RED_FRONT_FACE_COUNTER_CLOCKWISE: RedFrontFace = 0;
+pub type RedCompareOp = libc::c_uint;
+pub const RED_COMPARE_OP_ALWAYS: RedCompareOp = 7;
+pub const RED_COMPARE_OP_GREATER_OR_EQUAL: RedCompareOp = 6;
+pub const RED_COMPARE_OP_NOT_EQUAL: RedCompareOp = 5;
+pub const RED_COMPARE_OP_GREATER: RedCompareOp = 4;
+pub const RED_COMPARE_OP_LESS_OR_EQUAL: RedCompareOp = 3;
+pub const RED_COMPARE_OP_EQUAL: RedCompareOp = 2;
+pub const RED_COMPARE_OP_LESS: RedCompareOp = 1;
+pub const RED_COMPARE_OP_NEVER: RedCompareOp = 0;
+pub type RedStencilOp = libc::c_uint;
+pub const RED_STENCIL_OP_DECREMENT_AND_WRAP: RedStencilOp = 7;
+pub const RED_STENCIL_OP_INCREMENT_AND_WRAP: RedStencilOp = 6;
+pub const RED_STENCIL_OP_INVERT: RedStencilOp = 5;
+pub const RED_STENCIL_OP_DECREMENT_AND_CLAMP: RedStencilOp = 4;
+pub const RED_STENCIL_OP_INCREMENT_AND_CLAMP: RedStencilOp = 3;
+pub const RED_STENCIL_OP_REPLACE: RedStencilOp = 2;
+pub const RED_STENCIL_OP_ZERO: RedStencilOp = 1;
+pub const RED_STENCIL_OP_KEEP: RedStencilOp = 0;
+pub type RedLogicOp = libc::c_uint;
+pub const RED_LOGIC_OP_SET: RedLogicOp = 15;
+pub const RED_LOGIC_OP_NAND: RedLogicOp = 14;
+pub const RED_LOGIC_OP_OR_INVERTED: RedLogicOp = 13;
+pub const RED_LOGIC_OP_COPY_INVERTED: RedLogicOp = 12;
+pub const RED_LOGIC_OP_OR_REVERSE: RedLogicOp = 11;
+pub const RED_LOGIC_OP_INVERT: RedLogicOp = 10;
+pub const RED_LOGIC_OP_EQUIVALENT: RedLogicOp = 9;
+pub const RED_LOGIC_OP_NOR: RedLogicOp = 8;
+pub const RED_LOGIC_OP_OR: RedLogicOp = 7;
+pub const RED_LOGIC_OP_XOR: RedLogicOp = 6;
+pub const RED_LOGIC_OP_NO_OP: RedLogicOp = 5;
+pub const RED_LOGIC_OP_AND_INVERTED: RedLogicOp = 4;
+pub const RED_LOGIC_OP_COPY: RedLogicOp = 3;
+pub const RED_LOGIC_OP_AND_REVERSE: RedLogicOp = 2;
+pub const RED_LOGIC_OP_AND: RedLogicOp = 1;
+pub const RED_LOGIC_OP_CLEAR: RedLogicOp = 0;
+pub type RedColorComponentBitflags = libc::c_uint;
+pub type RedBlendFactor = libc::c_uint;
+pub const RED_BLEND_FACTOR_ONE_MINUS_SOURCE1_ALPHA: RedBlendFactor = 18;
+pub const RED_BLEND_FACTOR_SOURCE1_ALPHA: RedBlendFactor = 17;
+pub const RED_BLEND_FACTOR_ONE_MINUS_SOURCE1_COLOR: RedBlendFactor = 16;
+pub const RED_BLEND_FACTOR_SOURCE1_COLOR: RedBlendFactor = 15;
+pub const RED_BLEND_FACTOR_SOURCE_ALPHA_SATURATE: RedBlendFactor = 14;
+pub const RED_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR: RedBlendFactor = 11;
+pub const RED_BLEND_FACTOR_CONSTANT_COLOR: RedBlendFactor = 10;
+pub const RED_BLEND_FACTOR_ONE_MINUS_TARGET_ALPHA: RedBlendFactor = 9;
+pub const RED_BLEND_FACTOR_TARGET_ALPHA: RedBlendFactor = 8;
+pub const RED_BLEND_FACTOR_ONE_MINUS_SOURCE_ALPHA: RedBlendFactor = 7;
+pub const RED_BLEND_FACTOR_SOURCE_ALPHA: RedBlendFactor = 6;
+pub const RED_BLEND_FACTOR_ONE_MINUS_TARGET_COLOR: RedBlendFactor = 5;
+pub const RED_BLEND_FACTOR_TARGET_COLOR: RedBlendFactor = 4;
+pub const RED_BLEND_FACTOR_ONE_MINUS_SOURCE_COLOR: RedBlendFactor = 3;
+pub const RED_BLEND_FACTOR_SOURCE_COLOR: RedBlendFactor = 2;
+pub const RED_BLEND_FACTOR_ONE: RedBlendFactor = 1;
+pub const RED_BLEND_FACTOR_ZERO: RedBlendFactor = 0;
+pub type RedBlendOp = libc::c_uint;
+pub const RED_BLEND_OP_MAX: RedBlendOp = 4;
+pub const RED_BLEND_OP_MIN: RedBlendOp = 3;
+pub const RED_BLEND_OP_REVERSE_SUBTRACT: RedBlendOp = 2;
+pub const RED_BLEND_OP_SUBTRACT: RedBlendOp = 1;
+pub const RED_BLEND_OP_ADD: RedBlendOp = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedProcedureState {
+  pub inputAssemblyTopology: RedPrimitiveTopology,
+  pub inputAssemblyPrimitiveRestartEnable: RedBool32,
+  pub viewportDynamic: RedBool32,
+  pub viewportStaticX: libc::c_float,
+  pub viewportStaticY: libc::c_float,
+  pub viewportStaticWidth: libc::c_float,
+  pub viewportStaticHeight: libc::c_float,
+  pub viewportStaticDepthMin: libc::c_float,
+  pub viewportStaticDepthMax: libc::c_float,
+  pub scissorDynamic: RedBool32,
+  pub scissorStaticX: libc::c_int,
+  pub scissorStaticY: libc::c_int,
+  pub scissorStaticWidth: libc::c_uint,
+  pub scissorStaticHeight: libc::c_uint,
+  pub rasterizationDepthClampEnable: RedBool32,
+  pub rasterizationDiscardAllPrimitivesEnable: RedBool32,
+  pub rasterizationCullMode: RedCullMode,
+  pub rasterizationFrontFace: RedFrontFace,
+  pub rasterizationDepthBiasEnable: RedBool32,
+  pub rasterizationDepthBiasDynamic: RedBool32,
+  pub rasterizationDepthBiasStaticConstantFactor: libc::c_float,
+  pub rasterizationDepthBiasStaticClamp: libc::c_float,
+  pub rasterizationDepthBiasStaticSlopeFactor: libc::c_float,
+  pub multisampleCount: RedMultisampleCountBitflag,
+  pub multisampleSampleMask: *const libc::c_uint,
+  pub multisampleSampleShadingEnable: RedBool32,
+  pub multisampleSampleShadingMin: libc::c_float,
+  pub multisampleAlphaToCoverageEnable: RedBool32,
+  pub multisampleAlphaToOneEnable: RedBool32,
+  pub depthTestEnable: RedBool32,
+  pub depthTestDepthWriteEnable: RedBool32,
+  pub depthTestDepthCompareOp: RedCompareOp,
+  pub depthTestBoundsTestEnable: RedBool32,
+  pub depthTestBoundsTestDynamic: RedBool32,
+  pub depthTestBoundsTestStaticMin: libc::c_float,
+  pub depthTestBoundsTestStaticMax: libc::c_float,
+  pub stencilTestEnable: RedBool32,
+  pub stencilTestFrontStencilTestFailOp: RedStencilOp,
+  pub stencilTestFrontStencilTestPassDepthTestPassOp: RedStencilOp,
+  pub stencilTestFrontStencilTestPassDepthTestFailOp: RedStencilOp,
+  pub stencilTestFrontCompareOp: RedCompareOp,
+  pub stencilTestBackStencilTestFailOp: RedStencilOp,
+  pub stencilTestBackStencilTestPassDepthTestPassOp: RedStencilOp,
+  pub stencilTestBackStencilTestPassDepthTestFailOp: RedStencilOp,
+  pub stencilTestBackCompareOp: RedCompareOp,
+  pub stencilTestFrontAndBackDynamicCompareMask: RedBool32,
+  pub stencilTestFrontAndBackDynamicWriteMask: RedBool32,
+  pub stencilTestFrontAndBackDynamicReference: RedBool32,
+  pub stencilTestFrontAndBackStaticCompareMask: libc::c_uint,
+  pub stencilTestFrontAndBackStaticWriteMask: libc::c_uint,
+  pub stencilTestFrontAndBackStaticReference: libc::c_uint,
+  pub blendLogicOpEnable: RedBool32,
+  pub blendLogicOp: RedLogicOp,
+  pub blendConstantsDynamic: RedBool32,
+  pub blendConstantsStatic: [libc::c_float; 4],
+  pub outputColorsCount: libc::c_uint,
+  pub outputColorsWriteMask: [RedColorComponentBitflags; 8],
+  pub outputColorsBlendEnable: [RedBool32; 8],
+  pub outputColorsBlendColorFactorSource: [RedBlendFactor; 8],
+  pub outputColorsBlendColorFactorTarget: [RedBlendFactor; 8],
+  pub outputColorsBlendColorOp: [RedBlendOp; 8],
+  pub outputColorsBlendAlphaFactorSource: [RedBlendFactor; 8],
+  pub outputColorsBlendAlphaFactorTarget: [RedBlendFactor; 8],
+  pub outputColorsBlendAlphaOp: [RedBlendOp; 8],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedOutputMembers {
+  pub depthStencil: RedHandleTexture,
+  pub colorsCount: libc::c_uint,
+  pub colors: [RedHandleTexture; 8],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedOutputMembersResolveTargets {
+  pub depthStencil: RedHandleTexture,
+  pub colors: [RedHandleTexture; 8],
+}
 
 #[link(name = "C:/RedGpuSDK/redgpudll")]
 extern "C" {
@@ -705,6 +1036,253 @@ extern "C" {
     optionalEngineVersion: libc::c_uint,
     optionalSettings: *const libc::c_void,
     outContext: *mut RedContext,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateArray(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    type_0: RedArrayType,
+    bytesCount: uint64_t,
+    structuredBufferElementBytesCount: uint64_t,
+    initialAccess: libc::c_int,
+    initialQueueFamilyIndex: libc::c_uint,
+    dedicate: RedBool32,
+    outArray: *mut RedArray,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateImage(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    dimensions: RedImageDimensions,
+    format: RedFormat,
+    width: libc::c_uint,
+    height: libc::c_uint,
+    depth: libc::c_uint,
+    levelsCount: libc::c_uint,
+    layersCount: libc::c_uint,
+    multisampleCount: RedMultisampleCountBitflag,
+    restrictToAccess: libc::c_int,
+    initialAccess: libc::c_int,
+    initialQueueFamilyIndex: libc::c_uint,
+    dedicate: RedBool32,
+    outImage: *mut RedImage,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateSampler(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    filteringMag: RedSamplerFiltering,
+    filteringMin: RedSamplerFiltering,
+    filteringMip: RedSamplerFilteringMip,
+    behaviorOutsideTextureCoordinateU: RedSamplerBehaviorOutsideTextureCoordinate,
+    behaviorOutsideTextureCoordinateV: RedSamplerBehaviorOutsideTextureCoordinate,
+    behaviorOutsideTextureCoordinateW: RedSamplerBehaviorOutsideTextureCoordinate,
+    mipLodBias: libc::c_float,
+    enableAnisotropy: RedBool32,
+    maxAnisotropy: libc::c_float,
+    enableCompare: RedBool32,
+    compareOp: RedCompareOp,
+    minLod: libc::c_float,
+    maxLod: libc::c_float,
+    outSampler: *mut RedHandleSampler,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateTexture(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    image: RedHandleImage,
+    parts: RedImagePartBitflags,
+    dimensions: RedTextureDimensions,
+    format: RedFormat,
+    levelsFirst: libc::c_uint,
+    levelsCount: libc::c_uint,
+    layersFirst: libc::c_uint,
+    layersCount: libc::c_uint,
+    restrictToAccess: libc::c_int,
+    outTexture: *mut RedHandleTexture,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateGpuCode(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    irBytesCount: uint64_t,
+    ir: *const libc::c_void,
+    outGpuCode: *mut RedHandleGpuCode,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateOutputDeclaration(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    outputDeclarationMembers: *const RedOutputDeclarationMembers,
+    outputDeclarationMembersResolveSources: *const RedOutputDeclarationMembersResolveSources,
+    dependencyByRegion: RedBool32,
+    dependencyByRegionAllowUsageAliasOrderBarriers: RedBool32,
+    outOutputDeclaration: *mut RedHandleOutputDeclaration,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateStructDeclaration(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    structDeclarationMembersCount: libc::c_uint,
+    structDeclarationMembers: *const RedStructDeclarationMember,
+    structDeclarationMembersArrayROCount: libc::c_uint,
+    structDeclarationMembersArrayRO: *const RedStructDeclarationMemberArrayRO,
+    procedureParametersHandlesDeclaration: RedBool32,
+    outStructDeclaration: *mut RedHandleStructDeclaration,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateProcedureParameters(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    procedureParametersDeclaration: *const RedProcedureParametersDeclaration,
+    outProcedureParameters: *mut RedHandleProcedureParameters,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateProcedureCache(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    fromBlobBytesCount: uint64_t,
+    fromBlob: *const libc::c_void,
+    outProcedureCache: *mut RedHandleProcedureCache,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateProcedure(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    procedureCache: RedHandleProcedureCache,
+    outputDeclaration: RedHandleOutputDeclaration,
+    procedureParameters: RedHandleProcedureParameters,
+    gpuCodeVertexMainProcedureName: *const libc::c_char,
+    gpuCodeVertex: RedHandleGpuCode,
+    gpuCodeFragmentMainProcedureName: *const libc::c_char,
+    gpuCodeFragment: RedHandleGpuCode,
+    state: *const RedProcedureState,
+    stateExtension: *const libc::c_void,
+    deriveBase: RedBool32,
+    deriveFrom: RedHandleProcedure,
+    outProcedure: *mut RedHandleProcedure,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateProcedureCompute(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    procedureCache: RedHandleProcedureCache,
+    procedureParameters: RedHandleProcedureParameters,
+    gpuCodeMainProcedureName: *const libc::c_char,
+    gpuCode: RedHandleGpuCode,
+    outProcedure: *mut RedHandleProcedure,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateOutput(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    outputDeclaration: RedHandleOutputDeclaration,
+    outputMembers: *const RedOutputMembers,
+    outputMembersResolveTargets: *const RedOutputMembersResolveTargets,
+    width: libc::c_uint,
+    height: libc::c_uint,
+    outOutput: *mut RedOutput,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateCpuSignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    createSignaled: RedBool32,
+    outCpuSignal: *mut RedHandleCpuSignal,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateGpuSignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    outGpuSignal: *mut RedHandleGpuSignal,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateGpuToCpuSignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    outGpuToCpuSignal: *mut RedHandleGpuToCpuSignal,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateCalls(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    queueFamilyIndex: libc::c_uint,
+    outCalls: *mut RedCalls,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateCallsReusable(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    queueFamilyIndex: libc::c_uint,
+    outCalls: *mut RedCalls,
     outStatuses: *mut RedStatuses,
     optionalFile: *const libc::c_char,
     optionalLine: libc::c_int,

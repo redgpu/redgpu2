@@ -718,6 +718,364 @@ typedef void * (*RedTypeProcedureMallocTagged) (size_t bytesCount, unsigned proc
 typedef void   (*RedTypeProcedureFreeTagged)   (void * pointer, unsigned procedureId, uint64_t memoryAllocationCode, const RedMemoryAllocationTag * optionalMemoryAllocationTag, const char * optionalFile, int optionalLine, void * optionalUserData);
 typedef RedBool32 (*RedTypeProcedureDebugCallback) (RedDebugCallbackSeverity severity, RedDebugCallbackTypeBitflags types, const RedDebugCallbackData * data, RedContext context);
 
+// redCreateArray
+
+typedef enum RedArrayType {
+  RED_ARRAY_TYPE_ARRAY_RW          = 0b00000000000000000000000000100011, // GPU code: RWByteAddressBuffer (RW), RWStructuredBuffer<T> (RW). RWByteAddressBuffer's Load() method expects a byte offset and returns uint value that can be casted to a float with asfloat() procedure. Structured buffer elements cannot be larger than 2048 bytes
+  RED_ARRAY_TYPE_ARRAY_RO          = 0b10000000000000000000000000000000, // GPU code: ByteAddressBuffer   (RO), StructuredBuffer<T>   (RO). ByteAddressBuffer's   Load() method expects a byte offset and returns uint value that can be casted to a float with asfloat() procedure. Structured buffer elements cannot be larger than 2048 bytes
+  RED_ARRAY_TYPE_ARRAY_RO_CONSTANT = 0b00000000000000000000000000010010, // GPU code: ConstantBuffer<T>   (RO)
+  RED_ARRAY_TYPE_INDEX_RO          = 0b00000000000000000000000001000010,
+} RedArrayType;
+
+// redCreateImage
+
+typedef enum RedImageDimensions {
+  RED_IMAGE_DIMENSIONS_1D                                               = 0,
+  RED_IMAGE_DIMENSIONS_2D                                               = 1,
+  RED_IMAGE_DIMENSIONS_2D_WITH_TEXTURE_DIMENSIONS_CUBE_AND_CUBE_LAYERED = 3,
+  RED_IMAGE_DIMENSIONS_3D                                               = 2,
+  RED_IMAGE_DIMENSIONS_3D_WITH_TEXTURE_DIMENSIONS_2D_AND_2D_LAYERED     = 4,
+} RedImageDimensions;
+
+typedef enum RedFormat {
+  RED_FORMAT_UNDEFINED                                      = 0,
+  RED_FORMAT_R_8_UINT_TO_FLOAT_0_1                          = 9,   // UINT_TO_FLOAT_0_1: The components are unsigned integer values that get converted to normalized floating-point values in the range [0.f, 1.f]
+  RED_FORMAT_R_8_UINT                                       = 13,
+  RED_FORMAT_R_8_SINT                                       = 14,
+  RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1                 = 37,
+  RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED = 43,
+  RED_FORMAT_RGBA_8_8_8_8_UINT                              = 41,
+  RED_FORMAT_RGBA_8_8_8_8_SINT                              = 42,
+  RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1         = 50,  // WSI specific
+  RED_FORMAT_R_16_UINT                                      = 74,
+  RED_FORMAT_R_16_SINT                                      = 75,
+  RED_FORMAT_R_16_FLOAT                                     = 76,
+  RED_FORMAT_RGBA_16_16_16_16_UINT                          = 95,
+  RED_FORMAT_RGBA_16_16_16_16_SINT                          = 96,
+  RED_FORMAT_RGBA_16_16_16_16_FLOAT                         = 97,
+  RED_FORMAT_R_32_UINT                                      = 98,
+  RED_FORMAT_R_32_SINT                                      = 99,
+  RED_FORMAT_R_32_FLOAT                                     = 100,
+  RED_FORMAT_RGBA_32_32_32_32_UINT                          = 107,
+  RED_FORMAT_RGBA_32_32_32_32_SINT                          = 108,
+  RED_FORMAT_RGBA_32_32_32_32_FLOAT                         = 109,
+  RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1                     = 124, // RED_IMAGE_PART_BITFLAG_DEPTH
+  RED_FORMAT_DEPTH_32_FLOAT                                 = 126, // RED_IMAGE_PART_BITFLAG_DEPTH
+  RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT      = 129, // RED_IMAGE_PART_BITFLAG_DEPTH | RED_IMAGE_PART_BITFLAG_STENCIL
+  RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT                  = 130, // RED_IMAGE_PART_BITFLAG_DEPTH | RED_IMAGE_PART_BITFLAG_STENCIL
+} RedFormat;
+
+// redCreateSampler
+
+typedef enum RedSamplerFiltering {
+  RED_SAMPLER_FILTERING_NEAREST = 0,
+  RED_SAMPLER_FILTERING_LINEAR  = 1,
+} RedSamplerFiltering;
+
+typedef enum RedSamplerFilteringMip {
+  RED_SAMPLER_FILTERING_MIP_NEAREST = 0,
+  RED_SAMPLER_FILTERING_MIP_LINEAR  = 1,
+} RedSamplerFilteringMip;
+
+typedef enum RedSamplerBehaviorOutsideTextureCoordinate {
+  RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_REPEAT              = 0,
+  RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_REPEAT_MIRRORED     = 1,
+  RED_SAMPLER_BEHAVIOR_OUTSIDE_TEXTURE_COORDINATE_CLAMP_TO_EDGE_VALUE = 2,
+} RedSamplerBehaviorOutsideTextureCoordinate;
+
+// redCreateTexture
+
+typedef unsigned RedImagePartBitflags;
+typedef enum RedImagePartBitflag {
+  RED_IMAGE_PART_BITFLAG_COLOR   = 0b00000000000000000000000000000001,
+  RED_IMAGE_PART_BITFLAG_DEPTH   = 0b00000000000000000000000000000010, // GPU code: R float channel
+  RED_IMAGE_PART_BITFLAG_STENCIL = 0b00000000000000000000000000000100, // GPU code: G uint  channel
+} RedImagePartBitflag;
+
+typedef enum RedTextureDimensions {
+  RED_TEXTURE_DIMENSIONS_1D           = 0, // GPU code: {RW}Texture1D<T>
+  RED_TEXTURE_DIMENSIONS_1D_LAYERED   = 4, // GPU code: {RW}Texture1DArray<T>
+  RED_TEXTURE_DIMENSIONS_2D           = 1, // GPU code: {RW}Texture{2D,2DMS}<T>
+  RED_TEXTURE_DIMENSIONS_2D_LAYERED   = 5, // GPU code: {RW}Texture{2DArray,2DMSArray}<T>
+  RED_TEXTURE_DIMENSIONS_3D           = 2, // GPU code: {RW}Texture3D<T>
+  RED_TEXTURE_DIMENSIONS_CUBE         = 3, // GPU code: TextureCube<T>
+  RED_TEXTURE_DIMENSIONS_CUBE_LAYERED = 6, // GPU code: TextureCubeArray<T> // Depends on RedGpuInfo::supportsTextureDimensionsCubeLayered
+} RedTextureDimensions;
+
+// redCreateOutputDeclaration
+
+typedef enum RedSetProcedureOutputOp {
+  RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE = 0,
+  RED_SET_PROCEDURE_OUTPUT_OP_CLEAR    = 1,
+  RED_SET_PROCEDURE_OUTPUT_OP_DISCARD  = 2,
+} RedSetProcedureOutputOp;
+
+typedef enum RedEndProcedureOutputOp {
+  RED_END_PROCEDURE_OUTPUT_OP_PRESERVE = 0,
+  RED_END_PROCEDURE_OUTPUT_OP_DISCARD  = 1,
+} RedEndProcedureOutputOp;
+
+typedef enum RedResolveMode {
+  RED_RESOLVE_MODE_NONE              = 0b00000000000000000000000000000000,
+  RED_RESOLVE_MODE_SAMPLE_INDEX_ZERO = 0b00000000000000000000000000000001,
+  RED_RESOLVE_MODE_AVERAGE           = 0b00000000000000000000000000000010,
+  RED_RESOLVE_MODE_MIN               = 0b00000000000000000000000000000100,
+  RED_RESOLVE_MODE_MAX               = 0b00000000000000000000000000001000,
+} RedResolveMode;
+
+typedef struct RedOutputDeclarationMembers {
+  RedBool32                  depthStencilEnable;
+  RedFormat                  depthStencilFormat;
+  RedMultisampleCountBitflag depthStencilMultisampleCount;
+  RedSetProcedureOutputOp    depthStencilDepthSetProcedureOutputOp;
+  RedEndProcedureOutputOp    depthStencilDepthEndProcedureOutputOp;
+  RedSetProcedureOutputOp    depthStencilStencilSetProcedureOutputOp;
+  RedEndProcedureOutputOp    depthStencilStencilEndProcedureOutputOp;
+  RedBool32                  depthStencilSharesMemoryWithAnotherMember;
+  unsigned                   colorsCount;                               // Max: 8
+  RedFormat                  colorsFormat[8];
+  RedMultisampleCountBitflag colorsMultisampleCount[8];
+  RedSetProcedureOutputOp    colorsSetProcedureOutputOp[8];
+  RedEndProcedureOutputOp    colorsEndProcedureOutputOp[8];
+  RedBool32                  colorsSharesMemoryWithAnotherMember[8];
+} RedOutputDeclarationMembers;
+
+typedef struct RedOutputDeclarationMembersResolveSources {
+  RedResolveMode resolveModeDepth;
+  RedResolveMode resolveModeStencil;
+  RedBool32      resolveDepthStencil;
+  RedBool32      resolveColors;
+} RedOutputDeclarationMembersResolveSources;
+
+// redCreateStructDeclaration
+
+typedef unsigned RedVisibleToStageBitflags;
+typedef enum RedVisibleToStageBitflag {
+  RED_VISIBLE_TO_STAGE_BITFLAG_VERTEX   = 0b00000000000000000000000000000001),
+  RED_VISIBLE_TO_STAGE_BITFLAG_FRAGMENT = 0b00000000000000000000000000010000),
+  RED_VISIBLE_TO_STAGE_BITFLAG_COMPUTE  = 0b00000000000000000000000000100000),
+} RedVisibleToStageBitflag;
+
+typedef struct RedStructDeclarationMember {
+  unsigned                  slot;
+  RedStructMemberType       type;            // RED_SDK_EXTENSION_PROCEDURE_PARAMETERS_HANDLES supported types: RED_STRUCT_MEMBER_TYPE_ARRAY_RO_CONSTANT, RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW
+  unsigned                  count;           // RED_SDK_EXTENSION_PROCEDURE_PARAMETERS_HANDLES supported count: 1, RedStructDeclarationMember::inlineSampler supported count: 1
+  RedVisibleToStageBitflags visibleToStages;
+  const RedHandleSampler *  inlineSampler;   // Array of 1
+} RedStructDeclarationMember;
+
+typedef struct RedStructDeclarationMemberArrayRO {
+  unsigned                  slot;
+} RedStructDeclarationMemberArrayRO;
+
+// redCreateProcedureParameters
+
+typedef struct RedProcedureParametersDeclaration {
+  unsigned                   variablesSlot;
+  RedVisibleToStageBitflags  variablesVisibleToStages;
+  unsigned                   variablesBytesCount;
+  unsigned                   structsDeclarationsCount; // Max: 7
+  RedHandleStructDeclaration structsDeclarations[7];
+  RedHandleStructDeclaration handlesDeclaration;
+} RedProcedureParametersDeclaration;
+
+// redCreateProcedure
+
+typedef enum RedPrimitiveTopology {
+  RED_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST  = 3,
+  RED_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP = 4,
+} RedPrimitiveTopology;
+
+typedef enum RedCullMode {
+  RED_CULL_MODE_NONE  = 0b00000000000000000000000000000000,
+  RED_CULL_MODE_FRONT = 0b00000000000000000000000000000001,
+  RED_CULL_MODE_BACK  = 0b00000000000000000000000000000010,
+} RedCullMode;
+
+typedef enum RedFrontFace {
+  RED_FRONT_FACE_COUNTER_CLOCKWISE = 0,
+  RED_FRONT_FACE_CLOCKWISE         = 1,
+} RedFrontFace;
+
+typedef enum RedCompareOp {
+  RED_COMPARE_OP_NEVER            = 0,
+  RED_COMPARE_OP_LESS             = 1,
+  RED_COMPARE_OP_EQUAL            = 2,
+  RED_COMPARE_OP_LESS_OR_EQUAL    = 3,
+  RED_COMPARE_OP_GREATER          = 4,
+  RED_COMPARE_OP_NOT_EQUAL        = 5,
+  RED_COMPARE_OP_GREATER_OR_EQUAL = 6,
+  RED_COMPARE_OP_ALWAYS           = 7,
+} RedCompareOp;
+
+typedef enum RedStencilOp {
+  RED_STENCIL_OP_KEEP                = 0,
+  RED_STENCIL_OP_ZERO                = 1,
+  RED_STENCIL_OP_REPLACE             = 2,
+  RED_STENCIL_OP_INCREMENT_AND_CLAMP = 3,
+  RED_STENCIL_OP_DECREMENT_AND_CLAMP = 4,
+  RED_STENCIL_OP_INVERT              = 5,
+  RED_STENCIL_OP_INCREMENT_AND_WRAP  = 6,
+  RED_STENCIL_OP_DECREMENT_AND_WRAP  = 7,
+} RedStencilOp;
+
+typedef enum RedLogicOp {
+  RED_LOGIC_OP_CLEAR         = 0,
+  RED_LOGIC_OP_AND           = 1,
+  RED_LOGIC_OP_AND_REVERSE   = 2,
+  RED_LOGIC_OP_COPY          = 3,
+  RED_LOGIC_OP_AND_INVERTED  = 4,
+  RED_LOGIC_OP_NO_OP         = 5,
+  RED_LOGIC_OP_XOR           = 6,
+  RED_LOGIC_OP_OR            = 7,
+  RED_LOGIC_OP_NOR           = 8,
+  RED_LOGIC_OP_EQUIVALENT    = 9,
+  RED_LOGIC_OP_INVERT        = 10,
+  RED_LOGIC_OP_OR_REVERSE    = 11,
+  RED_LOGIC_OP_COPY_INVERTED = 12,
+  RED_LOGIC_OP_OR_INVERTED   = 13,
+  RED_LOGIC_OP_NAND          = 14,
+  RED_LOGIC_OP_SET           = 15,
+} RedLogicOp;
+
+typedef unsigned RedColorComponentBitflags;
+typedef enum RedColorComponentBitflag {
+  RED_COLOR_COMPONENT_BITFLAG_R = 0b00000000000000000000000000000001,
+  RED_COLOR_COMPONENT_BITFLAG_G = 0b00000000000000000000000000000010,
+  RED_COLOR_COMPONENT_BITFLAG_B = 0b00000000000000000000000000000100,
+  RED_COLOR_COMPONENT_BITFLAG_A = 0b00000000000000000000000000001000,
+} RedColorComponentBitflag;
+
+typedef enum RedBlendFactor {
+  RED_BLEND_FACTOR_ZERO                     = 0,
+  RED_BLEND_FACTOR_ONE                      = 1,
+  RED_BLEND_FACTOR_SOURCE_COLOR             = 2,
+  RED_BLEND_FACTOR_ONE_MINUS_SOURCE_COLOR   = 3,
+  RED_BLEND_FACTOR_TARGET_COLOR             = 4,
+  RED_BLEND_FACTOR_ONE_MINUS_TARGET_COLOR   = 5,
+  RED_BLEND_FACTOR_SOURCE_ALPHA             = 6,
+  RED_BLEND_FACTOR_ONE_MINUS_SOURCE_ALPHA   = 7,
+  RED_BLEND_FACTOR_TARGET_ALPHA             = 8,
+  RED_BLEND_FACTOR_ONE_MINUS_TARGET_ALPHA   = 9,
+  RED_BLEND_FACTOR_CONSTANT_COLOR           = 10,
+  RED_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR = 11,
+  RED_BLEND_FACTOR_SOURCE_ALPHA_SATURATE    = 14,
+  RED_BLEND_FACTOR_SOURCE1_COLOR            = 15, // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendDualSource
+  RED_BLEND_FACTOR_ONE_MINUS_SOURCE1_COLOR  = 16, // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendDualSource
+  RED_BLEND_FACTOR_SOURCE1_ALPHA            = 17, // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendDualSource
+  RED_BLEND_FACTOR_ONE_MINUS_SOURCE1_ALPHA  = 18, // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendDualSource
+} RedBlendFactor;
+
+typedef enum RedBlendOp {
+  RED_BLEND_OP_ADD              = 0,
+  RED_BLEND_OP_SUBTRACT         = 1,
+  RED_BLEND_OP_REVERSE_SUBTRACT = 2,
+  RED_BLEND_OP_MIN              = 3,
+  RED_BLEND_OP_MAX              = 4,
+} RedBlendOp;
+
+typedef struct RedProcedureState {
+  RedPrimitiveTopology       inputAssemblyTopology;
+  RedBool32                  inputAssemblyPrimitiveRestartEnable;
+  RedBool32                  viewportDynamic;
+  float                      viewportStaticX;
+  float                      viewportStaticY;
+  float                      viewportStaticWidth;
+  float                      viewportStaticHeight;
+  float                      viewportStaticDepthMin;
+  float                      viewportStaticDepthMax;
+  RedBool32                  scissorDynamic;
+  int                        scissorStaticX;
+  int                        scissorStaticY;
+  unsigned                   scissorStaticWidth;
+  unsigned                   scissorStaticHeight;
+  RedBool32                  rasterizationDepthClampEnable;                  // Depends on RedGpuInfo::supportsProcedureStateRasterizationDepthClamp
+  RedBool32                  rasterizationDiscardAllPrimitivesEnable;
+  RedCullMode                rasterizationCullMode;
+  RedFrontFace               rasterizationFrontFace;
+  RedBool32                  rasterizationDepthBiasEnable;
+  RedBool32                  rasterizationDepthBiasDynamic;                  // Depends on RedGpuInfo::supportsProcedureStateRasterizationDepthBiasDynamic
+  float                      rasterizationDepthBiasStaticConstantFactor;
+  float                      rasterizationDepthBiasStaticClamp;              // Depends on RedGpuInfo::supportsProcedureStateRasterizationDepthBiasClamp
+  float                      rasterizationDepthBiasStaticSlopeFactor;
+  RedMultisampleCountBitflag multisampleCount;
+  const unsigned *           multisampleSampleMask;                          // Array of 1
+  RedBool32                  multisampleSampleShadingEnable;                 // Depends on RedGpuInfo::supportsProcedureStateMultisampleSampleShading
+  float                      multisampleSampleShadingMin;                    // Depends on RedGpuInfo::supportsProcedureStateMultisampleSampleShading
+  RedBool32                  multisampleAlphaToCoverageEnable;
+  RedBool32                  multisampleAlphaToOneEnable;                    // Depends on RedGpuInfo::supportsProcedureStateMultisampleAlphaToOne
+  RedBool32                  depthTestEnable;
+  RedBool32                  depthTestDepthWriteEnable;
+  RedCompareOp               depthTestDepthCompareOp;
+  RedBool32                  depthTestBoundsTestEnable;                      // Depends on RedGpuInfo::supportsProcedureStateDepthTestBoundsTest
+  RedBool32                  depthTestBoundsTestDynamic;                     // Depends on RedGpuInfo::supportsProcedureStateDepthTestBoundsTest and RedGpuInfo::supportsProcedureStateDepthTestBoundsTestDynamic
+  float                      depthTestBoundsTestStaticMin;                   // Depends on RedGpuInfo::supportsProcedureStateDepthTestBoundsTest
+  float                      depthTestBoundsTestStaticMax;                   // Depends on RedGpuInfo::supportsProcedureStateDepthTestBoundsTest
+  RedBool32                  stencilTestEnable;
+  RedStencilOp               stencilTestFrontStencilTestFailOp;
+  RedStencilOp               stencilTestFrontStencilTestPassDepthTestPassOp;
+  RedStencilOp               stencilTestFrontStencilTestPassDepthTestFailOp;
+  RedCompareOp               stencilTestFrontCompareOp;
+  RedStencilOp               stencilTestBackStencilTestFailOp;
+  RedStencilOp               stencilTestBackStencilTestPassDepthTestPassOp;
+  RedStencilOp               stencilTestBackStencilTestPassDepthTestFailOp;
+  RedCompareOp               stencilTestBackCompareOp;
+  RedBool32                  stencilTestFrontAndBackDynamicCompareMask;      // Depends on RedGpuInfo::supportsProcedureStateStencilTestFrontAndBackDynamicCompareMask
+  RedBool32                  stencilTestFrontAndBackDynamicWriteMask;        // Depends on RedGpuInfo::supportsProcedureStateStencilTestFrontAndBackDynamicWriteMask
+  RedBool32                  stencilTestFrontAndBackDynamicReference;
+  unsigned                   stencilTestFrontAndBackStaticCompareMask;
+  unsigned                   stencilTestFrontAndBackStaticWriteMask;
+  unsigned                   stencilTestFrontAndBackStaticReference;
+  RedBool32                  blendLogicOpEnable;                             // Depends on RedGpuInfo::supportsProcedureStateBlendLogicOp
+  RedLogicOp                 blendLogicOp;                                   // Depends on RedGpuInfo::supportsProcedureStateBlendLogicOp
+  RedBool32                  blendConstantsDynamic;
+  float                      blendConstantsStatic[4];
+  unsigned                   outputColorsCount;                              // Max: 8
+  RedColorComponentBitflags  outputColorsWriteMask[8];                       // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+  RedBool32                  outputColorsBlendEnable[8];                     // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+  RedBlendFactor             outputColorsBlendColorFactorSource[8];          // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+  RedBlendFactor             outputColorsBlendColorFactorTarget[8];          // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+  RedBlendOp                 outputColorsBlendColorOp[8];                    // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+  RedBlendFactor             outputColorsBlendAlphaFactorSource[8];          // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+  RedBlendFactor             outputColorsBlendAlphaFactorTarget[8];          // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+  RedBlendOp                 outputColorsBlendAlphaOp[8];                    // Depends on RedGpuInfo::supportsProcedureStateOutputColorsBlendVaryingPerColor
+} RedProcedureState;
+
+typedef enum RedProcedureStateExtension {
+  RED_PROCEDURE_STATE_EXTENSION_UNDEFINED          = 0,
+  RED_PROCEDURE_STATE_EXTENSION_RASTERIZATION_MODE = 1,
+} RedProcedureStateExtension;
+
+typedef enum RedRasterizationMode {
+  RED_RASTERIZATION_MODE_DEFAULT       = 0,
+  RED_RASTERIZATION_MODE_OVERESTIMATE  = 1, // Depends on RedGpuInfoOptionalInfoRasterizationMode::supportsRasterizationModeOverestimate
+  RED_RASTERIZATION_MODE_UNDERESTIMATE = 2, // Depends on RedGpuInfoOptionalInfoRasterizationMode::supportsRasterizationModeUnderestimate
+} RedRasterizationMode;
+
+typedef struct RedProcedureStateExtensionIterator {
+  unsigned     extension;
+  const void * next;
+} RedProcedureStateExtensionIterator;
+
+typedef struct RedProcedureStateExtensionRasterizationMode {
+  RedProcedureStateExtension extension;
+  const void *               next;
+  RedRasterizationMode       rasterizationMode;
+} RedProcedureStateExtensionRasterizationMode;
+
+// redCreateOutput
+
+typedef struct RedOutputMembers {
+  RedHandleTexture depthStencil;
+  unsigned         colorsCount;  // Max: 8
+  RedHandleTexture colors[8];
+} RedOutputMembers;
+
+typedef struct RedOutputMembersResolveTargets {
+  RedHandleTexture depthStencil;
+  RedHandleTexture colors[8];
+} RedOutputMembersResolveTargets;
+
 // Memory
 
 void redMemoryGetBudget                 (RedContext context, RedHandleGpu gpu, RedMemoryBudget * outMemoryBudget, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
@@ -742,3 +1100,20 @@ void redStructsSet                      (RedContext context, RedHandleGpu gpu, u
 // Create
 
 void redCreateContext                   (RedTypeProcedureMalloc malloc, RedTypeProcedureFree free, RedTypeProcedureMallocTagged optionalMallocTagged, RedTypeProcedureFreeTagged optionalFreeTagged, RedTypeProcedureDebugCallback debugCallback, RedSdkVersion sdkVersion, unsigned sdkExtensionsCount, const unsigned * sdkExtensions, const char * optionalProgramName, unsigned optionalProgramVersion, const char * optionalEngineName, unsigned optionalEngineVersion, const void * optionalSettings, RedContext * outContext, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateArray                     (RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedArray * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateImage                     (RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedImage * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateSampler                   (RedContext context, RedHandleGpu gpu, const char * handleName, RedSamplerFiltering filteringMag, RedSamplerFiltering filteringMin, RedSamplerFilteringMip filteringMip, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateU, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateV, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateW, float mipLodBias, RedBool32 enableAnisotropy, float maxAnisotropy, RedBool32 enableCompare, RedCompareOp compareOp, float minLod, float maxLod, RedHandleSampler * outSampler, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateTexture                   (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateGpuCode                   (RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t irBytesCount, const void * ir, RedHandleGpuCode * outGpuCode, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateOutputDeclaration         (RedContext context, RedHandleGpu gpu, const char * handleName, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, RedHandleOutputDeclaration * outOutputDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateStructDeclaration         (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, RedBool32 procedureParametersHandlesDeclaration, RedHandleStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateProcedureParameters       (RedContext context, RedHandleGpu gpu, const char * handleName, const RedProcedureParametersDeclaration * procedureParametersDeclaration, RedHandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateProcedureCache            (RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t fromBlobBytesCount, const void * fromBlob, RedHandleProcedureCache * outProcedureCache, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateProcedure                 (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, RedHandleOutputDeclaration outputDeclaration, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateProcedureCompute          (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, RedHandleProcedureParameters procedureParameters, const char * gpuCodeMainProcedureName, RedHandleGpuCode gpuCode, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateOutput                    (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleOutputDeclaration outputDeclaration, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, RedOutput * outOutput, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateCpuSignal                 (RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 createSignaled, RedHandleCpuSignal * outCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateGpuSignal                 (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateGpuToCpuSignal            (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleGpuToCpuSignal * outGpuToCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateCalls                     (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateCallsReusable             (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
