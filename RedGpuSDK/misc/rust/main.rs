@@ -1288,6 +1288,224 @@ extern "C" {
     optionalLine: libc::c_int,
     optionalUserData: *mut libc::c_void,
   );
+  pub fn redDestroyContext(
+    context: RedContext,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyArray(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    array: RedHandleArray,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyImage(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    image: RedHandleImage,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroySampler(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    sampler: RedHandleSampler,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyTexture(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    texture: RedHandleTexture,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyGpuCode(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    gpuCode: RedHandleGpuCode,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyOutputDeclaration(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    outputDeclaration: RedHandleOutputDeclaration,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyStructDeclaration(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    structDeclaration: RedHandleStructDeclaration,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyProcedureParameters(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    procedureParameters: RedHandleProcedureParameters,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyProcedureCache(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    procedureCache: RedHandleProcedureCache,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyProcedure(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    procedure: RedHandleProcedure,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyOutput(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    output: RedHandleOutput,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyCpuSignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    cpuSignal: RedHandleCpuSignal,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyGpuSignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    gpuSignal: RedHandleGpuSignal,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyGpuToCpuSignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    gpuToCpuSignal: RedHandleGpuToCpuSignal,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyCalls(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    calls: RedHandleCalls,
+    callsMemory: RedHandleCallsMemory,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redProcedureCacheGetBlob(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    procedureCache: RedHandleProcedureCache,
+    outBlobBytesCount: *mut uint64_t,
+    outBlob: *mut libc::c_void,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redProcedureCacheMergeCaches(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    sourceProcedureCachesCount: libc::c_uint,
+    sourceProcedureCaches: *const RedHandleProcedureCache,
+    targetProcedureCache: RedHandleProcedureCache,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCpuSignalGetStatus(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    cpuSignal: RedHandleCpuSignal,
+    outStatus: *mut RedStatus,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCpuSignalWait(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    cpuSignalsCount: libc::c_uint,
+    cpuSignals: *const RedHandleCpuSignal,
+    waitAll: RedBool32,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCpuSignalUnsignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    cpuSignalsCount: libc::c_uint,
+    cpuSignals: *const RedHandleCpuSignal,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redGpuToCpuSignalGetStatus(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    gpuToCpuSignal: RedHandleGpuToCpuSignal,
+    outStatus: *mut RedStatus,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redGpuToCpuSignalUnsignal(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    gpuToCpuSignal: RedHandleGpuToCpuSignal,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCallsSet(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    calls: RedHandleCalls,
+    callsMemory: RedHandleCallsMemory,
+    callsReusable: RedBool32,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCallsEnd(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    calls: RedHandleCalls,
+    callsMemory: RedHandleCallsMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
 }
 
 // NOTE(Constantine): https://github.com/rust-lang/libs-team/issues/350
@@ -1377,5 +1595,14 @@ fn main() {
 
   {
     let _ = 1 + 1;
+  }
+
+  unsafe {
+    redDestroyContext(
+      ctx,
+      std::ptr::null(),
+      0,
+      std::ptr::null_mut()
+    );
   }
 }
