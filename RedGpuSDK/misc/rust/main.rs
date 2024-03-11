@@ -1,45 +1,7 @@
-#![allow(dead_code, mutable_transmutes, non_camel_case_types, non_snake_case, non_upper_case_globals, unused_assignments, unused_mut)]
-#![register_tool(c2rust)]
-#![feature(extern_types, register_tool)]
-extern "C" {
-  pub type RedTypeHandleContext;
-  pub type RedTypeHandleQueue;
-  pub type RedTypeHandleGpuDevice;
-  pub type RedTypeHandleGpu;
-  pub type RedTypeHandleMemory;
-  pub type RedTypeHandleArray;
-  pub type RedTypeHandleImage;
-  pub type RedTypeHandleSampler;
-  pub type RedTypeHandleTexture;
-  pub type RedTypeHandleGpuCode;
-  pub type RedTypeHandleOutputDeclaration;
-  pub type RedTypeHandleStructDeclaration;
-  pub type RedTypeHandleProcedureParameters;
-  pub type RedTypeHandleProcedureCache;
-  pub type RedTypeHandleProcedure;
-  pub type RedTypeHandleOutput;
-  pub type RedTypeHandleStruct;
-  pub type RedTypeHandleStructsMemory;
-  pub type RedTypeHandleCalls;
-  pub type RedTypeHandleCallsMemory;
-  pub type RedTypeHandleCpuSignal;
-  pub type RedTypeHandleGpuSignal;
-  pub type RedTypeHandleGpuToCpuSignal;
-  pub type RedTypeProcedureCallSetDynamicViewport;
-  pub type RedTypeProcedureCallSetDynamicScissor;
-  pub type RedTypeProcedureCallSetStructsMemory;
-  pub type RedTypeProcedureCallSetProcedureParameters;
-  pub type RedTypeProcedureCallSetProcedureOutput;
-  pub type RedTypeProcedureCallEndProcedureOutput;
-  pub type RedTypeProcedureCallUsageAliasOrderBarrier;
-  pub type RedTypeProcedureCallMark;
-  pub type RedTypeProcedureCallMarkSet;
-  pub type RedTypeProcedureCallMarkEnd;
-}
+#![allow(non_camel_case_types, non_snake_case, non_upper_case_globals)]
 pub type size_t = usize;
 pub type uint64_t = u64;
 pub type RedBool32 = libc::c_uint;
-#[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedTypeContext {
   pub gpusCount: libc::c_uint,
@@ -48,7 +10,7 @@ pub struct RedTypeContext {
   pub handle: RedHandleContext,
   pub userData: *mut libc::c_void,
 }
-pub type RedHandleContext = *const RedTypeHandleContext;
+pub type RedHandleContext = *const libc::c_void;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedStatuses {
@@ -345,7 +307,7 @@ pub struct RedQueueCopyLimits {
   pub copyBlockTexelsCountHeight: libc::c_uint,
   pub copyBlockTexelsCountDepth: libc::c_uint,
 }
-pub type RedHandleQueue = *const RedTypeHandleQueue;
+pub type RedHandleQueue = *const libc::c_void;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedMemoryHeap {
@@ -367,28 +329,28 @@ pub const RED_GPU_TYPE_VIRTUAL: RedGpuType = 3;
 pub const RED_GPU_TYPE_DISCRETE: RedGpuType = 2;
 pub const RED_GPU_TYPE_INTEGRATED: RedGpuType = 1;
 pub const RED_GPU_TYPE_OTHER: RedGpuType = 0;
-pub type RedHandleGpuDevice = *const RedTypeHandleGpuDevice;
-pub type RedHandleGpu = *const RedTypeHandleGpu;
+pub type RedHandleGpuDevice = *const libc::c_void;
+pub type RedHandleGpu = *const libc::c_void;
 pub type RedContext = *const RedTypeContext;
-pub type RedHandleMemory = *const RedTypeHandleMemory;
-pub type RedHandleArray = *const RedTypeHandleArray;
-pub type RedHandleImage = *const RedTypeHandleImage;
-pub type RedHandleSampler = *const RedTypeHandleSampler;
-pub type RedHandleTexture = *const RedTypeHandleTexture;
-pub type RedHandleGpuCode = *const RedTypeHandleGpuCode;
-pub type RedHandleOutputDeclaration = *const RedTypeHandleOutputDeclaration;
-pub type RedHandleStructDeclaration = *const RedTypeHandleStructDeclaration;
-pub type RedHandleProcedureParameters = *const RedTypeHandleProcedureParameters;
-pub type RedHandleProcedureCache = *const RedTypeHandleProcedureCache;
-pub type RedHandleProcedure = *const RedTypeHandleProcedure;
-pub type RedHandleOutput = *const RedTypeHandleOutput;
-pub type RedHandleStruct = *const RedTypeHandleStruct;
-pub type RedHandleStructsMemory = *const RedTypeHandleStructsMemory;
-pub type RedHandleCalls = *const RedTypeHandleCalls;
-pub type RedHandleCallsMemory = *const RedTypeHandleCallsMemory;
-pub type RedHandleCpuSignal = *const RedTypeHandleCpuSignal;
-pub type RedHandleGpuSignal = *const RedTypeHandleGpuSignal;
-pub type RedHandleGpuToCpuSignal = *const RedTypeHandleGpuToCpuSignal;
+pub type RedHandleMemory = *const libc::c_void;
+pub type RedHandleArray = *const libc::c_void;
+pub type RedHandleImage = *const libc::c_void;
+pub type RedHandleSampler = *const libc::c_void;
+pub type RedHandleTexture = *const libc::c_void;
+pub type RedHandleGpuCode = *const libc::c_void;
+pub type RedHandleOutputDeclaration = *const libc::c_void;
+pub type RedHandleStructDeclaration = *const libc::c_void;
+pub type RedHandleProcedureParameters = *const libc::c_void;
+pub type RedHandleProcedureCache = *const libc::c_void;
+pub type RedHandleProcedure = *const libc::c_void;
+pub type RedHandleOutput = *const libc::c_void;
+pub type RedHandleStruct = *const libc::c_void;
+pub type RedHandleStructsMemory = *const libc::c_void;
+pub type RedHandleCalls = *const libc::c_void;
+pub type RedHandleCallsMemory = *const libc::c_void;
+pub type RedHandleCpuSignal = *const libc::c_void;
+pub type RedHandleGpuSignal = *const libc::c_void;
+pub type RedHandleGpuToCpuSignal = *const libc::c_void;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedArray {
@@ -1085,16 +1047,16 @@ pub type RedTypeProcedureCallSetDynamicStencilReference = Option::<
 pub type RedTypeProcedureCallSetDynamicBlendConstants = Option::<
   unsafe extern "C" fn(RedHandleCalls, *const libc::c_float) -> (),
 >;
-pub type RedTypeProcedureAddressCallSetDynamicViewport = *const RedTypeProcedureCallSetDynamicViewport;
-pub type RedTypeProcedureAddressCallSetDynamicScissor = *const RedTypeProcedureCallSetDynamicScissor;
-pub type RedTypeProcedureAddressCallSetStructsMemory = *const RedTypeProcedureCallSetStructsMemory;
-pub type RedTypeProcedureAddressCallSetProcedureParameters = *const RedTypeProcedureCallSetProcedureParameters;
-pub type RedTypeProcedureAddressCallSetProcedureOutput = *const RedTypeProcedureCallSetProcedureOutput;
-pub type RedTypeProcedureAddressCallEndProcedureOutput = *const RedTypeProcedureCallEndProcedureOutput;
-pub type RedTypeProcedureAddressCallUsageAliasOrderBarrier = *const RedTypeProcedureCallUsageAliasOrderBarrier;
-pub type RedTypeProcedureAddressCallMark = *const RedTypeProcedureCallMark;
-pub type RedTypeProcedureAddressCallMarkSet = *const RedTypeProcedureCallMarkSet;
-pub type RedTypeProcedureAddressCallMarkEnd = *const RedTypeProcedureCallMarkEnd;
+pub type RedTypeProcedureAddressCallSetDynamicViewport = *const libc::c_void;
+pub type RedTypeProcedureAddressCallSetDynamicScissor = *const libc::c_void;
+pub type RedTypeProcedureAddressCallSetStructsMemory = *const libc::c_void;
+pub type RedTypeProcedureAddressCallSetProcedureParameters = *const libc::c_void;
+pub type RedTypeProcedureAddressCallSetProcedureOutput = *const libc::c_void;
+pub type RedTypeProcedureAddressCallEndProcedureOutput = *const libc::c_void;
+pub type RedTypeProcedureAddressCallUsageAliasOrderBarrier = *const libc::c_void;
+pub type RedTypeProcedureAddressCallMark = *const libc::c_void;
+pub type RedTypeProcedureAddressCallMarkSet = *const libc::c_void;
+pub type RedTypeProcedureAddressCallMarkEnd = *const libc::c_void;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedCallProceduresAndAddresses {
