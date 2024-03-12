@@ -10,7 +10,12 @@ pub struct RedTypeContext {
   pub handle: RedHandleContext,
   pub userData: *mut libc::c_void,
 }
-pub type RedHandleContext = *const libc::c_void;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleContext {
+  _unused: [u8; 0],
+}
+pub type RedHandleContext = *const RedTypeHandleContext;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedStatuses {
@@ -307,7 +312,12 @@ pub struct RedQueueCopyLimits {
   pub copyBlockTexelsCountHeight: libc::c_uint,
   pub copyBlockTexelsCountDepth: libc::c_uint,
 }
-pub type RedHandleQueue = *const libc::c_void;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleQueue {
+  _unused: [u8; 0],
+}
+pub type RedHandleQueue = *const RedTypeHandleQueue;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedMemoryHeap {
@@ -329,28 +339,133 @@ pub const RED_GPU_TYPE_VIRTUAL: RedGpuType = 3;
 pub const RED_GPU_TYPE_DISCRETE: RedGpuType = 2;
 pub const RED_GPU_TYPE_INTEGRATED: RedGpuType = 1;
 pub const RED_GPU_TYPE_OTHER: RedGpuType = 0;
-pub type RedHandleGpuDevice = *const libc::c_void;
-pub type RedHandleGpu = *const libc::c_void;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleGpuDevice {
+  _unused: [u8; 0],
+}
+pub type RedHandleGpuDevice = *const RedTypeHandleGpuDevice;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleGpu {
+  _unused: [u8; 0],
+}
+pub type RedHandleGpu = *const RedTypeHandleGpu;
 pub type RedContext = *const RedTypeContext;
-pub type RedHandleMemory = *const libc::c_void;
-pub type RedHandleArray = *const libc::c_void;
-pub type RedHandleImage = *const libc::c_void;
-pub type RedHandleSampler = *const libc::c_void;
-pub type RedHandleTexture = *const libc::c_void;
-pub type RedHandleGpuCode = *const libc::c_void;
-pub type RedHandleOutputDeclaration = *const libc::c_void;
-pub type RedHandleStructDeclaration = *const libc::c_void;
-pub type RedHandleProcedureParameters = *const libc::c_void;
-pub type RedHandleProcedureCache = *const libc::c_void;
-pub type RedHandleProcedure = *const libc::c_void;
-pub type RedHandleOutput = *const libc::c_void;
-pub type RedHandleStruct = *const libc::c_void;
-pub type RedHandleStructsMemory = *const libc::c_void;
-pub type RedHandleCalls = *const libc::c_void;
-pub type RedHandleCallsMemory = *const libc::c_void;
-pub type RedHandleCpuSignal = *const libc::c_void;
-pub type RedHandleGpuSignal = *const libc::c_void;
-pub type RedHandleGpuToCpuSignal = *const libc::c_void;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleMemory {
+  _unused: [u8; 0],
+}
+pub type RedHandleMemory = *const RedTypeHandleMemory;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleArray {
+  _unused: [u8; 0],
+}
+pub type RedHandleArray = *const RedTypeHandleArray;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleImage {
+  _unused: [u8; 0],
+}
+pub type RedHandleImage = *const RedTypeHandleImage;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleSampler {
+  _unused: [u8; 0],
+}
+pub type RedHandleSampler = *const RedTypeHandleSampler;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleTexture {
+  _unused: [u8; 0],
+}
+pub type RedHandleTexture = *const RedTypeHandleTexture;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleGpuCode {
+  _unused: [u8; 0],
+}
+pub type RedHandleGpuCode = *const RedTypeHandleGpuCode;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleOutputDeclaration {
+  _unused: [u8; 0],
+}
+pub type RedHandleOutputDeclaration = *const RedTypeHandleOutputDeclaration;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleStructDeclaration {
+  _unused: [u8; 0],
+}
+pub type RedHandleStructDeclaration = *const RedTypeHandleStructDeclaration;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleProcedureParameters {
+  _unused: [u8; 0],
+}
+pub type RedHandleProcedureParameters = *const RedTypeHandleProcedureParameters;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleProcedureCache {
+  _unused: [u8; 0],
+}
+pub type RedHandleProcedureCache = *const RedTypeHandleProcedureCache;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleProcedure {
+  _unused: [u8; 0],
+}
+pub type RedHandleProcedure = *const RedTypeHandleProcedure;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleOutput {
+  _unused: [u8; 0],
+}
+pub type RedHandleOutput = *const RedTypeHandleOutput;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleStruct {
+  _unused: [u8; 0],
+}
+pub type RedHandleStruct = *const RedTypeHandleStruct;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleStructsMemory {
+  _unused: [u8; 0],
+}
+pub type RedHandleStructsMemory = *const RedTypeHandleStructsMemory;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleCalls {
+  _unused: [u8; 0],
+}
+pub type RedHandleCalls = *const RedTypeHandleCalls;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleCallsMemory {
+  _unused: [u8; 0],
+}
+pub type RedHandleCallsMemory = *const RedTypeHandleCallsMemory;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleCpuSignal {
+  _unused: [u8; 0],
+}
+pub type RedHandleCpuSignal = *const RedTypeHandleCpuSignal;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleGpuSignal {
+  _unused: [u8; 0],
+}
+pub type RedHandleGpuSignal = *const RedTypeHandleGpuSignal;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleGpuToCpuSignal {
+  _unused: [u8; 0],
+}
+pub type RedHandleGpuToCpuSignal = *const RedTypeHandleGpuToCpuSignal;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedArray {
@@ -1047,16 +1162,66 @@ pub type RedTypeProcedureCallSetDynamicStencilReference = Option::<
 pub type RedTypeProcedureCallSetDynamicBlendConstants = Option::<
   unsafe extern "C" fn(RedHandleCalls, *const libc::c_float) -> (),
 >;
-pub type RedTypeProcedureAddressCallSetDynamicViewport = *const libc::c_void;
-pub type RedTypeProcedureAddressCallSetDynamicScissor = *const libc::c_void;
-pub type RedTypeProcedureAddressCallSetStructsMemory = *const libc::c_void;
-pub type RedTypeProcedureAddressCallSetProcedureParameters = *const libc::c_void;
-pub type RedTypeProcedureAddressCallSetProcedureOutput = *const libc::c_void;
-pub type RedTypeProcedureAddressCallEndProcedureOutput = *const libc::c_void;
-pub type RedTypeProcedureAddressCallUsageAliasOrderBarrier = *const libc::c_void;
-pub type RedTypeProcedureAddressCallMark = *const libc::c_void;
-pub type RedTypeProcedureAddressCallMarkSet = *const libc::c_void;
-pub type RedTypeProcedureAddressCallMarkEnd = *const libc::c_void;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallSetDynamicViewport {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallSetDynamicViewport = *const RedTypeProcedureCallSetDynamicViewport;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallSetDynamicScissor {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallSetDynamicScissor = *const RedTypeProcedureCallSetDynamicScissor;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallSetStructsMemory {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallSetStructsMemory = *const RedTypeProcedureCallSetStructsMemory;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallSetProcedureParameters {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallSetProcedureParameters = *const RedTypeProcedureCallSetProcedureParameters;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallSetProcedureOutput {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallSetProcedureOutput = *const RedTypeProcedureCallSetProcedureOutput;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallEndProcedureOutput {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallEndProcedureOutput = *const RedTypeProcedureCallEndProcedureOutput;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallUsageAliasOrderBarrier {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallUsageAliasOrderBarrier = *const RedTypeProcedureCallUsageAliasOrderBarrier;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallMark {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallMark = *const RedTypeProcedureCallMark;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallMarkSet {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallMarkSet = *const RedTypeProcedureCallMarkSet;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeProcedureCallMarkEnd {
+  _unused: [u8; 0],
+}
+pub type RedTypeProcedureAddressCallMarkEnd = *const RedTypeProcedureCallMarkEnd;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedCallProceduresAndAddresses {
