@@ -2190,6 +2190,55 @@ pub unsafe fn slice_from_raw_parts_mut_or_empty<'a, T>(data: *mut T, len: usize)
   if len == 0 { &mut [] } else { std::slice::from_raw_parts_mut(data, len) }
 }
 
+// XInput Gamepad Begin
+
+bitflags::bitflags! {
+  #[derive(Copy, Clone, Default, Debug)]
+  #[repr(C)]
+  pub struct XInputGamepadButtons: u16 {
+    const XINPUT_GAMEPAD_DPAD_UP = 0x0001;
+    const XINPUT_GAMEPAD_DPAD_DOWN = 0x0002;
+    const XINPUT_GAMEPAD_DPAD_LEFT = 0x0004;
+    const XINPUT_GAMEPAD_DPAD_RIGHT = 0x0008;
+    const XINPUT_GAMEPAD_START = 0x0010;
+    const XINPUT_GAMEPAD_BACK = 0x0020;
+    const XINPUT_GAMEPAD_LEFT_THUMB = 0x0040;
+    const XINPUT_GAMEPAD_RIGHT_THUMB = 0x0080;
+    const XINPUT_GAMEPAD_LEFT_SHOULDER = 0x0100;
+    const XINPUT_GAMEPAD_RIGHT_SHOULDER = 0x0200;
+    const XINPUT_GAMEPAD_A = 0x1000;
+    const XINPUT_GAMEPAD_B = 0x2000;
+    const XINPUT_GAMEPAD_X = 0x4000;
+    const XINPUT_GAMEPAD_Y = 0x8000;
+  }
+}
+
+#[derive(Copy, Clone, Default, Debug)]
+#[repr(C)]
+struct XInputGamepad {
+  buttons: XInputGamepadButtons,
+  leftTrigger: u8,
+  rightTrigger: u8,
+  ThumbLX: i16,
+  ThumbLY: i16,
+  ThumbRX: i16,
+  ThumbRY: i16
+}
+
+#[derive(Copy, Clone, Default, Debug)]
+#[repr(C)]
+struct XInputState {
+  dwPacketNumber: u32,
+  gamepad: XInputGamepad
+}
+
+#[link(name = "XInput9_1_0")]
+extern "stdcall" {
+  fn XInputGetState(dwUserIndex: u32, state: *mut XInputState) -> u32;
+}
+
+// XInput Gamepad End
+
 fn main() {
   let mut redcontext: RedContext = std::ptr::null();
   let mut statuses = RedStatuses {
@@ -2276,5 +2325,11 @@ fn main() {
       0,
       std::ptr::null_mut()
     );
+  }
+
+  loop {
+    let mut gamepadState = XInputState::default();
+    unsafe { XInputGetState(0, &mut gamepadState); }
+    println!("{:?}", gamepadState);
   }
 }
