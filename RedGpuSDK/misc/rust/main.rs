@@ -1381,7 +1381,7 @@ pub struct RedGpuTimeline {
   pub signalGpuSignals: *const RedHandleGpuSignal,
 }
 
-#[link(name = "C:/RedGpuSDK/redgpudll")]
+#[link(name = "C:/RedGpuSDK/redgpu_x")]
 extern "C" {
   pub fn redMemoryGetBudget(
     context: RedContext,
