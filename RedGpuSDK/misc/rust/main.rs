@@ -2921,6 +2921,27 @@ fn main() {
   }
 
   unsafe {
+    redXCreateQueue(
+      ctx,
+      gpu,
+      std::ptr::null(),
+      1,
+      0,
+      1,
+      0,
+      0,
+      std::ptr::null_mut(),
+      std::ptr::null(),
+      0,
+      std::ptr::null_mut()
+    );
+  }
+
+  {
+    let _ = 1 + 1;
+  }
+
+  unsafe {
     redDestroyContext(
       ctx,
       std::ptr::null(),
