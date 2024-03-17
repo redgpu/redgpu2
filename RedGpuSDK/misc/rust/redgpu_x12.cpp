@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "x12_d3d12.h"
+#include "redgpu_x12_d3d12.h"
 
 #ifndef __GNUC__
 #if _MSC_VER < 1700
