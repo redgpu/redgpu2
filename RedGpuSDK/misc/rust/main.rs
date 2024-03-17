@@ -504,6 +504,131 @@ pub const RED_MULTISAMPLE_COUNT_BITFLAG_8: RedMultisampleCountBitflag = 8;
 pub const RED_MULTISAMPLE_COUNT_BITFLAG_4: RedMultisampleCountBitflag = 4;
 pub const RED_MULTISAMPLE_COUNT_BITFLAG_2: RedMultisampleCountBitflag = 2;
 pub const RED_MULTISAMPLE_COUNT_BITFLAG_1: RedMultisampleCountBitflag = 1;
+pub type RedSdkExtension = libc::c_uint;
+pub const RED_SDK_EXTENSION_RAY_TRACING: RedSdkExtension = 13;
+pub const RED_SDK_EXTENSION_FORMAL_MEMORY_MODEL: RedSdkExtension = 12;
+pub const RED_SDK_EXTENSION_RASTERIZATION_MODE: RedSdkExtension = 11;
+pub const RED_SDK_EXTENSION_BATCH_MEMORY_SET: RedSdkExtension = 10;
+pub const RED_SDK_EXTENSION_PROCEDURE_PARAMETERS_HANDLES: RedSdkExtension = 9;
+pub const RED_SDK_EXTENSION_DEDICATE_MEMORY: RedSdkExtension = 8;
+pub const RED_SDK_EXTENSION_RESOLVE_DEPTH_STENCIL: RedSdkExtension = 7;
+pub const RED_SDK_EXTENSION_DRIVER_PROPERTIES: RedSdkExtension = 6;
+pub const RED_SDK_EXTENSION_TREAT_ALL_MAPPABLE_MEMORY_AS_NON_COHERENT: RedSdkExtension = 5;
+pub const RED_SDK_EXTENSION_WSI_XCB: RedSdkExtension = 4;
+pub const RED_SDK_EXTENSION_WSI_XLIB: RedSdkExtension = 3;
+pub const RED_SDK_EXTENSION_WSI_WIN32: RedSdkExtension = 2;
+pub const RED_SDK_EXTENSION_ADDITIONAL_INFO_0: RedSdkExtension = 1;
+pub const RED_SDK_EXTENSION_NONE: RedSdkExtension = 0;
+pub type RedGpuInfoOptionalInfo = libc::c_uint;
+pub const RED_GPU_INFO_OPTIONAL_INFO_RAY_TRACING: RedGpuInfoOptionalInfo = 13;
+pub const RED_GPU_INFO_OPTIONAL_INFO_FORMAL_MEMORY_MODEL: RedGpuInfoOptionalInfo = 12;
+pub const RED_GPU_INFO_OPTIONAL_INFO_RASTERIZATION_MODE: RedGpuInfoOptionalInfo = 11;
+pub const RED_GPU_INFO_OPTIONAL_INFO_BATCH_MEMORY_SET: RedGpuInfoOptionalInfo = 10;
+pub const RED_GPU_INFO_OPTIONAL_INFO_PROCEDURE_PARAMETERS_HANDLES: RedGpuInfoOptionalInfo = 9;
+pub const RED_GPU_INFO_OPTIONAL_INFO_DEDICATE_MEMORY: RedGpuInfoOptionalInfo = 8;
+pub const RED_GPU_INFO_OPTIONAL_INFO_RESOLVE_DEPTH_STENCIL: RedGpuInfoOptionalInfo = 7;
+pub const RED_GPU_INFO_OPTIONAL_INFO_DRIVER_PROPERTIES: RedGpuInfoOptionalInfo = 6;
+pub const RED_GPU_INFO_OPTIONAL_INFO_TREAT_ALL_MAPPABLE_MEMORY_AS_NON_COHERENT: RedGpuInfoOptionalInfo = 5;
+pub const RED_GPU_INFO_OPTIONAL_INFO_WSI_XCB: RedGpuInfoOptionalInfo = 4;
+pub const RED_GPU_INFO_OPTIONAL_INFO_WSI_XLIB: RedGpuInfoOptionalInfo = 3;
+pub const RED_GPU_INFO_OPTIONAL_INFO_WSI_WIN32: RedGpuInfoOptionalInfo = 2;
+pub const RED_GPU_INFO_OPTIONAL_INFO_ADDITIONAL_INFO_0: RedGpuInfoOptionalInfo = 1;
+pub const RED_GPU_INFO_OPTIONAL_INFO_NONE: RedGpuInfoOptionalInfo = 0;
+pub type RedDriverId = libc::c_uint;
+pub const RED_DRIVER_ID_BROADCOM_PROPRIETARY: RedDriverId = 12;
+pub const RED_DRIVER_ID_GGP_PROPRIETARY: RedDriverId = 11;
+pub const RED_DRIVER_ID_GOOGLE_SWIFTSHADER: RedDriverId = 10;
+pub const RED_DRIVER_ID_ARM_PROPRIETARY: RedDriverId = 9;
+pub const RED_DRIVER_ID_QUALCOMM_PROPRIETARY: RedDriverId = 8;
+pub const RED_DRIVER_ID_IMAGINATION_PROPRIETARY: RedDriverId = 7;
+pub const RED_DRIVER_ID_INTEL_OPEN_SOURCE_MESA: RedDriverId = 6;
+pub const RED_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS: RedDriverId = 5;
+pub const RED_DRIVER_ID_NVIDIA_PROPRIETARY: RedDriverId = 4;
+pub const RED_DRIVER_ID_MESA_RADV: RedDriverId = 3;
+pub const RED_DRIVER_ID_AMD_OPEN_SOURCE: RedDriverId = 2;
+pub const RED_DRIVER_ID_AMD_PROPRIETARY: RedDriverId = 1;
+pub const RED_DRIVER_ID_UNKNOWN: RedDriverId = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoIterator {
+  pub optionalInfo: libc::c_uint,
+  pub next: *const libc::c_void,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoAdditionalInfo0 {
+  pub optionalInfo: RedGpuInfoOptionalInfo,
+  pub next: *const libc::c_void,
+  pub supportsArraysImagesUsageBeforeMemorySet: RedBool32,
+  pub supportsInitialQueueFamilyIndexSetToMaxValueForSimultaneousQueueAccessOfArrays: RedBool32,
+  pub supportsInitialQueueFamilyIndexSetToMaxValueForSimultaneousQueueAccessOfImages: RedBool32,
+  pub supportsInitialQueueFamilyIndexSetToMaxValueForSimultaneousQueueAccessOfImagesMultisample: RedBool32,
+  pub supportsInitialQueueFamilyIndexSetToMaxValueForSimultaneousQueueAccessOfImagesDepthStencil: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoDriverProperties {
+  pub optionalInfo: RedGpuInfoOptionalInfo,
+  pub next: *const libc::c_void,
+  pub id: RedDriverId,
+  pub name: [libc::c_uchar; 256],
+  pub info: [libc::c_uchar; 256],
+  pub compliantWithConformanceTestSuiteVersionMajor: libc::c_uchar,
+  pub compliantWithConformanceTestSuiteVersionMinor: libc::c_uchar,
+  pub compliantWithConformanceTestSuiteVersionSubminor: libc::c_uchar,
+  pub compliantWithConformanceTestSuiteVersionPatch: libc::c_uchar,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoResolveDepthStencil {
+  pub optionalInfo: RedGpuInfoOptionalInfo,
+  pub next: *const libc::c_void,
+  pub supportsResolveDepthStencil: RedBool32,
+  pub supportsResolveModeDepthSampleIndexZero: RedBool32,
+  pub supportsResolveModeDepthAverage: RedBool32,
+  pub supportsResolveModeDepthMin: RedBool32,
+  pub supportsResolveModeDepthMax: RedBool32,
+  pub supportsResolveModeStencilSampleIndexZero: RedBool32,
+  pub supportsResolveModeStencilAverage: RedBool32,
+  pub supportsResolveModeStencilMin: RedBool32,
+  pub supportsResolveModeStencilMax: RedBool32,
+  pub supportsResolveIndependentNone: RedBool32,
+  pub supportsResolveIndependent: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoProcedureParametersHandles {
+  pub optionalInfo: RedGpuInfoOptionalInfo,
+  pub next: *const libc::c_void,
+  pub supportsProcedureParametersHandles: RedBool32,
+  pub maxProcedureParametersHandlesCount: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoRasterizationMode {
+  pub optionalInfo: RedGpuInfoOptionalInfo,
+  pub next: *const libc::c_void,
+  pub supportsRasterizationModeOverestimate: RedBool32,
+  pub supportsRasterizationModeUnderestimate: RedBool32,
+  pub supportsGuaranteedZeroAreaBackFacingTriangles: RedBool32,
+  pub supportsGpuCodeFullyCoveredEXT: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoFormalMemoryModel {
+  pub optionalInfo: RedGpuInfoOptionalInfo,
+  pub next: *const libc::c_void,
+  pub supportsFormalMemoryModel: RedBool32,
+  pub supportsFormalMemoryModelGpuScopeSynchronization: RedBool32,
+  pub supportsFormalMemoryModelAvailabilityAndVisibilityChains: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedGpuInfoOptionalInfoRayTracing {
+  pub optionalInfo: RedGpuInfoOptionalInfo,
+  pub next: *const libc::c_void,
+  pub supportsRayTracing: RedBool32,
+}
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct RedMemoryBudget {
@@ -578,6 +703,32 @@ pub struct RedStructMember {
 }
 pub type RedSdkVersion = libc::c_uint;
 pub const RED_SDK_VERSION_1_0_135: RedSdkVersion = 0;
+pub type RedContextOptionalSettings = libc::c_uint;
+pub const RED_CONTEXT_OPTIONAL_SETTINGS_CREATE_CONTEXT_PERFORMANCE: RedContextOptionalSettings = 4;
+pub const RED_CONTEXT_OPTIONAL_SETTINGS_DEBUG_ARRAY: RedContextOptionalSettings = 1;
+pub const RED_CONTEXT_OPTIONAL_SETTINGS_0: RedContextOptionalSettings = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedContextOptionalSettingsIterator {
+  pub settings: libc::c_uint,
+  pub next: *const libc::c_void,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedContextOptionalSettings0 {
+  pub settings: RedContextOptionalSettings,
+  pub next: *const libc::c_void,
+  pub skipCheckingContextLayers: RedBool32,
+  pub skipCheckingContextExtensions: RedBool32,
+  pub gpusExposeOnlyOneQueue: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedContextOptionalSettingsCreateContextPerformance {
+  pub settings: RedContextOptionalSettings,
+  pub next: *mut libc::c_void,
+  pub exposeOnlyOneGpu: RedBool32,
+}
 pub type RedDebugCallbackSeverity = libc::c_uint;
 pub const RED_DEBUG_CALLBACK_SEVERITY_ERROR: RedDebugCallbackSeverity = 4096;
 pub const RED_DEBUG_CALLBACK_SEVERITY_WARNING: RedDebugCallbackSeverity = 256;
@@ -1517,6 +1668,23 @@ pub const REDX_MEMORY_BITFLAG_NOT_RESIDENT: RedXMemoryBitflag = 2;
 #[repr(C)]
 pub struct RedXMemoryAddress {
   pub memoryAddress: uint64_t,
+}
+pub type RedXContextOptionalSettings = libc::c_uint;
+pub const REDX_CONTEXT_OPTIONAL_SETTINGS_D3D_MEMORY_ALLOCATE_ZEROED: RedXContextOptionalSettings = 12001;
+pub const REDX_CONTEXT_OPTIONAL_SETTINGS_D3D_FEATURE_LEVEL: RedXContextOptionalSettings = 12000;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXContextOptionalSettingsD3DFeatureLevel {
+  pub settings: RedXContextOptionalSettings,
+  pub next: *const libc::c_void,
+  pub d3dFeatureLevel: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXContextOptionalSettingsD3DMemoryAllocateZeroed {
+  pub settings: RedXContextOptionalSettings,
+  pub next: *const libc::c_void,
+  pub d3dMemoryAllocateZeroed: RedBool32,
 }
 pub type RedXArrayType = libc::c_uint;
 pub const REDX_ARRAY_TYPE_RAYTRACING_ACCELERATION_STRUCTURE: RedXArrayType = 12000;

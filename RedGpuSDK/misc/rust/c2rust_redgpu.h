@@ -1931,8 +1931,20 @@ void               redXCallCopyImageRegion                  (RedHandleCalls call
 void               redXCreateSurfaceWinRT                   (RedContext context, RedHandleGpu gpu, const char * handleName, const void * winrtIUnknownPointerCoreWindow, RedHandleSurface * outSurface, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
 
 void forcegen() {
+  { RedSdkExtension _; }
+  { RedGpuInfoOptionalInfoIterator _; }
+  { RedGpuInfoOptionalInfoAdditionalInfo0 _; }
+  { RedGpuInfoOptionalInfoDriverProperties _; }
+  { RedGpuInfoOptionalInfoResolveDepthStencil _; }
+  { RedGpuInfoOptionalInfoProcedureParametersHandles _; }
+  { RedGpuInfoOptionalInfoRasterizationMode _; }
+  { RedGpuInfoOptionalInfoFormalMemoryModel _; }
+  { RedGpuInfoOptionalInfoRayTracing _; }
   { RedMemoryBitflags _; }
   { RedMemoryBitflag _; }
+  { RedContextOptionalSettingsIterator _; }
+  { RedContextOptionalSettings0 _; }
+  { RedContextOptionalSettingsCreateContextPerformance _; }
   { RedDebugCallbackTypeBitflag _; }
   { RedImagePartBitflag _; }
   { RedVisibleToStageBitflag _; }
@@ -1946,6 +1958,8 @@ void forcegen() {
   { RedXProcedureId _; }
   { RedXMemoryBitflags _; }
   { RedXMemoryBitflag _; }
+  { RedXContextOptionalSettingsD3DFeatureLevel _; }
+  { RedXContextOptionalSettingsD3DMemoryAllocateZeroed _; }
   { RedXArrayType _; }
   { RedXStructMemberType _; }
   { RedXPageableResidencyPriorityBitflag _; }
