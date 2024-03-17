@@ -1380,6 +1380,94 @@ pub struct RedGpuTimeline {
   pub signalGpuSignalsCount: libc::c_uint,
   pub signalGpuSignals: *const RedHandleGpuSignal,
 }
+// REDGPU WSI
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandleSurface {
+  _unused: [u8; 0],
+}
+pub type RedHandleSurface = *const RedTypeHandleSurface;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedTypeHandlePresent {
+  _unused: [u8; 0],
+}
+pub type RedHandlePresent = *const RedTypeHandlePresent;
+pub type RedSurfaceTransformBitflags = libc::c_uint;
+pub type RedSurfaceTransformBitflag = libc::c_uint;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_INHERIT: RedSurfaceTransformBitflag = 256;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR_ROTATE_270: RedSurfaceTransformBitflag = 128;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR_ROTATE_180: RedSurfaceTransformBitflag = 64;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR_ROTATE_90: RedSurfaceTransformBitflag = 32;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR: RedSurfaceTransformBitflag = 16;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_ROTATE_270: RedSurfaceTransformBitflag = 8;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_ROTATE_180: RedSurfaceTransformBitflag = 4;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_ROTATE_90: RedSurfaceTransformBitflag = 2;
+pub const RED_SURFACE_TRANSFORM_BITFLAG_IDENTITY: RedSurfaceTransformBitflag = 1;
+pub type RedSurfaceCompositeAlphaBitflags = libc::c_uint;
+pub type RedSurfaceCompositeAlphaBitflag = libc::c_uint;
+pub const RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_INHERIT: RedSurfaceCompositeAlphaBitflag = 8;
+pub const RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_POST_MULTIPLIED: RedSurfaceCompositeAlphaBitflag = 4;
+pub const RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_PRE_MULTIPLIED: RedSurfaceCompositeAlphaBitflag = 2;
+pub const RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_OPAQUE: RedSurfaceCompositeAlphaBitflag = 1;
+pub type RedPresentVsyncMode = libc::c_uint;
+pub const RED_PRESENT_VSYNC_MODE_ON_RELAXED: RedPresentVsyncMode = 3;
+pub const RED_PRESENT_VSYNC_MODE_ON: RedPresentVsyncMode = 2;
+pub const RED_PRESENT_VSYNC_MODE_OFF: RedPresentVsyncMode = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedQueueFamilyIndexGetSupportsPresentOnWin32 {
+  pub outQueueFamilyIndexSupportsPresentOnWin32: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedQueueFamilyIndexGetSupportsPresentOnXlib {
+  pub display: *const libc::c_void,
+  pub visualId: libc::c_ulong,
+  pub outQueueFamilyIndexSupportsPresentOnXlib: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedQueueFamilyIndexGetSupportsPresentOnXcb {
+  pub connection: *const libc::c_void,
+  pub visualId: libc::c_uint,
+  pub outQueueFamilyIndexSupportsPresentOnXcb: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedQueueFamilyIndexGetSupportsPresentOnSurface {
+  pub surface: RedHandleSurface,
+  pub outQueueFamilyIndexSupportsPresentOnSurface: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedSurfacePresentFeatures {
+  pub supportsPresentVsyncModeOff: RedBool32,
+  pub supportsPresentVsyncModeOn: RedBool32,
+  pub supportsPresentVsyncModeOnRelaxed: RedBool32,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedSurfaceCurrentPropertiesAndPresentLimits {
+  pub currentSurfaceWidth: libc::c_uint,
+  pub currentSurfaceHeight: libc::c_uint,
+  pub currentSurfaceTransform: RedSurfaceTransformBitflag,
+  pub minPresentImagesCount: libc::c_uint,
+  pub maxPresentImagesCount: libc::c_uint,
+  pub minPresentImagesWidth: libc::c_uint,
+  pub maxPresentImagesWidth: libc::c_uint,
+  pub minPresentImagesHeight: libc::c_uint,
+  pub maxPresentImagesHeight: libc::c_uint,
+  pub maxPresentImagesLayersCount: libc::c_uint,
+  pub supportsPresentImagesAccessCopyR: RedBool32,
+  pub supportsPresentImagesAccessCopyW: RedBool32,
+  pub supportsPresentImagesAccessTextureRO: RedBool32,
+  pub supportsPresentImagesAccessTextureRW: RedBool32,
+  pub supportsPresentImagesAccessOutputDepthStencil: RedBool32,
+  pub supportsPresentImagesAccessOutputColor: RedBool32,
+  pub supportedPresentTransforms: RedSurfaceTransformBitflags,
+  pub supportedPresentCompositeAlphas: RedSurfaceCompositeAlphaBitflags,
+}
 
 #[link(name = "C:/RedGpuSDK/redgpu_x")]
 extern "C" {
@@ -2173,6 +2261,134 @@ extern "C" {
     maxStructsMembersOfTypeSamplerCount: libc::c_uint,
     maxStructsMembersOfTypeInlineSamplerCount: libc::c_uint,
     outStructsMemory: *mut RedHandleStructsMemory,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  // REDGPU WSI
+  pub fn redCreateSurfaceWin32(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    win32Hinstance: *const libc::c_void,
+    win32Hwnd: *const libc::c_void,
+    outSurface: *mut RedHandleSurface,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreateSurfaceXlibOrXcb(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    xlibDisplay: *const libc::c_void,
+    xlibWindow: libc::c_ulong,
+    xcbConnection: *const libc::c_void,
+    xcbWindow: libc::c_uint,
+    outSurface: *mut RedHandleSurface,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redCreatePresent(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    queue: RedHandleQueue,
+    handleName: *const libc::c_char,
+    surface: RedHandleSurface,
+    imagesCount: libc::c_uint,
+    imagesWidth: libc::c_uint,
+    imagesHeight: libc::c_uint,
+    imagesLayersCount: libc::c_uint,
+    imagesRestrictToAccess: RedAccessBitflags,
+    transform: RedSurfaceTransformBitflag,
+    compositeAlpha: RedSurfaceCompositeAlphaBitflag,
+    vsyncMode: RedPresentVsyncMode,
+    clipped: RedBool32,
+    discardAfterPresent: RedBool32,
+    oldPresent: RedHandlePresent,
+    outPresent: *mut RedHandlePresent,
+    outImages: *mut RedHandleImage,
+    outTextures: *mut RedHandleTexture,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroySurface(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    surface: RedHandleSurface,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redDestroyPresent(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    present: RedHandlePresent,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redQueueFamilyIndexGetSupportsPresent(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    queueFamilyIndex: libc::c_uint,
+    supportsPresentOnWin32: *mut RedQueueFamilyIndexGetSupportsPresentOnWin32,
+    supportsPresentOnXlib: *mut RedQueueFamilyIndexGetSupportsPresentOnXlib,
+    supportsPresentOnXcb: *mut RedQueueFamilyIndexGetSupportsPresentOnXcb,
+    supportsPresentOnSurface: *mut RedQueueFamilyIndexGetSupportsPresentOnSurface,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redSurfaceGetPresentFeatures(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    surface: RedHandleSurface,
+    outSurfacePresentFeatures: *mut RedSurfacePresentFeatures,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redSurfaceGetCurrentPropertiesAndPresentLimits(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    surface: RedHandleSurface,
+    outSurfaceCurrentPropertiesAndPresentLimits: *mut RedSurfaceCurrentPropertiesAndPresentLimits,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redPresentGetImageIndex(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    present: RedHandlePresent,
+    signalCpuSignal: RedHandleCpuSignal,
+    signalGpuSignal: RedHandleGpuSignal,
+    outImageIndex: *mut libc::c_uint,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redQueuePresent(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    queue: RedHandleQueue,
+    waitForAndUnsignalGpuSignalsCount: libc::c_uint,
+    waitForAndUnsignalGpuSignals: *const RedHandleGpuSignal,
+    presentsCount: libc::c_uint,
+    presents: *const RedHandlePresent,
+    presentsImageIndex: *const libc::c_uint,
+    outPresentsStatus: *mut RedStatus,
     outStatuses: *mut RedStatuses,
     optionalFile: *const libc::c_char,
     optionalLine: libc::c_int,

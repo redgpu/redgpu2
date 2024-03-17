@@ -1417,6 +1417,94 @@ typedef struct RedGpuTimeline {
   const RedHandleGpuSignal * signalGpuSignals;
 } RedGpuTimeline;
 
+// REDGPU WSI
+
+typedef const struct RedTypeHandleSurface * RedHandleSurface;
+typedef const struct RedTypeHandlePresent * RedHandlePresent;
+
+// redCreatePresent
+
+typedef unsigned RedSurfaceTransformBitflags;
+typedef enum RedSurfaceTransformBitflag {
+  RED_SURFACE_TRANSFORM_BITFLAG_IDENTITY                     = 0b00000000000000000000000000000001,
+  RED_SURFACE_TRANSFORM_BITFLAG_ROTATE_90                    = 0b00000000000000000000000000000010,
+  RED_SURFACE_TRANSFORM_BITFLAG_ROTATE_180                   = 0b00000000000000000000000000000100,
+  RED_SURFACE_TRANSFORM_BITFLAG_ROTATE_270                   = 0b00000000000000000000000000001000,
+  RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR            = 0b00000000000000000000000000010000,
+  RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR_ROTATE_90  = 0b00000000000000000000000000100000,
+  RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR_ROTATE_180 = 0b00000000000000000000000001000000,
+  RED_SURFACE_TRANSFORM_BITFLAG_HORIZONTAL_MIRROR_ROTATE_270 = 0b00000000000000000000000010000000,
+  RED_SURFACE_TRANSFORM_BITFLAG_INHERIT                      = 0b00000000000000000000000100000000,
+} RedSurfaceTransformBitflag;
+
+typedef unsigned RedSurfaceCompositeAlphaBitflags;
+typedef enum RedSurfaceCompositeAlphaBitflag {
+  RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_OPAQUE          = 0b00000000000000000000000000000001,
+  RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_PRE_MULTIPLIED  = 0b00000000000000000000000000000010,
+  RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_POST_MULTIPLIED = 0b00000000000000000000000000000100,
+  RED_SURFACE_COMPOSITE_ALPHA_BITFLAG_INHERIT         = 0b00000000000000000000000000001000,
+} RedSurfaceCompositeAlphaBitflag;
+
+typedef enum RedPresentVsyncMode {
+  RED_PRESENT_VSYNC_MODE_OFF        = 0,
+  RED_PRESENT_VSYNC_MODE_ON         = 2,
+  RED_PRESENT_VSYNC_MODE_ON_RELAXED = 3,
+} RedPresentVsyncMode;
+
+// redQueueFamilyIndexGetSupportsPresent
+
+typedef struct RedQueueFamilyIndexGetSupportsPresentOnWin32 {
+  RedBool32        outQueueFamilyIndexSupportsPresentOnWin32;
+} RedQueueFamilyIndexGetSupportsPresentOnWin32;
+
+typedef struct RedQueueFamilyIndexGetSupportsPresentOnXlib {
+  const void *     display;
+  unsigned long    visualId;
+  RedBool32        outQueueFamilyIndexSupportsPresentOnXlib;
+} RedQueueFamilyIndexGetSupportsPresentOnXlib;
+
+typedef struct RedQueueFamilyIndexGetSupportsPresentOnXcb {
+  const void *     connection;
+  unsigned         visualId;
+  RedBool32        outQueueFamilyIndexSupportsPresentOnXcb;
+} RedQueueFamilyIndexGetSupportsPresentOnXcb;
+
+typedef struct RedQueueFamilyIndexGetSupportsPresentOnSurface {
+  RedHandleSurface surface;
+  RedBool32        outQueueFamilyIndexSupportsPresentOnSurface;
+} RedQueueFamilyIndexGetSupportsPresentOnSurface;
+
+// redSurfaceGetPresentFeatures
+
+typedef struct RedSurfacePresentFeatures {
+  RedBool32 supportsPresentVsyncModeOff;
+  RedBool32 supportsPresentVsyncModeOn;        // Guaranteed to be supported
+  RedBool32 supportsPresentVsyncModeOnRelaxed;
+} RedSurfacePresentFeatures;
+
+// redSurfaceGetCurrentPropertiesAndPresentLimits
+
+typedef struct RedSurfaceCurrentPropertiesAndPresentLimits {
+  unsigned                         currentSurfaceWidth;     // The current width  of the surface, or the special value 0xFFFFFFFF indicating that the surface width  will be determined by the width  of a present targeting the surface
+  unsigned                         currentSurfaceHeight;    // The current height of the surface, or the special value 0xFFFFFFFF indicating that the surface height will be determined by the height of a present targeting the surface
+  RedSurfaceTransformBitflag       currentSurfaceTransform;
+  unsigned                         minPresentImagesCount;
+  unsigned                         maxPresentImagesCount;
+  unsigned                         minPresentImagesWidth;
+  unsigned                         maxPresentImagesWidth;
+  unsigned                         minPresentImagesHeight;
+  unsigned                         maxPresentImagesHeight;
+  unsigned                         maxPresentImagesLayersCount;
+  RedBool32                        supportsPresentImagesAccessCopyR;
+  RedBool32                        supportsPresentImagesAccessCopyW;
+  RedBool32                        supportsPresentImagesAccessTextureRO;
+  RedBool32                        supportsPresentImagesAccessTextureRW;
+  RedBool32                        supportsPresentImagesAccessOutputDepthStencil;
+  RedBool32                        supportsPresentImagesAccessOutputColor;        // Guaranteed to be supported
+  RedSurfaceTransformBitflags      supportedPresentTransforms;
+  RedSurfaceCompositeAlphaBitflags supportedPresentCompositeAlphas;
+} RedSurfaceCurrentPropertiesAndPresentLimits;
+
 // Memory
 
 void redMemoryGetBudget                 (RedContext context, RedHandleGpu gpu, RedMemoryBudget * outMemoryBudget, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
@@ -1528,6 +1616,36 @@ void redMarkEnd                         (const char * optionalFile, int optional
 void redStructsMemoryAllocateWithInlineSamplers         (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
 void redStructsMemoryAllocateSamplersWithInlineSamplers (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeSamplerCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
 
+// REDGPU WSI
+
+// Create
+
+void redCreateSurfaceWin32     (RedContext context, RedHandleGpu gpu, const char * handleName, const void * win32Hinstance, const void * win32Hwnd, RedHandleSurface * outSurface, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreateSurfaceXlibOrXcb (RedContext context, RedHandleGpu gpu, const char * handleName, const void * xlibDisplay, unsigned long xlibWindow, const void * xcbConnection, unsigned xcbWindow, RedHandleSurface * outSurface, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redCreatePresent          (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * handleName, RedHandleSurface surface, unsigned imagesCount, unsigned imagesWidth, unsigned imagesHeight, unsigned imagesLayersCount, RedAccessBitflags imagesRestrictToAccess, RedSurfaceTransformBitflag transform, RedSurfaceCompositeAlphaBitflag compositeAlpha, RedPresentVsyncMode vsyncMode, RedBool32 clipped, RedBool32 discardAfterPresent, RedHandlePresent oldPresent, RedHandlePresent * outPresent, RedHandleImage * outImages, RedHandleTexture * outTextures, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Destroy
+
+void redDestroySurface         (RedContext context, RedHandleGpu gpu, RedHandleSurface surface, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redDestroyPresent         (RedContext context, RedHandleGpu gpu, RedHandlePresent present, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Queue family index
+
+void redQueueFamilyIndexGetSupportsPresent          (RedContext context, RedHandleGpu gpu, unsigned queueFamilyIndex, RedQueueFamilyIndexGetSupportsPresentOnWin32 * supportsPresentOnWin32, RedQueueFamilyIndexGetSupportsPresentOnXlib * supportsPresentOnXlib, RedQueueFamilyIndexGetSupportsPresentOnXcb * supportsPresentOnXcb, RedQueueFamilyIndexGetSupportsPresentOnSurface * supportsPresentOnSurface, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Surface
+
+void redSurfaceGetPresentFeatures                   (RedContext context, RedHandleGpu gpu, RedHandleSurface surface, RedSurfacePresentFeatures * outSurfacePresentFeatures, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void redSurfaceGetCurrentPropertiesAndPresentLimits (RedContext context, RedHandleGpu gpu, RedHandleSurface surface, RedSurfaceCurrentPropertiesAndPresentLimits * outSurfaceCurrentPropertiesAndPresentLimits, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Present
+
+void redPresentGetImageIndex   (RedContext context, RedHandleGpu gpu, RedHandlePresent present, RedHandleCpuSignal signalCpuSignal, RedHandleGpuSignal signalGpuSignal, unsigned * outImageIndex, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Queue
+
+void redQueuePresent           (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned waitForAndUnsignalGpuSignalsCount, const RedHandleGpuSignal * waitForAndUnsignalGpuSignals, unsigned presentsCount, const RedHandlePresent * presents, const unsigned * presentsImageIndex, RedStatus * outPresentsStatus, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
 void forcegen() {
   { RedMemoryBitflags _; }
   { RedMemoryBitflag _; }
@@ -1537,4 +1655,7 @@ void forcegen() {
   { RedColorComponentBitflag _; }
   { RedAccessStageBitflag _; }
   { RedAccessBitflag _; }
+  // REDGPU WSI
+  { RedSurfaceTransformBitflag _; }
+  { RedSurfaceCompositeAlphaBitflag _; }
 }
