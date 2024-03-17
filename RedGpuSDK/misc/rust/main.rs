@@ -1468,6 +1468,165 @@ pub struct RedSurfaceCurrentPropertiesAndPresentLimits {
   pub supportedPresentTransforms: RedSurfaceTransformBitflags,
   pub supportedPresentCompositeAlphas: RedSurfaceCompositeAlphaBitflags,
 }
+// REDGPU X
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXTypeHandleMemoryCallbackBudgetChange {
+  _unused: [u8; 0],
+}
+pub type RedXHandleMemoryCallbackBudgetChange = *const RedXTypeHandleMemoryCallbackBudgetChange;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXTypeHandlePageable {
+  _unused: [u8; 0],
+}
+pub type RedXHandlePageable = *const RedXTypeHandlePageable;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXTypeHandleResource {
+  _unused: [u8; 0],
+}
+pub type RedXHandleResource = *const RedXTypeHandleResource;
+pub type RedXProcedureId = libc::c_uint;
+pub const REDX_PROCEDURE_ID_redXCallCopyImageRegion: RedXProcedureId = 12021;
+pub const REDX_PROCEDURE_ID_redXCreateSurfaceWinRT: RedXProcedureId = 12020;
+pub const REDX_PROCEDURE_ID_redXGetHandleResourceImage: RedXProcedureId = 12019;
+pub const REDX_PROCEDURE_ID_redXGetHandleResourceArray: RedXProcedureId = 12018;
+pub const REDX_PROCEDURE_ID_redXPageableEvict: RedXProcedureId = 12017;
+pub const REDX_PROCEDURE_ID_redXPageableMakeResident: RedXProcedureId = 12016;
+pub const REDX_PROCEDURE_ID_redXPageableSetResidencyPriority: RedXProcedureId = 12015;
+pub const REDX_PROCEDURE_ID_redXGetHandlePageableStructsMemory: RedXProcedureId = 12014;
+pub const REDX_PROCEDURE_ID_redXGetHandlePageableMemory: RedXProcedureId = 12013;
+pub const REDX_PROCEDURE_ID_redXCreateTexture: RedXProcedureId = 12012;
+pub const REDX_PROCEDURE_ID_redXCreateImage: RedXProcedureId = 12011;
+pub const REDX_PROCEDURE_ID_redXCreateQueue: RedXProcedureId = 12010;
+pub const REDX_PROCEDURE_ID_redXGetHandleStruct: RedXProcedureId = 12009;
+pub const REDX_PROCEDURE_ID_redXStructsMemorySet: RedXProcedureId = 12008;
+pub const REDX_PROCEDURE_ID_redXGetMemoryAddressStructMember: RedXProcedureId = 12007;
+pub const REDX_PROCEDURE_ID_redXGetMemoryAddressTextureRW: RedXProcedureId = 12006;
+pub const REDX_PROCEDURE_ID_redXGetMemoryAddressTextureRO: RedXProcedureId = 12005;
+pub const REDX_PROCEDURE_ID_redXGetMemoryAddressSampler: RedXProcedureId = 12004;
+pub const REDX_PROCEDURE_ID_redXGetMemoryAddressArray: RedXProcedureId = 12003;
+pub const REDX_PROCEDURE_ID_redXMemoryReserve: RedXProcedureId = 12002;
+pub const REDX_PROCEDURE_ID_redXMemoryCallbackBudgetChangeUnregister: RedXProcedureId = 12001;
+pub const REDX_PROCEDURE_ID_redXMemoryCallbackBudgetChangeRegister: RedXProcedureId = 12000;
+pub type RedXMemoryBitflags = libc::c_uint;
+pub type RedXMemoryBitflag = libc::c_uint;
+pub const REDX_MEMORY_BITFLAG_NOT_RESIDENT: RedXMemoryBitflag = 2;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXMemoryAddress {
+  pub memoryAddress: uint64_t,
+}
+pub type RedXArrayType = libc::c_uint;
+pub const REDX_ARRAY_TYPE_RAYTRACING_ACCELERATION_STRUCTURE: RedXArrayType = 12000;
+pub type RedXStructMemberType = libc::c_uint;
+pub const REDX_STRUCT_MEMBER_TYPE_ARRAY_RO: RedXStructMemberType = 12000;
+pub type RedXPageableResidencyPriorityBitflags = libc::c_uint;
+pub type RedXPageableResidencyPriorityBitflag = libc::c_uint;
+pub const REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_MAXIMUM: RedXPageableResidencyPriorityBitflag = 3355443200;
+pub const REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_HIGH: RedXPageableResidencyPriorityBitflag = 2684354560;
+pub const REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_NORMAL: RedXPageableResidencyPriorityBitflag = 2013265920;
+pub const REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_LOW: RedXPageableResidencyPriorityBitflag = 1342177280;
+pub const REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_MINIMUM: RedXPageableResidencyPriorityBitflag = 671088640;
+pub type RedXAccessBitflags = libc::c_uint;
+pub type RedXAccessBitflag = libc::c_uint;
+pub const REDX_ACCESS_BITFLAG_RAYTRACING_ACCELERATION_STRUCTURE: RedXAccessBitflag = 4194304;
+pub const REDX_ACCESS_BITFLAG_GENERIC_R: RedXAccessBitflag = 2755;
+pub const REDX_ACCESS_BITFLAG_RESOLVE_SOURCE_R: RedXAccessBitflag = 8192;
+pub const REDX_ACCESS_BITFLAG_RESOLVE_TARGET_W: RedXAccessBitflag = 4096;
+pub const REDX_ACCESS_BITFLAG_COPY_R: RedXAccessBitflag = 2048;
+pub const REDX_ACCESS_BITFLAG_COPY_W: RedXAccessBitflag = 1024;
+pub const REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R: RedXAccessBitflag = 128;
+pub const REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R: RedXAccessBitflag = 64;
+pub const REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R: RedXAccessBitflag = 32;
+pub const REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW: RedXAccessBitflag = 16;
+pub const REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_RW: RedXAccessBitflag = 8;
+pub const REDX_ACCESS_BITFLAG_OUTPUT_COLOR_W: RedXAccessBitflag = 4;
+pub const REDX_ACCESS_BITFLAG_INDEX_R: RedXAccessBitflag = 2;
+pub const REDX_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R: RedXAccessBitflag = 1;
+pub const REDX_ACCESS_BITFLAG_PRESENT: RedXAccessBitflag = 0;
+pub const REDX_ACCESS_BITFLAG_COMMON: RedXAccessBitflag = 0;
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXUsage {
+  pub setTo0: libc::c_uint,
+  pub split: RedBarrierSplit,
+  pub resource: RedXHandleResource,
+  pub level: libc::c_uint,
+  pub oldAccesses: RedXAccessBitflags,
+  pub newAccesses: RedXAccessBitflags,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXAlias {
+  pub setTo1: libc::c_uint,
+  pub split: RedBarrierSplit,
+  pub oldResource: RedXHandleResource,
+  pub newResource: RedXHandleResource,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXOrder {
+  pub setTo2: libc::c_uint,
+  pub split: RedBarrierSplit,
+  pub resource: RedXHandleResource,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub union RedXBarrier {
+  pub usage: RedXUsage,
+  pub alias: RedXAlias,
+  pub order: RedXOrder,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXCopyImageRegionSubresourceFootprint {
+  pub xformat: libc::c_uint,
+  pub width: libc::c_uint,
+  pub height: libc::c_uint,
+  pub depth: libc::c_uint,
+  pub rowPitch: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXCopyImageRegionPlacedSubresourceFootprint {
+  pub offset: uint64_t,
+  pub footprint: RedXCopyImageRegionSubresourceFootprint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXCopyImageRegionLocation {
+  pub resource: *mut libc::c_void,
+  pub typeSubresourceIndexOrPlacedFootprint: libc::c_uint,
+  pub c2rust_unnamed: C2RustUnnamed,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub union C2RustUnnamed {
+  pub placedFootprint: RedXCopyImageRegionPlacedSubresourceFootprint,
+  pub subresourceIndex: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXCopyImageRegionBox {
+  pub left: libc::c_uint,
+  pub top: libc::c_uint,
+  pub front: libc::c_uint,
+  pub right: libc::c_uint,
+  pub bottom: libc::c_uint,
+  pub back: libc::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct RedXCopyImageRegion {
+  pub target: *const RedXCopyImageRegionLocation,
+  pub targetX: libc::c_uint,
+  pub targetY: libc::c_uint,
+  pub targetZ: libc::c_uint,
+  pub source: *const RedXCopyImageRegionLocation,
+  pub sourceBox: *const RedXCopyImageRegionBox,
+}
 
 #[link(name = "C:/RedGpuSDK/redgpu_x")]
 extern "C" {
@@ -2389,6 +2548,233 @@ extern "C" {
     presents: *const RedHandlePresent,
     presentsImageIndex: *const libc::c_uint,
     outPresentsStatus: *mut RedStatus,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  // REDGPU X
+  pub fn redXMemoryCallbackBudgetChangeRegister(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    eventHandle: *const libc::c_void,
+    outMemoryCallbackBudgetChange: *mut RedXHandleMemoryCallbackBudgetChange,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXMemoryCallbackBudgetChangeUnregister(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    memoryCallbackBudgetChange: RedXHandleMemoryCallbackBudgetChange,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXMemoryReserve(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    sharedMemory: RedBool32,
+    bytesCount: uint64_t,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXGetMemoryAddressArray(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    array: RedHandleArray,
+  ) -> uint64_t;
+  pub fn redXGetMemoryAddressSampler(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    sampler: RedHandleSampler,
+  ) -> uint64_t;
+  pub fn redXGetMemoryAddressTextureRO(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    texture: RedHandleTexture,
+  ) -> uint64_t;
+  pub fn redXGetMemoryAddressTextureRW(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    texture: RedHandleTexture,
+  ) -> uint64_t;
+  pub fn redXGetMemoryAddressStructMember(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    structsMemory: RedHandleStructsMemory,
+    structMemberIndex: libc::c_uint,
+  ) -> uint64_t;
+  pub fn redXStructsMemorySet(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    copyingSamplers: RedBool32,
+    sourceCopiesCount: libc::c_uint,
+    sourceCopiesAddressFirst: *const RedXMemoryAddress,
+    sourceCopiesAddressCount: *const libc::c_uint,
+    targetCopiesCount: libc::c_uint,
+    targetCopiesAddressFirst: *const RedXMemoryAddress,
+    targetCopiesAddressCount: *const libc::c_uint,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXGetHandleStruct(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    structsMemory: RedHandleStructsMemory,
+    structMemberIndex: libc::c_uint,
+  ) -> RedHandleStruct;
+  pub fn redXCreateQueue(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    canCopy: RedBool32,
+    canDraw: RedBool32,
+    canCompute: RedBool32,
+    priority: libc::c_uint,
+    disableGpuTimeout: RedBool32,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXCreateImage(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    dimensions: RedImageDimensions,
+    format: RedFormat,
+    xformat: libc::c_uint,
+    width: libc::c_uint,
+    height: libc::c_uint,
+    depth: libc::c_uint,
+    levelsCount: libc::c_uint,
+    layersCount: libc::c_uint,
+    multisampleCount: RedMultisampleCountBitflag,
+    restrictToAccess: RedAccessBitflags,
+    initialAccess: RedAccessBitflags,
+    initialQueueFamilyIndex: libc::c_uint,
+    dedicate: RedBool32,
+    outImage: *mut RedImage,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXCreateTexture(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    image: RedHandleImage,
+    parts: RedImagePartBitflags,
+    dimensions: RedTextureDimensions,
+    format: RedFormat,
+    xformat: libc::c_uint,
+    levelsFirst: libc::c_uint,
+    levelsCount: libc::c_uint,
+    layersFirst: libc::c_uint,
+    layersCount: libc::c_uint,
+    restrictToAccess: RedAccessBitflags,
+    outTexture: *mut RedHandleTexture,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXGetHandlePageableMemory(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    memory: RedHandleMemory,
+  ) -> RedXHandlePageable;
+  pub fn redXGetHandlePageableStructsMemory(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    structsMemory: RedHandleStructsMemory,
+  ) -> RedXHandlePageable;
+  pub fn redXPageableSetResidencyPriority(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    pageablesCount: libc::c_uint,
+    pageables: *const RedXHandlePageable,
+    pageablesResidencyPriority: *const RedXPageableResidencyPriorityBitflags,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXPageableMakeResident(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    pageablesCount: libc::c_uint,
+    pageables: *const RedXHandlePageable,
+    denyOverbudget: RedBool32,
+    signalCpuSignal: RedHandleCpuSignal,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXPageableEvict(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    pageablesCount: libc::c_uint,
+    pageables: *const RedXHandlePageable,
+    outStatuses: *mut RedStatuses,
+    optionalFile: *const libc::c_char,
+    optionalLine: libc::c_int,
+    optionalUserData: *mut libc::c_void,
+  );
+  pub fn redXGetHandleResourceArray(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    array: RedHandleArray,
+  ) -> RedXHandleResource;
+  pub fn redXGetHandleResourceImage(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    image: RedHandleImage,
+  ) -> RedXHandleResource;
+  pub fn redXCallSetProcedureOutput(
+    calls: RedHandleCalls,
+    depthStencil: RedHandleTexture,
+    colorsCount: libc::c_uint,
+    colors: *const RedHandleTexture,
+    depthSetProcedureOutputOp: RedSetProcedureOutputOp,
+    stencilSetProcedureOutputOp: RedSetProcedureOutputOp,
+    colorsSetProcedureOutputOp: *const RedSetProcedureOutputOp,
+    depthClearValue: libc::c_float,
+    stencilClearValue: libc::c_uint,
+    colorsClearValuesFloat: *const RedColorsClearValuesFloat,
+  );
+  pub fn redXCallEndProcedureOutput(
+    calls: RedHandleCalls,
+    resolveTargetColors: *const RedHandleTexture,
+    resolveTargetColorsFormat: *const libc::c_uint,
+    depthEndProcedureOutputOp: RedEndProcedureOutputOp,
+    stencilEndProcedureOutputOp: RedEndProcedureOutputOp,
+    colorsEndProcedureOutputOp: *const RedEndProcedureOutputOp,
+  );
+  pub fn redXCallUsageAliasOrderBarrier(
+    calls: RedHandleCalls,
+    barriersCount: libc::c_uint,
+    barriers: *const RedXBarrier,
+  );
+  pub fn redXCallCopyImageRegion(
+    calls: RedHandleCalls,
+    copiesCount: libc::c_uint,
+    copies: *const RedXCopyImageRegion,
+  );
+  pub fn redXCreateSurfaceWinRT(
+    context: RedContext,
+    gpu: RedHandleGpu,
+    handleName: *const libc::c_char,
+    winrtIUnknownPointerCoreWindow: *const libc::c_void,
+    outSurface: *mut RedHandleSurface,
     outStatuses: *mut RedStatuses,
     optionalFile: *const libc::c_char,
     optionalLine: libc::c_int,

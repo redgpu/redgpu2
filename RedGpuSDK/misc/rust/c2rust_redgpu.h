@@ -1505,6 +1505,242 @@ typedef struct RedSurfaceCurrentPropertiesAndPresentLimits {
   RedSurfaceCompositeAlphaBitflags supportedPresentCompositeAlphas;
 } RedSurfaceCurrentPropertiesAndPresentLimits;
 
+// REDGPU X
+
+typedef const struct RedXTypeHandleMemoryCallbackBudgetChange * RedXHandleMemoryCallbackBudgetChange;
+typedef const struct RedXTypeHandlePageable                   * RedXHandlePageable;
+typedef const struct RedXTypeHandleResource                   * RedXHandleResource;
+
+typedef enum RedXProcedureId {
+  REDX_PROCEDURE_ID_redXMemoryCallbackBudgetChangeRegister   = 12000,
+  REDX_PROCEDURE_ID_redXMemoryCallbackBudgetChangeUnregister = 12001,
+  REDX_PROCEDURE_ID_redXMemoryReserve                        = 12002,
+  REDX_PROCEDURE_ID_redXGetMemoryAddressArray                = 12003,
+  REDX_PROCEDURE_ID_redXGetMemoryAddressSampler              = 12004,
+  REDX_PROCEDURE_ID_redXGetMemoryAddressTextureRO            = 12005,
+  REDX_PROCEDURE_ID_redXGetMemoryAddressTextureRW            = 12006,
+  REDX_PROCEDURE_ID_redXGetMemoryAddressStructMember         = 12007,
+  REDX_PROCEDURE_ID_redXStructsMemorySet                     = 12008,
+  REDX_PROCEDURE_ID_redXGetHandleStruct                      = 12009,
+  REDX_PROCEDURE_ID_redXCreateQueue                          = 12010,
+  REDX_PROCEDURE_ID_redXCreateImage                          = 12011,
+  REDX_PROCEDURE_ID_redXCreateTexture                        = 12012,
+  REDX_PROCEDURE_ID_redXGetHandlePageableMemory              = 12013,
+  REDX_PROCEDURE_ID_redXGetHandlePageableStructsMemory       = 12014,
+  REDX_PROCEDURE_ID_redXPageableSetResidencyPriority         = 12015,
+  REDX_PROCEDURE_ID_redXPageableMakeResident                 = 12016,
+  REDX_PROCEDURE_ID_redXPageableEvict                        = 12017,
+  REDX_PROCEDURE_ID_redXGetHandleResourceArray               = 12018,
+  REDX_PROCEDURE_ID_redXGetHandleResourceImage               = 12019,
+  REDX_PROCEDURE_ID_redXCreateSurfaceWinRT                   = 12020,
+  REDX_PROCEDURE_ID_redXCallCopyImageRegion                  = 12021,
+} RedXProcedureId;
+
+// redMemoryAllocate
+// redMemoryAllocateMappable
+
+typedef unsigned RedXMemoryBitflags;
+typedef enum RedXMemoryBitflag {
+  REDX_MEMORY_BITFLAG_NOT_RESIDENT = 0b00000000000000000000000000000010,
+} RedXMemoryBitflag;
+
+// redXStructsMemorySet
+
+typedef struct RedXMemoryAddress {
+  uint64_t memoryAddress;
+} RedXMemoryAddress;
+
+// redCreateContext
+
+typedef enum RedGpuInfoOptionalInfo3 {
+  RED_GPU_INFO_OPTIONAL_INFO_IMAGE_X_FORMATS_LIMITS_AND_FEATURES = 16,
+} RedGpuInfoOptionalInfo3;
+
+typedef struct RedXImageFormatFeatures {
+  RedBool32 supportsGpuCodeSampleCmpAndSampleCmpLevelZero;
+  RedBool32 supportsMip;
+  RedBool32 supportsResolveTarget;
+  RedBool32 supportsResolveSource;
+  RedBool32 supportsGpuCodeMultisampleLoad;
+  RedBool32 supportsGpuCodeGather;
+  RedBool32 supportsGpuCodeGatherComparison;
+  RedBool32 supportsTextureRWAtomicAdd;
+  RedBool32 supportsTextureRWAtomicBitwiseOps;
+  RedBool32 supportsTextureRWAtomicCompareStoreOrCompareExchange;
+  RedBool32 supportsTextureRWAtomicExchange;
+  RedBool32 supportsTextureRWAtomicMinOrMaxSigned;
+  RedBool32 supportsTextureRWAtomicMinOrMaxUnsigned;
+  RedBool32 supportsTextureRWTypedLoad;
+  RedBool32 supportsTextureRWTypedStore;
+  RedBool32 supportsProcedureStateBlendLogicOp;
+} RedXImageFormatFeatures;
+
+typedef struct RedGpuInfoOptionalInfoImageXFormatsLimitsAndFeatures {
+  RedGpuInfoOptionalInfo3         optionalInfo;
+  const void *                    next;
+  const RedImageFormatLimits *    imageXFormatsLimitsImageDimensions1D;                                        // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+  const RedImageFormatLimits *    imageXFormatsLimitsImageDimensions2D;                                        // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+  const RedImageFormatLimits *    imageXFormatsLimitsImageDimensions2DMultisample;                             // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+  const RedImageFormatLimits *    imageXFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered; // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+  const RedImageFormatLimits *    imageXFormatsLimitsImageDimensions3D;                                        // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+  const RedImageFormatLimits *    imageXFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered;     // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+  const RedImageFormatFeatures *  imageXFormatsFeatures;                                                       // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+  const RedXImageFormatFeatures * imageFormatsFeatures1;                                                       // Count: 131, indexable with RedFormat values
+  const RedXImageFormatFeatures * imageXFormatsFeatures1;                                                      // Count: 14, indexable with RedXFormat values >= 12000 minus 12000
+} RedGpuInfoOptionalInfoImageXFormatsLimitsAndFeatures;
+
+typedef enum RedXContextOptionalSettings {
+  REDX_CONTEXT_OPTIONAL_SETTINGS_D3D_FEATURE_LEVEL          = 12000,
+  REDX_CONTEXT_OPTIONAL_SETTINGS_D3D_MEMORY_ALLOCATE_ZEROED = 12001,
+} RedXContextOptionalSettings;
+
+typedef struct RedXContextOptionalSettingsD3DFeatureLevel {
+  RedXContextOptionalSettings settings;
+  const void *                next;
+  unsigned                    d3dFeatureLevel; // Default value is D3D_FEATURE_LEVEL_12_0 (0xc000)
+} RedXContextOptionalSettingsD3DFeatureLevel;
+
+typedef struct RedXContextOptionalSettingsD3DMemoryAllocateZeroed {
+  RedXContextOptionalSettings settings;
+  const void *                next;
+  RedBool32                   d3dMemoryAllocateZeroed; // Default value is 0
+} RedXContextOptionalSettingsD3DMemoryAllocateZeroed;
+
+// redCreateArray
+
+typedef enum RedXArrayType {
+  REDX_ARRAY_TYPE_RAYTRACING_ACCELERATION_STRUCTURE = 12000,
+} RedXArrayType;
+
+// redXCreateImage
+
+typedef enum RedXFormat {
+  REDX_FORMAT_UNDEFINED                      = 0,
+  REDX_FORMAT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1 = 12000,
+  REDX_FORMAT_R_16_UINT_TO_FLOAT_0_1         = 12001,
+  REDX_FORMAT_R_8_GENERIC                    = 12002,
+  REDX_FORMAT_R_16_GENERIC                   = 12003,
+  REDX_FORMAT_R_32_GENERIC                   = 12004,
+  REDX_FORMAT_RGBA_8_8_8_8_GENERIC           = 12005,
+  REDX_FORMAT_RGBA_16_16_16_16_GENERIC       = 12006,
+  REDX_FORMAT_RGBA_32_32_32_32_GENERIC       = 12007,
+  REDX_FORMAT_RG_24_8_GENERIC                = 12008,
+  REDX_FORMAT_RX_24_8_UINT_TO_FLOAT_0_1      = 12009,
+  REDX_FORMAT_XG_24_8_UINT                   = 12010,
+  REDX_FORMAT_R_32_GX_8_24_GENERIC           = 12011,
+  REDX_FORMAT_R_32_XX_8_24_FLOAT             = 12012,
+  REDX_FORMAT_X_32_GX_8_24_UINT              = 12013,
+} RedXFormat;
+
+// redCreateStructDeclaration
+
+typedef enum RedXStructMemberType {
+  REDX_STRUCT_MEMBER_TYPE_ARRAY_RO = 12000,
+} RedXStructMemberType;
+
+// redXPageableSetResidencyPriority
+
+typedef unsigned RedXPageableResidencyPriorityBitflags;
+typedef enum RedXPageableResidencyPriorityBitflag {
+  REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_MINIMUM = 0b00101000000000000000000000000000,
+  REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_LOW     = 0b01010000000000000000000000000000,
+  REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_NORMAL  = 0b01111000000000000000000000000000,
+  REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_HIGH    = 0b10100000000000000000000000000000,
+  REDX_PAGEABLE_RESIDENCY_PRIORITY_BITFLAG_MAXIMUM = 0b11001000000000000000000000000000,
+} RedXPageableResidencyPriorityBitflag;
+
+// redXCallUsageAliasOrderBarrier
+
+typedef unsigned RedXAccessBitflags;
+typedef enum RedXAccessBitflag {
+  REDX_ACCESS_BITFLAG_COMMON                               = 0b00000000000000000000000000000000,
+  REDX_ACCESS_BITFLAG_PRESENT                              = 0b00000000000000000000000000000000,
+  REDX_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R           = 0b00000000000000000000000000000001,
+  REDX_ACCESS_BITFLAG_INDEX_R                              = 0b00000000000000000000000000000010,
+  REDX_ACCESS_BITFLAG_OUTPUT_COLOR_W                       = 0b00000000000000000000000000000100,
+  REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_RW                   = 0b00000000000000000000000000001000,
+  REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW              = 0b00000000000000000000000000010000,
+  REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R               = 0b00000000000000000000000000100000,
+  REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R = 0b00000000000000000000000001000000,
+  REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R     = 0b00000000000000000000000010000000,
+  REDX_ACCESS_BITFLAG_COPY_W                               = 0b00000000000000000000010000000000, // The initial access for mappable, coherent, cached (readback) memory type resources
+  REDX_ACCESS_BITFLAG_COPY_R                               = 0b00000000000000000000100000000000,
+  REDX_ACCESS_BITFLAG_RESOLVE_TARGET_W                     = 0b00000000000000000001000000000000,
+  REDX_ACCESS_BITFLAG_RESOLVE_SOURCE_R                     = 0b00000000000000000010000000000000,
+  REDX_ACCESS_BITFLAG_GENERIC_R                            = 0b00000000000000000000101011000011, // The initial access for mappable, coherent (upload) memory type resources
+  REDX_ACCESS_BITFLAG_RAYTRACING_ACCELERATION_STRUCTURE    = 0b00000000010000000000000000000000,
+} RedXAccessBitflag;
+
+typedef struct RedXUsage {
+  unsigned           setTo0;
+  RedBarrierSplit    split;
+  RedXHandleResource resource;
+  unsigned           level;       // Set to max value for all levels or (layerFirst * levelsCount) + levelFirst
+  RedXAccessBitflags oldAccesses;
+  RedXAccessBitflags newAccesses;
+} RedXUsage;
+
+typedef struct RedXAlias {
+  unsigned           setTo1;
+  RedBarrierSplit    split;
+  RedXHandleResource oldResource;
+  RedXHandleResource newResource;
+} RedXAlias;
+
+typedef struct RedXOrder {
+  unsigned           setTo2;
+  RedBarrierSplit    split;
+  RedXHandleResource resource;
+} RedXOrder;
+
+typedef union RedXBarrier {
+  RedXUsage usage;
+  RedXAlias alias;
+  RedXOrder order;
+} RedXBarrier;
+
+// redXCallCopyImageRegion
+
+typedef struct RedXCopyImageRegionSubresourceFootprint {
+  unsigned xformat;
+  unsigned width;
+  unsigned height;
+  unsigned depth;
+  unsigned rowPitch;
+} RedXCopyImageRegionSubresourceFootprint;
+
+typedef struct RedXCopyImageRegionPlacedSubresourceFootprint {
+  uint64_t                                offset;
+  RedXCopyImageRegionSubresourceFootprint footprint;
+} RedXCopyImageRegionPlacedSubresourceFootprint;
+
+typedef struct RedXCopyImageRegionLocation {
+  void *   resource;
+  unsigned typeSubresourceIndexOrPlacedFootprint;
+  union {
+    RedXCopyImageRegionPlacedSubresourceFootprint placedFootprint;
+    unsigned                                      subresourceIndex;
+  };
+} RedXCopyImageRegionLocation;
+
+typedef struct RedXCopyImageRegionBox {
+  unsigned left;
+  unsigned top;
+  unsigned front;
+  unsigned right;
+  unsigned bottom;
+  unsigned back;
+} RedXCopyImageRegionBox;
+
+typedef struct RedXCopyImageRegion {
+  const RedXCopyImageRegionLocation * target;
+  unsigned                            targetX;
+  unsigned                            targetY;
+  unsigned                            targetZ;
+  const RedXCopyImageRegionLocation * source;
+  const RedXCopyImageRegionBox *      sourceBox;
+} RedXCopyImageRegion;
+
 // Memory
 
 void redMemoryGetBudget                 (RedContext context, RedHandleGpu gpu, RedMemoryBudget * outMemoryBudget, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
@@ -1646,6 +1882,54 @@ void redPresentGetImageIndex   (RedContext context, RedHandleGpu gpu, RedHandleP
 
 void redQueuePresent           (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned waitForAndUnsignalGpuSignalsCount, const RedHandleGpuSignal * waitForAndUnsignalGpuSignals, unsigned presentsCount, const RedHandlePresent * presents, const unsigned * presentsImageIndex, RedStatus * outPresentsStatus, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
 
+// REDGPU X
+
+// Memory
+
+void               redXMemoryCallbackBudgetChangeRegister   (RedContext context, RedHandleGpu gpu, const void * eventHandle, RedXHandleMemoryCallbackBudgetChange * outMemoryCallbackBudgetChange, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void               redXMemoryCallbackBudgetChangeUnregister (RedContext context, RedHandleGpu gpu, RedXHandleMemoryCallbackBudgetChange memoryCallbackBudgetChange, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void               redXMemoryReserve                        (RedContext context, RedHandleGpu gpu, RedBool32 sharedMemory, uint64_t bytesCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Struct
+
+uint64_t           redXGetMemoryAddressArray                (RedContext context, RedHandleGpu gpu, RedHandleArray array) {}
+uint64_t           redXGetMemoryAddressSampler              (RedContext context, RedHandleGpu gpu, RedHandleSampler sampler) {}
+uint64_t           redXGetMemoryAddressTextureRO            (RedContext context, RedHandleGpu gpu, RedHandleTexture texture) {}
+uint64_t           redXGetMemoryAddressTextureRW            (RedContext context, RedHandleGpu gpu, RedHandleTexture texture) {}
+uint64_t           redXGetMemoryAddressStructMember         (RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory, unsigned structMemberIndex) {}
+void               redXStructsMemorySet                     (RedContext context, RedHandleGpu gpu, RedBool32 copyingSamplers, unsigned sourceCopiesCount, const RedXMemoryAddress * sourceCopiesAddressFirst, const unsigned * sourceCopiesAddressCount, unsigned targetCopiesCount, const RedXMemoryAddress * targetCopiesAddressFirst, const unsigned * targetCopiesAddressCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+RedHandleStruct    redXGetHandleStruct                      (RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory, unsigned structMemberIndex) {}
+
+// Create
+
+void               redXCreateQueue                          (RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 canCopy, RedBool32 canDraw, RedBool32 canCompute, unsigned priority, RedBool32 disableGpuTimeout, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void               redXCreateImage                          (RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedImage * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void               redXCreateTexture                        (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Pageable
+
+RedXHandlePageable redXGetHandlePageableMemory              (RedContext context, RedHandleGpu gpu, RedHandleMemory memory) {}
+RedXHandlePageable redXGetHandlePageableStructsMemory       (RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory) {}
+void               redXPageableSetResidencyPriority         (RedContext context, RedHandleGpu gpu, unsigned pageablesCount, const RedXHandlePageable * pageables, const RedXPageableResidencyPriorityBitflags * pageablesResidencyPriority, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void               redXPageableMakeResident                 (RedContext context, RedHandleGpu gpu, unsigned pageablesCount, const RedXHandlePageable * pageables, RedBool32 denyOverbudget, RedHandleCpuSignal signalCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+void               redXPageableEvict                        (RedContext context, RedHandleGpu gpu, unsigned pageablesCount, const RedXHandlePageable * pageables, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
+// Resource handle
+
+RedXHandleResource redXGetHandleResourceArray               (RedContext context, RedHandleGpu gpu, RedHandleArray array) {}
+RedXHandleResource redXGetHandleResourceImage               (RedContext context, RedHandleGpu gpu, RedHandleImage image) {}
+
+// Calls recording
+
+void               redXCallSetProcedureOutput               (RedHandleCalls calls, RedHandleTexture depthStencil, unsigned colorsCount, const RedHandleTexture * colors, RedSetProcedureOutputOp depthSetProcedureOutputOp, RedSetProcedureOutputOp stencilSetProcedureOutputOp, const RedSetProcedureOutputOp * colorsSetProcedureOutputOp, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat) {}
+void               redXCallEndProcedureOutput               (RedHandleCalls calls, const RedHandleTexture * resolveTargetColors, const unsigned * resolveTargetColorsFormat, RedEndProcedureOutputOp depthEndProcedureOutputOp, RedEndProcedureOutputOp stencilEndProcedureOutputOp, const RedEndProcedureOutputOp * colorsEndProcedureOutputOp) {}
+void               redXCallUsageAliasOrderBarrier           (RedHandleCalls calls, unsigned barriersCount, const RedXBarrier * barriers) {}
+void               redXCallCopyImageRegion                  (RedHandleCalls calls, unsigned copiesCount, const RedXCopyImageRegion * copies) {}
+
+// WSI
+
+void               redXCreateSurfaceWinRT                   (RedContext context, RedHandleGpu gpu, const char * handleName, const void * winrtIUnknownPointerCoreWindow, RedHandleSurface * outSurface, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {}
+
 void forcegen() {
   { RedMemoryBitflags _; }
   { RedMemoryBitflag _; }
@@ -1658,4 +1942,12 @@ void forcegen() {
   // REDGPU WSI
   { RedSurfaceTransformBitflag _; }
   { RedSurfaceCompositeAlphaBitflag _; }
+  // REDGPU X
+  { RedXProcedureId _; }
+  { RedXMemoryBitflags _; }
+  { RedXMemoryBitflag _; }
+  { RedXArrayType _; }
+  { RedXStructMemberType _; }
+  { RedXPageableResidencyPriorityBitflag _; }
+  { RedXAccessBitflag _; }
 }
