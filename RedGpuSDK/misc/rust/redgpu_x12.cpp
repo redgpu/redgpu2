@@ -190,6 +190,10 @@ X12_DECLSPEC void x12CommandListResourceBarrier(ID3D12GraphicsCommandList * hand
   handle->ResourceBarrier(NumBarriers, pBarriers);
 }
 
+X12_DECLSPEC void x12CommandListCopyTextureRegion(ID3D12GraphicsCommandList * handle, _In_ const D3D12_TEXTURE_COPY_LOCATION * pDst, UINT DstX, UINT DstY, UINT DstZ, _In_ const D3D12_TEXTURE_COPY_LOCATION * pSrc, _In_opt_ const D3D12_BOX * pSrcBox) {
+  handle->CopyTextureRegion(pDst, DstX, DstY, DstZ, pSrc, pSrcBox);
+}
+
 X12_DECLSPEC void x12CommandListSetDescriptorHeaps(ID3D12GraphicsCommandList * handle, _In_ UINT NumDescriptorHeaps, _In_reads_(NumDescriptorHeaps) ID3D12DescriptorHeap * const * ppDescriptorHeaps) {
   handle->SetDescriptorHeaps(NumDescriptorHeaps, ppDescriptorHeaps);
 }
@@ -310,6 +314,10 @@ X12_DECLSPEC HRESULT x12DeviceCreateCommandList(ID3D12Device3 * handle, _In_ UIN
   return x12CheckHresult(handle->CreateCommandList(nodeMask, type, pCommandAllocator, pInitialState, IID_PPV_ARGS(ppCommandList)));
 }
 
+X12_DECLSPEC HRESULT x12DeviceCreateCommandList4(ID3D12Device5 * handle, _In_ UINT nodeMask, _In_ D3D12_COMMAND_LIST_TYPE type, _In_ ID3D12CommandAllocator * pCommandAllocator, _In_opt_ ID3D12PipelineState * pInitialState, _COM_Outptr_ ID3D12GraphicsCommandList4 ** ppCommandList, const char * optionalFile, int optionalLine) {
+  return x12CheckHresult(handle->CreateCommandList(nodeMask, type, pCommandAllocator, pInitialState, IID_PPV_ARGS(ppCommandList)));
+}
+
 X12_DECLSPEC HRESULT x12DeviceCheckFeatureSupport(ID3D12Device3 * handle, D3D12_FEATURE Feature, _Inout_updates_bytes_(FeatureSupportDataSize) void * pFeatureSupportData, UINT FeatureSupportDataSize, const char * optionalFile, int optionalLine) {
   return handle->CheckFeatureSupport(Feature, pFeatureSupportData, FeatureSupportDataSize);
 }
@@ -427,6 +435,17 @@ X12_DECLSPEC HRESULT x12CreateDevice(_In_opt_ IDXGIAdapter3 * pAdapter, D3D_FEAT
       hresult = x12CheckHresult(device->QueryInterface(IID_PPV_ARGS(ppDevice)));
       device->Release();
     }
+  } else {
+    // Just checking MinimumFeatureLevel support then.
+    hresult = D3D12CreateDevice(pAdapter, MinimumFeatureLevel, _uuidof(ID3D12Device), nullptr);
+  }
+  return hresult;
+}
+
+X12_DECLSPEC HRESULT x12CreateDevice5(_In_opt_ IDXGIAdapter3 * pAdapter, D3D_FEATURE_LEVEL MinimumFeatureLevel, _COM_Outptr_ ID3D12Device5 ** ppDevice, const char * optionalFile, int optionalLine) {
+  HRESULT hresult = S_OK;
+  if (ppDevice != NULL) {
+    hresult = x12CheckHresult(D3D12CreateDevice(pAdapter, MinimumFeatureLevel, IID_PPV_ARGS(ppDevice)));
   } else {
     // Just checking MinimumFeatureLevel support then.
     hresult = D3D12CreateDevice(pAdapter, MinimumFeatureLevel, _uuidof(ID3D12Device), nullptr);
