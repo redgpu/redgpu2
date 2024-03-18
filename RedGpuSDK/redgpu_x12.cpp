@@ -28,9 +28,9 @@
 #include <mutex>
 #endif
 
-#pragma comment(lib, "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64/d3d12.lib")
-#pragma comment(lib, "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64/dxgi.lib")
-#pragma comment(lib, "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64/dxguid.lib") // For DXGI_DEBUG_ALL
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "dxguid.lib") // For DXGI_DEBUG_ALL
 
 #if _MSC_VER >= 1700
 std::mutex __X12_GLOBAL_a4c11ca6027df88068009fd7140d875add16c292_debugNon0HresultPrintingMutex;
