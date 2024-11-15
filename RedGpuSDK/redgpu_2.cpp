@@ -994,10 +994,12 @@ RedBool32 red2IsQueueSubmissionFinished(uint64_t queueSubmissionTicketArrayIndex
   uint64_t ticket = 0;
   {
     std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatchesMutex);
-    RedContext   context = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].context;
-    RedHandleGpu gpu     = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].gpu;
-    red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
-    ticket = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatchesTicket[queueSubmissionTicketArrayIndex];
+    if (__REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatchesTicket[queueSubmissionTicketArrayIndex] == queueSubmissionTicket) {
+      RedContext   context = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].context;
+      RedHandleGpu gpu     = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].gpu;
+      red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
+      ticket = __REDGPU_2_GLOBAL_6c1b3b6a_selfDestroyableHandlesBatchesTicket[queueSubmissionTicketArrayIndex];
+    }
   }
   return ticket == queueSubmissionTicket ? 0 : 1; // NOTE(Constantine): Alternatively, (ticket == 0 || ticket > queueSubmissionTicket) ? 1 : 0.
 }
