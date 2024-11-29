@@ -1168,7 +1168,7 @@ void red2WaitForAllQueueSubmissionsToFinish(RedContext context, RedHandleGpu gpu
 
 // REDGPU 2 new procedures from 28 Nov 2024:
 
-RedXAccessBitflags red2RedXOnlyGetAccessBitflagsFromRedAccessBitflags(RedAccessBitflags access) {
+RedXAccessBitflags red2RedXOnlyGetRedXAccessBitflagsFromRed(RedAccessBitflags access) {
   if (access == 0) {
     return REDX_ACCESS_BITFLAG_COMMON;
   }
