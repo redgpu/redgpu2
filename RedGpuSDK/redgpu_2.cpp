@@ -1233,6 +1233,14 @@ void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barri
   volatile int nothing = 0;
 }
 
+// NOTE(Constantine): Does nothing on REDGPU X.
+void red2RedOnlyQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * optionalFile, int optionalLine, void * optionalUserData) {
+#ifndef REDGPU_USE_REDGPU_X
+  redQueuePresent(context, gpu, queue, 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
+#endif
+  volatile int nothing = 0;
+}
+
 typedef unsigned RedVkAccessStageBitflags;
 typedef enum RedVkAccessStageBitflag {
   RED_VK_ACCESS_STAGE_BITFLAG_COPY                 = REDGPU_B32(0000,0000,0000,0000,0001,0000,0000,0000),

@@ -144,6 +144,8 @@ REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2GetVkPipelineStagesFromRedAccessStag
 REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2GetVkAccessFromRedAccessBitflags               (RedAccessBitflags access);
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallCpuAndGlobalMemoryBarrier           (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, unsigned oldVkPipelineStages, unsigned newVkPipelineStages, unsigned cpuMemoryBarriersCount, const Red2CpuMemoryBarrier * cpuMemoryBarriers, unsigned globalMemoryBarriersCount, const Red2GlobalMemoryBarrier * globalMemoryBarriers, RedBool32 dependencyByRegion);
 
+REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyQueueWaitIdle                           (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * optionalFile, int optionalLine, void * optionalUserData);
+
 // REDGPU 2 changes from 28 Nov 2024:
 
 #ifndef red2CallUsageAliasOrderBarrier
