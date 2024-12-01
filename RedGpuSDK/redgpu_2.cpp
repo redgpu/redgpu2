@@ -1241,76 +1241,19 @@ void red2RedOnlyQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQue
   volatile int nothing = 0;
 }
 
-typedef unsigned RedVkAccessStageBitflags;
-typedef enum RedVkAccessStageBitflag {
-  RED_VK_ACCESS_STAGE_BITFLAG_COPY                 = REDGPU_B32(0000,0000,0000,0000,0001,0000,0000,0000),
-  RED_VK_ACCESS_STAGE_BITFLAG_COMPUTE              = REDGPU_B32(0000,0000,0000,0000,0000,1000,0000,0000),
-  RED_VK_ACCESS_STAGE_BITFLAG_INDEX                = REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0100),
-  RED_VK_ACCESS_STAGE_BITFLAG_VERTEX               = REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,1000),
-  RED_VK_ACCESS_STAGE_BITFLAG_FRAGMENT             = REDGPU_B32(0000,0000,0000,0000,0000,0000,1000,0000),
-  RED_VK_ACCESS_STAGE_BITFLAG_OUTPUT_DEPTH_STENCIL = REDGPU_B32(0000,0000,0000,0000,0000,0011,0000,0000),
-  RED_VK_ACCESS_STAGE_BITFLAG_OUTPUT_COLOR         = REDGPU_B32(0000,0000,0000,0000,0000,0100,0000,0000),
-  RED_VK_ACCESS_STAGE_BITFLAG_RESOLVE              = REDGPU_B32(0000,0000,0000,0000,0000,0100,0000,0000),
-  RED_VK_ACCESS_STAGE_BITFLAG_CPU                  = REDGPU_B32(0000,0000,0000,0000,0100,0000,0000,0000),
-} RedVkAccessStageBitflag;
-
-typedef unsigned RedVkAccessBitflags;
-typedef enum RedVkAccessBitflag {
-  RED_VK_ACCESS_BITFLAG_COPY_R                     = REDGPU_B32(0000,0000,0000,0000,0000,1000,0000,0000),
-  RED_VK_ACCESS_BITFLAG_COPY_W                     = REDGPU_B32(0000,0000,0000,0000,0001,0000,0000,0000),
-  RED_VK_ACCESS_BITFLAG_INDEX_R                    = REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0010),
-  RED_VK_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R = REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,1000),
-  RED_VK_ACCESS_BITFLAG_STRUCT_RESOURCE_R          = REDGPU_B32(0000,0000,0000,0000,0000,0000,0010,0000),
-  RED_VK_ACCESS_BITFLAG_STRUCT_RESOURCE_W          = REDGPU_B32(0000,0000,0000,0000,0000,0000,0100,0000),
-  RED_VK_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL       = REDGPU_B32(0000,0000,0000,0000,0000,0110,0000,0000),
-  RED_VK_ACCESS_BITFLAG_OUTPUT_COLOR               = REDGPU_B32(0000,0000,0000,0000,0000,0001,1000,0000),
-  RED_VK_ACCESS_BITFLAG_RESOLVE_SOURCE_R           = REDGPU_B32(0000,0000,0000,0000,0000,0001,1000,0000),
-  RED_VK_ACCESS_BITFLAG_RESOLVE_TARGET_W           = REDGPU_B32(0000,0000,0000,0000,0000,0001,0000,0000),
-  RED_VK_ACCESS_BITFLAG_CPU                        = REDGPU_B32(0000,0000,0000,0000,0110,0000,0000,0000),
-} RedVkAccessBitflag;
-
-unsigned red2GetVkPipelineStagesFromRedAccessStageBitflags(RedAccessStageBitflags accessStages) {
-  RedVkAccessStageBitflags out = 0;
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_COPY)                 == RED_ACCESS_STAGE_BITFLAG_COPY)                 { out |= RED_VK_ACCESS_STAGE_BITFLAG_COPY;                 }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_COMPUTE)              == RED_ACCESS_STAGE_BITFLAG_COMPUTE)              { out |= RED_VK_ACCESS_STAGE_BITFLAG_COMPUTE;              }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_INDEX)                == RED_ACCESS_STAGE_BITFLAG_INDEX)                { out |= RED_VK_ACCESS_STAGE_BITFLAG_INDEX;                }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_VERTEX)               == RED_ACCESS_STAGE_BITFLAG_VERTEX)               { out |= RED_VK_ACCESS_STAGE_BITFLAG_VERTEX;               }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_FRAGMENT)             == RED_ACCESS_STAGE_BITFLAG_FRAGMENT)             { out |= RED_VK_ACCESS_STAGE_BITFLAG_FRAGMENT;             }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_OUTPUT_DEPTH_STENCIL) == RED_ACCESS_STAGE_BITFLAG_OUTPUT_DEPTH_STENCIL) { out |= RED_VK_ACCESS_STAGE_BITFLAG_OUTPUT_DEPTH_STENCIL; }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_OUTPUT_COLOR)         == RED_ACCESS_STAGE_BITFLAG_OUTPUT_COLOR)         { out |= RED_VK_ACCESS_STAGE_BITFLAG_OUTPUT_COLOR;         }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_RESOLVE)              == RED_ACCESS_STAGE_BITFLAG_RESOLVE)              { out |= RED_VK_ACCESS_STAGE_BITFLAG_RESOLVE;              }
-  if ((accessStages & RED_ACCESS_STAGE_BITFLAG_CPU)                  == RED_ACCESS_STAGE_BITFLAG_CPU)                  { out |= RED_VK_ACCESS_STAGE_BITFLAG_CPU;                  }
-  return out;
-}
-
-unsigned red2GetVkAccessFromRedAccessBitflags(RedAccessBitflags access) {
-  RedVkAccessBitflags out = 0;
-  if ((access & RED_ACCESS_BITFLAG_COPY_R)                               == RED_ACCESS_BITFLAG_COPY_R)                               { out |= RED_VK_ACCESS_BITFLAG_COPY_R;                     }
-  if ((access & RED_ACCESS_BITFLAG_COPY_W)                               == RED_ACCESS_BITFLAG_COPY_W)                               { out |= RED_VK_ACCESS_BITFLAG_COPY_W;                     }
-  if ((access & RED_ACCESS_BITFLAG_INDEX_R)                              == RED_ACCESS_BITFLAG_INDEX_R)                              { out |= RED_VK_ACCESS_BITFLAG_INDEX_R;                    }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           == RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           { out |= RED_VK_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R; }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) { out |= RED_VK_ACCESS_BITFLAG_STRUCT_RESOURCE_R;          }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     { out |= RED_VK_ACCESS_BITFLAG_STRUCT_RESOURCE_R;          }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    { out |= RED_VK_ACCESS_BITFLAG_STRUCT_RESOURCE_W;          }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       { out |= RED_VK_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL;       }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      { out |= RED_VK_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL;       }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     { out |= RED_VK_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL;       }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    { out |= RED_VK_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL;       }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       == RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       { out |= RED_VK_ACCESS_BITFLAG_OUTPUT_COLOR;               }
-  if ((access & RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     == RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     { out |= RED_VK_ACCESS_BITFLAG_RESOLVE_SOURCE_R;           }
-  if ((access & RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     == RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     { out |= RED_VK_ACCESS_BITFLAG_RESOLVE_TARGET_W;           }
-  if ((access & RED_ACCESS_BITFLAG_CPU_RW)                               == RED_ACCESS_BITFLAG_CPU_RW)                               { out |= RED_VK_ACCESS_BITFLAG_CPU;                        }
-  return out;
-}
-
 #ifndef REDGPU_USE_REDGPU_X
 #include "redgpu_vk.h"
 #endif
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-void red2RedOnlyCallCpuAndGlobalMemoryBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, unsigned oldVkPipelineStageAccesses, unsigned newVkPipelineStageAccesses, unsigned cpuMemoryBarriersCount, const Red2CpuMemoryBarrier * cpuMemoryBarriers, unsigned globalMemoryBarriersCount, const Red2GlobalMemoryBarrier * globalMemoryBarriers, RedBool32 dependencyByRegion) {
+void red2RedOnlyCallGlobalMemoryBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls) {
 #ifndef REDGPU_USE_REDGPU_X
-  ((PFN_vkCmdPipelineBarrier)((void *)address))((VkCommandBuffer)calls, oldVkPipelineStageAccesses, newVkPipelineStageAccesses, (unsigned)dependencyByRegion, globalMemoryBarriersCount, (const VkMemoryBarrier *)globalMemoryBarriers, cpuMemoryBarriersCount, (const VkBufferMemoryBarrier *)cpuMemoryBarriers, 0, NULL);
+  VkMemoryBarrier globalBarrier;
+  globalBarrier.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+  globalBarrier.pNext         = NULL;
+  globalBarrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+  globalBarrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+  ((PFN_vkCmdPipelineBarrier)((void *)address))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 1, &globalBarrier, 0, NULL, 0, NULL);
 #endif
   volatile int nothing = 0;
 }

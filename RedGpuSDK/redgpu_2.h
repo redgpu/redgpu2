@@ -101,37 +101,6 @@ REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallsFreeAllInlineStructsMemorys   
 
 // REDGPU 2 new procedures from 28 Nov 2024:
 
-// red2RedOnlyCallCpuAndGlobalMemoryBarrier
-
-#define RED2_VK_PIPELINE_STAGE_BITFLAG_TOP_OF_PIPE        1
-#define RED2_VK_PIPELINE_STAGE_BITFLAG_BOTTOM_OF_PIPE_BIT 8192
-
-typedef enum Red2VkAccessBitflag {
-  RED2_VK_ACCESS_BITFLAG_CPU_R           = REDGPU_B32(0000,0000,0000,0000,0010,0000,0000,0000),
-  RED2_VK_ACCESS_BITFLAG_CPU_W           = REDGPU_B32(0000,0000,0000,0000,0100,0000,0000,0000),
-  RED2_VK_ACCESS_BITFLAG_GLOBAL_MEMORY_R = REDGPU_B32(0000,0000,0000,0000,1000,0000,0000,0000),
-  RED2_VK_ACCESS_BITFLAG_GLOBAL_MEMORY_W = REDGPU_B32(0000,0000,0000,0001,0000,0000,0000,0000),
-} Red2VkAccessBitflag;
-
-typedef struct Red2CpuMemoryBarrier {
-  unsigned             setTo44;
-  size_t               setTo0;
-  unsigned             oldVkAccess;
-  unsigned             newVkAccess;
-  unsigned             queueFamilyIndexSource; // Set to max value to ignore
-  unsigned             queueFamilyIndexTarget; // Set to max value to ignore
-  RedHandleArray       cpuArray;
-  uint64_t             cpuArrayBytesFirst;
-  uint64_t             cpuArrayBytesCount;
-} Red2CpuMemoryBarrier;
-
-typedef struct Red2GlobalMemoryBarrier {
-  unsigned setTo46;
-  size_t   setTo0;
-  unsigned oldVkAccess;
-  unsigned newVkAccess;
-} Red2GlobalMemoryBarrier;
-
 REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2RedXOnlyGetRedXAccessBitflagsFromRed           (RedAccessBitflags access);
 REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2RedXOnlyArrayGetMemoryTypeIndex                (RedHandleArray array);
 REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2RedXOnlyImageGetLevelsCount                    (RedHandleImage image);
@@ -140,9 +109,7 @@ REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2RedXOnlyImageGetLayersCount         
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallUsageAliasOrderBarrier              (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion);
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedXOnlyCallUsageAliasOrderBarrier             (RedHandleCalls calls, unsigned barriersCount, const void * barriers);
 
-REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2GetVkPipelineStagesFromRedAccessStageBitflags  (RedAccessStageBitflags accessStages);
-REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2GetVkAccessFromRedAccessBitflags               (RedAccessBitflags access);
-REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallCpuAndGlobalMemoryBarrier           (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, unsigned oldVkPipelineStages, unsigned newVkPipelineStages, unsigned cpuMemoryBarriersCount, const Red2CpuMemoryBarrier * cpuMemoryBarriers, unsigned globalMemoryBarriersCount, const Red2GlobalMemoryBarrier * globalMemoryBarriers, RedBool32 dependencyByRegion);
+REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallGlobalMemoryBarrier                 (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
 
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyQueueWaitIdle                           (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * optionalFile, int optionalLine, void * optionalUserData);
 
