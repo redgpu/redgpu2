@@ -118,6 +118,8 @@ REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2RedXOnlyImageGetLayersCount         
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallUsageAliasOrderBarrier    (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion);
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedXOnlyCallUsageAliasOrderBarrier   (RedHandleCalls calls, unsigned barriersCount, const void * barriers);
 
+REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallBarrierFinishCpuUpload    (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays);
+REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallBarrierFinishCpuReadback  (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays);
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallGlobalMemoryBarrier       (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
 
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyQueueWaitIdle                 (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * optionalFile, int optionalLine, void * optionalUserData);

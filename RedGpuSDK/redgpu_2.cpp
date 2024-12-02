@@ -1319,6 +1319,50 @@ void red2RedOnlyQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQue
 #endif
 
 // NOTE(Constantine): Does nothing on REDGPU X.
+void red2RedOnlyCallBarrierFinishCpuUpload(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+  if (arraysCount == 0) { return; }
+#ifndef REDGPU_USE_REDGPU_X
+  VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
+  for (uint64_t i = 0; i < arraysCount; i += 1) {
+    bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+    bufferBarriers[i].pNext               = NULL;
+    bufferBarriers[i].srcAccessMask       = VK_ACCESS_HOST_WRITE_BIT;
+    bufferBarriers[i].dstAccessMask       = VK_ACCESS_MEMORY_READ_BIT; // NOTE(Constantine): On REDGPU X, CPU arrays cannot be written to from GPU, only read.
+    bufferBarriers[i].srcQueueFamilyIndex =-1;
+    bufferBarriers[i].dstQueueFamilyIndex =-1;
+    bufferBarriers[i].buffer              = (VkBuffer)arrays[i];
+    bufferBarriers[i].offset              = 0;
+    bufferBarriers[i].size                =-1;
+  }
+  ((PFN_vkCmdPipelineBarrier)((void *)address))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, arraysCount, bufferBarriers, 0, NULL);
+  delete[] bufferBarriers;
+#endif
+  volatile int nothing = 0;
+}
+
+// NOTE(Constantine): Does nothing on REDGPU X.
+void red2RedOnlyCallBarrierFinishCpuReadback(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+  if (arraysCount == 0) { return; }
+#ifndef REDGPU_USE_REDGPU_X
+  VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
+  for (uint64_t i = 0; i < arraysCount; i += 1) {
+    bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+    bufferBarriers[i].pNext               = NULL;
+    bufferBarriers[i].srcAccessMask       = VK_ACCESS_MEMORY_WRITE_BIT;
+    bufferBarriers[i].dstAccessMask       = VK_ACCESS_HOST_READ_BIT;
+    bufferBarriers[i].srcQueueFamilyIndex =-1;
+    bufferBarriers[i].dstQueueFamilyIndex =-1;
+    bufferBarriers[i].buffer              = (VkBuffer)arrays[i];
+    bufferBarriers[i].offset              = 0;
+    bufferBarriers[i].size                =-1;
+  }
+  ((PFN_vkCmdPipelineBarrier)((void *)address))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 0, NULL, arraysCount, bufferBarriers, 0, NULL);
+  delete[] bufferBarriers;
+#endif
+  volatile int nothing = 0;
+}
+
+// NOTE(Constantine): Does nothing on REDGPU X.
 void red2RedOnlyCallGlobalMemoryBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls) {
 #ifndef REDGPU_USE_REDGPU_X
   VkMemoryBarrier globalBarrier;
