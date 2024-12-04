@@ -1075,7 +1075,7 @@ void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandleP
   }
 }
 
-void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, uint64_t handlesToDestroyWhenQueueSubmissionIsFinishedCount, const uint64_t * handlesToDestroyWhenQueueSubmissionIsFinished, const unsigned * handlesToDestroyWhenQueueSubmissionIsFinishedType, void * optionalCustomHandleAndHandleTypeDestroyCallback, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2DestroyHandlesToDestroyIfTheirQueueSubmissionIsFinished(Red2Context context2, RedHandleGpu gpu, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
@@ -1084,6 +1084,13 @@ void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queu
     std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
     red2InternalHandlesToDestroyBatchesFreeFinishedBatches_NonLocking(context2, gpu, 0, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
+}
+
+void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, uint64_t handlesToDestroyWhenQueueSubmissionIsFinishedCount, const uint64_t * handlesToDestroyWhenQueueSubmissionIsFinished, const unsigned * handlesToDestroyWhenQueueSubmissionIsFinishedType, void * optionalCustomHandleAndHandleTypeDestroyCallback, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
   RedHandleCpuSignal cpuSignal = NULL;
   redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Intentionally creating one CPU signal per queue submit, even if the user didn't request a ticket for that queue submit.
   redQueueSubmit(context, gpu, queue, timelinesCount, timelines, cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
