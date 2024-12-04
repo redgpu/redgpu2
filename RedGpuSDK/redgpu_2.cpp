@@ -401,20 +401,62 @@ void red2CallsGetRedHandles(Red2HandleCalls calls, RedContext * outContext, RedH
   }
 }
 
-uint64_t * red2CallsGetHandlesToDestroy(Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenQueueSubmissionIsFinishedCount) {
+void red2CallsSetHandlesToDestroyCustomCallback(Red2HandleCalls calls, void * optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  if (outHandlesToDestroyWhenQueueSubmissionIsFinishedCount != NULL) {
-    outHandlesToDestroyWhenQueueSubmissionIsFinishedCount[0] = (uint64_t)handle->handlesToDestroy.size();
-  }
-  return handle->handlesToDestroy.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
+  handle->handlesToDestroyWhenCallsAreResetCustomCallback = optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback;
 }
 
-unsigned * red2CallsGetHandlesToDestroyType(Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenQueueSubmissionIsFinishedTypeCount) {
+uint64_t * red2CallsGetHandlesToDestroy(Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetCount) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  if (outHandlesToDestroyWhenQueueSubmissionIsFinishedTypeCount != NULL) {
-    outHandlesToDestroyWhenQueueSubmissionIsFinishedTypeCount[0] = (uint64_t)handle->handlesToDestroyType.size();
+  if (outHandlesToDestroyWhenCallsAreResetCount != NULL) {
+    outHandlesToDestroyWhenCallsAreResetCount[0] = (uint64_t)handle->handlesToDestroyWhenCallsAreReset.size();
   }
-  return handle->handlesToDestroyType.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
+  return handle->handlesToDestroyWhenCallsAreReset.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
+}
+
+unsigned * red2CallsGetHandlesToDestroyType(Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetTypeCount) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  if (outHandlesToDestroyWhenCallsAreResetTypeCount != NULL) {
+    outHandlesToDestroyWhenCallsAreResetTypeCount[0] = (uint64_t)handle->handlesToDestroyWhenCallsAreResetType.size();
+  }
+  return handle->handlesToDestroyWhenCallsAreResetType.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
+}
+
+void red2CallsGetQueueSubmitTrackableTicket(Red2HandleCalls calls, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = handle->lastQueueSubmitTrackableTicketArrayIndex; }
+  if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = handle->lastQueueSubmitTrackableTicket;           }
+}
+
+static void red2InternalDestroyHandleByHandleType(RedContext context, RedHandleGpu gpu, uint64_t handle, unsigned handleType, void * optionalCustomHandleAndHandleTypeDestroyCallback, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  if      (handleType == 0)                                     { }
+  else if (handleType == RED_HANDLE_TYPE_MEMORY)                { redMemoryFree(context, gpu, (RedHandleMemory)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_ARRAY)                 { redDestroyArray(context, gpu, (RedHandleArray)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_IMAGE)                 { redDestroyImage(context, gpu, (RedHandleImage)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_SAMPLER)               { redDestroySampler(context, gpu, (RedHandleSampler)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_TEXTURE)               { redDestroyTexture(context, gpu, (RedHandleTexture)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_GPU_CODE)              { redDestroyGpuCode(context, gpu, (RedHandleGpuCode)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_OUTPUT_DECLARATION)    { redDestroyOutputDeclaration(context, gpu, (RedHandleOutputDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_STRUCT_DECLARATION)    { redDestroyStructDeclaration(context, gpu, (RedHandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PROCEDURE_PARAMETERS)  { redDestroyProcedureParameters(context, gpu, (RedHandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PROCEDURE_CACHE)       { redDestroyProcedureCache(context, gpu, (RedHandleProcedureCache)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PROCEDURE)             { redDestroyProcedure(context, gpu, (RedHandleProcedure)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_OUTPUT)                { redDestroyOutput(context, gpu, (RedHandleOutput)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_STRUCTS_MEMORY)        { redStructsMemoryFree(context, gpu, (RedHandleStructsMemory)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_CPU_SIGNAL)            { redDestroyCpuSignal(context, gpu, (RedHandleCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_GPU_SIGNAL)            { redDestroyGpuSignal(context, gpu, (RedHandleGpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_GPU_TO_CPU_SIGNAL)     { redDestroyGpuToCpuSignal(context, gpu, (RedHandleGpuToCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_SURFACE)               { redDestroySurface(context, gpu, (RedHandleSurface)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PRESENT)               { redDestroyPresent(context, gpu, (RedHandlePresent)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED2_HANDLE_TYPE_STRUCT_DECLARATION)   { red2DestroyStructDeclaration(context, gpu, (Red2HandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED2_HANDLE_TYPE_PROCEDURE_PARAMETERS) { red2DestroyProcedureParameters(context, gpu, (Red2HandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED2_HANDLE_TYPE_CALLS)                { red2DestroyCalls(context, gpu, (Red2HandleCalls)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (optionalCustomHandleAndHandleTypeDestroyCallback != NULL) {
+    void (*customHandleAndHandleTypeDestroyCallback)(uint64_t handle, unsigned handleType) = (void (*)(uint64_t, unsigned handleType))optionalCustomHandleAndHandleTypeDestroyCallback;
+    customHandleAndHandleTypeDestroyCallback(handle, handleType);
+  } else {
+    redMark("[REDGPU 2][TODO(Constantine)] The handle is not destroyed, and no custom destroy callback was set, need to implement destruction of the handle type here, in this part of REDGPU 2 code.", optionalFile, optionalLine, optionalUserData);
+  }
 }
 
 void red2CallsSet(
@@ -457,10 +499,16 @@ void red2CallsSet(
     handle->structsMemorysSamplers[i].availableStructsMembersOfTypeSamplerCount          = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeSamplerCount;
   }
   redCallsSet(context, gpu, handle->handle, handle->memory, handle->reusable, outStatuses, optionalFile, optionalLine, optionalUserData);
-  // NOTE(Constantine):
-  // Handles to destroy dynamic arrays are cleared here on each calls set.
-  handle->handlesToDestroy.clear();
-  handle->handlesToDestroyType.clear();
+  
+  {
+    for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
+      uint64_t _handle     = handle->handlesToDestroyWhenCallsAreReset[i];
+      unsigned _handleType = handle->handlesToDestroyWhenCallsAreResetType[i];
+      red2InternalDestroyHandleByHandleType(context, gpu, _handle, _handleType, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
+    }
+    handle->handlesToDestroyWhenCallsAreReset.clear();
+    handle->handlesToDestroyWhenCallsAreResetType.clear();
+  }
 }
 
 void red2CallsEnd(
@@ -477,10 +525,10 @@ void red2CallsEnd(
   redCallsEnd(context, gpu, handle->handle, handle->memory, outStatuses, optionalFile, optionalLine, optionalUserData);
 }
 
-void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDestroyWhenQueueSubmissionIsFinished, unsigned handleToDestroyWhenQueueSubmissionIsFinishedType) {
+void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDestroyWhenCallsAreReset, unsigned handleToDestroyWhenCallsAreResetType) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  handle->handlesToDestroy.push_back(handleToDestroyWhenQueueSubmissionIsFinished);
-  handle->handlesToDestroyType.push_back(handleToDestroyWhenQueueSubmissionIsFinishedType);
+  handle->handlesToDestroyWhenCallsAreReset.push_back(handleToDestroyWhenCallsAreReset);
+  handle->handlesToDestroyWhenCallsAreResetType.push_back(handleToDestroyWhenCallsAreResetType);
 }
 
 void red2CallsFreeAllInlineStructsMemorys(
@@ -941,34 +989,7 @@ static void red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(Red2
     for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches[index].handlesToDestroyWhenQueueSubmissionIsFinished.size(); i < count; i += 1) {
       uint64_t handle     = context2GpuData->handlesToDestroyBatches[index].handlesToDestroyWhenQueueSubmissionIsFinished[i];
       unsigned handleType = context2GpuData->handlesToDestroyBatches[index].handlesToDestroyWhenQueueSubmissionIsFinishedType[i];
-      if      (handleType == 0)                                     { continue; }
-      else if (handleType == RED_HANDLE_TYPE_MEMORY)                { redMemoryFree(context, gpu, (RedHandleMemory)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_ARRAY)                 { redDestroyArray(context, gpu, (RedHandleArray)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_IMAGE)                 { redDestroyImage(context, gpu, (RedHandleImage)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_SAMPLER)               { redDestroySampler(context, gpu, (RedHandleSampler)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_TEXTURE)               { redDestroyTexture(context, gpu, (RedHandleTexture)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_GPU_CODE)              { redDestroyGpuCode(context, gpu, (RedHandleGpuCode)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_OUTPUT_DECLARATION)    { redDestroyOutputDeclaration(context, gpu, (RedHandleOutputDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_STRUCT_DECLARATION)    { redDestroyStructDeclaration(context, gpu, (RedHandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_PROCEDURE_PARAMETERS)  { redDestroyProcedureParameters(context, gpu, (RedHandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_PROCEDURE_CACHE)       { redDestroyProcedureCache(context, gpu, (RedHandleProcedureCache)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_PROCEDURE)             { redDestroyProcedure(context, gpu, (RedHandleProcedure)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_OUTPUT)                { redDestroyOutput(context, gpu, (RedHandleOutput)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_STRUCTS_MEMORY)        { redStructsMemoryFree(context, gpu, (RedHandleStructsMemory)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_CPU_SIGNAL)            { redDestroyCpuSignal(context, gpu, (RedHandleCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_GPU_SIGNAL)            { redDestroyGpuSignal(context, gpu, (RedHandleGpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_GPU_TO_CPU_SIGNAL)     { redDestroyGpuToCpuSignal(context, gpu, (RedHandleGpuToCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_SURFACE)               { redDestroySurface(context, gpu, (RedHandleSurface)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED_HANDLE_TYPE_PRESENT)               { redDestroyPresent(context, gpu, (RedHandlePresent)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED2_HANDLE_TYPE_STRUCT_DECLARATION)   { red2DestroyStructDeclaration(context, gpu, (Red2HandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED2_HANDLE_TYPE_PROCEDURE_PARAMETERS) { red2DestroyProcedureParameters(context, gpu, (Red2HandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (handleType == RED2_HANDLE_TYPE_CALLS)                { red2DestroyCalls(context, gpu, (Red2HandleCalls)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (optionalCustomHandleAndHandleTypeDestroyCallback != NULL) {
-        void (*customHandleAndHandleTypeDestroyCallback)(uint64_t handle, unsigned handleType) = (void (*)(uint64_t, unsigned handleType))optionalCustomHandleAndHandleTypeDestroyCallback;
-        customHandleAndHandleTypeDestroyCallback(handle, handleType);
-      } else {
-        redMark("[REDGPU 2][TODO(Constantine)] The handle is not destroyed, need to implement destruction of the handle type here, in this part of REDGPU 2 code.", optionalFile, optionalLine, optionalUserData);
-      }
+      red2InternalDestroyHandleByHandleType(context, gpu, handle, handleType, optionalCustomHandleAndHandleTypeDestroyCallback, optionalFile, optionalLine, optionalUserData);
     }
     context2GpuData->handlesToDestroyBatchesTicket[index] = 0;
   }
@@ -1077,6 +1098,54 @@ void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queu
     context2GpuData->handlesToDestroyBatchesTicket[i]      = context2GpuData->handlesToDestroyBatchesCurrentTicket;
     if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = i; }
     if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = context2GpuData->handlesToDestroyBatchesCurrentTicket; }
+  }
+}
+
+void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  unsigned         callsHandlesCount = callsCount;
+  RedHandleCalls * callsHandles      = new(std::nothrow) RedHandleCalls [callsHandlesCount] /*---*/;
+  if (callsHandles == NULL) {
+    if (outStatuses != NULL) {
+      if (outStatuses->statusError == RED_STATUS_SUCCESS) {
+        outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+        outStatuses->statusErrorCode           = 0;
+        outStatuses->statusErrorHresult        = 0;
+        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorFile           = optionalFile;
+        outStatuses->statusErrorLine           = optionalLine;
+        outStatuses->statusErrorDescription[0] = 0;
+      }
+    }
+    return;
+  }
+  
+  for (unsigned i = 0; i < callsHandlesCount; i += 1) {
+    RedCalls redcalls /*---*/;
+    red2CallsGetRedHandles(calls[i], NULL, NULL, &redcalls);
+    callsHandles[i] = redcalls.handle;
+  }
+
+  RedGpuTimeline timeline /*---*/;
+  timeline.setTo4                            = 4;
+  timeline.setTo0                            = 0;
+  timeline.waitForAndUnsignalGpuSignalsCount = 0;
+  timeline.waitForAndUnsignalGpuSignals      = NULL;
+  timeline.setTo65536                        = NULL;
+  timeline.callsCount                        = callsHandlesCount;
+  timeline.calls                             = callsHandles;
+  timeline.signalGpuSignalsCount             = 0;
+  timeline.signalGpuSignals                  = NULL;
+
+  uint64_t queueSubmitTrackableTicketArrayIndex = 0;
+  uint64_t queueSubmitTrackableTicket           = 0;
+  red2QueueSubmit(context2, gpu, queue, 1, &timeline, &queueSubmitTrackableTicketArrayIndex, &queueSubmitTrackableTicket, 0, NULL, NULL, NULL, outStatuses, optionalFile, optionalLine, optionalUserData);
+
+  delete[] callsHandles;
+
+  for (unsigned i = 0; i < callsCount; i += 1) {
+    Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls[i];
+    handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmitTrackableTicketArrayIndex;
+    handle->lastQueueSubmitTrackableTicket           = queueSubmitTrackableTicket;
   }
 }
 
