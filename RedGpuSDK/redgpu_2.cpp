@@ -1586,6 +1586,24 @@ unsigned red2RedXOnlyImageGetLayersCount(RedHandleImage image) {
 #endif
 }
 
+void * red2RedXOnlyArrayGetHandleResource(RedHandleArray array) {
+#ifdef REDGPU_USE_REDGPU_X
+  RedXInternalTypeArray * handle = (RedXInternalTypeArray *)(void *)array;
+  return (void *)redXGetHandleResourceArray(handle->context, handle->context->gpus[handle->gpuIndex].gpu, array);
+#else
+  return 0;
+#endif
+}
+
+void * red2RedXOnlyImageGetHandleResource(RedHandleImage image) {
+#ifdef REDGPU_USE_REDGPU_X
+  RedXInternalTypeImage * handle = (RedXInternalTypeImage *)(void *)image;
+  return (void *)redXGetHandleResourceImage(handle->context, handle->context->gpus[handle->gpuIndex].gpu, image);
+#else
+  return 0;
+#endif
+}
+
 // NOTE(Constantine): Does nothing on REDGPU.
 void red2RedXOnlyCallCopyImageRegion(RedHandleCalls calls, unsigned copiesCount, const void * copies) {
 #ifdef REDGPU_USE_REDGPU_X
