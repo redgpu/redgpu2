@@ -46,8 +46,11 @@ typedef struct Red2InternalTypeCalls {
   RedBool32                                  reusable;
   unsigned                                   currentStructsMemoryIndex;
   unsigned                                   currentStructsMemorySamplersIndex;
+  uint64_t                                   lastQueueSubmitTrackableTicketArrayIndex;
+  uint64_t                                   lastQueueSubmitTrackableTicket;
+  void *                                     handlesToDestroyWhenCallsAreResetCustomCallback;
+  std::vector<unsigned>                      handlesToDestroyWhenCallsAreResetType;
+  std::vector<uint64_t>                      handlesToDestroyWhenCallsAreReset;
   std::vector<Red2InternalTypeStructsMemory> structsMemorys;
   std::vector<Red2InternalTypeStructsMemory> structsMemorysSamplers;
-  std::vector<unsigned>                      handlesToDestroyType;
-  std::vector<uint64_t>                      handlesToDestroy;
 } Red2InternalTypeCalls;
