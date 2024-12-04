@@ -1298,20 +1298,24 @@ void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queu
 
 void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   unsigned         callsHandlesCount = callsCount;
-  RedHandleCalls * callsHandles      = new(std::nothrow) RedHandleCalls [callsHandlesCount] /*---*/;
-  if (callsHandles == NULL) {
-    if (outStatuses != NULL) {
-      if (outStatuses->statusError == RED_STATUS_SUCCESS) {
-        outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
-        outStatuses->statusErrorCode           = 0;
-        outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
-        outStatuses->statusErrorFile           = optionalFile;
-        outStatuses->statusErrorLine           = optionalLine;
-        outStatuses->statusErrorDescription[0] = 0;
+  RedHandleCalls * callsHandles      = NULL;
+
+  if (callsHandlesCount > 0) {
+    callsHandles = new(std::nothrow) RedHandleCalls [callsHandlesCount] /*---*/;
+    if (callsHandles == NULL) {
+      if (outStatuses != NULL) {
+        if (outStatuses->statusError == RED_STATUS_SUCCESS) {
+          outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+          outStatuses->statusErrorCode           = 0;
+          outStatuses->statusErrorHresult        = 0;
+          outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+          outStatuses->statusErrorFile           = optionalFile;
+          outStatuses->statusErrorLine           = optionalLine;
+          outStatuses->statusErrorDescription[0] = 0;
+        }
       }
+      return;
     }
-    return;
   }
   
   for (unsigned i = 0; i < callsHandlesCount; i += 1) {
@@ -1335,7 +1339,9 @@ void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedH
   uint64_t queueSubmitTrackableTicket           = 0;
   red2QueueSubmit(context2, gpu, queue, 1, &timeline, &queueSubmitTrackableTicketArrayIndex, &queueSubmitTrackableTicket, 0, NULL, NULL, NULL, outStatuses, optionalFile, optionalLine, optionalUserData);
 
-  delete[] callsHandles;
+  if (callsHandlesCount > 0) {
+    delete[] callsHandles;
+  }
 
   for (unsigned i = 0; i < callsCount; i += 1) {
     Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls[i];
