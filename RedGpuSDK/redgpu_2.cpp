@@ -354,6 +354,11 @@ void red2DestroyCalls(RedContext context, RedHandleGpu gpu, Red2HandleCalls call
     for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
       redStructsMemoryFree(context, gpu, handle->structsMemorysSamplers[i].handle, optionalFile, optionalLine, optionalUserData);
     }
+    for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
+      uint64_t _handle     = handle->handlesToDestroyWhenCallsAreReset[i];
+      unsigned _handleType = handle->handlesToDestroyWhenCallsAreResetType[i];
+      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, _handle, _handleType, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
+    }
     redDestroyCalls(context, gpu, handle->handle, handle->memory, optionalFile, optionalLine, optionalUserData);
     delete handle;
   }
