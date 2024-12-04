@@ -130,9 +130,6 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGpuToCpuSignalSignal            (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleGpuToCpuSignal signalGpuToCpuSignal, unsigned setTo8192);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallCopyArrayToArray                (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray arrayR, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayRange * ranges);
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallCopyImageToImage                (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleImage imageW, unsigned setTo01, unsigned rangesCount, const RedCopyImageRange * ranges);
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallCopyArrayToImage                (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray arrayR, RedHandleImage imageW, unsigned setTo1, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallCopyImageToArray                (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallProcedure                       (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned vertexCount, unsigned instanceCount, unsigned vertexFirst, unsigned instanceFirst);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallProcedureIndexed                (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned indexCount, unsigned instanceCount, unsigned indexFirst, int vertexBase, unsigned instanceFirst);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallProcedureCompute                (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned workgroupsCountX, unsigned workgroupsCountY, unsigned workgroupsCountZ);
@@ -153,13 +150,9 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallMarkEnd                         (con
 
 // REDGPU 2 backend-exclusive procedures
 
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyGetRedXAccessBitflagsFromRed (RedAccessBitflags access); // For red2RedXOnlyCallUsageAliasOrderBarrier
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyArrayGetMemoryTypeIndex      (RedHandleArray array);     // For red2RedXOnlyCallUsageAliasOrderBarrier
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLevelsCount          (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLayersCount          (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
-REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyArrayGetHandleResource       (RedHandleArray array);     // For red2RedXOnlyCallUsageAliasOrderBarrier
-REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource       (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
-
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallCopyImageToImage          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleImage imageW, unsigned setTo01, unsigned rangesCount, const RedCopyImageRange * ranges);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallCopyArrayToImage          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray arrayR, RedHandleImage imageW, unsigned setTo1, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallCopyImageToArray          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedXOnlyCallCopyImageRegion          (RedHandleCalls calls, unsigned copiesCount, const void * copies);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedXOnlyCallUsageAliasOrderBarrier   (RedHandleCalls calls, unsigned barriersCount, const void * barriers);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallUsageAliasOrderBarrier    (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion);
@@ -169,6 +162,13 @@ REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallGlobalMemoryBarrier     
 REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2RedOnlyCallSetImageStateUsable       (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts);
 
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyPresentQueueWaitIdle          (RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData);
+
+REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyGetRedXAccessBitflagsFromRed (RedAccessBitflags access); // For red2RedXOnlyCallUsageAliasOrderBarrier
+REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyArrayGetHandleResource       (RedHandleArray array);     // For red2RedXOnlyCallUsageAliasOrderBarrier
+REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource       (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
+REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyArrayGetMemoryTypeIndex      (RedHandleArray array);     // For red2RedXOnlyCallUsageAliasOrderBarrier
+REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLevelsCount          (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
+REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLayersCount          (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
 
 // REDGPU 2 changes from 28 Nov 2024:
 
