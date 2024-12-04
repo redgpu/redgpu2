@@ -406,7 +406,7 @@ uint64_t * red2CallsGetHandlesToDestroy(Red2HandleCalls calls, uint64_t * outHan
   if (outHandlesToDestroyWhenQueueSubmissionIsFinishedCount != NULL) {
     outHandlesToDestroyWhenQueueSubmissionIsFinishedCount[0] = (uint64_t)handle->handlesToDestroy.size();
   }
-  return handle->handlesToDestroy.data();
+  return handle->handlesToDestroy.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
 }
 
 unsigned * red2CallsGetHandlesToDestroyType(Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenQueueSubmissionIsFinishedTypeCount) {
@@ -414,7 +414,7 @@ unsigned * red2CallsGetHandlesToDestroyType(Red2HandleCalls calls, uint64_t * ou
   if (outHandlesToDestroyWhenQueueSubmissionIsFinishedTypeCount != NULL) {
     outHandlesToDestroyWhenQueueSubmissionIsFinishedTypeCount[0] = (uint64_t)handle->handlesToDestroyType.size();
   }
-  return handle->handlesToDestroyType.data();
+  return handle->handlesToDestroyType.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
 }
 
 void red2CallsSet(
