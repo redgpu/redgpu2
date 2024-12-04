@@ -41,22 +41,22 @@ typedef struct Red2InternalTransientGpuSignalsPresentData {
   unsigned char init;
 } Red2InternalTransientGpuSignalsPresentData;
 
-typedef struct Red2InternalSelfDestroyableHandlesBatch {
+typedef struct Red2InternalHandlesToDestroyBatch {
   RedHandleCpuSignal    cpuSignal;
   uint64_t              cpuSignalIsWaitedOnCounter;                            // NOTE(Constantine): 26 Feb 2024, this counter is added to handle the case when other threads can wait on a CPU signal without locking the global mutex and be sure the CPU signal is not destroyed yet by other threads.
-  void *                optionalCustomHandleTypeDestroyCallback;
+  void *                optionalCustomHandleAndHandleTypeDestroyCallback;
   std::vector<uint64_t> whenQueueSubmissionIsFinishedDestroyHandles;
   std::vector<unsigned> whenQueueSubmissionIsFinishedDestroyHandlesHandleType;
-} Red2InternalSelfDestroyableHandlesBatch;
+} Red2InternalHandlesToDestroyBatch;
 
 typedef struct Red2GpuInternalData {
   std::mutex                                                             transientGpuSignalsDataMutex;
   std::map<RedHandlePresent, Red2InternalTransientGpuSignalsPresentData> transientGpuSignalsData;
 
-  std::mutex                                           selfDestroyableHandlesBatchesMutex;
-  std::vector<Red2InternalSelfDestroyableHandlesBatch> selfDestroyableHandlesBatches;
-  std::vector<uint64_t>                                selfDestroyableHandlesBatchesTicket;        // NOTE(Constantine): Ticket == 0 means the array slot is free to use for other greater tickets.
-  uint64_t                                             selfDestroyableHandlesBatchesCurrentTicket; // NOTE(Constantine): Starts with 0.
+  std::mutex                                     handlesToDestroyBatchesMutex;
+  std::vector<Red2InternalHandlesToDestroyBatch> handlesToDestroyBatches;
+  std::vector<uint64_t>                          handlesToDestroyBatchesTicket;        // NOTE(Constantine): Ticket == 0 means the array slot is free to use for other greater tickets.
+  uint64_t                                       handlesToDestroyBatchesCurrentTicket; // NOTE(Constantine): Starts with 0.
 
   unsigned char init;
 } Red2GpuInternalData;
@@ -900,21 +900,21 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
   return RED_STATUS_SUCCESS;
 }
 
-static void red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(Red2Context context2, RedHandleGpu gpu, uint64_t index, const char * optionalFile, int optionalLine, void * optionalUserData) {
+static void red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(Red2Context context2, RedHandleGpu gpu, uint64_t index, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
-  RedHandleCpuSignal cpuSignal                  = context2GpuData->selfDestroyableHandlesBatches[index].cpuSignal;
-  uint64_t           cpuSignalIsWaitedOnCounter = context2GpuData->selfDestroyableHandlesBatches[index].cpuSignalIsWaitedOnCounter;
+  RedHandleCpuSignal cpuSignal                  = context2GpuData->handlesToDestroyBatches[index].cpuSignal;
+  uint64_t           cpuSignalIsWaitedOnCounter = context2GpuData->handlesToDestroyBatches[index].cpuSignalIsWaitedOnCounter;
   RedStatus status = RED_STATUS_SUCCESS;
   redCpuSignalGetStatus(context, gpu, cpuSignal, &status, optionalFile, optionalLine, optionalUserData);
   if (status == RED_STATUS_SUCCESS && cpuSignalIsWaitedOnCounter == 0) {
     redDestroyCpuSignal(context, gpu, cpuSignal, optionalFile, optionalLine, optionalUserData);
-    void * optionalCustomHandleTypeDestroyCallback = context2GpuData->selfDestroyableHandlesBatches[index].optionalCustomHandleTypeDestroyCallback;
-    for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatches[index].whenQueueSubmissionIsFinishedDestroyHandles.size(); i < count; i += 1) {
-      uint64_t handle     = context2GpuData->selfDestroyableHandlesBatches[index].whenQueueSubmissionIsFinishedDestroyHandles[i];
-      unsigned handleType = context2GpuData->selfDestroyableHandlesBatches[index].whenQueueSubmissionIsFinishedDestroyHandlesHandleType[i];
+    void * optionalCustomHandleAndHandleTypeDestroyCallback = context2GpuData->handlesToDestroyBatches[index].optionalCustomHandleAndHandleTypeDestroyCallback;
+    for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches[index].whenQueueSubmissionIsFinishedDestroyHandles.size(); i < count; i += 1) {
+      uint64_t handle     = context2GpuData->handlesToDestroyBatches[index].whenQueueSubmissionIsFinishedDestroyHandles[i];
+      unsigned handleType = context2GpuData->handlesToDestroyBatches[index].whenQueueSubmissionIsFinishedDestroyHandlesHandleType[i];
       if      (handleType == 0)                                     { continue; }
       else if (handleType == RED_HANDLE_TYPE_MEMORY)                { redMemoryFree(context, gpu, (RedHandleMemory)handle, optionalFile, optionalLine, optionalUserData); }
       else if (handleType == RED_HANDLE_TYPE_ARRAY)                 { redDestroyArray(context, gpu, (RedHandleArray)handle, optionalFile, optionalLine, optionalUserData); }
@@ -937,51 +937,51 @@ static void red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLockin
       else if (handleType == RED2_HANDLE_TYPE_STRUCT_DECLARATION)   { red2DestroyStructDeclaration(context, gpu, (Red2HandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
       else if (handleType == RED2_HANDLE_TYPE_PROCEDURE_PARAMETERS) { red2DestroyProcedureParameters(context, gpu, (Red2HandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
       else if (handleType == RED2_HANDLE_TYPE_CALLS)                { red2DestroyCalls(context, gpu, (Red2HandleCalls)handle, optionalFile, optionalLine, optionalUserData); }
-      else if (optionalCustomHandleTypeDestroyCallback != NULL) {
-        void (*customHandleTypeDestroyCallback)(uint64_t handle) = (void (*)(uint64_t))optionalCustomHandleTypeDestroyCallback;
-        customHandleTypeDestroyCallback(handle);
+      else if (optionalCustomHandleAndHandleTypeDestroyCallback != NULL) {
+        void (*customHandleAndHandleTypeDestroyCallback)(uint64_t handle, unsigned handleType) = (void (*)(uint64_t, unsigned handleType))optionalCustomHandleAndHandleTypeDestroyCallback;
+        customHandleAndHandleTypeDestroyCallback(handle, handleType);
       } else {
         redMark("[REDGPU 2][TODO(Constantine)] The handle is not destroyed, need to implement destruction of the handle type here, in this part of REDGPU 2 code.", optionalFile, optionalLine, optionalUserData);
       }
     }
-    context2GpuData->selfDestroyableHandlesBatchesTicket[index] = 0;
+    context2GpuData->handlesToDestroyBatchesTicket[index] = 0;
   }
 }
 
-static void red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatches_NonLocking(Red2Context context2, RedHandleGpu gpu, RedBool32 waitForAllAndFreeAllBatches, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+static void red2InternalHandlesToDestroyBatchesFreeFinishedBatches_NonLocking(Red2Context context2, RedHandleGpu gpu, RedBool32 waitForAllAndFreeAllBatches, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
-  for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatches.size(); i < count; i += 1) {
-    if (context2GpuData->selfDestroyableHandlesBatchesTicket[i] != 0) {
+  for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches.size(); i < count; i += 1) {
+    if (context2GpuData->handlesToDestroyBatchesTicket[i] != 0) {
       if (waitForAllAndFreeAllBatches == 1) {
-        RedHandleCpuSignal cpuSignal = context2GpuData->selfDestroyableHandlesBatches[i].cpuSignal;
+        RedHandleCpuSignal cpuSignal = context2GpuData->handlesToDestroyBatches[i].cpuSignal;
         redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
-        context2GpuData->selfDestroyableHandlesBatches[i].cpuSignalIsWaitedOnCounter = 0; // NOTE(Constantine): Force setting the counter to 0 since it is the job of the user to make sure all threads are finished using the context's handles before calling the red2DestroyContext procedure. waitForAllAndFreeAllBatches == 1 is true only for red2DestroyContext procedure.
+        context2GpuData->handlesToDestroyBatches[i].cpuSignalIsWaitedOnCounter = 0; // NOTE(Constantine): Force setting the counter to 0 since it is the job of the user to make sure all threads are finished using the context's handles before calling the red2DestroyContext procedure. waitForAllAndFreeAllBatches == 1 is true only for red2DestroyContext procedure.
       }
-      red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+      red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
     }
   }
 }
 
-static size_t red2InternalSelfDestroyableHandlesBatchesGetFreeElementIndex_NonLocking(Red2Context context2, RedHandleGpu gpu) {
+static size_t red2InternalHandlesToDestroyBatchesGetFreeElementIndex_NonLocking(Red2Context context2, RedHandleGpu gpu) {
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
   size_t index = -1;
-  for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatchesTicket.size(); i < count; i += 1) {
-    if (context2GpuData->selfDestroyableHandlesBatchesTicket[i] == 0) {
+  for (size_t i = 0, count = context2GpuData->handlesToDestroyBatchesTicket.size(); i < count; i += 1) {
+    if (context2GpuData->handlesToDestroyBatchesTicket[i] == 0) {
       index = i;
       break;
     }
   }
   if (index == -1) {
-    Red2InternalSelfDestroyableHandlesBatch emptyElement = {};
-    context2GpuData->selfDestroyableHandlesBatches.push_back(emptyElement);
-    context2GpuData->selfDestroyableHandlesBatchesTicket.push_back(0);
-    index = context2GpuData->selfDestroyableHandlesBatches.size() - 1;
+    Red2InternalHandlesToDestroyBatch emptyElement = {};
+    context2GpuData->handlesToDestroyBatches.push_back(emptyElement);
+    context2GpuData->handlesToDestroyBatchesTicket.push_back(0);
+    index = context2GpuData->handlesToDestroyBatches.size() - 1;
   }
   return index;
 }
@@ -991,9 +991,9 @@ void red2DestroyContext(Red2Context context2, const char * optionalFile, int opt
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
 
   for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData.selfDestroyableHandlesBatchesMutex);
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData.handlesToDestroyBatchesMutex);
     for (unsigned gpuIndex = 0; gpuIndex < context->gpusCount; gpuIndex += 1) {
-      red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatches_NonLocking(context2, context->gpus[gpuIndex].gpu, 1, NULL, optionalFile, optionalLine, optionalUserData);
+      red2InternalHandlesToDestroyBatchesFreeFinishedBatches_NonLocking(context2, context->gpus[gpuIndex].gpu, 1, NULL, optionalFile, optionalLine, optionalUserData);
     }
   }
   for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
@@ -1028,29 +1028,29 @@ void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandleP
   }
 }
 
-void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, uint64_t whenQueueSubmissionIsFinishedDestroyHandlesCount, uint64_t * whenQueueSubmissionIsFinishedDestroyHandles, unsigned * whenQueueSubmissionIsFinishedDestroyHandlesHandleType, void * optionalCustomHandleTypeDestroyCallback, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, uint64_t whenQueueSubmissionIsFinishedDestroyHandlesCount, const uint64_t * whenQueueSubmissionIsFinishedDestroyHandles, const unsigned * whenQueueSubmissionIsFinishedDestroyHandlesHandleType, void * optionalCustomHandleAndHandleTypeDestroyCallback, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatches_NonLocking(context2, gpu, 0, outStatuses, optionalFile, optionalLine, optionalUserData);
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    red2InternalHandlesToDestroyBatchesFreeFinishedBatches_NonLocking(context2, gpu, 0, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   RedHandleCpuSignal cpuSignal = NULL;
   redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Intentionally creating one CPU signal per queue submit, even if the user didn't request a ticket for that queue submit.
   redQueueSubmit(context, gpu, queue, timelinesCount, timelines, cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
   if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    size_t i = red2InternalSelfDestroyableHandlesBatchesGetFreeElementIndex_NonLocking(context2, gpu);
-    context2GpuData->selfDestroyableHandlesBatches[i].cpuSignal                                             = cpuSignal;
-    context2GpuData->selfDestroyableHandlesBatches[i].optionalCustomHandleTypeDestroyCallback               = optionalCustomHandleTypeDestroyCallback;
-    context2GpuData->selfDestroyableHandlesBatches[i].whenQueueSubmissionIsFinishedDestroyHandles           = std::vector<uint64_t>(whenQueueSubmissionIsFinishedDestroyHandles, whenQueueSubmissionIsFinishedDestroyHandles + whenQueueSubmissionIsFinishedDestroyHandlesCount);
-    context2GpuData->selfDestroyableHandlesBatches[i].whenQueueSubmissionIsFinishedDestroyHandlesHandleType = std::vector<unsigned>(whenQueueSubmissionIsFinishedDestroyHandlesHandleType, whenQueueSubmissionIsFinishedDestroyHandlesHandleType + whenQueueSubmissionIsFinishedDestroyHandlesCount);
-    context2GpuData->selfDestroyableHandlesBatchesCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
-    context2GpuData->selfDestroyableHandlesBatchesTicket[i]      = context2GpuData->selfDestroyableHandlesBatchesCurrentTicket;
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    size_t i = red2InternalHandlesToDestroyBatchesGetFreeElementIndex_NonLocking(context2, gpu);
+    context2GpuData->handlesToDestroyBatches[i].cpuSignal                                             = cpuSignal;
+    context2GpuData->handlesToDestroyBatches[i].optionalCustomHandleAndHandleTypeDestroyCallback      = optionalCustomHandleAndHandleTypeDestroyCallback;
+    context2GpuData->handlesToDestroyBatches[i].whenQueueSubmissionIsFinishedDestroyHandles           = std::vector<uint64_t>(whenQueueSubmissionIsFinishedDestroyHandles, whenQueueSubmissionIsFinishedDestroyHandles + whenQueueSubmissionIsFinishedDestroyHandlesCount);
+    context2GpuData->handlesToDestroyBatches[i].whenQueueSubmissionIsFinishedDestroyHandlesHandleType = std::vector<unsigned>(whenQueueSubmissionIsFinishedDestroyHandlesHandleType, whenQueueSubmissionIsFinishedDestroyHandlesHandleType + whenQueueSubmissionIsFinishedDestroyHandlesCount);
+    context2GpuData->handlesToDestroyBatchesCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
+    context2GpuData->handlesToDestroyBatchesTicket[i]      = context2GpuData->handlesToDestroyBatchesCurrentTicket;
     if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = i; }
-    if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = context2GpuData->selfDestroyableHandlesBatchesCurrentTicket; }
+    if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = context2GpuData->handlesToDestroyBatchesCurrentTicket; }
   }
 }
 
@@ -1064,10 +1064,10 @@ RedBool32 red2IsQueueSubmissionFinished(Red2Context context2, RedHandleGpu gpu, 
   }
   uint64_t ticket = 0;
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    if (context2GpuData->selfDestroyableHandlesBatchesTicket[queueSubmissionTicketArrayIndex] == queueSubmissionTicket) {
-      red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
-      ticket = context2GpuData->selfDestroyableHandlesBatchesTicket[queueSubmissionTicketArrayIndex];
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    if (context2GpuData->handlesToDestroyBatchesTicket[queueSubmissionTicketArrayIndex] == queueSubmissionTicket) {
+      red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
+      ticket = context2GpuData->handlesToDestroyBatchesTicket[queueSubmissionTicketArrayIndex];
     }
   }
   return ticket == queueSubmissionTicket ? 0 : 1; // NOTE(Constantine): Alternatively, (ticket == 0 || ticket > queueSubmissionTicket) ? 1 : 0.
@@ -1083,11 +1083,11 @@ RedBool32 red2IsQueueSubmissionFinishedByTicketAlone(Red2Context context2, RedHa
   }
   uint64_t ticket = 0;
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatches.size(); i < count; i += 1) {
-      if (context2GpuData->selfDestroyableHandlesBatchesTicket[i] == queueSubmissionTicket) {
-        red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
-        ticket = context2GpuData->selfDestroyableHandlesBatchesTicket[i];
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches.size(); i < count; i += 1) {
+      if (context2GpuData->handlesToDestroyBatchesTicket[i] == queueSubmissionTicket) {
+        red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+        ticket = context2GpuData->handlesToDestroyBatchesTicket[i];
         break;
       }
     }
@@ -1102,12 +1102,12 @@ RedBool32 red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket(Red2Context c
 
   RedBool32 allQueueSubmissionsAreFinished = 1;
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatches.size(); i < count; i += 1) {
-      uint64_t t = context2GpuData->selfDestroyableHandlesBatchesTicket[i];
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches.size(); i < count; i += 1) {
+      uint64_t t = context2GpuData->handlesToDestroyBatchesTicket[i];
       if (t != 0 && t <= queueSubmissionTicket) {
-        red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
-        uint64_t ticket = context2GpuData->selfDestroyableHandlesBatchesTicket[i];
+        red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+        uint64_t ticket = context2GpuData->handlesToDestroyBatchesTicket[i];
         if (ticket != 0 && ticket <= queueSubmissionTicket) {
           allQueueSubmissionsAreFinished = 0;
           break;
@@ -1128,20 +1128,20 @@ void red2WaitForQueueSubmissionToFinish(Red2Context context2, RedHandleGpu gpu, 
   }
   RedHandleCpuSignal cpuSignal = NULL;
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    uint64_t ticket = context2GpuData->selfDestroyableHandlesBatchesTicket[queueSubmissionTicketArrayIndex];
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    uint64_t ticket = context2GpuData->handlesToDestroyBatchesTicket[queueSubmissionTicketArrayIndex];
     if (ticket == queueSubmissionTicket) {
-      cpuSignal = context2GpuData->selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].cpuSignal;
-      context2GpuData->selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
+      cpuSignal = context2GpuData->handlesToDestroyBatches[queueSubmissionTicketArrayIndex].cpuSignal;
+      context2GpuData->handlesToDestroyBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
     }
   }
   if (cpuSignal != NULL) {
     redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    context2GpuData->selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
-    red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    context2GpuData->handlesToDestroyBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
+    red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
   }
 }
 
@@ -1156,13 +1156,13 @@ void red2WaitForQueueSubmissionToFinishByTicketAlone(Red2Context context2, RedHa
   uint64_t           queueSubmissionTicketArrayIndex = 0;
   RedHandleCpuSignal cpuSignal = NULL;
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatches.size(); i < count; i += 1) {
-      uint64_t ticket = context2GpuData->selfDestroyableHandlesBatchesTicket[i];
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches.size(); i < count; i += 1) {
+      uint64_t ticket = context2GpuData->handlesToDestroyBatchesTicket[i];
       if (ticket == queueSubmissionTicket) {
         queueSubmissionTicketArrayIndex = i;
-        cpuSignal = context2GpuData->selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].cpuSignal;
-        context2GpuData->selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
+        cpuSignal = context2GpuData->handlesToDestroyBatches[queueSubmissionTicketArrayIndex].cpuSignal;
+        context2GpuData->handlesToDestroyBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
         break;
       }
     }
@@ -1171,9 +1171,9 @@ void red2WaitForQueueSubmissionToFinishByTicketAlone(Red2Context context2, RedHa
     redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    context2GpuData->selfDestroyableHandlesBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
-    red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    context2GpuData->handlesToDestroyBatches[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
+    red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
   }
 }
 
@@ -1185,14 +1185,14 @@ void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context co
   std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
   std::vector<RedHandleCpuSignal> cpuSignal;
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatches.size(); i < count; i += 1) {
-      uint64_t ticket = context2GpuData->selfDestroyableHandlesBatchesTicket[i];
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches.size(); i < count; i += 1) {
+      uint64_t ticket = context2GpuData->handlesToDestroyBatchesTicket[i];
       if (ticket != 0) {
         if (ticket <= queueSubmissionTicket) {
           queueSubmissionTicketArrayIndex.push_back(i);
-          cpuSignal.push_back(context2GpuData->selfDestroyableHandlesBatches[i].cpuSignal);
-          context2GpuData->selfDestroyableHandlesBatches[i].cpuSignalIsWaitedOnCounter += 1;
+          cpuSignal.push_back(context2GpuData->handlesToDestroyBatches[i].cpuSignal);
+          context2GpuData->handlesToDestroyBatches[i].cpuSignalIsWaitedOnCounter += 1;
         }
       }
     }
@@ -1201,10 +1201,10 @@ void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context co
     redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal.size() > 0) {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
     for (uint64_t i : queueSubmissionTicketArrayIndex) {
-      context2GpuData->selfDestroyableHandlesBatches[i].cpuSignalIsWaitedOnCounter -= 1;
-      red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+      context2GpuData->handlesToDestroyBatches[i].cpuSignalIsWaitedOnCounter -= 1;
+      red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
     }
   }
 }
@@ -1217,13 +1217,13 @@ void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu g
   std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
   std::vector<RedHandleCpuSignal> cpuSignal;
   {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
-    for (size_t i = 0, count = context2GpuData->selfDestroyableHandlesBatches.size(); i < count; i += 1) {
-      uint64_t ticket = context2GpuData->selfDestroyableHandlesBatchesTicket[i];
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
+    for (size_t i = 0, count = context2GpuData->handlesToDestroyBatches.size(); i < count; i += 1) {
+      uint64_t ticket = context2GpuData->handlesToDestroyBatchesTicket[i];
       if (ticket != 0) {
         queueSubmissionTicketArrayIndex.push_back(i);
-        cpuSignal.push_back(context2GpuData->selfDestroyableHandlesBatches[i].cpuSignal);
-        context2GpuData->selfDestroyableHandlesBatches[i].cpuSignalIsWaitedOnCounter += 1;
+        cpuSignal.push_back(context2GpuData->handlesToDestroyBatches[i].cpuSignal);
+        context2GpuData->handlesToDestroyBatches[i].cpuSignalIsWaitedOnCounter += 1;
       }
     }
   }
@@ -1231,10 +1231,10 @@ void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu g
     redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal.size() > 0) {
-    std::lock_guard<std::mutex> __selfDestroyableHandlesBatchesMutexLockGuard(context2GpuData->selfDestroyableHandlesBatchesMutex);
+    std::lock_guard<std::mutex> __handlesToDestroyBatchesMutexLockGuard(context2GpuData->handlesToDestroyBatchesMutex);
     for (uint64_t i : queueSubmissionTicketArrayIndex) {
-      context2GpuData->selfDestroyableHandlesBatches[i].cpuSignalIsWaitedOnCounter -= 1;
-      red2InternalSelfDestroyableHandlesBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+      context2GpuData->handlesToDestroyBatches[i].cpuSignalIsWaitedOnCounter -= 1;
+      red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
     }
   }
 }
