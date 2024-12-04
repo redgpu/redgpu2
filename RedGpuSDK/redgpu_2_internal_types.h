@@ -48,4 +48,6 @@ typedef struct Red2InternalTypeCalls {
   unsigned                                   currentStructsMemorySamplersIndex;
   std::vector<Red2InternalTypeStructsMemory> structsMemorys;
   std::vector<Red2InternalTypeStructsMemory> structsMemorysSamplers;
+  std::vector<unsigned>                      handlesToDestroyType;
+  std::vector<uint64_t>                      handlesToDestroy;
 } Red2InternalTypeCalls;
