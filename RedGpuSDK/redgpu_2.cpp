@@ -460,8 +460,6 @@ static void red2InternalDestroyHandleByHandleType(RedContext context, RedHandleG
 }
 
 void red2CallsSet(
-  RedContext context,
-  RedHandleGpu gpu,
   Red2HandleCalls calls,
   RedStatuses * outStatuses,
   const char * optionalFile,
@@ -474,7 +472,7 @@ void red2CallsSet(
   handle->currentStructsMemorySamplersIndex = 0;
   for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
 #ifndef REDGPU_USE_REDGPU_X
-    redStructsMemoryReset(context, gpu, handle->structsMemorys[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+    redStructsMemoryReset(handle->context, handle->gpu, handle->structsMemorys[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
 #endif
     handle->structsMemorys[i].availableDescriptors                               = handle->structsMemorys[i].capacityDescriptors;
     handle->structsMemorys[i].availableStructsCount                              = handle->structsMemorys[i].capacityStructsCount;
@@ -487,7 +485,7 @@ void red2CallsSet(
   }
   for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
 #ifndef REDGPU_USE_REDGPU_X
-    redStructsMemoryReset(context, gpu, handle->structsMemorysSamplers[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+    redStructsMemoryReset(handle->context, handle->gpu, handle->structsMemorysSamplers[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
 #endif
     handle->structsMemorysSamplers[i].availableDescriptors                               = handle->structsMemorysSamplers[i].capacityDescriptors;
     handle->structsMemorysSamplers[i].availableStructsCount                              = handle->structsMemorysSamplers[i].capacityStructsCount;
@@ -498,13 +496,13 @@ void red2CallsSet(
     handle->structsMemorysSamplers[i].availableStructsMembersOfTypeInlineSamplerCount    = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeInlineSamplerCount;
     handle->structsMemorysSamplers[i].availableStructsMembersOfTypeSamplerCount          = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeSamplerCount;
   }
-  redCallsSet(context, gpu, handle->handle, handle->memory, handle->reusable, outStatuses, optionalFile, optionalLine, optionalUserData);
+  redCallsSet(handle->context, handle->gpu, handle->handle, handle->memory, handle->reusable, outStatuses, optionalFile, optionalLine, optionalUserData);
   
   {
     for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
       uint64_t _handle     = handle->handlesToDestroyWhenCallsAreReset[i];
       unsigned _handleType = handle->handlesToDestroyWhenCallsAreResetType[i];
-      red2InternalDestroyHandleByHandleType(context, gpu, _handle, _handleType, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
+      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, _handle, _handleType, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
     }
     handle->handlesToDestroyWhenCallsAreReset.clear();
     handle->handlesToDestroyWhenCallsAreResetType.clear();
@@ -512,8 +510,6 @@ void red2CallsSet(
 }
 
 void red2CallsEnd(
-  RedContext context,
-  RedHandleGpu gpu,
   Red2HandleCalls calls,
   RedStatuses * outStatuses,
   const char * optionalFile,
@@ -522,13 +518,105 @@ void red2CallsEnd(
 )
 {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  redCallsEnd(context, gpu, handle->handle, handle->memory, outStatuses, optionalFile, optionalLine, optionalUserData);
+  redCallsEnd(handle->context, handle->gpu, handle->handle, handle->memory, outStatuses, optionalFile, optionalLine, optionalUserData);
 }
 
 void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDestroyWhenCallsAreReset, unsigned handleToDestroyWhenCallsAreResetType) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   handle->handlesToDestroyWhenCallsAreReset.push_back(handleToDestroyWhenCallsAreReset);
   handle->handlesToDestroyWhenCallsAreResetType.push_back(handleToDestroyWhenCallsAreResetType);
+}
+
+void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCallSetProcedureOutput address, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormat, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorTexturesCountMax8, const RedHandleTexture * colorTextures, const RedFormat * colorTexturesFormat, const RedMultisampleCountBitflag * colorTexturesMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+
+  RedHandleOutputDeclaration outputDeclaration = NULL;
+  {
+    RedOutputDeclarationMembers members /*---*/;
+    members.depthStencilEnable                        = depthStencilTexture == NULL ? 0 : 1;
+    members.depthStencilFormat                        = depthStencilTextureFormat;
+    members.depthStencilMultisampleCount              = depthStencilTextureMultisampleCount;
+    members.depthStencilDepthSetProcedureOutputOp     = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilSetProcedureOutputOp   = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsCount                               = colorTexturesCountMax8;
+    members.colorsFormat[0]                           = colorTexturesCountMax8 > 0 ? colorTexturesFormat[0] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[1]                           = colorTexturesCountMax8 > 1 ? colorTexturesFormat[1] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = colorTexturesCountMax8 > 2 ? colorTexturesFormat[2] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = colorTexturesCountMax8 > 3 ? colorTexturesFormat[3] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = colorTexturesCountMax8 > 4 ? colorTexturesFormat[4] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = colorTexturesCountMax8 > 5 ? colorTexturesFormat[5] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = colorTexturesCountMax8 > 6 ? colorTexturesFormat[6] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = colorTexturesCountMax8 > 7 ? colorTexturesFormat[7] : RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = colorTexturesCountMax8 > 0 ? colorTexturesMultisampleCount[0] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[1]                 = colorTexturesCountMax8 > 1 ? colorTexturesMultisampleCount[1] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = colorTexturesCountMax8 > 2 ? colorTexturesMultisampleCount[2] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = colorTexturesCountMax8 > 3 ? colorTexturesMultisampleCount[3] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = colorTexturesCountMax8 > 4 ? colorTexturesMultisampleCount[4] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = colorTexturesCountMax8 > 5 ? colorTexturesMultisampleCount[5] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = colorTexturesCountMax8 > 6 ? colorTexturesMultisampleCount[6] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = colorTexturesCountMax8 > 7 ? colorTexturesMultisampleCount[7] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[3]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[4]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[5]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[6]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[7]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[0]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[1]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[2]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[3]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[4]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[5]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[6]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[7]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSharesMemoryWithAnotherMember[0]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[1]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[2]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[3]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[4]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[5]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[6]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[7]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    RedBool32 dependencyByRegion = 0;
+    RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
+    redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outputDeclaration == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
+  }
+
+  RedOutput output = {};
+  {
+    RedOutputMembers outputMembers /*---*/;
+    outputMembers.depthStencil = depthStencilTexture;
+    outputMembers.colorsCount  = colorTexturesCountMax8;
+    outputMembers.colors[0]    = colorTexturesCountMax8 > 0 ? colorTextures[0] : NULL;
+    outputMembers.colors[1]    = colorTexturesCountMax8 > 1 ? colorTextures[1] : NULL;
+    outputMembers.colors[2]    = colorTexturesCountMax8 > 2 ? colorTextures[2] : NULL;
+    outputMembers.colors[3]    = colorTexturesCountMax8 > 3 ? colorTextures[3] : NULL;
+    outputMembers.colors[4]    = colorTexturesCountMax8 > 4 ? colorTextures[4] : NULL;
+    outputMembers.colors[5]    = colorTexturesCountMax8 > 5 ? colorTextures[5] : NULL;
+    outputMembers.colors[6]    = colorTexturesCountMax8 > 6 ? colorTextures[6] : NULL;
+    outputMembers.colors[7]    = colorTexturesCountMax8 > 7 ? colorTextures[7] : NULL;
+    redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (output.handle == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
+  }
+
+  redCallSetProcedureOutput(address, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, depthStencilTexture == NULL ? 0 : 1, colorTexturesCountMax8, 0, 0, NULL, NULL, NULL);
+}
+
+void red2CallEndRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCallEndProcedureOutput address) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  redCallEndProcedureOutput(address, handle->handle);
 }
 
 void red2CallsFreeAllInlineStructsMemorys(
@@ -1408,11 +1496,11 @@ void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barri
   volatile int nothing = 0;
 }
 
-void red2RedOnlyCallSetImageStateUsable(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
+RedStatus red2RedOnlyCallSetImageStateUsable(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
 #ifndef REDGPU_USE_REDGPU_X
   RedUsageImage * imageUsages = new(std::nothrow) RedUsageImage[imagesCount] /*---*/;
   if (imageUsages == NULL) {
-    return;
+    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
   }
   for (uint64_t i = 0; i < imagesCount; i += 1) {
     imageUsages[i].barrierSplit           = RED_BARRIER_SPLIT_NONE;
@@ -1435,12 +1523,14 @@ void red2RedOnlyCallSetImageStateUsable(RedTypeProcedureAddressCallUsageAliasOrd
   delete[] imageUsages;
 #endif
   volatile int nothing = 0;
+  return RED_STATUS_SUCCESS;
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-void red2RedOnlyQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2RedOnlyPresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData) {
 #ifndef REDGPU_USE_REDGPU_X
-  redQueuePresent(context, gpu, queue, 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
+  // NOTE(Constantine): For present queues only, to finish all their work. This function call depends on a particular REDGPU implementation, see redgpu_wsi.h from Dec 01, 2022.
+  redQueuePresent(context, gpu, presentQueue, 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
 #endif
   volatile int nothing = 0;
 }
@@ -1450,10 +1540,13 @@ void red2RedOnlyQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQue
 #endif
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-void red2RedOnlyCallBarrierFinishCpuUpload(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
-  if (arraysCount == 0) { return; }
+RedStatus red2RedOnlyCallBarrierFinishCpuUpload(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+  if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
+  if (bufferBarriers == NULL) {
+    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  }
   for (uint64_t i = 0; i < arraysCount; i += 1) {
     bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
     bufferBarriers[i].pNext               = NULL;
@@ -1469,13 +1562,17 @@ void red2RedOnlyCallBarrierFinishCpuUpload(RedTypeProcedureAddressCallUsageAlias
   delete[] bufferBarriers;
 #endif
   volatile int nothing = 0;
+  return RED_STATUS_SUCCESS;
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-void red2RedOnlyCallBarrierFinishCpuReadback(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
-  if (arraysCount == 0) { return; }
+RedStatus red2RedOnlyCallBarrierFinishCpuReadback(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+  if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
+  if (bufferBarriers == NULL) {
+    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  }
   for (uint64_t i = 0; i < arraysCount; i += 1) {
     bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
     bufferBarriers[i].pNext               = NULL;
@@ -1491,6 +1588,7 @@ void red2RedOnlyCallBarrierFinishCpuReadback(RedTypeProcedureAddressCallUsageAli
   delete[] bufferBarriers;
 #endif
   volatile int nothing = 0;
+  return RED_STATUS_SUCCESS;
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
