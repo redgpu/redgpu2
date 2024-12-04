@@ -1427,6 +1427,7 @@ void red2RedOnlyCallSetImageStateUsable(RedTypeProcedureAddressCallUsageAliasOrd
   redCallUsageAliasOrderBarrier(address, calls, context, 0, NULL, imagesCount, imageUsages, 0, NULL, 0, NULL, 0);
   delete[] imageUsages;
 #endif
+  volatile int nothing = 0;
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
