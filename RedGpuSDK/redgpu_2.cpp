@@ -1489,9 +1489,9 @@ void red2RedOnlyCallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAlias
 }
 
 // NOTE(Constantine): Does nothing on REDGPU.
-void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
+void red2RedXOnlyCallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
 #ifdef REDGPU_USE_REDGPU_X
-  RedXCallUsageAliasOrderBarrier(calls, barriersCount, barriers);
+  redXCallUsageAliasOrderBarrier(calls, barriersCount, barriers);
 #endif
   volatile int nothing = 0;
 }
