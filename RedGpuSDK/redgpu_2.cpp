@@ -345,6 +345,37 @@ void red2DestroyProcedureParameters(RedContext context, RedHandleGpu gpu, Red2Ha
   }
 }
 
+static void red2InternalDestroyHandleByHandleType(RedContext context, RedHandleGpu gpu, uint64_t handle, unsigned handleType, void * optionalCustomHandleAndHandleTypeDestroyCallback, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  if      (handleType == 0)                                     { }
+  else if (handleType == RED_HANDLE_TYPE_MEMORY)                { redMemoryFree(context, gpu, (RedHandleMemory)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_ARRAY)                 { redDestroyArray(context, gpu, (RedHandleArray)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_IMAGE)                 { redDestroyImage(context, gpu, (RedHandleImage)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_SAMPLER)               { redDestroySampler(context, gpu, (RedHandleSampler)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_TEXTURE)               { redDestroyTexture(context, gpu, (RedHandleTexture)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_GPU_CODE)              { redDestroyGpuCode(context, gpu, (RedHandleGpuCode)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_OUTPUT_DECLARATION)    { redDestroyOutputDeclaration(context, gpu, (RedHandleOutputDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_STRUCT_DECLARATION)    { redDestroyStructDeclaration(context, gpu, (RedHandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PROCEDURE_PARAMETERS)  { redDestroyProcedureParameters(context, gpu, (RedHandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PROCEDURE_CACHE)       { redDestroyProcedureCache(context, gpu, (RedHandleProcedureCache)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PROCEDURE)             { redDestroyProcedure(context, gpu, (RedHandleProcedure)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_OUTPUT)                { redDestroyOutput(context, gpu, (RedHandleOutput)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_STRUCTS_MEMORY)        { redStructsMemoryFree(context, gpu, (RedHandleStructsMemory)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_CPU_SIGNAL)            { redDestroyCpuSignal(context, gpu, (RedHandleCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_GPU_SIGNAL)            { redDestroyGpuSignal(context, gpu, (RedHandleGpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_GPU_TO_CPU_SIGNAL)     { redDestroyGpuToCpuSignal(context, gpu, (RedHandleGpuToCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_SURFACE)               { redDestroySurface(context, gpu, (RedHandleSurface)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED_HANDLE_TYPE_PRESENT)               { redDestroyPresent(context, gpu, (RedHandlePresent)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED2_HANDLE_TYPE_STRUCT_DECLARATION)   { red2DestroyStructDeclaration(context, gpu, (Red2HandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED2_HANDLE_TYPE_PROCEDURE_PARAMETERS) { red2DestroyProcedureParameters(context, gpu, (Red2HandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (handleType == RED2_HANDLE_TYPE_CALLS)                { red2DestroyCalls(context, gpu, (Red2HandleCalls)handle, optionalFile, optionalLine, optionalUserData); }
+  else if (optionalCustomHandleAndHandleTypeDestroyCallback != NULL) {
+    void (*customHandleAndHandleTypeDestroyCallback)(uint64_t handle, unsigned handleType) = (void (*)(uint64_t, unsigned handleType))optionalCustomHandleAndHandleTypeDestroyCallback;
+    customHandleAndHandleTypeDestroyCallback(handle, handleType);
+  } else {
+    redMark("[REDGPU 2][TODO(Constantine)] The handle is not destroyed, and no custom destroy callback was set, need to implement destruction of the handle type here, in this part of REDGPU 2 code.", optionalFile, optionalLine, optionalUserData);
+  }
+}
+
 void red2DestroyCalls(RedContext context, RedHandleGpu gpu, Red2HandleCalls calls, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   if (handle != NULL) {
@@ -433,37 +464,6 @@ void red2CallsGetQueueSubmitTrackableTicket(Red2HandleCalls calls, uint64_t * ou
   if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = handle->lastQueueSubmitTrackableTicket;           }
 }
 
-static void red2InternalDestroyHandleByHandleType(RedContext context, RedHandleGpu gpu, uint64_t handle, unsigned handleType, void * optionalCustomHandleAndHandleTypeDestroyCallback, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  if      (handleType == 0)                                     { }
-  else if (handleType == RED_HANDLE_TYPE_MEMORY)                { redMemoryFree(context, gpu, (RedHandleMemory)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_ARRAY)                 { redDestroyArray(context, gpu, (RedHandleArray)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_IMAGE)                 { redDestroyImage(context, gpu, (RedHandleImage)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_SAMPLER)               { redDestroySampler(context, gpu, (RedHandleSampler)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_TEXTURE)               { redDestroyTexture(context, gpu, (RedHandleTexture)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_GPU_CODE)              { redDestroyGpuCode(context, gpu, (RedHandleGpuCode)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_OUTPUT_DECLARATION)    { redDestroyOutputDeclaration(context, gpu, (RedHandleOutputDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_STRUCT_DECLARATION)    { redDestroyStructDeclaration(context, gpu, (RedHandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_PROCEDURE_PARAMETERS)  { redDestroyProcedureParameters(context, gpu, (RedHandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_PROCEDURE_CACHE)       { redDestroyProcedureCache(context, gpu, (RedHandleProcedureCache)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_PROCEDURE)             { redDestroyProcedure(context, gpu, (RedHandleProcedure)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_OUTPUT)                { redDestroyOutput(context, gpu, (RedHandleOutput)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_STRUCTS_MEMORY)        { redStructsMemoryFree(context, gpu, (RedHandleStructsMemory)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_CPU_SIGNAL)            { redDestroyCpuSignal(context, gpu, (RedHandleCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_GPU_SIGNAL)            { redDestroyGpuSignal(context, gpu, (RedHandleGpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_GPU_TO_CPU_SIGNAL)     { redDestroyGpuToCpuSignal(context, gpu, (RedHandleGpuToCpuSignal)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_SURFACE)               { redDestroySurface(context, gpu, (RedHandleSurface)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED_HANDLE_TYPE_PRESENT)               { redDestroyPresent(context, gpu, (RedHandlePresent)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED2_HANDLE_TYPE_STRUCT_DECLARATION)   { red2DestroyStructDeclaration(context, gpu, (Red2HandleStructDeclaration)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED2_HANDLE_TYPE_PROCEDURE_PARAMETERS) { red2DestroyProcedureParameters(context, gpu, (Red2HandleProcedureParameters)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (handleType == RED2_HANDLE_TYPE_CALLS)                { red2DestroyCalls(context, gpu, (Red2HandleCalls)handle, optionalFile, optionalLine, optionalUserData); }
-  else if (optionalCustomHandleAndHandleTypeDestroyCallback != NULL) {
-    void (*customHandleAndHandleTypeDestroyCallback)(uint64_t handle, unsigned handleType) = (void (*)(uint64_t, unsigned handleType))optionalCustomHandleAndHandleTypeDestroyCallback;
-    customHandleAndHandleTypeDestroyCallback(handle, handleType);
-  } else {
-    redMark("[REDGPU 2][TODO(Constantine)] The handle is not destroyed, and no custom destroy callback was set, need to implement destruction of the handle type here, in this part of REDGPU 2 code.", optionalFile, optionalLine, optionalUserData);
-  }
-}
-
 void red2CallsSet(
   Red2HandleCalls calls,
   RedStatuses * outStatuses,
@@ -532,9 +532,20 @@ void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDest
   handle->handlesToDestroyWhenCallsAreResetType.push_back(handleToDestroyWhenCallsAreResetType);
 }
 
-void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCallSetProcedureOutput address, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormat, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorTexturesCountMax8, const RedHandleTexture * colorTextures, const RedFormat * colorTexturesFormat, const RedMultisampleCountBitflag * colorTexturesMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCallSetProcedureOutput address, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormat, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorsTextureCountMax8, const RedHandleTexture * colorsTexture, const RedFormat * colorsTextureFormat, const RedMultisampleCountBitflag * colorsTextureMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-
+#ifdef REDGPU_USE_REDGPU_X
+  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
+  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallSetProcedureOutput(handle->handle, depthStencilTexture, colorsTextureCountMax8, colorsTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, NULL);
+#else
   RedHandleOutputDeclaration outputDeclaration = NULL;
   {
     RedOutputDeclarationMembers members /*---*/;
@@ -546,23 +557,23 @@ void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCall
     members.depthStencilStencilSetProcedureOutputOp   = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
     members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
     members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
-    members.colorsCount                               = colorTexturesCountMax8;
-    members.colorsFormat[0]                           = colorTexturesCountMax8 > 0 ? colorTexturesFormat[0] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[1]                           = colorTexturesCountMax8 > 1 ? colorTexturesFormat[1] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[2]                           = colorTexturesCountMax8 > 2 ? colorTexturesFormat[2] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[3]                           = colorTexturesCountMax8 > 3 ? colorTexturesFormat[3] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[4]                           = colorTexturesCountMax8 > 4 ? colorTexturesFormat[4] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[5]                           = colorTexturesCountMax8 > 5 ? colorTexturesFormat[5] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[6]                           = colorTexturesCountMax8 > 6 ? colorTexturesFormat[6] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[7]                           = colorTexturesCountMax8 > 7 ? colorTexturesFormat[7] : RED_FORMAT_UNDEFINED;
-    members.colorsMultisampleCount[0]                 = colorTexturesCountMax8 > 0 ? colorTexturesMultisampleCount[0] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
-    members.colorsMultisampleCount[1]                 = colorTexturesCountMax8 > 1 ? colorTexturesMultisampleCount[1] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
-    members.colorsMultisampleCount[2]                 = colorTexturesCountMax8 > 2 ? colorTexturesMultisampleCount[2] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
-    members.colorsMultisampleCount[3]                 = colorTexturesCountMax8 > 3 ? colorTexturesMultisampleCount[3] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
-    members.colorsMultisampleCount[4]                 = colorTexturesCountMax8 > 4 ? colorTexturesMultisampleCount[4] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
-    members.colorsMultisampleCount[5]                 = colorTexturesCountMax8 > 5 ? colorTexturesMultisampleCount[5] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
-    members.colorsMultisampleCount[6]                 = colorTexturesCountMax8 > 6 ? colorTexturesMultisampleCount[6] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
-    members.colorsMultisampleCount[7]                 = colorTexturesCountMax8 > 7 ? colorTexturesMultisampleCount[7] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsCount                               = colorsTextureCountMax8;
+    members.colorsFormat[0]                           = colorsTextureCountMax8 > 0 ? colorsTextureFormat[0] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[1]                           = colorsTextureCountMax8 > 1 ? colorsTextureFormat[1] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = colorsTextureCountMax8 > 2 ? colorsTextureFormat[2] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = colorsTextureCountMax8 > 3 ? colorsTextureFormat[3] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = colorsTextureCountMax8 > 4 ? colorsTextureFormat[4] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = colorsTextureCountMax8 > 5 ? colorsTextureFormat[5] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = colorsTextureCountMax8 > 6 ? colorsTextureFormat[6] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = colorsTextureCountMax8 > 7 ? colorsTextureFormat[7] : RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = colorsTextureCountMax8 > 0 ? colorsTextureMultisampleCount[0] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[1]                 = colorsTextureCountMax8 > 1 ? colorsTextureMultisampleCount[1] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = colorsTextureCountMax8 > 2 ? colorsTextureMultisampleCount[2] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = colorsTextureCountMax8 > 3 ? colorsTextureMultisampleCount[3] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = colorsTextureCountMax8 > 4 ? colorsTextureMultisampleCount[4] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = colorsTextureCountMax8 > 5 ? colorsTextureMultisampleCount[5] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = colorsTextureCountMax8 > 6 ? colorsTextureMultisampleCount[6] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = colorsTextureCountMax8 > 7 ? colorsTextureMultisampleCount[7] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
     members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
     members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
     members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
@@ -600,15 +611,15 @@ void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCall
   {
     RedOutputMembers outputMembers /*---*/;
     outputMembers.depthStencil = depthStencilTexture;
-    outputMembers.colorsCount  = colorTexturesCountMax8;
-    outputMembers.colors[0]    = colorTexturesCountMax8 > 0 ? colorTextures[0] : NULL;
-    outputMembers.colors[1]    = colorTexturesCountMax8 > 1 ? colorTextures[1] : NULL;
-    outputMembers.colors[2]    = colorTexturesCountMax8 > 2 ? colorTextures[2] : NULL;
-    outputMembers.colors[3]    = colorTexturesCountMax8 > 3 ? colorTextures[3] : NULL;
-    outputMembers.colors[4]    = colorTexturesCountMax8 > 4 ? colorTextures[4] : NULL;
-    outputMembers.colors[5]    = colorTexturesCountMax8 > 5 ? colorTextures[5] : NULL;
-    outputMembers.colors[6]    = colorTexturesCountMax8 > 6 ? colorTextures[6] : NULL;
-    outputMembers.colors[7]    = colorTexturesCountMax8 > 7 ? colorTextures[7] : NULL;
+    outputMembers.colorsCount  = colorsTextureCountMax8;
+    outputMembers.colors[0]    = colorsTextureCountMax8 > 0 ? colorsTexture[0] : NULL;
+    outputMembers.colors[1]    = colorsTextureCountMax8 > 1 ? colorsTexture[1] : NULL;
+    outputMembers.colors[2]    = colorsTextureCountMax8 > 2 ? colorsTexture[2] : NULL;
+    outputMembers.colors[3]    = colorsTextureCountMax8 > 3 ? colorsTexture[3] : NULL;
+    outputMembers.colors[4]    = colorsTextureCountMax8 > 4 ? colorsTexture[4] : NULL;
+    outputMembers.colors[5]    = colorsTextureCountMax8 > 5 ? colorsTexture[5] : NULL;
+    outputMembers.colors[6]    = colorsTextureCountMax8 > 6 ? colorsTexture[6] : NULL;
+    outputMembers.colors[7]    = colorsTextureCountMax8 > 7 ? colorsTexture[7] : NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
     if (output.handle == NULL) {
       return;
@@ -617,11 +628,25 @@ void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCall
   }
 
   redCallSetProcedureOutput(address, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, depthStencilTexture == NULL ? 0 : 1, colorTexturesCountMax8, 0, 0, NULL, NULL, NULL);
+#endif
 }
 
 void red2CallEndRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCallEndProcedureOutput address) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+#ifdef REDGPU_USE_REDGPU_X
+  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
+  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#else
   redCallEndProcedureOutput(address, handle->handle);
+#endif
 }
 
 void red2CallsFreeAllInlineStructsMemorys(
