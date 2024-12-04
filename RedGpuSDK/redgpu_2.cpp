@@ -1401,6 +1401,34 @@ void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barri
   volatile int nothing = 0;
 }
 
+void red2RedOnlyCallSetImageStateUsable(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
+#ifndef REDGPU_USE_REDGPU_X
+  RedUsageImage * imageUsages = new(std::nothrow) RedUsageImage[imagesCount] /*---*/;
+  if (imageUsages == NULL) {
+    return;
+  }
+  for (uint64_t i = 0; i < imagesCount; i += 1) {
+    imageUsages[i].barrierSplit           = RED_BARRIER_SPLIT_NONE;
+    imageUsages[i].oldAccessStages        = 0;
+    imageUsages[i].newAccessStages        = 0;
+    imageUsages[i].oldAccess              = 0;
+    imageUsages[i].newAccess              = 0;
+    imageUsages[i].oldState               = RED_STATE_UNUSABLE;
+    imageUsages[i].newState               = RED_STATE_USABLE;
+    imageUsages[i].queueFamilyIndexSource =-1;
+    imageUsages[i].queueFamilyIndexTarget =-1;
+    imageUsages[i].image                  = images[i];
+    imageUsages[i].imageAllParts          = imagesAllParts;
+    imageUsages[i].imageLevelsFirst       = 0;
+    imageUsages[i].imageLevelsCount       =-1;
+    imageUsages[i].imageLayersFirst       = 0;
+    imageUsages[i].imageLayersCount       =-1;
+  }
+  redCallUsageAliasOrderBarrier(address, calls, context, 0, NULL, imagesCount, imageUsages, 0, NULL, 0, NULL, 0);
+  delete[] imageUsages;
+#endif
+}
+
 // NOTE(Constantine): Does nothing on REDGPU X.
 void red2RedOnlyQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * optionalFile, int optionalLine, void * optionalUserData) {
 #ifndef REDGPU_USE_REDGPU_X

@@ -128,6 +128,8 @@ REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallBarrierFinishCpuUpload   
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallBarrierFinishCpuReadback  (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays);
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallGlobalMemoryBarrier       (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
 
+REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyCallSetImageStateUsable       (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts);
+
 REDGPU_2_DECLSPEC void     REDGPU_2_API red2RedOnlyQueueWaitIdle                 (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 // REDGPU 2 changes from 28 Nov 2024:
