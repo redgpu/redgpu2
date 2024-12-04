@@ -1586,6 +1586,14 @@ unsigned red2RedXOnlyImageGetLayersCount(RedHandleImage image) {
 #endif
 }
 
+// NOTE(Constantine): Does nothing on REDGPU.
+void red2RedXOnlyCallCopyImageRegion(RedHandleCalls calls, unsigned copiesCount, const void * copies) {
+#ifdef REDGPU_USE_REDGPU_X
+  redXCallCopyImageRegion(calls, copiesCount, copies);
+#endif
+  volatile int nothing = 0;
+}
+
 // NOTE(Constantine): Does nothing on REDGPU X.
 void red2RedOnlyCallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion) {
 #ifndef REDGPU_USE_REDGPU_X
@@ -1595,7 +1603,7 @@ void red2RedOnlyCallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAlias
 }
 
 // NOTE(Constantine): Does nothing on REDGPU.
-void red2RedXOnlyCallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
+void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
 #ifdef REDGPU_USE_REDGPU_X
   redXCallUsageAliasOrderBarrier(calls, barriersCount, barriers);
 #endif
