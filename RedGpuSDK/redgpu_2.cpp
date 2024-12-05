@@ -1605,98 +1605,98 @@ void * red2RedXOnlyImageGetHandleResource(RedHandleImage image) {
 }
 
 void red2CallGpuToCpuSignalSignal(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleGpuToCpuSignal signalGpuToCpuSignal, unsigned setTo8192) {
-  // TODO
+  addresses->redCallGpuToCpuSignalSignal(calls, signalGpuToCpuSignal, setTo8192);
 }
 
 void red2CallCopyArrayToArray(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray arrayR, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayRange * ranges) {
-  // TODO
+  addresses->redCallCopyArrayToArray(calls, arrayR, arrayW, rangesCount, ranges);
 }
 
 void red2CallProcedure(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned vertexCount, unsigned instanceCount, unsigned vertexFirst, unsigned instanceFirst) {
-  // TODO
+  addresses->redCallProcedure(calls, vertexCount, instanceCount, vertexFirst, instanceFirst);
 }
 
 void red2CallProcedureIndexed(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned indexCount, unsigned instanceCount, unsigned indexFirst, int vertexBase, unsigned instanceFirst) {
-  // TODO
+  addresses->redCallProcedureIndexed(calls, indexCount, instanceCount, indexFirst, vertexBase, instanceFirst);
 }
 
 void red2CallProcedureCompute(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned workgroupsCountX, unsigned workgroupsCountY, unsigned workgroupsCountZ) {
-  // TODO
+  addresses->redCallProcedureCompute(calls, workgroupsCountX, workgroupsCountY, workgroupsCountZ);
 }
 
 void red2CallSetProcedure(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedure procedure) {
-  // TODO
+  addresses->redCallSetProcedure(calls, procedureType, procedure);
 }
 
 void red2CallSetProcedureIndices(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray array, uint64_t setTo0, unsigned setTo1) {
-  // TODO
+  addresses->redCallSetProcedureIndices(calls, array, setTo0, setTo1);
 }
 
 void red2CallSetProcedureParametersVariables(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleProcedureParameters procedureParameters, RedVisibleToStageBitflags visibleToStages, unsigned variablesBytesFirst, unsigned dataBytesCount, const void * data) {
-  // TODO
+  addresses->redCallSetProcedureParametersVariables(calls, procedureParameters, visibleToStages, variablesBytesFirst, dataBytesCount, data);
 }
 
 void red2CallSetProcedureParametersStructs(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsFirst, unsigned structsCount, const RedHandleStruct * structs, unsigned setTo0, size_t setTo00) {
-  // TODO
+  addresses->redCallSetProcedureParametersStructs(calls, procedureType, procedureParameters, procedureParametersDeclarationStructsDeclarationsFirst, structsCount, structs, setTo0, setTo00);
 }
 
 void red2CallSetProcedureParametersHandles(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsCount, unsigned handlesCount, const RedProcedureParametersHandle * handles) {
-  // TODO
+  addresses->redCallSetProcedureParametersHandles(calls, procedureType, procedureParameters, procedureParametersDeclarationStructsDeclarationsCount, handlesCount, handles);
 }
 
 void red2CallSetDynamicStencilReference(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedStencilFace face, unsigned reference) {
-  // TODO
+  addresses->redCallSetDynamicStencilReference(calls, face, reference);
 }
 
 void red2CallSetDynamicBlendConstants(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, const float * blendConstants) {
-  // TODO
+  addresses->redCallSetDynamicBlendConstants(calls, blendConstants);
 }
 
 void red2CallSetDynamicViewport(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, float x, float y, float width, float height, float depthMin, float depthMax) {
-  // TODO
+  redCallSetDynamicViewport(addresses->redCallSetDynamicViewport, calls, x, y, width, height, depthMin, depthMax);
 }
 
 void red2CallSetDynamicScissor(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, int x, int y, unsigned width, unsigned height) {
-  // TODO
+  redCallSetDynamicScissor(addresses->redCallSetDynamicScissor, calls, x, y, width, height);
 }
 
 void red2CallSetStructsMemory(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleStructsMemory structsMemory, RedHandleStructsMemory structsMemorySamplers) {
-  // TODO
+  redCallSetStructsMemory(addresses->redCallSetStructsMemory, calls, structsMemory, structsMemorySamplers);
 }
 
 void red2CallSetProcedureParameters(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters) {
-  // TODO
+  redCallSetProcedureParameters(addresses->redCallSetProcedureParameters, calls, procedureType, procedureParameters);
 }
 
 void red2CallMark(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, const char * mark) {
-  // TODO
+  redCallMark(addresses->redCallMark, calls, mark);
 }
 
 void red2CallMarkSet(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, const char * mark) {
-  // TODO
+  redCallMarkSet(addresses->redCallMarkSet, calls, mark);
 }
 
 void red2CallMarkEnd(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls) {
-  // TODO
+  redCallMarkEnd(addresses->redCallMarkEnd, calls);
 }
 
 void red2RedOnlyCallCopyImageToImage(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleImage imageW, unsigned setTo01, unsigned rangesCount, const RedCopyImageRange * ranges) {
 #ifndef REDGPU_USE_REDGPU_X
-  // TODO
+  addresses->redCallCopyImageToImage(calls, imageR, setTo1, imageW, setTo01, rangesCount, ranges);
 #endif
   volatile int nothing = 0;
 }
 
 void red2RedOnlyCallCopyArrayToImage(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray arrayR, RedHandleImage imageW, unsigned setTo1, unsigned rangesCount, const RedCopyArrayImageRange * ranges) {
 #ifndef REDGPU_USE_REDGPU_X
-  // TODO
+  addresses->redCallCopyArrayToImage(calls, arrayR, imageW, setTo1, rangesCount, ranges);
 #endif
   volatile int nothing = 0;
 }
 
 void red2RedOnlyCallCopyImageToArray(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayImageRange * ranges) {
 #ifndef REDGPU_USE_REDGPU_X
-  // TODO
+  addresses->redCallCopyImageToArray(calls, imageR, setTo1, arrayW, rangesCount, ranges);
 #endif
   volatile int nothing = 0;
 }

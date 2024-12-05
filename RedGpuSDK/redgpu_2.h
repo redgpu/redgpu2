@@ -164,11 +164,11 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2RedOnlyCallSetImageStateUsable     
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyPresentQueueWaitIdle          (RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyGetRedXAccessBitflagsFromRed (RedAccessBitflags access); // For red2RedXOnlyCallUsageAliasOrderBarrier
-REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyArrayGetHandleResource       (RedHandleArray array);     // For red2RedXOnlyCallUsageAliasOrderBarrier
-REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource       (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
 REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyArrayGetMemoryTypeIndex      (RedHandleArray array);     // For red2RedXOnlyCallUsageAliasOrderBarrier
 REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLevelsCount          (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
 REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLayersCount          (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
+REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyArrayGetHandleResource       (RedHandleArray array);     // For red2RedXOnlyCallUsageAliasOrderBarrier
+REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource       (RedHandleImage image);     // For red2RedXOnlyCallUsageAliasOrderBarrier
 
 // REDGPU 2 changes from 28 Nov 2024:
 
