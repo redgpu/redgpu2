@@ -1737,14 +1737,14 @@ void red2RedXOnlyCallCopyImageRegion(RedHandleCalls calls, unsigned copiesCount,
   volatile int nothing = 0;
 }
 
-void red2RedOnlyCallUsageAliasOrderBarrier(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion) {
+void red2RedOnlyCallBarrierUsageAliasOrder(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion) {
 #ifndef REDGPU_USE_REDGPU_X
   redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, arrayUsagesCount, arrayUsages, imageUsagesCount, imageUsages, 0, NULL, 0, NULL, dependencyByRegion);
 #endif
   volatile int nothing = 0;
 }
 
-void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
+void red2RedXOnlyCallBarrierUsageAliasOrder(RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
 #ifdef REDGPU_USE_REDGPU_X
   redXCallUsageAliasOrderBarrier(calls, barriersCount, barriers);
 #endif
@@ -1845,7 +1845,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
   return RED_STATUS_SUCCESS;
 }
 
-void red2RedOnlyCallGlobalMemoryBarrier(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls) {
+void red2RedOnlyCallBarrierGlobalMemory(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls) {
 #ifndef REDGPU_USE_REDGPU_X
   VkMemoryBarrier globalBarrier;
   globalBarrier.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
