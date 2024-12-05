@@ -1757,7 +1757,7 @@ RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses
   if (imageUsages == NULL) {
     return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
   }
-  for (uint64_t i = 0; i < imagesCount; i += 1) {
+  for (unsigned i = 0; i < imagesCount; i += 1) {
     imageUsages[i].barrierSplit           = RED_BARRIER_SPLIT_NONE;
     imageUsages[i].oldAccessStages        = 0;
     imageUsages[i].newAccessStages        = 0;
@@ -1796,11 +1796,11 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
-  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount]();
+  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
   if (bufferBarriers == NULL) {
     return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
   }
-  for (uint64_t i = 0; i < bufferBarriersCount; i += 1) {
+  for (unsigned i = 0; i < bufferBarriersCount; i += 1) {
     bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
     bufferBarriers[i].pNext               = NULL;
     bufferBarriers[i].srcAccessMask       = VK_ACCESS_HOST_WRITE_BIT;
@@ -1821,11 +1821,11 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
-  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount]();
+  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
   if (bufferBarriers == NULL) {
     return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
   }
-  for (uint64_t i = 0; i < bufferBarriersCount; i += 1) {
+  for (unsigned i = 0; i < bufferBarriersCount; i += 1) {
     bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
     bufferBarriers[i].pNext               = NULL;
     bufferBarriers[i].srcAccessMask       = VK_ACCESS_MEMORY_WRITE_BIT;
@@ -1844,7 +1844,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
 
 void red2RedOnlyCallBarrierGlobalMemory(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls) {
 #ifndef REDGPU_USE_REDGPU_X
-  VkMemoryBarrier globalBarrier;
+  VkMemoryBarrier globalBarrier /*---*/;
   globalBarrier.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
   globalBarrier.pNext         = NULL;
   globalBarrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
@@ -1852,4 +1852,51 @@ void red2RedOnlyCallBarrierGlobalMemory(const RedCallProceduresAndAddresses * ad
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 1, &globalBarrier, 0, NULL, 0, NULL);
 #endif
   volatile int nothing = 0;
+}
+
+RedStatus red2RedOnlyCallBarrierResourceMemory(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays, unsigned imagesCount, const RedHandleImage * images, const RedImagePartBitflags * imagesAllParts) {
+  if (arraysCount == 0 && imagesCount == 0) { return RED_STATUS_SUCCESS; }
+#ifndef REDGPU_USE_REDGPU_X
+  unsigned                bufferBarriersCount = arraysCount;
+  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
+  if (bufferBarriers == NULL) {
+    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  }
+  unsigned                imageBarriersCount  = imagesCount;
+  VkImageMemoryBarrier *  imageBarriers       = new(std::nothrow) VkImageMemoryBarrier [imageBarriersCount] /*---*/;
+  if (imageBarriers == NULL) {
+    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  }
+  for (unsigned i = 0; i < bufferBarriersCount; i += 1) {
+    bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
+    bufferBarriers[i].pNext               = NULL;
+    bufferBarriers[i].srcAccessMask       = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+    bufferBarriers[i].dstAccessMask       = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+    bufferBarriers[i].srcQueueFamilyIndex =-1;
+    bufferBarriers[i].dstQueueFamilyIndex =-1;
+    bufferBarriers[i].buffer              = (VkBuffer)arrays[i];
+    bufferBarriers[i].offset              = 0;
+    bufferBarriers[i].size                =-1;
+  }
+  for (unsigned i = 0; i < imageBarriersCount; i += 1) {
+    imageBarriers[i].sType                           = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    imageBarriers[i].pNext                           = NULL;
+    imageBarriers[i].srcAccessMask                   = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+    imageBarriers[i].dstAccessMask                   = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+    imageBarriers[i].oldLayout                       = VK_IMAGE_LAYOUT_GENERAL;
+    imageBarriers[i].newLayout                       = VK_IMAGE_LAYOUT_GENERAL;
+    imageBarriers[i].srcQueueFamilyIndex             =-1;
+    imageBarriers[i].dstQueueFamilyIndex             =-1;
+    imageBarriers[i].image                           = (VkImage)images[i];
+    imageBarriers[i].subresourceRange.aspectMask     = (VkImageAspectFlags)imagesAllParts[i];
+    imageBarriers[i].subresourceRange.baseMipLevel   = 0;
+    imageBarriers[i].subresourceRange.levelCount     =-1;
+    imageBarriers[i].subresourceRange.baseArrayLayer = 0;
+    imageBarriers[i].subresourceRange.layerCount     =-1;
+  }
+  ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, imageBarriersCount, imageBarriers);
+  delete[] bufferBarriers;
+  delete[] imageBarriers;
+#endif
+  return RED_STATUS_SUCCESS;
 }
