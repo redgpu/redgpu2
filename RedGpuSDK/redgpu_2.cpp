@@ -608,7 +608,733 @@ void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDest
   handle->handlesToDestroyWhenCallsAreResetType.push_back(handleToDestroyWhenCallsAreResetType);
 }
 
-void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, unsigned depthStencilTextureFormat, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorsTextureCountMax8, const RedHandleTexture * colorsTexture, const unsigned * colorsTextureFormat, const RedMultisampleCountBitflag * colorsTextureMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2CallResolveDepthStencilTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture sourceDepthStencilTexture, RedFormat sourceDepthStencilTextureFormatRedOnly, RedMultisampleCountBitflag sourceDepthStencilTextureMultisampleCount, RedHandleTexture targetDepthStencilTexture, unsigned targetDepthStencilTextureFormatRedXOnly, RedResolveMode depthResolveModeRedOnly, RedResolveMode stencilResolveModeRedOnly, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+#ifdef REDGPU_USE_REDGPU_X
+  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
+  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  // NOTE(Constantine):
+  // For REDGPU X, as of 28 Nov 2024, need to pass depth stencil
+  // texture via color render target slot to resolve them.
+  redXCallSetProcedureOutput(handle->handle, NULL, 1, (RedHandleTexture *)&sourceDepthStencilTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, NULL);
+#else
+  RedHandleOutputDeclaration  outputDeclaration = NULL;
+  RedOutputDeclarationMembers members /*---*/;
+  {
+    members.depthStencilEnable                        = 1;
+    members.depthStencilFormat                        = sourceDepthStencilTextureFormatRedOnly;
+    members.depthStencilMultisampleCount              = sourceDepthStencilTextureMultisampleCount;
+    members.depthStencilDepthSetProcedureOutputOp     = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilSetProcedureOutputOp   = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsCount                               = 0;
+    members.colorsFormat[0]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[1]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[1]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[3]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[4]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[5]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[6]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[7]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[0]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[1]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[2]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[3]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[4]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[5]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[6]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[7]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSharesMemoryWithAnotherMember[0]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[1]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[2]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[3]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[4]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[5]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[6]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[7]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    RedBool32 dependencyByRegion = 0;
+    RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
+    RedOutputDeclarationMembersResolveSources resolveSources /*---*/;
+    resolveSources.resolveModeDepth    = depthResolveModeRedOnly;
+    resolveSources.resolveModeStencil  = stencilResolveModeRedOnly;
+    resolveSources.resolveDepthStencil = 1;
+    resolveSources.resolveColors       = 0;
+    redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, &resolveSources, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outputDeclaration == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
+  }
+
+  RedOutput output = {};
+  {
+    RedOutputMembers outputMembers /*---*/;
+    outputMembers.depthStencil = sourceDepthStencilTexture;
+    outputMembers.colorsCount  = 0;
+    outputMembers.colors[0]    = NULL;
+    outputMembers.colors[1]    = NULL;
+    outputMembers.colors[2]    = NULL;
+    outputMembers.colors[3]    = NULL;
+    outputMembers.colors[4]    = NULL;
+    outputMembers.colors[5]    = NULL;
+    outputMembers.colors[6]    = NULL;
+    outputMembers.colors[7]    = NULL;
+    RedOutputMembersResolveTargets resolveTargets /*---*/;
+    resolveTargets.depthStencil = targetDepthStencilTexture;
+    resolveTargets.colors[0]    = NULL;
+    resolveTargets.colors[1]    = NULL;
+    resolveTargets.colors[2]    = NULL;
+    resolveTargets.colors[3]    = NULL;
+    resolveTargets.colors[4]    = NULL;
+    resolveTargets.colors[5]    = NULL;
+    resolveTargets.colors[6]    = NULL;
+    resolveTargets.colors[7]    = NULL;
+    redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, &resolveTargets, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (output.handle == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
+  }
+
+  redCallSetProcedureOutput(addresses->redCallSetProcedureOutput, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, members.depthStencilEnable, members.colorsCount, 0, 0, NULL, NULL, NULL);
+#endif
+
+#ifdef REDGPU_USE_REDGPU_X
+  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
+  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  // NOTE(Constantine):
+  // For REDGPU X, as of 28 Nov 2024, need to pass depth stencil
+  // texture via color render target slot to resolve them.
+  redXCallEndProcedureOutput(handle->handle, &targetDepthStencilTexture, &targetDepthStencilTextureFormatRedXOnly, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#else
+  redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
+#endif
+}
+
+void red2CallResolveColorTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture sourceColorTexture, RedFormat sourceColorTextureFormatRedOnly, RedMultisampleCountBitflag sourceColorTextureMultisampleCount, RedHandleTexture targetColorTexture, unsigned targetColorTextureFormatRedXOnly, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+#ifdef REDGPU_USE_REDGPU_X
+  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
+  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallSetProcedureOutput(handle->handle, NULL, 1, (RedHandleTexture *)sourceColorTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, NULL);
+#else
+  RedHandleOutputDeclaration  outputDeclaration = NULL;
+  RedOutputDeclarationMembers members /*---*/;
+  {
+    members.depthStencilEnable                        = 0;
+    members.depthStencilFormat                        = RED_FORMAT_UNDEFINED;
+    members.depthStencilMultisampleCount              = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.depthStencilDepthSetProcedureOutputOp     = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilSetProcedureOutputOp   = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsCount                               = 1;
+    members.colorsFormat[0]                           = sourceColorTextureFormatRedOnly;
+    members.colorsFormat[1]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = sourceColorTextureMultisampleCount;
+    members.colorsMultisampleCount[1]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[3]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[4]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[5]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[6]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[7]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[0]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[1]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[2]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[3]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[4]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[5]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[6]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[7]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSharesMemoryWithAnotherMember[0]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[1]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[2]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[3]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[4]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[5]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[6]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[7]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    RedBool32 dependencyByRegion = 0;
+    RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
+    RedOutputDeclarationMembersResolveSources resolveSources /*---*/;
+    resolveSources.resolveModeDepth    = RED_RESOLVE_MODE_NONE;
+    resolveSources.resolveModeStencil  = RED_RESOLVE_MODE_NONE;
+    resolveSources.resolveDepthStencil = 0;
+    resolveSources.resolveColors       = 1;
+    redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, &resolveSources, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outputDeclaration == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
+  }
+
+  RedOutput output = {};
+  {
+    RedOutputMembers outputMembers /*---*/;
+    outputMembers.depthStencil = NULL;
+    outputMembers.colorsCount  = 1;
+    outputMembers.colors[0]    = sourceColorTexture;
+    outputMembers.colors[1]    = NULL;
+    outputMembers.colors[2]    = NULL;
+    outputMembers.colors[3]    = NULL;
+    outputMembers.colors[4]    = NULL;
+    outputMembers.colors[5]    = NULL;
+    outputMembers.colors[6]    = NULL;
+    outputMembers.colors[7]    = NULL;
+    RedOutputMembersResolveTargets resolveTargets /*---*/;
+    resolveTargets.depthStencil = NULL;
+    resolveTargets.colors[0]    = targetColorTexture;
+    resolveTargets.colors[1]    = NULL;
+    resolveTargets.colors[2]    = NULL;
+    resolveTargets.colors[3]    = NULL;
+    resolveTargets.colors[4]    = NULL;
+    resolveTargets.colors[5]    = NULL;
+    resolveTargets.colors[6]    = NULL;
+    resolveTargets.colors[7]    = NULL;
+    redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, &resolveTargets, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (output.handle == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
+  }
+
+  redCallSetProcedureOutput(addresses->redCallSetProcedureOutput, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, members.depthStencilEnable, members.colorsCount, 0, 0, NULL, NULL, NULL);
+#endif
+
+#ifdef REDGPU_USE_REDGPU_X
+  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
+  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallEndProcedureOutput(handle->handle, &targetColorTexture, &targetColorTextureFormatRedXOnly, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#else
+  redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
+#endif
+}
+
+void red2CallClearDepthStencilTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormatRedOnly, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, RedBool32 clearDepth, float depthClearValue, RedBool32 clearStencil, unsigned stencilClearValue, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+#ifdef REDGPU_USE_REDGPU_X
+  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
+  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallSetProcedureOutput(handle->handle, depthStencilTexture, 0, NULL, clearDepth == 1 ? RED_SET_PROCEDURE_OUTPUT_OP_CLEAR : RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, clearStencil == 1 ? RED_SET_PROCEDURE_OUTPUT_OP_CLEAR : RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, depthClearValue, stencilClearValue, NULL);
+#else
+  RedHandleOutputDeclaration  outputDeclaration = NULL;
+  RedOutputDeclarationMembers members /*---*/;
+  {
+    members.depthStencilEnable                        = 1;
+    members.depthStencilFormat                        = depthStencilTextureFormatRedOnly;
+    members.depthStencilMultisampleCount              = depthStencilTextureMultisampleCount;
+    members.depthStencilDepthSetProcedureOutputOp     = clearDepth   == 1 ? RED_SET_PROCEDURE_OUTPUT_OP_CLEAR : RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilSetProcedureOutputOp   = clearStencil == 1 ? RED_SET_PROCEDURE_OUTPUT_OP_CLEAR : RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsCount                               = 0;
+    members.colorsFormat[0]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[1]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[1]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[3]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[4]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[5]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[6]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[7]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[0]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[1]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[2]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[3]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[4]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[5]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[6]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[7]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSharesMemoryWithAnotherMember[0]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[1]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[2]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[3]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[4]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[5]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[6]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[7]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    RedBool32 dependencyByRegion = 0;
+    RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
+    redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outputDeclaration == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
+  }
+
+  RedOutput output = {};
+  {
+    RedOutputMembers outputMembers /*---*/;
+    outputMembers.depthStencil = depthStencilTexture;
+    outputMembers.colorsCount  = members.colorsCount;
+    outputMembers.colors[0]    = NULL;
+    outputMembers.colors[1]    = NULL;
+    outputMembers.colors[2]    = NULL;
+    outputMembers.colors[3]    = NULL;
+    outputMembers.colors[4]    = NULL;
+    outputMembers.colors[5]    = NULL;
+    outputMembers.colors[6]    = NULL;
+    outputMembers.colors[7]    = NULL;
+    redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (output.handle == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
+  }
+
+  redCallSetProcedureOutput(addresses->redCallSetProcedureOutput, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, members.depthStencilEnable, members.colorsCount, depthClearValue, stencilClearValue, NULL, NULL, NULL);
+#endif
+
+#ifdef REDGPU_USE_REDGPU_X
+  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
+  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#else
+  redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
+#endif
+}
+
+void red2CallClearColorTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture colorTexture, RedFormat colorTextureFormatRedOnly, RedMultisampleCountBitflag colorTextureMultisampleCount, float colorClearValueR, float colorClearValueG, float colorClearValueB, float colorClearValueA, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  RedColorsClearValuesFloat colorsClearValuesFloat /*---*/;
+  colorsClearValuesFloat.r[0] = colorClearValueR;
+  colorsClearValuesFloat.g[0] = colorClearValueG;
+  colorsClearValuesFloat.b[0] = colorClearValueB;
+  colorsClearValuesFloat.a[0] = colorClearValueA;
+  // NOTE(Constantine): Not setting clear values for other render targets.
+#ifdef REDGPU_USE_REDGPU_X
+  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
+  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+  redXCallSetProcedureOutput(handle->handle, NULL, 1, (RedHandleTexture *)&colorTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, &colorsClearValuesFloat);
+#else
+  RedHandleOutputDeclaration  outputDeclaration = NULL;
+  RedOutputDeclarationMembers members /*---*/;
+  {
+    members.depthStencilEnable                        = 0;
+    members.depthStencilFormat                        = RED_FORMAT_UNDEFINED;
+    members.depthStencilMultisampleCount              = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.depthStencilDepthSetProcedureOutputOp     = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilSetProcedureOutputOp   = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsCount                               = 1;
+    members.colorsFormat[0]                           = colorTextureFormatRedOnly;
+    members.colorsFormat[1]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = colorTextureMultisampleCount;
+    members.colorsMultisampleCount[1]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsSetProcedureOutputOp[3]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsSetProcedureOutputOp[4]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsSetProcedureOutputOp[5]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsSetProcedureOutputOp[6]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsSetProcedureOutputOp[7]             = RED_SET_PROCEDURE_OUTPUT_OP_CLEAR;
+    members.colorsEndProcedureOutputOp[0]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[1]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[2]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[3]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[4]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[5]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[6]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[7]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSharesMemoryWithAnotherMember[0]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[1]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[2]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[3]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[4]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[5]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[6]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[7]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    RedBool32 dependencyByRegion = 0;
+    RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
+    redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outputDeclaration == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
+  }
+
+  RedOutput output = {};
+  {
+    RedOutputMembers outputMembers /*---*/;
+    outputMembers.depthStencil = NULL;
+    outputMembers.colorsCount  = members.colorsCount;
+    outputMembers.colors[0]    = colorTexture;
+    outputMembers.colors[1]    = NULL;
+    outputMembers.colors[2]    = NULL;
+    outputMembers.colors[3]    = NULL;
+    outputMembers.colors[4]    = NULL;
+    outputMembers.colors[5]    = NULL;
+    outputMembers.colors[6]    = NULL;
+    outputMembers.colors[7]    = NULL;
+    redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (output.handle == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
+  }
+
+  redCallSetProcedureOutput(addresses->redCallSetProcedureOutput, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, members.depthStencilEnable, members.colorsCount, 0, 0, &colorsClearValuesFloat, NULL, NULL);
+#endif
+
+#ifdef REDGPU_USE_REDGPU_X
+  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
+  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#else
+  redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
+#endif
+}
+
+void red2CallDiscardDepthStencilTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormatRedOnly, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+#ifdef REDGPU_USE_REDGPU_X
+  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
+  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallSetProcedureOutput(handle->handle, depthStencilTexture, 0, NULL, RED_SET_PROCEDURE_OUTPUT_OP_DISCARD, RED_SET_PROCEDURE_OUTPUT_OP_DISCARD, colorsSetOps, 0, 0, NULL);
+#else
+  RedHandleOutputDeclaration  outputDeclaration = NULL;
+  RedOutputDeclarationMembers members /*---*/;
+  {
+    members.depthStencilEnable                        = 1;
+    members.depthStencilFormat                        = depthStencilTextureFormatRedOnly;
+    members.depthStencilMultisampleCount              = depthStencilTextureMultisampleCount;
+    members.depthStencilDepthSetProcedureOutputOp     = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.depthStencilStencilSetProcedureOutputOp   = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsCount                               = 0;
+    members.colorsFormat[0]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[1]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[1]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[3]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[4]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[5]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[6]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSetProcedureOutputOp[7]             = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[0]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[1]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[2]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[3]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[4]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[5]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[6]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsEndProcedureOutputOp[7]             = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.colorsSharesMemoryWithAnotherMember[0]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[1]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[2]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[3]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[4]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[5]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[6]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[7]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    RedBool32 dependencyByRegion = 0;
+    RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
+    redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outputDeclaration == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
+  }
+
+  RedOutput output = {};
+  {
+    RedOutputMembers outputMembers /*---*/;
+    outputMembers.depthStencil = depthStencilTexture;
+    outputMembers.colorsCount  = members.colorsCount;
+    outputMembers.colors[0]    = NULL;
+    outputMembers.colors[1]    = NULL;
+    outputMembers.colors[2]    = NULL;
+    outputMembers.colors[3]    = NULL;
+    outputMembers.colors[4]    = NULL;
+    outputMembers.colors[5]    = NULL;
+    outputMembers.colors[6]    = NULL;
+    outputMembers.colors[7]    = NULL;
+    redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (output.handle == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
+  }
+
+  redCallSetProcedureOutput(addresses->redCallSetProcedureOutput, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, members.depthStencilEnable, members.colorsCount, 0, 0, NULL, NULL, NULL);
+#endif
+
+#ifdef REDGPU_USE_REDGPU_X
+  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
+  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#else
+  redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
+#endif
+}
+
+void red2CallDiscardColorTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture colorTexture, RedFormat colorTextureFormatRedOnly, RedMultisampleCountBitflag colorTextureMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+#ifdef REDGPU_USE_REDGPU_X
+  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
+  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+  redXCallSetProcedureOutput(handle->handle, NULL, 1, (RedHandleTexture *)&colorTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, NULL);
+#else
+  RedHandleOutputDeclaration  outputDeclaration = NULL;
+  RedOutputDeclarationMembers members /*---*/;
+  {
+    members.depthStencilEnable                        = 0;
+    members.depthStencilFormat                        = RED_FORMAT_UNDEFINED;
+    members.depthStencilMultisampleCount              = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.depthStencilDepthSetProcedureOutputOp     = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilSetProcedureOutputOp   = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+    members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsCount                               = 1;
+    members.colorsFormat[0]                           = colorTextureFormatRedOnly;
+    members.colorsFormat[1]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = RED_FORMAT_UNDEFINED;
+    members.colorsMultisampleCount[0]                 = colorTextureMultisampleCount;
+    members.colorsMultisampleCount[1]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[2]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[3]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[4]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[5]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[6]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsMultisampleCount[7]                 = RED_MULTISAMPLE_COUNT_BITFLAG_1;
+    members.colorsSetProcedureOutputOp[0]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSetProcedureOutputOp[1]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSetProcedureOutputOp[2]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSetProcedureOutputOp[3]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSetProcedureOutputOp[4]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSetProcedureOutputOp[5]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSetProcedureOutputOp[6]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSetProcedureOutputOp[7]             = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[0]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[1]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[2]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[3]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[4]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[5]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[6]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsEndProcedureOutputOp[7]             = RED_END_PROCEDURE_OUTPUT_OP_DISCARD;
+    members.colorsSharesMemoryWithAnotherMember[0]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[1]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[2]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[3]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[4]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[5]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[6]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    members.colorsSharesMemoryWithAnotherMember[7]    = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
+    RedBool32 dependencyByRegion = 0;
+    RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
+    redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outputDeclaration == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
+  }
+
+  RedOutput output = {};
+  {
+    RedOutputMembers outputMembers /*---*/;
+    outputMembers.depthStencil = NULL;
+    outputMembers.colorsCount  = members.colorsCount;
+    outputMembers.colors[0]    = colorTexture;
+    outputMembers.colors[1]    = NULL;
+    outputMembers.colors[2]    = NULL;
+    outputMembers.colors[3]    = NULL;
+    outputMembers.colors[4]    = NULL;
+    outputMembers.colors[5]    = NULL;
+    outputMembers.colors[6]    = NULL;
+    outputMembers.colors[7]    = NULL;
+    redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (output.handle == NULL) {
+      return;
+    }
+    red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
+  }
+
+  redCallSetProcedureOutput(addresses->redCallSetProcedureOutput, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, members.depthStencilEnable, members.colorsCount, 0, 0, NULL, NULL, NULL);
+#endif
+
+#ifdef REDGPU_USE_REDGPU_X
+  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
+  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
+  redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#else
+  redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
+#endif
+}
+
+void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormatRedOnly, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorsTextureCountMax8, const RedHandleTexture * colorsTexture, const RedFormat * colorsTextureFormatRedOnly, const RedMultisampleCountBitflag * colorsTextureMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
 #ifdef REDGPU_USE_REDGPU_X
   RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
@@ -626,7 +1352,7 @@ void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, R
   {
     RedOutputDeclarationMembers members /*---*/;
     members.depthStencilEnable                        = depthStencilTexture == NULL ? 0 : 1;
-    members.depthStencilFormat                        = (RedFormat)depthStencilTextureFormat;
+    members.depthStencilFormat                        = depthStencilTextureFormatRedOnly;
     members.depthStencilMultisampleCount              = depthStencilTextureMultisampleCount;
     members.depthStencilDepthSetProcedureOutputOp     = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
     members.depthStencilDepthEndProcedureOutputOp     = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
@@ -634,14 +1360,14 @@ void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, R
     members.depthStencilStencilEndProcedureOutputOp   = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
     members.depthStencilSharesMemoryWithAnotherMember = 0; // NOTE(Constantine): Render targets are not allowed to alias for now.
     members.colorsCount                               = colorsTextureCountMax8;
-    members.colorsFormat[0]                           = colorsTextureCountMax8 > 0 ? (RedFormat)colorsTextureFormat[0] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[1]                           = colorsTextureCountMax8 > 1 ? (RedFormat)colorsTextureFormat[1] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[2]                           = colorsTextureCountMax8 > 2 ? (RedFormat)colorsTextureFormat[2] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[3]                           = colorsTextureCountMax8 > 3 ? (RedFormat)colorsTextureFormat[3] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[4]                           = colorsTextureCountMax8 > 4 ? (RedFormat)colorsTextureFormat[4] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[5]                           = colorsTextureCountMax8 > 5 ? (RedFormat)colorsTextureFormat[5] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[6]                           = colorsTextureCountMax8 > 6 ? (RedFormat)colorsTextureFormat[6] : RED_FORMAT_UNDEFINED;
-    members.colorsFormat[7]                           = colorsTextureCountMax8 > 7 ? (RedFormat)colorsTextureFormat[7] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[0]                           = colorsTextureCountMax8 > 0 ? colorsTextureFormatRedOnly[0] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[1]                           = colorsTextureCountMax8 > 1 ? colorsTextureFormatRedOnly[1] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[2]                           = colorsTextureCountMax8 > 2 ? colorsTextureFormatRedOnly[2] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[3]                           = colorsTextureCountMax8 > 3 ? colorsTextureFormatRedOnly[3] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[4]                           = colorsTextureCountMax8 > 4 ? colorsTextureFormatRedOnly[4] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[5]                           = colorsTextureCountMax8 > 5 ? colorsTextureFormatRedOnly[5] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[6]                           = colorsTextureCountMax8 > 6 ? colorsTextureFormatRedOnly[6] : RED_FORMAT_UNDEFINED;
+    members.colorsFormat[7]                           = colorsTextureCountMax8 > 7 ? colorsTextureFormatRedOnly[7] : RED_FORMAT_UNDEFINED;
     members.colorsMultisampleCount[0]                 = colorsTextureCountMax8 > 0 ? colorsTextureMultisampleCount[0] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
     members.colorsMultisampleCount[1]                 = colorsTextureCountMax8 > 1 ? colorsTextureMultisampleCount[1] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
     members.colorsMultisampleCount[2]                 = colorsTextureCountMax8 > 2 ? colorsTextureMultisampleCount[2] : RED_MULTISAMPLE_COUNT_BITFLAG_1;
@@ -1352,7 +2078,7 @@ void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedH
   for (unsigned i = 0; i < callsCount; i += 1) {
     Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls[i];
     // NOTE(Constantine):
-    // D3D12 doesn't allow to submit the same command list that was already submitted until the
+    // D3D12 doesn't allow to submit the same command list that was already submitted until that
     // previous submission is finished, so having only one trackable queue submit ticket is fine.
     // > A direct command list can be submitted for execution multiple times, but the app is
     //   responsible for ensuring that the direct command list has finished executing on the GPU
