@@ -1351,6 +1351,13 @@ void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedH
 
   for (unsigned i = 0; i < callsCount; i += 1) {
     Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls[i];
+    // NOTE(Constantine):
+    // D3D12 doesn't allow to submit the same command list that was already submitted until the
+    // previous submission is finished, so having only one trackable queue submit ticket is fine.
+    // > A direct command list can be submitted for execution multiple times, but the app is
+    //   responsible for ensuring that the direct command list has finished executing on the GPU
+    //   before submitting it again.
+    //   https://learn.microsoft.com/en-us/windows/win32/direct3d12/design-philosophy-of-command-queues-and-command-lists
     handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmitTrackableTicketArrayIndex;
     handle->lastQueueSubmitTrackableTicket           = queueSubmitTrackableTicket;
   }
