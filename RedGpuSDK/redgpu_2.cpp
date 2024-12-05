@@ -534,6 +534,12 @@ void red2CallsGetQueueSubmitTrackableTicket(Red2HandleCalls calls, uint64_t * ou
   if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = handle->lastQueueSubmitTrackableTicket;           }
 }
 
+void red2CallsSetQueueSubmitTrackableTicket(Red2HandleCalls calls, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmissionTicketArrayIndex;
+  handle->lastQueueSubmitTrackableTicket           = queueSubmissionTicket;
+}
+
 void red2CallsSet(
   Red2HandleCalls calls,
   RedStatuses * outStatuses,
