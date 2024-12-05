@@ -1748,7 +1748,7 @@ void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barri
   volatile int nothing = 0;
 }
 
-RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
+RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
 #ifndef REDGPU_USE_REDGPU_X
   RedUsageImage * imageUsages = new(std::nothrow) RedUsageImage[imagesCount] /*---*/;
   if (imageUsages == NULL) {
@@ -1792,7 +1792,7 @@ void red2RedOnlyPresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHa
 #endif
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays) {
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
@@ -1818,7 +1818,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays) {
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
