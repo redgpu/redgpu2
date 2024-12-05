@@ -1777,7 +1777,6 @@ RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses
   redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, 0, NULL, imagesCount, imageUsages, 0, NULL, 0, NULL, 0);
   delete[] imageUsages;
 #endif
-  volatile int nothing = 0;
   return RED_STATUS_SUCCESS;
 }
 
@@ -1815,7 +1814,6 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, 0, NULL);
   delete[] bufferBarriers;
 #endif
-  volatile int nothing = 0;
   return RED_STATUS_SUCCESS;
 }
 
@@ -1841,7 +1839,6 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, 0, NULL);
   delete[] bufferBarriers;
 #endif
-  volatile int nothing = 0;
   return RED_STATUS_SUCCESS;
 }
 
