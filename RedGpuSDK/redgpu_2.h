@@ -113,9 +113,9 @@ REDGPU_2_DECLSPEC void                          REDGPU_2_API red2StructDeclarati
 REDGPU_2_DECLSPEC RedHandleProcedureParameters  REDGPU_2_API red2ProcedureParametersGetRedHandle          (Red2HandleProcedureParameters procedureParameters);
 REDGPU_2_DECLSPEC Red2HandleStructDeclaration   REDGPU_2_API red2ProcedureParametersGetStructDeclaration  (Red2HandleProcedureParameters procedureParameters, unsigned structIndex);
 REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsGetRedHandles                       (Red2HandleCalls calls, RedContext * outContext, RedHandleGpu * outGpu, RedCalls * outCalls);
-REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsSetHandlesToDestroyCustomCallback   (Red2HandleCalls calls, void * optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback);
 REDGPU_2_DECLSPEC uint64_t *                    REDGPU_2_API red2CallsGetHandlesToDestroy                 (Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetCount);
 REDGPU_2_DECLSPEC unsigned *                    REDGPU_2_API red2CallsGetHandlesToDestroyType             (Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetTypeCount);
+REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsSetHandlesToDestroyCustomCallback   (Red2HandleCalls calls, void * optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback);
 REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsGetQueueSubmitTrackableTicket       (Red2HandleCalls calls, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket);
 REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsSetQueueSubmitTrackableTicket       (Red2HandleCalls calls, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket);
 
