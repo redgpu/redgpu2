@@ -1730,7 +1730,6 @@ void red2RedOnlyCallCopyImageToArray(const RedCallProceduresAndAddresses * addre
   volatile int nothing = 0;
 }
 
-// NOTE(Constantine): Does nothing on REDGPU.
 void red2RedXOnlyCallCopyImageRegion(RedHandleCalls calls, unsigned copiesCount, const void * copies) {
 #ifdef REDGPU_USE_REDGPU_X
   redXCallCopyImageRegion(calls, copiesCount, copies);
@@ -1738,7 +1737,6 @@ void red2RedXOnlyCallCopyImageRegion(RedHandleCalls calls, unsigned copiesCount,
   volatile int nothing = 0;
 }
 
-// NOTE(Constantine): Does nothing on REDGPU X.
 void red2RedOnlyCallUsageAliasOrderBarrier(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion) {
 #ifndef REDGPU_USE_REDGPU_X
   redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, arrayUsagesCount, arrayUsages, imageUsagesCount, imageUsages, 0, NULL, 0, NULL, dependencyByRegion);
@@ -1746,7 +1744,6 @@ void red2RedOnlyCallUsageAliasOrderBarrier(const RedCallProceduresAndAddresses *
   volatile int nothing = 0;
 }
 
-// NOTE(Constantine): Does nothing on REDGPU.
 void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
 #ifdef REDGPU_USE_REDGPU_X
   redXCallUsageAliasOrderBarrier(calls, barriersCount, barriers);
@@ -1784,7 +1781,6 @@ RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses
   return RED_STATUS_SUCCESS;
 }
 
-// NOTE(Constantine): Does nothing on REDGPU X.
 void red2RedOnlyPresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData) {
 #ifndef REDGPU_USE_REDGPU_X
   // NOTE(Constantine): For present queues only, to finish all their work. This function call depends on a particular REDGPU implementation, see redgpu_wsi.h from Dec 01, 2022.
@@ -1797,7 +1793,6 @@ void red2RedOnlyPresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHa
 #include "redgpu_vk.h"
 #endif
 
-// NOTE(Constantine): Does nothing on REDGPU X.
 RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays) {
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
@@ -1823,7 +1818,6 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
   return RED_STATUS_SUCCESS;
 }
 
-// NOTE(Constantine): Does nothing on REDGPU X.
 RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays) {
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
@@ -1849,7 +1843,6 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
   return RED_STATUS_SUCCESS;
 }
 
-// NOTE(Constantine): Does nothing on REDGPU X.
 void red2RedOnlyCallGlobalMemoryBarrier(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls) {
 #ifndef REDGPU_USE_REDGPU_X
   VkMemoryBarrier globalBarrier;
