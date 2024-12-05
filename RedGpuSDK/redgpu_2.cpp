@@ -602,7 +602,7 @@ void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDest
   handle->handlesToDestroyWhenCallsAreResetType.push_back(handleToDestroyWhenCallsAreResetType);
 }
 
-void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCallSetProcedureOutput address, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, unsigned depthStencilTextureFormat, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorsTextureCountMax8, const RedHandleTexture * colorsTexture, const unsigned * colorsTextureFormat, const RedMultisampleCountBitflag * colorsTextureMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, unsigned depthStencilTextureFormat, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorsTextureCountMax8, const RedHandleTexture * colorsTexture, const unsigned * colorsTextureFormat, const RedMultisampleCountBitflag * colorsTextureMultisampleCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
 #ifdef REDGPU_USE_REDGPU_X
   RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
@@ -697,11 +697,11 @@ void red2CallSetRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCall
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
   }
 
-  redCallSetProcedureOutput(address, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, depthStencilTexture == NULL ? 0 : 1, colorsTextureCountMax8, 0, 0, NULL, NULL, NULL);
+  redCallSetProcedureOutput(addresses->redCallSetProcedureOutput, handle->handle, outputDeclaration, output.handle, NULL, output.width, output.height, depthStencilTexture == NULL ? 0 : 1, colorsTextureCountMax8, 0, 0, NULL, NULL, NULL);
 #endif
 }
 
-void red2CallEndRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCallEndProcedureOutput address) {
+void red2CallEndRenderTargets(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
 #ifdef REDGPU_USE_REDGPU_X
   RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
@@ -715,7 +715,7 @@ void red2CallEndRenderTargets(Red2HandleCalls calls, RedTypeProcedureAddressCall
   colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
   redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
 #else
-  redCallEndProcedureOutput(address, handle->handle);
+  redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
 #endif
 }
 
@@ -1604,6 +1604,29 @@ void * red2RedXOnlyImageGetHandleResource(RedHandleImage image) {
 #endif
 }
 
+void red2RedXOnlyCreateQueue(RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 canCopy, RedBool32 canDraw, RedBool32 canCompute, unsigned priority, RedBool32 disableGpuTimeout, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+#ifdef REDGPU_USE_REDGPU_X
+  redXCreateQueue(context, gpu, handleName, canCopy, canDraw, canCompute, priority, disableGpuTimeout, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
+  volatile int nothing = 0;
+}
+
+void red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedImage * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+#ifdef REDGPU_USE_REDGPU_X
+  redXCreateImage(context, gpu, handleName, dimensions, format, xformat, width, height, depth, levelsCount, layersCount, multisampleCount, restrictToAccess, initialAccess, initialQueueFamilyIndex, dedicate, outImage, outStatuses, optionalFile, optionalLine, optionalUserData);
+#else
+  redCreateImage(context, gpu, handleName, dimensions, format, width, height, depth, levelsCount, layersCount, multisampleCount, restrictToAccess, initialAccess, initialQueueFamilyIndex, dedicate, outImage, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
+}
+
+void red2CreateTexture(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+#ifdef REDGPU_USE_REDGPU_X
+  redXCreateTexture(context, gpu, handleName, image, parts, dimensions, format, xformat, levelsFirst, levelsCount, layersFirst, layersCount, restrictToAccess, outTexture, outStatuses, optionalFile, optionalLine, optionalUserData);
+#else
+  redCreateTexture(context, gpu, handleName, image, parts, dimensions, format, levelsFirst, levelsCount, layersFirst, layersCount, restrictToAccess, outTexture, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
+}
+
 void red2CallGpuToCpuSignalSignal(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleGpuToCpuSignal signalGpuToCpuSignal, unsigned setTo8192) {
   addresses->redCallGpuToCpuSignalSignal(calls, signalGpuToCpuSignal, setTo8192);
 }
@@ -1710,9 +1733,9 @@ void red2RedXOnlyCallCopyImageRegion(RedHandleCalls calls, unsigned copiesCount,
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-void red2RedOnlyCallUsageAliasOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion) {
+void red2RedOnlyCallUsageAliasOrderBarrier(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion) {
 #ifndef REDGPU_USE_REDGPU_X
-  redCallUsageAliasOrderBarrier(address, calls, context, arrayUsagesCount, arrayUsages, imageUsagesCount, imageUsages, 0, NULL, 0, NULL, dependencyByRegion);
+  redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, arrayUsagesCount, arrayUsages, imageUsagesCount, imageUsages, 0, NULL, 0, NULL, dependencyByRegion);
 #endif
   volatile int nothing = 0;
 }
@@ -1725,7 +1748,7 @@ void red2RedXOnlyCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barri
   volatile int nothing = 0;
 }
 
-RedStatus red2RedOnlyCallSetImageStateUsable(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
+RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, uint64_t imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
 #ifndef REDGPU_USE_REDGPU_X
   RedUsageImage * imageUsages = new(std::nothrow) RedUsageImage[imagesCount] /*---*/;
   if (imageUsages == NULL) {
@@ -1748,7 +1771,7 @@ RedStatus red2RedOnlyCallSetImageStateUsable(RedTypeProcedureAddressCallUsageAli
     imageUsages[i].imageLayersFirst       = 0;
     imageUsages[i].imageLayersCount       =-1;
   }
-  redCallUsageAliasOrderBarrier(address, calls, context, 0, NULL, imagesCount, imageUsages, 0, NULL, 0, NULL, 0);
+  redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, 0, NULL, imagesCount, imageUsages, 0, NULL, 0, NULL, 0);
   delete[] imageUsages;
 #endif
   volatile int nothing = 0;
@@ -1769,7 +1792,7 @@ void red2RedOnlyPresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHa
 #endif
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-RedStatus red2RedOnlyCallBarrierFinishCpuUpload(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
@@ -1787,7 +1810,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(RedTypeProcedureAddressCallUsage
     bufferBarriers[i].offset              = 0;
     bufferBarriers[i].size                =-1;
   }
-  ((PFN_vkCmdPipelineBarrier)((void *)address))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, arraysCount, bufferBarriers, 0, NULL);
+  ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, arraysCount, bufferBarriers, 0, NULL);
   delete[] bufferBarriers;
 #endif
   volatile int nothing = 0;
@@ -1795,7 +1818,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(RedTypeProcedureAddressCallUsage
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-RedStatus red2RedOnlyCallBarrierFinishCpuReadback(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
+RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, uint64_t arraysCount, const RedHandleArray * arrays) {
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   VkBufferMemoryBarrier * bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [arraysCount]();
@@ -1813,7 +1836,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(RedTypeProcedureAddressCallUsa
     bufferBarriers[i].offset              = 0;
     bufferBarriers[i].size                =-1;
   }
-  ((PFN_vkCmdPipelineBarrier)((void *)address))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 0, NULL, arraysCount, bufferBarriers, 0, NULL);
+  ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 0, NULL, arraysCount, bufferBarriers, 0, NULL);
   delete[] bufferBarriers;
 #endif
   volatile int nothing = 0;
@@ -1821,14 +1844,14 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(RedTypeProcedureAddressCallUsa
 }
 
 // NOTE(Constantine): Does nothing on REDGPU X.
-void red2RedOnlyCallGlobalMemoryBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls) {
+void red2RedOnlyCallGlobalMemoryBarrier(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls) {
 #ifndef REDGPU_USE_REDGPU_X
   VkMemoryBarrier globalBarrier;
   globalBarrier.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
   globalBarrier.pNext         = NULL;
   globalBarrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
   globalBarrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
-  ((PFN_vkCmdPipelineBarrier)((void *)address))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 1, &globalBarrier, 0, NULL, 0, NULL);
+  ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 1, &globalBarrier, 0, NULL, 0, NULL);
 #endif
   volatile int nothing = 0;
 }
