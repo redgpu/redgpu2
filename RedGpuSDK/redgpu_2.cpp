@@ -620,7 +620,7 @@ void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, R
   colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
   colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
   colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  redXCallSetProcedureOutput(handle->handle, depthStencilTexture, colorsTextureCountMax8, colorsTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, NULL);
+  redXCallSetProcedureOutput(handle->handle, depthStencilTexture, colorsTextureCountMax8, (RedHandleTexture *)colorsTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, NULL);
 #else
   RedHandleOutputDeclaration outputDeclaration = NULL;
   {
