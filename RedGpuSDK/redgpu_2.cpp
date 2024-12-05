@@ -31,15 +31,15 @@
 #include <new>      // For std::nothrow
 #include <map>      // For std::map
 
-typedef struct Red2InternalTransientGpuSignalsPresentImageIndexData {
+typedef struct Red2InternalWsiStoredGpuSignalsPresentImageIndexData {
   uint64_t                        gpuSignalsCurrentFreeIndex;
   std::vector<RedHandleGpuSignal> gpuSignals;
-} Red2InternalTransientGpuSignalsPresentImageIndexData;
+} Red2InternalWsiStoredGpuSignalsPresentImageIndexData;
 
-typedef struct Red2InternalTransientGpuSignalsPresentData {
-  std::map<unsigned, Red2InternalTransientGpuSignalsPresentImageIndexData> map;
+typedef struct Red2InternalWsiStoredGpuSignalsPresentData {
+  std::map<unsigned, Red2InternalWsiStoredGpuSignalsPresentImageIndexData> map;
   unsigned char init;
-} Red2InternalTransientGpuSignalsPresentData;
+} Red2InternalWsiStoredGpuSignalsPresentData;
 
 typedef struct Red2InternalHandlesToDestroyBatch {
   RedHandleCpuSignal    cpuSignal;
@@ -50,8 +50,8 @@ typedef struct Red2InternalHandlesToDestroyBatch {
 } Red2InternalHandlesToDestroyBatch;
 
 typedef struct Red2GpuInternalData {
-  std::mutex                                                             transientGpuSignalsDataMutex;
-  std::map<RedHandlePresent, Red2InternalTransientGpuSignalsPresentData> transientGpuSignalsData;
+  std::mutex                                                             wsiStoredGpuSignalsDataMutex;
+  std::map<RedHandlePresent, Red2InternalWsiStoredGpuSignalsPresentData> wsiStoredGpuSignalsData;
 
   std::mutex                                     handlesToDestroyBatchesMutex;
   std::vector<Red2InternalHandlesToDestroyBatch> handlesToDestroyBatches;
@@ -367,23 +367,23 @@ void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * 
   outCalls[0] = (Red2HandleCalls)(void *)handle;
 }
 
-void red2GetWsiTransientGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
   RedHandleGpuSignal gpuSignal = NULL;
   {
-    std::lock_guard<std::mutex> __transientGpuSignalsDataMutexLockGuard(context2GpuData->transientGpuSignalsDataMutex);
+    std::lock_guard<std::mutex> __wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
 
     // NOTE(Constantine): This line initializes the [present] map element if it doesn't exist in the map.
-    context2GpuData->transientGpuSignalsData[present].init = 1;
+    context2GpuData->wsiStoredGpuSignalsData[present].init = 1;
 
     // NOTE(Constantine): This line initializes the [presentImageIndex] map element if it doesn't exist in the map.
-    uint64_t index = context2GpuData->transientGpuSignalsData[present].map[presentImageIndex].gpuSignalsCurrentFreeIndex;
+    uint64_t index = context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex].gpuSignalsCurrentFreeIndex;
 
     // NOTE(Constantine): Caching the pointer to the [presentImageIndex] map element.
-    Red2InternalTransientGpuSignalsPresentImageIndexData * data = &context2GpuData->transientGpuSignalsData[present].map[presentImageIndex];
+    Red2InternalWsiStoredGpuSignalsPresentImageIndexData * data = &context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex];
 
     if (data->gpuSignals.size() < (index + 1)) {
       RedHandleGpuSignal handle = NULL;
@@ -1238,8 +1238,8 @@ void red2DestroyContext(Red2Context context2, const char * optionalFile, int opt
     }
   }
   for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
-    std::lock_guard<std::mutex> __transientGpuSignalsDataMutexLockGuard(context2GpuData.transientGpuSignalsDataMutex);
-    for (auto & [presentHandle, presentData] : context2GpuData.transientGpuSignalsData) { // NOTE(Constantine): This style of loop requires C++17.
+    std::lock_guard<std::mutex> __wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData.wsiStoredGpuSignalsDataMutex);
+    for (auto & [presentHandle, presentData] : context2GpuData.wsiStoredGpuSignalsData) { // NOTE(Constantine): This style of loop requires C++17.
       for (const auto & [dataKey, data] : presentData.map) {
         for (const auto & gpuSignal : data.gpuSignals) {
           redDestroyGpuSignal(context, gpuHandle, gpuSignal, optionalFile, optionalLine, optionalUserData);
@@ -1264,8 +1264,8 @@ void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandleP
   redPresentGetImageIndex(context, gpu, present, signalCpuSignal, signalGpuSignal, outImageIndex, outStatuses, optionalFile, optionalLine, optionalUserData);
   // NOTE(Constantine): Assuming redPresentGetImageIndex blocks CPU here until a new image index is returned to outImageIndex.
   {
-    std::lock_guard<std::mutex> __transientGpuSignalsDataMutexLockGuard(context2GpuData->transientGpuSignalsDataMutex);
-    context2GpuData->transientGpuSignalsData[present].map[outImageIndex[0]].gpuSignalsCurrentFreeIndex = 0;
+    std::lock_guard<std::mutex> __wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
+    context2GpuData->wsiStoredGpuSignalsData[present].map[outImageIndex[0]].gpuSignalsCurrentFreeIndex = 0;
   }
 }
 
