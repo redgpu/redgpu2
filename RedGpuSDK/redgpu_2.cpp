@@ -1903,12 +1903,6 @@ static size_t red2InternalQueueSubmissionsGetFreeElementIndex_NonLocking(Red2Con
       break;
     }
   }
-  if (index == -1) {
-    Red2InternalQueueSubmissionData emptyElement = {};
-    context2GpuData->queueSubmissions.push_back(emptyElement);
-    context2GpuData->queueSubmissionsTicket.push_back(0);
-    index = context2GpuData->queueSubmissions.size() - 1;
-  }
   return index;
 }
 
@@ -1920,9 +1914,11 @@ static void red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(Red2Co
   RedHandleCpuSignal cpuSignal                  = context2GpuData->queueSubmissions[index].cpuSignal;
   uint64_t           cpuSignalIsWaitedOnCounter = context2GpuData->queueSubmissions[index].cpuSignalIsWaitedOnCounter;
   RedStatus status = RED_STATUS_SUCCESS;
-  redCpuSignalGetStatus(context, gpu, cpuSignal, &status, optionalFile, optionalLine, optionalUserData);
+  redCpuSignalGetStatus(context, gpu, cpuSignal, &status, optionalFile, optionalLine, optionalUserData);   // NOTE(Constantine): Assuming redCpuSignalGetStatus() never errors.
   if (status == RED_STATUS_SUCCESS && cpuSignalIsWaitedOnCounter == 0) {
-    redDestroyCpuSignal(context, gpu, cpuSignal, optionalFile, optionalLine, optionalUserData);
+    // > If any member of pFences is already in the unsignaled state when vkResetFences is executed, then vkResetFences has no effect on that fence.
+    //   https://registry.khronos.org/vulkan/specs/1.0/man/html/vkResetFences.html
+    redCpuSignalUnsignal(context, gpu, 1, &cpuSignal, NULL, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Assuming redCpuSignalUnsignal()  never errors.
     context2GpuData->queueSubmissionsTicket[index] = 0;
   }
 }
@@ -1975,17 +1971,41 @@ void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queu
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
   RedHandleCpuSignal cpuSignal = NULL;
-  redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Intentionally creating one CPU signal per queue submit, even if the user didn't request a ticket for that queue submit.
-  redQueueSubmit(context, gpu, queue, timelinesCount, timelines, cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
-  if (cpuSignal != NULL) {
+  size_t i = -1;
+  {
     std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    size_t i = red2InternalQueueSubmissionsGetFreeElementIndex_NonLocking(context2, gpu);
-    context2GpuData->queueSubmissions[i].cpuSignal  = cpuSignal;
+    i = red2InternalQueueSubmissionsGetFreeElementIndex_NonLocking(context2, gpu);
+    if (i != -1) {
+      cpuSignal = context2GpuData->queueSubmissions[i].cpuSignal;
+      context2GpuData->queueSubmissionsCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
+      context2GpuData->queueSubmissionsTicket[i]      = context2GpuData->queueSubmissionsCurrentTicket;
+    }
+  }
+  if (i == -1) {
+    redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Intentionally creating one CPU signal per queue submit, even if the user didn't request a ticket for that queue submit.
+    if (cpuSignal == NULL) { // NOTE(Constantine): Assuming cpuSignal is always NULL and not a garbage value on any fail of redCreateCpuSignal().
+      if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = 0; }
+      if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = 0; }
+      return;
+    }
+  }
+  // NOTE(Constantine):
+  // What happens when both vkQueueSubmit() and vkGetFenceStatus() execute on the same VkFence at the same time from different threads?
+  redQueueSubmit(context, gpu, queue, timelinesCount, timelines, cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
+  if (i == -1) {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    {
+      Red2InternalQueueSubmissionData emptyElement = {};
+      context2GpuData->queueSubmissions.push_back(emptyElement);
+      context2GpuData->queueSubmissionsTicket.push_back(0);
+      i = context2GpuData->queueSubmissions.size() - 1;
+      context2GpuData->queueSubmissions[i].cpuSignal = cpuSignal;
+    }
     context2GpuData->queueSubmissionsCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
     context2GpuData->queueSubmissionsTicket[i]      = context2GpuData->queueSubmissionsCurrentTicket;
-    if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = i; }
-    if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = context2GpuData->queueSubmissionsCurrentTicket; }
   }
+  if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = i; }
+  if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = context2GpuData->queueSubmissionsCurrentTicket; }
 }
 
 void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
