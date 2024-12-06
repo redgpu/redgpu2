@@ -371,7 +371,7 @@ void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandle
 
   RedHandleGpuSignal gpuSignal = NULL;
   {
-    std::lock_guard<std::mutex> __wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
+    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
 
     // NOTE(Constantine): This line initializes the [present] map element if it doesn't exist in the map.
     context2GpuData->wsiStoredGpuSignalsData[present].init = 1;
@@ -453,9 +453,9 @@ void red2DestroyCalls(RedContext context, RedHandleGpu gpu, Red2HandleCalls call
       redStructsMemoryFree(context, gpu, handle->structsMemorysSamplers[i].handle, optionalFile, optionalLine, optionalUserData);
     }
     for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
-      uint64_t _handle     = handle->handlesToDestroyWhenCallsAreReset[i];
-      unsigned _handleType = handle->handlesToDestroyWhenCallsAreResetType[i];
-      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, _handle, _handleType, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
+      uint64_t h     = handle->handlesToDestroyWhenCallsAreReset[i];
+      unsigned htype = handle->handlesToDestroyWhenCallsAreResetType[i];
+      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, h, htype, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
     }
     redDestroyCalls(context, gpu, handle->handle, handle->memory, optionalFile, optionalLine, optionalUserData);
     delete handle;
@@ -578,9 +578,9 @@ void red2CallsSet(
   
   {
     for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
-      uint64_t _handle     = handle->handlesToDestroyWhenCallsAreReset[i];
-      unsigned _handleType = handle->handlesToDestroyWhenCallsAreResetType[i];
-      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, _handle, _handleType, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
+      uint64_t h     = handle->handlesToDestroyWhenCallsAreReset[i];
+      unsigned htype = handle->handlesToDestroyWhenCallsAreResetType[i];
+      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, h, htype, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
     }
     handle->handlesToDestroyWhenCallsAreReset.clear();
     handle->handlesToDestroyWhenCallsAreResetType.clear();
@@ -1932,7 +1932,13 @@ void red2DestroyContext(Red2Context context2, const char * optionalFile, int opt
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
 
   for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
-    std::lock_guard<std::mutex> __wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData.wsiStoredGpuSignalsDataMutex);
+    for (auto & queueSubmission : context2GpuData.queueSubmissions) {
+      RedHandleCpuSignal cpuSignal = queueSubmission.cpuSignal;
+      redDestroyCpuSignal(context, gpuHandle, cpuSignal, optionalFile, optionalLine, optionalUserData);
+    }
+  }
+  for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
+    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData.wsiStoredGpuSignalsDataMutex);
     for (auto & [presentHandle, presentData] : context2GpuData.wsiStoredGpuSignalsData) { // NOTE(Constantine): This style of loop requires C++17.
       for (const auto & [dataKey, data] : presentData.map) {
         for (const auto & gpuSignal : data.gpuSignals) {
@@ -1958,7 +1964,7 @@ void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandleP
   redPresentGetImageIndex(context, gpu, present, signalCpuSignal, signalGpuSignal, outImageIndex, outStatuses, optionalFile, optionalLine, optionalUserData);
   // NOTE(Constantine): Assuming redPresentGetImageIndex blocks CPU here until a new image index is returned to outImageIndex.
   {
-    std::lock_guard<std::mutex> __wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
+    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
     context2GpuData->wsiStoredGpuSignalsData[present].map[outImageIndex[0]].gpuSignalsCurrentFreeIndex = 0;
   }
 }
@@ -1972,7 +1978,7 @@ void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queu
   redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Intentionally creating one CPU signal per queue submit, even if the user didn't request a ticket for that queue submit.
   redQueueSubmit(context, gpu, queue, timelinesCount, timelines, cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
   if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     size_t i = red2InternalHandlesToDestroyBatchesGetFreeElementIndex_NonLocking(context2, gpu);
     context2GpuData->queueSubmissions[i].cpuSignal  = cpuSignal;
     context2GpuData->queueSubmissionsCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
@@ -2053,7 +2059,7 @@ RedBool32 red2IsQueueSubmissionFinished(Red2Context context2, RedHandleGpu gpu, 
   }
   uint64_t ticket = 0;
   {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     if (context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex] == queueSubmissionTicket) {
       red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
       ticket = context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex];
@@ -2072,7 +2078,7 @@ RedBool32 red2IsQueueSubmissionFinishedByTicketAlone(Red2Context context2, RedHa
   }
   uint64_t ticket = 0;
   {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
       if (context2GpuData->queueSubmissionsTicket[i] == queueSubmissionTicket) {
         red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
@@ -2091,7 +2097,7 @@ RedBool32 red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket(Red2Context c
 
   RedBool32 allQueueSubmissionsAreFinished = 1;
   {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
       uint64_t t = context2GpuData->queueSubmissionsTicket[i];
       if (t != 0 && t <= queueSubmissionTicket) {
@@ -2117,7 +2123,7 @@ void red2WaitForQueueSubmissionToFinish(Red2Context context2, RedHandleGpu gpu, 
   }
   RedHandleCpuSignal cpuSignal = NULL;
   {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     uint64_t ticket = context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex];
     if (ticket == queueSubmissionTicket) {
       cpuSignal = context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignal;
@@ -2128,7 +2134,7 @@ void red2WaitForQueueSubmissionToFinish(Red2Context context2, RedHandleGpu gpu, 
     redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
     red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
   }
@@ -2145,7 +2151,7 @@ void red2WaitForQueueSubmissionToFinishByTicketAlone(Red2Context context2, RedHa
   uint64_t           queueSubmissionTicketArrayIndex = 0;
   RedHandleCpuSignal cpuSignal = NULL;
   {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
       uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
       if (ticket == queueSubmissionTicket) {
@@ -2160,7 +2166,7 @@ void red2WaitForQueueSubmissionToFinishByTicketAlone(Red2Context context2, RedHa
     redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
     red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
   }
@@ -2174,7 +2180,7 @@ void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context co
   std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
   std::vector<RedHandleCpuSignal> cpuSignal;
   {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
       uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
       if (ticket != 0 && ticket <= queueSubmissionTicket) {
@@ -2188,7 +2194,7 @@ void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context co
     redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal.size() > 0) {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (uint64_t i : queueSubmissionTicketArrayIndex) {
       context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter -= 1;
       red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
@@ -2204,7 +2210,7 @@ void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu g
   std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
   std::vector<RedHandleCpuSignal> cpuSignal;
   {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
       uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
       if (ticket != 0) {
@@ -2218,7 +2224,7 @@ void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu g
     redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
   if (cpuSignal.size() > 0) {
-    std::lock_guard<std::mutex> __queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (uint64_t i : queueSubmissionTicketArrayIndex) {
       context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter -= 1;
       red2InternalHandlesToDestroyBatchesFreeFinishedBatch_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
