@@ -1610,6 +1610,7 @@ void red2CallsFreeAllInlineStructsMemorys(
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory(
+  const RedCallProceduresAndAddresses * addresses,
   Red2HandleCalls calls,
   const char * structsMemoryHandleName,
   unsigned maxStructsCount,
@@ -1631,11 +1632,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory(
   RedHandleStructsMemory structsMemory         = NULL;
   RedHandleStructsMemory structsMemorySamplers = NULL;
 
-  RedCallProceduresAndAddresses pas = {};
-  redGetCallProceduresAndAddresses(handle->context, handle->gpu, &pas, outStatuses, optionalFile, optionalLine, optionalUserData);
-
   if (maxStructsCount == 0 && maxStructsOfTypeSamplerCount == 0) {
-    redCallSetStructsMemory(pas.redCallSetStructsMemory, handle->handle, NULL, NULL);
+    redCallSetStructsMemory(addresses->redCallSetStructsMemory, handle->handle, NULL, NULL);
     return;
   }
 
@@ -1646,7 +1644,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory(
       maxStructsMembersOfTypeInlineSamplerCount    == 0 &&
       maxStructsMembersOfTypeSamplerCount          == 0)
   {
-    redCallSetStructsMemory(pas.redCallSetStructsMemory, handle->handle, NULL, NULL);
+    redCallSetStructsMemory(addresses->redCallSetStructsMemory, handle->handle, NULL, NULL);
     return;
   }
 
@@ -1797,10 +1795,11 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory(
     handle->currentStructsMemorySamplersIndex = handle->structsMemorysSamplers.size() - 1;
   }
 
-  redCallSetStructsMemory(pas.redCallSetStructsMemory, handle->handle, structsMemory, structsMemorySamplers);
+  redCallSetStructsMemory(addresses->redCallSetStructsMemory, handle->handle, structsMemory, structsMemorySamplers);
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemoryFromProcedureParameters(
+  const RedCallProceduresAndAddresses * addresses,
   Red2HandleCalls calls,
   const char * structsMemoryHandleName,
   unsigned procedureParametersCount,
@@ -1849,6 +1848,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemoryFro
     }
   }
   red2CallAllocateAndSetInlineStructsMemory(
+    addresses, 
     calls,
     structsMemoryHandleName,
     maxStructsCount,
@@ -1867,6 +1867,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemoryFro
 }
 
 REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParametersInlineStruct(
+  const RedCallProceduresAndAddresses * addresses,
   Red2HandleCalls calls,
   RedProcedureType procedureType,
   Red2HandleProcedureParameters procedureParameters,
@@ -1880,9 +1881,6 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
 {
   Red2InternalTypeCalls *               handle     = (Red2InternalTypeCalls *)(void *)calls;
   Red2InternalTypeProcedureParameters * parameters = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
-
-  RedCallProceduresAndAddresses pas = {};
-  redGetCallProceduresAndAddresses(handle->context, handle->gpu, &pas, outStatuses, optionalFile, optionalLine, optionalUserData);
 
   Red2HandleStructDeclaration structDeclaration = parameters->structsDeclarations[structIndex];
   Red2InternalTypeStructDeclaration * structDeclarationHandle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
@@ -2027,7 +2025,7 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
   memory.availableStructsMembersOfTypeInlineSamplerCount    -= structDeclarationHandle->membersOfTypeInlineSamplerCount;
   memory.availableStructsMembersOfTypeSamplerCount          -= structDeclarationHandle->membersOfTypeSamplerCount;
 
-  pas.redCallSetProcedureParametersStructs(handle->handle, procedureType, parameters->handle, structIndex, 1, &structHandle, 0, 0);
+  addresses->redCallSetProcedureParametersStructs(handle->handle, procedureType, parameters->handle, structIndex, 1, &structHandle, 0, 0);
 
   return RED_STATUS_SUCCESS;
 }
