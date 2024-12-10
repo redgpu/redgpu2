@@ -22,6 +22,14 @@ typedef struct Red2TypeContext {
   void *     redgpu2InternalData;
 } Red2TypeContext;
 
+// red2CreateStructDeclaration
+
+#ifdef REDGPU_USE_REDGPU_X
+#define RED2_STRUCT_MEMBER_TYPE_ARRAY_RO REDX_STRUCT_MEMBER_TYPE_ARRAY_RO
+#else
+#define RED2_STRUCT_MEMBER_TYPE_ARRAY_RO RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW
+#endif
+
 // red2CreateProcedureParameters
 
 typedef struct Red2ProcedureParametersDeclaration {

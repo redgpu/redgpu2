@@ -97,6 +97,7 @@ void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free,
         outStatuses->statusErrorDescription[0] = 0;
       }
     }
+    delete context2;
     outContext2[0] = NULL;
     return;
   }
@@ -113,8 +114,12 @@ void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free,
 }
 
 // NOTE(Constantine):
-// The wrapper around redDestroyContext() that destroys and frees internal to REDGPU 2 context handles and pointers.
+// The REDGPU 2 wrapper around redDestroyContext() that destroys and frees internal to REDGPU 2 context handles and pointers.
 void red2DestroyContext(Red2Context context2, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  if (context2 == NULL) {
+    return;
+  }
+
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
 
@@ -162,7 +167,17 @@ void red2CreateTexture(RedContext context, RedHandleGpu gpu, const char * handle
 #endif
 }
 
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redCreateStructDeclaration() that carries local copies of struct declaration members structs.
+// The struct declaration members structs are needed for the following functions:
+// * red2CreateProcedureParameters()
+// * red2StructDeclarationGet*()
+// * red2CallAllocateAndSetInlineStructsMemoryFromProcedureParameters()
+// * red2CallSuballocateAndSetProcedureParametersInlineStruct()
+// If you don't plan to use the functions listed above, then this function becomes optional as well.
 void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, RedBool32 procedureParametersHandlesDeclaration, Red2HandleStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
   Red2InternalTypeStructDeclaration * handle = new(std::nothrow) Red2InternalTypeStructDeclaration();
   if (handle == NULL) {
     if (outStatuses != NULL) {
@@ -170,7 +185,7 @@ void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const cha
         outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -179,14 +194,14 @@ void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const cha
     outStructDeclaration[0] = NULL;
     return;
   }
-  handle->structDeclarationMembers = new(std::nothrow) Red2StructDeclarationMember[structDeclarationMembersCount];
+  handle->structDeclarationMembers = new(std::nothrow) Red2StructDeclarationMember[structDeclarationMembersCount] /*---*/;
   if (handle->structDeclarationMembers == NULL) {
     if (outStatuses != NULL) {
       if (outStatuses->statusError == RED_STATUS_SUCCESS) {
         outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -218,6 +233,7 @@ void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const cha
   }
 
   // NOTE(Constantine): inlineSampler will have a junk array pointer, so iterate over handle->structDeclarationMembers and set handle->structDeclarationMembers[i].inlineSampler to handle->structDeclarationMembers[i].inlineSampler[0].
+  // NOTE(Constantine): essentially, converting RedStructDeclarationMember::inlineSampler array of 1 to Red2StructDeclarationMember::inlineSampler non-array value.
   for (unsigned i = 0; i < structDeclarationMembersCount; i += 1) {
     if (handle->structDeclarationMembers[i].type == RED_STRUCT_MEMBER_TYPE_SAMPLER && handle->structDeclarationMembers[i].inlineSampler != NULL) {
       RedHandleSampler s = ((RedHandleSampler *)(void *)(handle->structDeclarationMembers[i].inlineSampler))[0];
@@ -251,6 +267,18 @@ void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const cha
   redCreateStructDeclaration(context, gpu, handleName, structDeclarationMembersCount, structDeclarationMembers, structDeclarationMembersArrayROCount, structDeclarationMembersArrayRO, procedureParametersHandlesDeclaration, &handle->handle, outStatuses, optionalFile, optionalLine, optionalUserData);
 
   outStructDeclaration[0] = (Red2HandleStructDeclaration)(void *)handle;
+}
+
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redDestroyStructDeclaration() that frees internal to REDGPU 2 struct declaration pointers.
+void red2DestroyStructDeclaration(RedContext context, RedHandleGpu gpu, Red2HandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  if (structDeclaration == NULL) {
+    return;
+  }
+  Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
+  redDestroyStructDeclaration(context, gpu, handle->handle, optionalFile, optionalLine, optionalUserData);
+  delete[] handle->structDeclarationMembers;
+  delete handle;
 }
 
 void red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, Red2HandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -451,15 +479,6 @@ void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandle
     data->gpuSignalsCurrentFreeIndex += 1;
   }
   outGpuSignal[0] = gpuSignal;
-}
-
-void red2DestroyStructDeclaration(RedContext context, RedHandleGpu gpu, Red2HandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
-  if (handle != NULL) {
-    redDestroyStructDeclaration(context, gpu, handle->handle, optionalFile, optionalLine, optionalUserData);
-    delete[] handle->structDeclarationMembers;
-    delete handle;
-  }
 }
 
 void red2DestroyProcedureParameters(RedContext context, RedHandleGpu gpu, Red2HandleProcedureParameters procedureParameters, const char * optionalFile, int optionalLine, void * optionalUserData) {
