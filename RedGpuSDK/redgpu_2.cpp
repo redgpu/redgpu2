@@ -65,6 +65,11 @@ typedef struct Red2ContextInternalData {
 // NOTE(Constantine):
 // The wrapper around redCreateContext() that returns Red2TypeContext with RedContext and Red2ContextInternalData
 // pointers for other REDGPU 2 procedures to access context2's gpu data internally.
+// 
+// The following functions depend on this function:
+// * Any function that expects a parameter of type Red2Context
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free, RedTypeProcedureMallocTagged optionalMallocTagged, RedTypeProcedureFreeTagged optionalFreeTagged, RedTypeProcedureDebugCallback debugCallback, RedSdkVersion sdkVersion, unsigned sdkExtensionsCount, const unsigned * sdkExtensions, const char * optionalProgramName, unsigned optionalProgramVersion, const char * optionalEngineName, unsigned optionalEngineVersion, const void * optionalSettings, Red2Context * outContext2, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
 
@@ -115,6 +120,11 @@ void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free,
 
 // NOTE(Constantine):
 // The REDGPU 2 wrapper around redDestroyContext() that destroys and frees internal to REDGPU 2 context handles and pointers.
+// 
+// The following functions depend on this function:
+// * red2CreateContext()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2DestroyContext(Red2Context context2, const char * optionalFile, int optionalLine, void * optionalUserData) {
   if (context2 == NULL) {
     return;
@@ -149,6 +159,8 @@ void red2DestroyContext(Red2Context context2, const char * optionalFile, int opt
 
 // NOTE(Constantine):
 // redXCreateImage() is available only in REDGPU X, so this procedure wraps it to eliminate #ifdef's on user side.
+// 
+// This function is optional.
 void red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedImage * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
 #ifdef REDGPU_USE_REDGPU_X
   redXCreateImage(context, gpu, handleName, dimensions, format, xformat, width, height, depth, levelsCount, layersCount, multisampleCount, restrictToAccess, initialAccess, initialQueueFamilyIndex, dedicate, outImage, outStatuses, optionalFile, optionalLine, optionalUserData);
@@ -159,6 +171,8 @@ void red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleNa
 
 // NOTE(Constantine):
 // redXCreateTexture() is available only in REDGPU X, so this procedure wraps it to eliminate #ifdef's on user side.
+// 
+// This function is optional.
 void red2CreateTexture(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
 #ifdef REDGPU_USE_REDGPU_X
   redXCreateTexture(context, gpu, handleName, image, parts, dimensions, format, xformat, levelsFirst, levelsCount, layersFirst, layersCount, restrictToAccess, outTexture, outStatuses, optionalFile, optionalLine, optionalUserData);
@@ -169,12 +183,15 @@ void red2CreateTexture(RedContext context, RedHandleGpu gpu, const char * handle
 
 // NOTE(Constantine):
 // The REDGPU 2 wrapper around redCreateStructDeclaration() that carries local copies of struct declaration members structs.
-// The struct declaration members structs are needed for the following functions:
+// 
+// The following functions depend on this function:
 // * red2CreateProcedureParameters()
+// * red2DestroyStructDeclaration()
 // * red2StructDeclarationGet*()
 // * red2CallAllocateAndSetInlineStructsMemoryFromProcedureParameters()
 // * red2CallSuballocateAndSetProcedureParametersInlineStruct()
-// If you don't plan to use the functions listed above, then this function becomes optional as well.
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, RedBool32 procedureParametersHandlesDeclaration, Red2HandleStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
 
@@ -271,6 +288,11 @@ void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const cha
 
 // NOTE(Constantine):
 // The REDGPU 2 wrapper around redDestroyStructDeclaration() that frees internal to REDGPU 2 struct declaration pointers.
+// 
+// The following functions depend on this function:
+// * red2CreateStructDeclaration()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2DestroyStructDeclaration(RedContext context, RedHandleGpu gpu, Red2HandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine, void * optionalUserData) {
   if (structDeclaration == NULL) {
     return;
@@ -281,7 +303,19 @@ void red2DestroyStructDeclaration(RedContext context, RedHandleGpu gpu, Red2Hand
   delete handle;
 }
 
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redCreateProcedureParameters() that carries local copies of REDGPU 2 struct declaration handles.
+// 
+// The following functions depend on this function:
+// * red2DestroyProcedureParameters()
+// * red2ProcedureParametersGet*()
+// * red2CallAllocateAndSetInlineStructsMemoryFromProcedureParameters()
+// * red2CallSuballocateAndSetProcedureParametersInlineStruct()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, Red2HandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
   Red2InternalTypeProcedureParameters * handle = new(std::nothrow) Red2InternalTypeProcedureParameters();
   if (handle == NULL) {
     if (outStatuses != NULL) {
@@ -289,7 +323,7 @@ void red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const c
         outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -324,6 +358,22 @@ void red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const c
     }
   }
   outProcedureParameters[0] = (Red2HandleProcedureParameters)(void *)handle;
+}
+
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redDestroyProcedureParameters() that frees internal to REDGPU 2 procedure parameters pointers.
+// 
+// The following functions depend on this function:
+// * red2CreateProcedureParameters()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
+void red2DestroyProcedureParameters(RedContext context, RedHandleGpu gpu, Red2HandleProcedureParameters procedureParameters, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  if (procedureParameters == NULL) {
+    return;
+  }
+  Red2InternalTypeProcedureParameters * handle = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
+  redDestroyProcedureParameters(context, gpu, handle->handle, optionalFile, optionalLine, optionalUserData);
+  delete handle;
 }
 
 void red2CreateProcedure(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, const Red2ProcedureDependencyOnRenderTargets * procedureDependencyOnRenderTargets, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -479,14 +529,6 @@ void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandle
     data->gpuSignalsCurrentFreeIndex += 1;
   }
   outGpuSignal[0] = gpuSignal;
-}
-
-void red2DestroyProcedureParameters(RedContext context, RedHandleGpu gpu, Red2HandleProcedureParameters procedureParameters, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  Red2InternalTypeProcedureParameters * handle = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
-  if (handle != NULL) {
-    redDestroyProcedureParameters(context, gpu, handle->handle, optionalFile, optionalLine, optionalUserData);
-    delete handle;
-  }
 }
 
 static void red2InternalDestroyHandleByHandleType(RedContext context, RedHandleGpu gpu, uint64_t handle, unsigned handleType, void * optionalCustomHandleAndHandleTypeDestroyCallback, const char * optionalFile, int optionalLine, void * optionalUserData) {
