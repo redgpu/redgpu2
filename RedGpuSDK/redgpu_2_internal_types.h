@@ -41,9 +41,9 @@ typedef struct Red2InternalTypeStructsMemory {
 typedef struct Red2InternalTypeCalls {
   RedHandleCalls                             handle;
   RedHandleCallsMemory                       memory;
+  RedBool32                                  reusable;
   RedContext                                 context;
   RedHandleGpu                               gpu;
-  RedBool32                                  reusable;
   unsigned                                   currentStructsMemoryIndex;
   unsigned                                   currentStructsMemorySamplersIndex;
   uint64_t                                   lastQueueSubmitTrackableTicketArrayIndex;

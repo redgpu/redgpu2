@@ -63,8 +63,7 @@ typedef struct Red2ContextInternalData {
 } Red2ContextInternalData;
 
 // NOTE(Constantine):
-// The wrapper around redCreateContext() that returns Red2TypeContext with RedContext and Red2ContextInternalData
-// pointers for other REDGPU 2 procedures to access context2's gpu data internally.
+// The REDGPU 2 wrapper around redCreateContext() that carries RedContext pointer and internal REDGPU 2 context data pointer.
 // 
 // The following functions depend on this function:
 // * Any function that expects a parameter of type Red2Context
@@ -250,7 +249,7 @@ void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const cha
   }
 
   // NOTE(Constantine): inlineSampler will have a junk array pointer, so iterate over handle->structDeclarationMembers and set handle->structDeclarationMembers[i].inlineSampler to handle->structDeclarationMembers[i].inlineSampler[0].
-  // NOTE(Constantine): essentially, converting RedStructDeclarationMember::inlineSampler array of 1 to Red2StructDeclarationMember::inlineSampler non-array value.
+  // NOTE(Constantine): Essentially, converting RedStructDeclarationMember::inlineSampler array of 1 to Red2StructDeclarationMember::inlineSampler non-array value.
   for (unsigned i = 0; i < structDeclarationMembersCount; i += 1) {
     if (handle->structDeclarationMembers[i].type == RED_STRUCT_MEMBER_TYPE_SAMPLER && handle->structDeclarationMembers[i].inlineSampler != NULL) {
       RedHandleSampler s = ((RedHandleSampler *)(void *)(handle->structDeclarationMembers[i].inlineSampler))[0];
@@ -376,6 +375,10 @@ void red2DestroyProcedureParameters(RedContext context, RedHandleGpu gpu, Red2Ha
   delete handle;
 }
 
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redCreateProcedure() that creates and destroys a temporary output declaration handle that is needed to create the procedure.
+// 
+// This function is optional.
 void red2CreateProcedure(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, const Red2ProcedureDependencyOnRenderTargets * procedureDependencyOnRenderTargets, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   // NOTE(Constantine): The line below gets 9 RedFormat or RedXFormat values from the start of procedureDependencyOnRenderTargets struct for REDGPU X.
   RedHandleOutputDeclaration outputDeclaration = (RedHandleOutputDeclaration)(void *)(&procedureDependencyOnRenderTargets->colorsTextureFormat[0]);
@@ -446,7 +449,16 @@ void red2CreateProcedure(RedContext context, RedHandleGpu gpu, const char * hand
 #endif
 }
 
+// NOTE(Constantine):
+// The wrapper around redCreateCalls() that carries internal REDGPU 2 calls data.
+// 
+// The following functions depend on this function:
+// * Any function that expects a parameter of type Red2HandleCalls
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2CreateCalls(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
   Red2InternalTypeCalls * handle = new(std::nothrow) Red2InternalTypeCalls();
   if (handle == NULL) {
     if (outStatuses != NULL) {
@@ -454,7 +466,7 @@ void red2CreateCalls(RedContext context, RedHandleGpu gpu, const char * handleNa
         outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -463,17 +475,22 @@ void red2CreateCalls(RedContext context, RedHandleGpu gpu, const char * handleNa
     outCalls = {};
     return;
   }
-  RedCalls calls = {};
-  redCreateCalls(context, gpu, handleName, queueFamilyIndex, &calls, outStatuses, optionalFile, optionalLine, optionalUserData);
-  handle->handle   = calls.handle;
-  handle->memory   = calls.memory;
-  handle->context  = context;
-  handle->gpu      = gpu;
-  handle->reusable = calls.reusable;
+  redCreateCalls(context, gpu, handleName, queueFamilyIndex, (RedCalls *)(void *)handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+  handle->context = context;
+  handle->gpu     = gpu;
   outCalls[0] = (Red2HandleCalls)(void *)handle;
 }
 
+// NOTE(Constantine):
+// The wrapper around redCreateCallsReusable() that carries internal REDGPU 2 calls data.
+// 
+// The following functions depend on this function:
+// * Any function that expects a parameter of type Red2HandleCalls
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
   Red2InternalTypeCalls * handle = new(std::nothrow) Red2InternalTypeCalls();
   if (handle == NULL) {
     if (outStatuses != NULL) {
@@ -481,7 +498,7 @@ void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * 
         outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -490,45 +507,10 @@ void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * 
     outCalls = {};
     return;
   }
-  RedCalls calls = {};
-  redCreateCallsReusable(context, gpu, handleName, queueFamilyIndex, &calls, outStatuses, optionalFile, optionalLine, optionalUserData);
-  handle->handle   = calls.handle;
-  handle->memory   = calls.memory;
-  handle->context  = context;
-  handle->gpu      = gpu;
-  handle->reusable = calls.reusable;
+  redCreateCallsReusable(context, gpu, handleName, queueFamilyIndex, (RedCalls *)(void *)handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+  handle->context = context;
+  handle->gpu     = gpu;
   outCalls[0] = (Red2HandleCalls)(void *)handle;
-}
-
-void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  RedHandleGpuSignal gpuSignal = NULL;
-  {
-    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
-
-    // NOTE(Constantine): This line initializes the [present] map element if it doesn't exist in the map.
-    context2GpuData->wsiStoredGpuSignalsData[present].init = 1;
-
-    // NOTE(Constantine): This line initializes the [presentImageIndex] map element if it doesn't exist in the map.
-    uint64_t index = context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex].gpuSignalsCurrentFreeIndex;
-
-    // NOTE(Constantine): Caching the pointer to the [presentImageIndex] map element.
-    Red2InternalWsiStoredGpuSignalsPresentImageIndexData * data = &context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex];
-
-    if (data->gpuSignals.size() < (index + 1)) {
-      RedHandleGpuSignal handle = NULL;
-      redCreateGpuSignal(context, gpu, NULL, &handle, outStatuses, optionalFile, optionalLine, optionalUserData);
-      data->gpuSignals.push_back(handle);
-    }
-
-    gpuSignal = data->gpuSignals[index];
-
-    data->gpuSignalsCurrentFreeIndex += 1;
-  }
-  outGpuSignal[0] = gpuSignal;
 }
 
 static void red2InternalDestroyHandleByHandleType(RedContext context, RedHandleGpu gpu, uint64_t handle, unsigned handleType, void * optionalCustomHandleAndHandleTypeDestroyCallback, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -562,23 +544,63 @@ static void red2InternalDestroyHandleByHandleType(RedContext context, RedHandleG
   }
 }
 
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redDestroyCalls() that destroys and frees internal to REDGPU 2 calls handles and pointers.
+// 
+// The following functions depend on this function:
+// * red2CreateCalls()
+// * red2CreateCallsReusable()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
 void red2DestroyCalls(RedContext context, RedHandleGpu gpu, Red2HandleCalls calls, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  if (handle != NULL) {
-    for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
-      redStructsMemoryFree(context, gpu, handle->structsMemorys[i].handle, optionalFile, optionalLine, optionalUserData);
-    }
-    for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
-      redStructsMemoryFree(context, gpu, handle->structsMemorysSamplers[i].handle, optionalFile, optionalLine, optionalUserData);
-    }
-    for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
-      uint64_t h     = handle->handlesToDestroyWhenCallsAreReset[i];
-      unsigned htype = handle->handlesToDestroyWhenCallsAreResetType[i];
-      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, h, htype, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
-    }
-    redDestroyCalls(context, gpu, handle->handle, handle->memory, optionalFile, optionalLine, optionalUserData);
-    delete handle;
+  if (calls == NULL) {
+    return;
   }
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
+    redStructsMemoryFree(context, gpu, handle->structsMemorys[i].handle, optionalFile, optionalLine, optionalUserData);
+  }
+  for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
+    redStructsMemoryFree(context, gpu, handle->structsMemorysSamplers[i].handle, optionalFile, optionalLine, optionalUserData);
+  }
+  for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
+    uint64_t h     = handle->handlesToDestroyWhenCallsAreReset[i];
+    unsigned htype = handle->handlesToDestroyWhenCallsAreResetType[i];
+    red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, h, htype, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
+  }
+  redDestroyCalls(context, gpu, handle->handle, handle->memory, optionalFile, optionalLine, optionalUserData);
+  delete handle;
+}
+
+void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  RedHandleGpuSignal gpuSignal = NULL;
+  {
+    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
+
+    // NOTE(Constantine): This line initializes the [present] map element if it doesn't exist in the map.
+    context2GpuData->wsiStoredGpuSignalsData[present].init = 1;
+
+    // NOTE(Constantine): This line initializes the [presentImageIndex] map element if it doesn't exist in the map.
+    uint64_t index = context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex].gpuSignalsCurrentFreeIndex;
+
+    // NOTE(Constantine): Caching the pointer to the [presentImageIndex] map element.
+    Red2InternalWsiStoredGpuSignalsPresentImageIndexData * data = &context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex];
+
+    if (data->gpuSignals.size() < (index + 1)) {
+      RedHandleGpuSignal handle = NULL;
+      redCreateGpuSignal(context, gpu, NULL, &handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+      data->gpuSignals.push_back(handle);
+    }
+
+    gpuSignal = data->gpuSignals[index];
+
+    data->gpuSignalsCurrentFreeIndex += 1;
+  }
+  outGpuSignal[0] = gpuSignal;
 }
 
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
