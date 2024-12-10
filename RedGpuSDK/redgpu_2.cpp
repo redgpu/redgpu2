@@ -38,7 +38,7 @@ typedef struct Red2InternalWsiStoredGpuSignalsPresentImageIndexData {
 
 typedef struct Red2InternalWsiStoredGpuSignalsPresentData {
   std::map<unsigned, Red2InternalWsiStoredGpuSignalsPresentImageIndexData> map;
-  unsigned char init;
+  volatile unsigned char init;
 } Red2InternalWsiStoredGpuSignalsPresentData;
 
 typedef struct Red2InternalQueueSubmissionData {
@@ -55,14 +55,19 @@ typedef struct Red2GpuInternalData {
   std::vector<uint64_t>                        queueSubmissionsTicket;        // NOTE(Constantine): Ticket == 0 means the array slot is free to use for other greater tickets.
   uint64_t                                     queueSubmissionsCurrentTicket; // NOTE(Constantine): Starts with 0.
 
-  unsigned char init;
+  volatile unsigned char init;
 } Red2GpuInternalData;
 
 typedef struct Red2ContextInternalData {
   std::map<RedHandleGpu, Red2GpuInternalData> gpus;
 } Red2ContextInternalData;
 
+// NOTE(Constantine):
+// The wrapper around redCreateContext() that returns Red2TypeContext with RedContext and Red2ContextInternalData
+// pointers for other REDGPU 2 procedures to access context2's gpu data internally.
 void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free, RedTypeProcedureMallocTagged optionalMallocTagged, RedTypeProcedureFreeTagged optionalFreeTagged, RedTypeProcedureDebugCallback debugCallback, RedSdkVersion sdkVersion, unsigned sdkExtensionsCount, const unsigned * sdkExtensions, const char * optionalProgramName, unsigned optionalProgramVersion, const char * optionalEngineName, unsigned optionalEngineVersion, const void * optionalSettings, Red2Context * outContext2, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
   Red2TypeContext * context2 = new(std::nothrow) Red2TypeContext();
   if (context2 == NULL) {
     if (outStatuses != NULL) {
@@ -70,7 +75,7 @@ void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free,
         outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -86,7 +91,7 @@ void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free,
         outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -95,12 +100,45 @@ void red2CreateContext(RedTypeProcedureMalloc malloc, RedTypeProcedureFree free,
     outContext2[0] = NULL;
     return;
   }
+
   redCreateContext(malloc, free, optionalMallocTagged, optionalFreeTagged, debugCallback, sdkVersion, sdkExtensionsCount, sdkExtensions, optionalProgramName, optionalProgramVersion, optionalEngineName, optionalEngineVersion, optionalSettings, &context2->context, outStatuses, optionalFile, optionalLine, optionalUserData);
   context2->redgpu2InternalData = context2Data;
-  outContext2[0] = context2;
+
   for (unsigned i = 0; i < context2->context->gpusCount; i += 1) {
     RedHandleGpu gpu = context2->context->gpus[i].gpu;
     context2Data->gpus[gpu].init = 1;
+  }
+
+  outContext2[0] = context2;
+}
+
+// NOTE(Constantine):
+// The wrapper around redDestroyContext() that destroys and frees internal to REDGPU 2 context handles and pointers.
+void red2DestroyContext(Red2Context context2, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+
+  for (const auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
+    for (const auto & queueSubmission : context2GpuData.queueSubmissions) {
+      RedHandleCpuSignal cpuSignal = queueSubmission.cpuSignal;
+      redDestroyCpuSignal(context, gpuHandle, cpuSignal, optionalFile, optionalLine, optionalUserData);
+    }
+  }
+  for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
+    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData.wsiStoredGpuSignalsDataMutex);
+    for (const auto & [presentHandle, presentData] : context2GpuData.wsiStoredGpuSignalsData) { // NOTE(Constantine): This style of loop requires C++17.
+      for (const auto & [dataKey, data] : presentData.map) { // NOTE(Constantine): This style of loop requires C++17.
+        for (const auto & gpuSignal : data.gpuSignals) {
+          redDestroyGpuSignal(context, gpuHandle, gpuSignal, optionalFile, optionalLine, optionalUserData);
+        }
+      }
+    }
+  }
+  redDestroyContext(context, optionalFile, optionalLine, optionalUserData);
+  {
+    Red2ContextInternalData * context2Data = (Red2ContextInternalData *)context2->redgpu2InternalData;
+    delete context2Data;
+    delete context2;
   }
 }
 
@@ -1920,35 +1958,6 @@ static void red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(Red2Co
     //   https://registry.khronos.org/vulkan/specs/1.0/man/html/vkResetFences.html
     redCpuSignalUnsignal(context, gpu, 1, &cpuSignal, NULL, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Assuming redCpuSignalUnsignal()  never errors.
     context2GpuData->queueSubmissionsTicket[index] = 0;
-  }
-}
-
-void red2DestroyContext(Red2Context context2, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-
-  for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
-    for (auto & queueSubmission : context2GpuData.queueSubmissions) {
-      RedHandleCpuSignal cpuSignal = queueSubmission.cpuSignal;
-      redDestroyCpuSignal(context, gpuHandle, cpuSignal, optionalFile, optionalLine, optionalUserData);
-    }
-  }
-  for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
-    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData.wsiStoredGpuSignalsDataMutex);
-    for (auto & [presentHandle, presentData] : context2GpuData.wsiStoredGpuSignalsData) { // NOTE(Constantine): This style of loop requires C++17.
-      for (const auto & [dataKey, data] : presentData.map) {
-        for (const auto & gpuSignal : data.gpuSignals) {
-          redDestroyGpuSignal(context, gpuHandle, gpuSignal, optionalFile, optionalLine, optionalUserData);
-        }
-      }
-      presentData = {};
-    }
-  }
-  redDestroyContext(context, optionalFile, optionalLine, optionalUserData);
-  {
-    Red2ContextInternalData * context2Data = (Red2ContextInternalData *)context2->redgpu2InternalData;
-    delete context2Data;
-    delete context2;
   }
 }
 
