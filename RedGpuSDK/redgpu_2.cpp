@@ -134,8 +134,7 @@ void red2DestroyContext(Red2Context context2, const char * optionalFile, int opt
 
   for (const auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
     for (const auto & queueSubmission : context2GpuData.queueSubmissions) {
-      RedHandleCpuSignal cpuSignal = queueSubmission.cpuSignal;
-      redDestroyCpuSignal(context, gpuHandle, cpuSignal, optionalFile, optionalLine, optionalUserData);
+      redDestroyCpuSignal(context, gpuHandle, queueSubmission.cpuSignal, optionalFile, optionalLine, optionalUserData);
     }
   }
   for (auto & [gpuHandle, context2GpuData] : context2Data->gpus) { // NOTE(Constantine): This style of loop requires C++17.
@@ -719,6 +718,155 @@ void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandle
     data->gpuSignalsCurrentFreeIndex += 1;
   }
   outGpuSignal[0] = gpuSignal;
+}
+
+static size_t red2InternalQueueSubmissionsGetFreeElementIndex_NonLocking(Red2Context context2, RedHandleGpu gpu) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  size_t index = -1;
+  for (size_t i = 0, count = context2GpuData->queueSubmissionsTicket.size(); i < count; i += 1) {
+    if (context2GpuData->queueSubmissionsTicket[i] == 0) {
+      index = i;
+      break;
+    }
+  }
+  return index;
+}
+
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redQueueSubmit() that replaces manual management of CPU signals with free-to-use-however-you-want plain ticket values.
+// 
+// The following functions depend on this function:
+// * red2IsQueueSubmissionFinished()
+// * red2IsQueueSubmissionFinishedByTicketAlone()
+// * red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket()
+// * red2WaitForQueueSubmissionToFinish()
+// * red2WaitForQueueSubmissionToFinishByTicketAlone()
+// * red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket()
+// * red2WaitForAllQueueSubmissionsToFinish()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
+void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  RedHandleCpuSignal cpuSignal = NULL;
+  size_t i = -1;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    i = red2InternalQueueSubmissionsGetFreeElementIndex_NonLocking(context2, gpu);
+    if (i != -1) {
+      cpuSignal = context2GpuData->queueSubmissions[i].cpuSignal;
+      context2GpuData->queueSubmissionsCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
+      context2GpuData->queueSubmissionsTicket[i]      = context2GpuData->queueSubmissionsCurrentTicket;
+    }
+  }
+  if (i == -1) {
+    redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (cpuSignal == NULL) { // NOTE(Constantine): Assuming cpuSignal is always NULL and not a garbage value on any fail of redCreateCpuSignal().
+      if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = 0; }
+      if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = 0; }
+      return;
+    }
+  }
+  // NOTE(Constantine):
+  // What happens when both vkQueueSubmit() and vkGetFenceStatus() execute on the same VkFence at the same time from different threads?
+  redQueueSubmit(context, gpu, queue, timelinesCount, timelines, cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
+  if (i == -1) {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    {
+      Red2InternalQueueSubmissionData emptyElement = {};
+      context2GpuData->queueSubmissions.push_back(emptyElement);
+      context2GpuData->queueSubmissionsTicket.push_back(0);
+      i = context2GpuData->queueSubmissions.size() - 1;
+      context2GpuData->queueSubmissions[i].cpuSignal = cpuSignal;
+    }
+    context2GpuData->queueSubmissionsCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
+    context2GpuData->queueSubmissionsTicket[i]      = context2GpuData->queueSubmissionsCurrentTicket;
+  }
+  if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = i; }
+  if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = context2GpuData->queueSubmissionsCurrentTicket; }
+}
+
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around red2QueueSubmit() that stores the queue submission tickets in each REDGPU 2 calls that were submitted.
+// 
+// The following functions depend on this function:
+// * red2IsQueueSubmissionFinished()
+// * red2IsQueueSubmissionFinishedByTicketAlone()
+// * red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket()
+// * red2WaitForQueueSubmissionToFinish()
+// * red2WaitForQueueSubmissionToFinishByTicketAlone()
+// * red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket()
+// * red2WaitForAllQueueSubmissionsToFinish()
+// * red2CallsGetQueueSubmitTrackableTicket()
+// * red2CallsSetQueueSubmitTrackableTicket()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
+void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
+  unsigned         callsHandlesCount = callsCount;
+  RedHandleCalls * callsHandles      = NULL;
+
+  if (callsHandlesCount > 0) {
+    callsHandles = new(std::nothrow) RedHandleCalls [callsHandlesCount] /*---*/;
+    if (callsHandles == NULL) {
+      if (outStatuses != NULL) {
+        if (outStatuses->statusError == RED_STATUS_SUCCESS) {
+          outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+          outStatuses->statusErrorCode           = 0;
+          outStatuses->statusErrorHresult        = 0;
+          outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
+          outStatuses->statusErrorFile           = optionalFile;
+          outStatuses->statusErrorLine           = optionalLine;
+          outStatuses->statusErrorDescription[0] = 0;
+        }
+      }
+      return;
+    }
+  }
+  
+  for (unsigned i = 0; i < callsHandlesCount; i += 1) {
+    RedCalls redcalls /*---*/;
+    red2CallsGetRedHandles(calls[i], NULL, NULL, &redcalls);
+    callsHandles[i] = redcalls.handle;
+  }
+
+  RedGpuTimeline timeline /*---*/;
+  timeline.setTo4                            = 4;
+  timeline.setTo0                            = 0;
+  timeline.waitForAndUnsignalGpuSignalsCount = 0;
+  timeline.waitForAndUnsignalGpuSignals      = NULL;
+  timeline.setTo65536                        = NULL;
+  timeline.callsCount                        = callsHandlesCount;
+  timeline.calls                             = callsHandles;
+  timeline.signalGpuSignalsCount             = 0;
+  timeline.signalGpuSignals                  = NULL;
+
+  uint64_t queueSubmitTrackableTicketArrayIndex = 0;
+  uint64_t queueSubmitTrackableTicket           = 0;
+  red2QueueSubmit(context2, gpu, queue, 1, &timeline, &queueSubmitTrackableTicketArrayIndex, &queueSubmitTrackableTicket, outStatuses, optionalFile, optionalLine, optionalUserData);
+
+  if (callsHandlesCount > 0) {
+    delete[] callsHandles;
+  }
+
+  for (unsigned i = 0; i < callsCount; i += 1) {
+    Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls[i];
+    // NOTE(Constantine):
+    // D3D12 doesn't allow to submit the same command list that was already submitted until that
+    // previous submission is finished, so having only one trackable queue submit ticket is fine.
+    // > A direct command list can be submitted for execution multiple times, but the app is
+    //   responsible for ensuring that the direct command list has finished executing on the GPU
+    //   before submitting it again.
+    //   https://learn.microsoft.com/en-us/windows/win32/direct3d12/design-philosophy-of-command-queues-and-command-lists
+    handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmitTrackableTicketArrayIndex;
+    handle->lastQueueSubmitTrackableTicket           = queueSubmitTrackableTicket;
+  }
 }
 
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
@@ -2060,21 +2208,6 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
   return RED_STATUS_SUCCESS;
 }
 
-static size_t red2InternalQueueSubmissionsGetFreeElementIndex_NonLocking(Red2Context context2, RedHandleGpu gpu) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  size_t index = -1;
-  for (size_t i = 0, count = context2GpuData->queueSubmissionsTicket.size(); i < count; i += 1) {
-    if (context2GpuData->queueSubmissionsTicket[i] == 0) {
-      index = i;
-      break;
-    }
-  }
-  return index;
-}
-
 static void red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(Red2Context context2, RedHandleGpu gpu, uint64_t index, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedContext                context         = context2->context;
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
@@ -2089,110 +2222,6 @@ static void red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(Red2Co
     //   https://registry.khronos.org/vulkan/specs/1.0/man/html/vkResetFences.html
     redCpuSignalUnsignal(context, gpu, 1, &cpuSignal, NULL, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Assuming redCpuSignalUnsignal()  never errors.
     context2GpuData->queueSubmissionsTicket[index] = 0;
-  }
-}
-
-void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  RedHandleCpuSignal cpuSignal = NULL;
-  size_t i = -1;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    i = red2InternalQueueSubmissionsGetFreeElementIndex_NonLocking(context2, gpu);
-    if (i != -1) {
-      cpuSignal = context2GpuData->queueSubmissions[i].cpuSignal;
-      context2GpuData->queueSubmissionsCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
-      context2GpuData->queueSubmissionsTicket[i]      = context2GpuData->queueSubmissionsCurrentTicket;
-    }
-  }
-  if (i == -1) {
-    redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Intentionally creating one CPU signal per queue submit, even if the user didn't request a ticket for that queue submit.
-    if (cpuSignal == NULL) { // NOTE(Constantine): Assuming cpuSignal is always NULL and not a garbage value on any fail of redCreateCpuSignal().
-      if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = 0; }
-      if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = 0; }
-      return;
-    }
-  }
-  // NOTE(Constantine):
-  // What happens when both vkQueueSubmit() and vkGetFenceStatus() execute on the same VkFence at the same time from different threads?
-  redQueueSubmit(context, gpu, queue, timelinesCount, timelines, cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
-  if (i == -1) {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    {
-      Red2InternalQueueSubmissionData emptyElement = {};
-      context2GpuData->queueSubmissions.push_back(emptyElement);
-      context2GpuData->queueSubmissionsTicket.push_back(0);
-      i = context2GpuData->queueSubmissions.size() - 1;
-      context2GpuData->queueSubmissions[i].cpuSignal = cpuSignal;
-    }
-    context2GpuData->queueSubmissionsCurrentTicket += 1; // NOTE(Constantine): Assuming u64 will not overflow during the lifetime of a program.
-    context2GpuData->queueSubmissionsTicket[i]      = context2GpuData->queueSubmissionsCurrentTicket;
-  }
-  if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = i; }
-  if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = context2GpuData->queueSubmissionsCurrentTicket; }
-}
-
-void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  unsigned         callsHandlesCount = callsCount;
-  RedHandleCalls * callsHandles      = NULL;
-
-  if (callsHandlesCount > 0) {
-    callsHandles = new(std::nothrow) RedHandleCalls [callsHandlesCount] /*---*/;
-    if (callsHandles == NULL) {
-      if (outStatuses != NULL) {
-        if (outStatuses->statusError == RED_STATUS_SUCCESS) {
-          outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
-          outStatuses->statusErrorCode           = 0;
-          outStatuses->statusErrorHresult        = 0;
-          outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
-          outStatuses->statusErrorFile           = optionalFile;
-          outStatuses->statusErrorLine           = optionalLine;
-          outStatuses->statusErrorDescription[0] = 0;
-        }
-      }
-      return;
-    }
-  }
-  
-  for (unsigned i = 0; i < callsHandlesCount; i += 1) {
-    RedCalls redcalls /*---*/;
-    red2CallsGetRedHandles(calls[i], NULL, NULL, &redcalls);
-    callsHandles[i] = redcalls.handle;
-  }
-
-  RedGpuTimeline timeline /*---*/;
-  timeline.setTo4                            = 4;
-  timeline.setTo0                            = 0;
-  timeline.waitForAndUnsignalGpuSignalsCount = 0;
-  timeline.waitForAndUnsignalGpuSignals      = NULL;
-  timeline.setTo65536                        = NULL;
-  timeline.callsCount                        = callsHandlesCount;
-  timeline.calls                             = callsHandles;
-  timeline.signalGpuSignalsCount             = 0;
-  timeline.signalGpuSignals                  = NULL;
-
-  uint64_t queueSubmitTrackableTicketArrayIndex = 0;
-  uint64_t queueSubmitTrackableTicket           = 0;
-  red2QueueSubmit(context2, gpu, queue, 1, &timeline, &queueSubmitTrackableTicketArrayIndex, &queueSubmitTrackableTicket, outStatuses, optionalFile, optionalLine, optionalUserData);
-
-  if (callsHandlesCount > 0) {
-    delete[] callsHandles;
-  }
-
-  for (unsigned i = 0; i < callsCount; i += 1) {
-    Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls[i];
-    // NOTE(Constantine):
-    // D3D12 doesn't allow to submit the same command list that was already submitted until that
-    // previous submission is finished, so having only one trackable queue submit ticket is fine.
-    // > A direct command list can be submitted for execution multiple times, but the app is
-    //   responsible for ensuring that the direct command list has finished executing on the GPU
-    //   before submitting it again.
-    //   https://learn.microsoft.com/en-us/windows/win32/direct3d12/design-philosophy-of-command-queues-and-command-lists
-    handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmitTrackableTicketArrayIndex;
-    handle->lastQueueSubmitTrackableTicket           = queueSubmitTrackableTicket;
   }
 }
 
