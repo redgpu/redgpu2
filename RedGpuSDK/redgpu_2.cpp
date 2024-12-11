@@ -572,37 +572,6 @@ void red2DestroyCalls(RedContext context, RedHandleGpu gpu, Red2HandleCalls call
   delete handle;
 }
 
-void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  RedHandleGpuSignal gpuSignal = NULL;
-  {
-    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
-
-    // NOTE(Constantine): This line initializes the [present] map element if it doesn't exist in the map.
-    context2GpuData->wsiStoredGpuSignalsData[present].init = 1;
-
-    // NOTE(Constantine): This line initializes the [presentImageIndex] map element if it doesn't exist in the map.
-    uint64_t index = context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex].gpuSignalsCurrentFreeIndex;
-
-    // NOTE(Constantine): Caching the pointer to the [presentImageIndex] map element.
-    Red2InternalWsiStoredGpuSignalsPresentImageIndexData * data = &context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex];
-
-    if (data->gpuSignals.size() < (index + 1)) {
-      RedHandleGpuSignal handle = NULL;
-      redCreateGpuSignal(context, gpu, NULL, &handle, outStatuses, optionalFile, optionalLine, optionalUserData);
-      data->gpuSignals.push_back(handle);
-    }
-
-    gpuSignal = data->gpuSignals[index];
-
-    data->gpuSignalsCurrentFreeIndex += 1;
-  }
-  outGpuSignal[0] = gpuSignal;
-}
-
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   return handle->handle;
@@ -2073,6 +2042,44 @@ void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandleP
     std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
     context2GpuData->wsiStoredGpuSignalsData[present].map[outImageIndex[0]].gpuSignalsCurrentFreeIndex = 0;
   }
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  RedHandleGpuSignal gpuSignal = NULL;
+  {
+    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
+
+    // NOTE(Constantine): This line initializes the [present] map element if it doesn't exist in the map.
+    context2GpuData->wsiStoredGpuSignalsData[present].init = 1;
+
+    // NOTE(Constantine): This line initializes the [presentImageIndex] map element if it doesn't exist in the map.
+    uint64_t index = context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex].gpuSignalsCurrentFreeIndex;
+
+    // NOTE(Constantine): Caching the pointer to the [presentImageIndex] map element.
+    Red2InternalWsiStoredGpuSignalsPresentImageIndexData * data = &context2GpuData->wsiStoredGpuSignalsData[present].map[presentImageIndex];
+
+    if (data->gpuSignals.size() < (index + 1)) {
+      RedHandleGpuSignal handle = NULL;
+      redCreateGpuSignal(context, gpu, NULL, &handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+      data->gpuSignals.push_back(handle);
+    }
+
+    // NOTE(Constantine):
+    // Assumes all the available GPU signals are in unsignaled state.
+    // For example, all WSI stored GPU signals can be unsignaled via redQueuePresent::waitForAndUnsignalGpuSignals parameter.
+    gpuSignal = data->gpuSignals[index];
+
+    data->gpuSignalsCurrentFreeIndex += 1;
+  }
+  outGpuSignal[0] = gpuSignal;
 }
 
 void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
