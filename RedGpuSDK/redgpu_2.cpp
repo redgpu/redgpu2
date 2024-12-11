@@ -889,6 +889,234 @@ void red2PresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQue
   redQueuePresent(context, gpu, presentQueue, 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
 }
 
+static void red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(Red2Context context2, RedHandleGpu gpu, uint64_t index, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  RedHandleCpuSignal cpuSignal                  = context2GpuData->queueSubmissions[index].cpuSignal;
+  uint64_t           cpuSignalIsWaitedOnCounter = context2GpuData->queueSubmissions[index].cpuSignalIsWaitedOnCounter;
+  RedStatus status = RED_STATUS_SUCCESS;
+  redCpuSignalGetStatus(context, gpu, cpuSignal, &status, optionalFile, optionalLine, optionalUserData);   // NOTE(Constantine): Assuming redCpuSignalGetStatus() never errors.
+  if (status == RED_STATUS_SUCCESS && cpuSignalIsWaitedOnCounter == 0) {
+    // > If any member of pFences is already in the unsignaled state when vkResetFences is executed, then vkResetFences has no effect on that fence.
+    //   https://registry.khronos.org/vulkan/specs/1.0/man/html/vkResetFences.html
+    redCpuSignalUnsignal(context, gpu, 1, &cpuSignal, NULL, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Assuming redCpuSignalUnsignal()  never errors.
+    context2GpuData->queueSubmissionsTicket[index] = 0;
+  }
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+RedBool32 red2IsQueueSubmissionFinished(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  if (queueSubmissionTicket == 0) {
+    return 1;
+  }
+  uint64_t ticket = 0;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    if (context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex] == queueSubmissionTicket) {
+      red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
+      ticket = context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex];
+    }
+  }
+  return ticket == queueSubmissionTicket ? 0 : 1; // NOTE(Constantine): Alternatively, (ticket == 0 || ticket > queueSubmissionTicket) ? 1 : 0.
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+RedBool32 red2IsQueueSubmissionFinishedByTicketAlone(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  if (queueSubmissionTicket == 0) {
+    return 1;
+  }
+  uint64_t ticket = 0;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
+      if (context2GpuData->queueSubmissionsTicket[i] == queueSubmissionTicket) {
+        red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+        ticket = context2GpuData->queueSubmissionsTicket[i];
+        break;
+      }
+    }
+  }
+  return ticket == queueSubmissionTicket ? 0 : 1; // NOTE(Constantine): Alternatively, (ticket == 0 || ticket > queueSubmissionTicket) ? 1 : 0.
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+RedBool32 red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  RedBool32 allQueueSubmissionsAreFinished = 1;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
+      uint64_t t = context2GpuData->queueSubmissionsTicket[i];
+      if (t != 0 && t <= queueSubmissionTicket) {
+        red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+        uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
+        if (ticket != 0 && ticket <= queueSubmissionTicket) {
+          allQueueSubmissionsAreFinished = 0;
+          break;
+        }
+      }
+    }
+  }
+  return allQueueSubmissionsAreFinished;
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2WaitForQueueSubmissionToFinish(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  if (queueSubmissionTicket == 0) {
+    return;
+  }
+  RedHandleCpuSignal cpuSignal = NULL;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    uint64_t ticket = context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex];
+    if (ticket == queueSubmissionTicket) {
+      cpuSignal = context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignal;
+      context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
+    }
+  }
+  if (cpuSignal != NULL) {
+    redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
+  }
+  if (cpuSignal != NULL) {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
+    red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
+  }
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2WaitForQueueSubmissionToFinishByTicketAlone(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  if (queueSubmissionTicket == 0) {
+    return;
+  }
+  uint64_t           queueSubmissionTicketArrayIndex = 0;
+  RedHandleCpuSignal cpuSignal = NULL;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
+      uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
+      if (ticket == queueSubmissionTicket) {
+        queueSubmissionTicketArrayIndex = i;
+        cpuSignal = context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignal;
+        context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
+        break;
+      }
+    }
+  }
+  if (cpuSignal != NULL) {
+    redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
+  }
+  if (cpuSignal != NULL) {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
+    red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
+  }
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
+  std::vector<RedHandleCpuSignal> cpuSignal;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
+      uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
+      if (ticket != 0 && ticket <= queueSubmissionTicket) {
+        queueSubmissionTicketArrayIndex.push_back(i);
+        cpuSignal.push_back(context2GpuData->queueSubmissions[i].cpuSignal);
+        context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter += 1;
+      }
+    }
+  }
+  if (cpuSignal.size() > 0) {
+    redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
+  }
+  if (cpuSignal.size() > 0) {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    for (uint64_t i : queueSubmissionTicketArrayIndex) {
+      context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter -= 1;
+      red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+    }
+  }
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu gpu, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
+  std::vector<RedHandleCpuSignal> cpuSignal;
+  {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
+      uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
+      if (ticket != 0) {
+        queueSubmissionTicketArrayIndex.push_back(i);
+        cpuSignal.push_back(context2GpuData->queueSubmissions[i].cpuSignal);
+        context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter += 1;
+      }
+    }
+  }
+  if (cpuSignal.size() > 0) {
+    redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
+  }
+  if (cpuSignal.size() > 0) {
+    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
+    for (uint64_t i : queueSubmissionTicketArrayIndex) {
+      context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter -= 1;
+      red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
+    }
+  }
+}
+
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   return handle->handle;
@@ -2226,206 +2454,6 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
   addresses->redCallSetProcedureParametersStructs(handle->handle, procedureType, parameters->handle, structIndex, 1, &structHandle, 0, 0);
 
   return RED_STATUS_SUCCESS;
-}
-
-static void red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(Red2Context context2, RedHandleGpu gpu, uint64_t index, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  RedHandleCpuSignal cpuSignal                  = context2GpuData->queueSubmissions[index].cpuSignal;
-  uint64_t           cpuSignalIsWaitedOnCounter = context2GpuData->queueSubmissions[index].cpuSignalIsWaitedOnCounter;
-  RedStatus status = RED_STATUS_SUCCESS;
-  redCpuSignalGetStatus(context, gpu, cpuSignal, &status, optionalFile, optionalLine, optionalUserData);   // NOTE(Constantine): Assuming redCpuSignalGetStatus() never errors.
-  if (status == RED_STATUS_SUCCESS && cpuSignalIsWaitedOnCounter == 0) {
-    // > If any member of pFences is already in the unsignaled state when vkResetFences is executed, then vkResetFences has no effect on that fence.
-    //   https://registry.khronos.org/vulkan/specs/1.0/man/html/vkResetFences.html
-    redCpuSignalUnsignal(context, gpu, 1, &cpuSignal, NULL, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Assuming redCpuSignalUnsignal()  never errors.
-    context2GpuData->queueSubmissionsTicket[index] = 0;
-  }
-}
-
-RedBool32 red2IsQueueSubmissionFinished(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  if (queueSubmissionTicket == 0) {
-    return 1;
-  }
-  uint64_t ticket = 0;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    if (context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex] == queueSubmissionTicket) {
-      red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
-      ticket = context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex];
-    }
-  }
-  return ticket == queueSubmissionTicket ? 0 : 1; // NOTE(Constantine): Alternatively, (ticket == 0 || ticket > queueSubmissionTicket) ? 1 : 0.
-}
-
-RedBool32 red2IsQueueSubmissionFinishedByTicketAlone(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  if (queueSubmissionTicket == 0) {
-    return 1;
-  }
-  uint64_t ticket = 0;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
-      if (context2GpuData->queueSubmissionsTicket[i] == queueSubmissionTicket) {
-        red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
-        ticket = context2GpuData->queueSubmissionsTicket[i];
-        break;
-      }
-    }
-  }
-  return ticket == queueSubmissionTicket ? 0 : 1; // NOTE(Constantine): Alternatively, (ticket == 0 || ticket > queueSubmissionTicket) ? 1 : 0.
-}
-
-RedBool32 red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  RedBool32 allQueueSubmissionsAreFinished = 1;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
-      uint64_t t = context2GpuData->queueSubmissionsTicket[i];
-      if (t != 0 && t <= queueSubmissionTicket) {
-        red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
-        uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
-        if (ticket != 0 && ticket <= queueSubmissionTicket) {
-          allQueueSubmissionsAreFinished = 0;
-          break;
-        }
-      }
-    }
-  }
-  return allQueueSubmissionsAreFinished;
-}
-
-void red2WaitForQueueSubmissionToFinish(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  if (queueSubmissionTicket == 0) {
-    return;
-  }
-  RedHandleCpuSignal cpuSignal = NULL;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    uint64_t ticket = context2GpuData->queueSubmissionsTicket[queueSubmissionTicketArrayIndex];
-    if (ticket == queueSubmissionTicket) {
-      cpuSignal = context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignal;
-      context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
-    }
-  }
-  if (cpuSignal != NULL) {
-    redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
-  }
-  if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
-    red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
-  }
-}
-
-void red2WaitForQueueSubmissionToFinishByTicketAlone(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  if (queueSubmissionTicket == 0) {
-    return;
-  }
-  uint64_t           queueSubmissionTicketArrayIndex = 0;
-  RedHandleCpuSignal cpuSignal = NULL;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
-      uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
-      if (ticket == queueSubmissionTicket) {
-        queueSubmissionTicketArrayIndex = i;
-        cpuSignal = context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignal;
-        context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter += 1;
-        break;
-      }
-    }
-  }
-  if (cpuSignal != NULL) {
-    redCpuSignalWait(context, gpu, 1, &cpuSignal, 1, outStatuses, optionalFile, optionalLine, optionalUserData);
-  }
-  if (cpuSignal != NULL) {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    context2GpuData->queueSubmissions[queueSubmissionTicketArrayIndex].cpuSignalIsWaitedOnCounter -= 1;
-    red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, queueSubmissionTicketArrayIndex, optionalFile, optionalLine, optionalUserData);
-  }
-}
-
-void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
-  std::vector<RedHandleCpuSignal> cpuSignal;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
-      uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
-      if (ticket != 0 && ticket <= queueSubmissionTicket) {
-        queueSubmissionTicketArrayIndex.push_back(i);
-        cpuSignal.push_back(context2GpuData->queueSubmissions[i].cpuSignal);
-        context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter += 1;
-      }
-    }
-  }
-  if (cpuSignal.size() > 0) {
-    redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
-  }
-  if (cpuSignal.size() > 0) {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    for (uint64_t i : queueSubmissionTicketArrayIndex) {
-      context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter -= 1;
-      red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
-    }
-  }
-}
-
-void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu gpu, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
-  std::vector<RedHandleCpuSignal> cpuSignal;
-  {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
-      uint64_t ticket = context2GpuData->queueSubmissionsTicket[i];
-      if (ticket != 0) {
-        queueSubmissionTicketArrayIndex.push_back(i);
-        cpuSignal.push_back(context2GpuData->queueSubmissions[i].cpuSignal);
-        context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter += 1;
-      }
-    }
-  }
-  if (cpuSignal.size() > 0) {
-    redCpuSignalWait(context, gpu, (unsigned)cpuSignal.size(), cpuSignal.data(), 1, outStatuses, optionalFile, optionalLine, optionalUserData);
-  }
-  if (cpuSignal.size() > 0) {
-    std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
-    for (uint64_t i : queueSubmissionTicketArrayIndex) {
-      context2GpuData->queueSubmissions[i].cpuSignalIsWaitedOnCounter -= 1;
-      red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(context2, gpu, i, optionalFile, optionalLine, optionalUserData);
-    }
-  }
 }
 
 // REDGPU 2 new procedures from 28 Nov 2024:
