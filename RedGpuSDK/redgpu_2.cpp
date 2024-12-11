@@ -663,6 +663,26 @@ void red2CallsFreeAllInlineStructsMemorys(Red2HandleCalls calls, const char * op
   handle->structsMemorysSamplers            = {};
 }
 
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redPresentGetImageIndex() that prepares WSI stored GPU signals for reuse.
+// 
+// The following functions depend on this function:
+// * red2GetWsiStoredGpuSignal()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
+void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, RedHandleCpuSignal signalCpuSignal, RedHandleGpuSignal signalGpuSignal, unsigned * outImageIndex, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedContext                context         = context2->context;
+  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
+  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
+
+  redPresentGetImageIndex(context, gpu, present, signalCpuSignal, signalGpuSignal, outImageIndex, outStatuses, optionalFile, optionalLine, optionalUserData);
+  // NOTE(Constantine): Assuming redPresentGetImageIndex blocks CPU here until a new image index is returned to outImageIndex.
+  {
+    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
+    context2GpuData->wsiStoredGpuSignalsData[present].map[outImageIndex[0]].gpuSignalsCurrentFreeIndex = 0;
+  }
+}
+
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   return handle->handle;
@@ -2031,19 +2051,6 @@ static void red2InternalQueueSubmissionsFreeFinishedCpuSignals_NonLocking(Red2Co
     //   https://registry.khronos.org/vulkan/specs/1.0/man/html/vkResetFences.html
     redCpuSignalUnsignal(context, gpu, 1, &cpuSignal, NULL, optionalFile, optionalLine, optionalUserData); // NOTE(Constantine): Assuming redCpuSignalUnsignal()  never errors.
     context2GpuData->queueSubmissionsTicket[index] = 0;
-  }
-}
-
-void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, RedHandleCpuSignal signalCpuSignal, RedHandleGpuSignal signalGpuSignal, unsigned * outImageIndex, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedContext                context         = context2->context;
-  Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
-  Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
-
-  redPresentGetImageIndex(context, gpu, present, signalCpuSignal, signalGpuSignal, outImageIndex, outStatuses, optionalFile, optionalLine, optionalUserData);
-  // NOTE(Constantine): Assuming redPresentGetImageIndex blocks CPU here until a new image index is returned to outImageIndex.
-  {
-    std::lock_guard<std::mutex> wsiStoredGpuSignalsDataMutexLockGuard(context2GpuData->wsiStoredGpuSignalsDataMutex);
-    context2GpuData->wsiStoredGpuSignalsData[present].map[outImageIndex[0]].gpuSignalsCurrentFreeIndex = 0;
   }
 }
 
