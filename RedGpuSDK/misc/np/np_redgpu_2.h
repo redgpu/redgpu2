@@ -234,6 +234,11 @@
 #define _np5_red2PresentQueueWaitIdle optionalLine
 #define _np6_red2PresentQueueWaitIdle optionalUserData
 
+#define _np1_red2PickResourceMemoryTypeIndex gpuInfo
+#define _np2_red2PickResourceMemoryTypeIndex requireMappableMemoryCoherency
+#define _np3_red2PickResourceMemoryTypeIndex resourceDesiredMemoryType
+#define _np4_red2PickResourceMemoryTypeIndex resourceMemoryTypesSupported
+
 #define _np1_red2IsQueueSubmissionFinished context2
 #define _np2_red2IsQueueSubmissionFinished gpu
 #define _np3_red2IsQueueSubmissionFinished queueSubmissionTicketArrayIndex
@@ -288,11 +293,6 @@
 #define _np4_red2WaitForAllQueueSubmissionsToFinish optionalFile
 #define _np5_red2WaitForAllQueueSubmissionsToFinish optionalLine
 #define _np6_red2WaitForAllQueueSubmissionsToFinish optionalUserData
-
-#define _np1_red2PickResourceMemoryTypeIndex gpuInfo
-#define _np2_red2PickResourceMemoryTypeIndex requireMappableMemoryCoherency
-#define _np3_red2PickResourceMemoryTypeIndex resourceDesiredMemoryType
-#define _np4_red2PickResourceMemoryTypeIndex resourceMemoryTypesSupported
 
 #define _np1_red2StructDeclarationGetRedHandle structDeclaration
 
