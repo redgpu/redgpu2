@@ -289,6 +289,11 @@
 #define _np5_red2WaitForAllQueueSubmissionsToFinish optionalLine
 #define _np6_red2WaitForAllQueueSubmissionsToFinish optionalUserData
 
+#define _np1_red2PickResourceMemoryTypeIndex gpuInfo
+#define _np2_red2PickResourceMemoryTypeIndex requireMappableMemoryCoherency
+#define _np3_red2PickResourceMemoryTypeIndex resourceDesiredMemoryType
+#define _np4_red2PickResourceMemoryTypeIndex resourceMemoryTypesSupported
+
 #define _np1_red2StructDeclarationGetRedHandle structDeclaration
 
 #define _np1_red2StructDeclarationGetMembersPointer structDeclaration

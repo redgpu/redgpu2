@@ -27,6 +27,7 @@ void red2WaitForQueueSubmissionToFinish(Red2Context context2, RedHandleGpu gpu, 
 void red2WaitForQueueSubmissionToFinishByTicketAlone(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses* outStatuses, char* optionalFile, int optionalLine, void* optionalUserData)
 void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses* outStatuses, char* optionalFile, int optionalLine, void* optionalUserData)
 void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu gpu, RedStatuses* outStatuses, char* optionalFile, int optionalLine, void* optionalUserData)
+unsigned red2PickResourceMemoryTypeIndex(RedGpuInfo* gpuInfo, RedBool32 requireMappableMemoryCoherency, Red2ResourceDesiredMemoryType resourceDesiredMemoryType, unsigned resourceMemoryTypesSupported)
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration)
 Red2StructDeclarationMember* red2StructDeclarationGetMembersPointer(Red2HandleStructDeclaration structDeclaration)
 void red2StructDeclarationGetMembersCounts(Red2HandleStructDeclaration structDeclaration, unsigned* outStructDeclarationMembersCount, unsigned* outMembersOfTypeArrayROConstantCount, unsigned* outMembersOfTypeArrayROOrArrayRWCount, unsigned* outMembersOfTypeTextureROCount, unsigned* outMembersOfTypeTextureRWCount, unsigned* outMembersOfTypeInlineSamplerCount, unsigned* outMembersOfTypeSamplerCount)

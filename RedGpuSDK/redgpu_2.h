@@ -50,6 +50,14 @@ typedef struct Red2ProcedureDependencyOnRenderTargets {
   RedMultisampleCountBitflag depthStencilTextureMultisampleCount;
 } Red2ProcedureDependencyOnRenderTargets;
 
+// red2GetResourceMemoryTypeIndex
+
+typedef enum Red2ResourceDesiredMemoryType {
+  RED2_RESOURCE_DESIRED_MEMORY_TYPE_VRAM     = 0,
+  RED2_RESOURCE_DESIRED_MEMORY_TYPE_UPLOAD   = 1,
+  RED2_RESOURCE_DESIRED_MEMORY_TYPE_READBACK = 2,
+} Red2ResourceDesiredMemoryType;
+
 // red2StructDeclarationGetMembersPointer
 
 typedef struct Red2StructDeclarationMember {
@@ -117,6 +125,7 @@ REDGPU_2_DECLSPEC void      REDGPU_2_API red2WaitForAllQueueSubmissionsToFinish 
 
 // REDGPU 2 get and set handle data procedures
 
+REDGPU_2_DECLSPEC unsigned                      REDGPU_2_API red2PickResourceMemoryTypeIndex              (const RedGpuInfo * gpuInfo, RedBool32 requireMappableMemoryCoherency, Red2ResourceDesiredMemoryType resourceDesiredMemoryType, unsigned resourceMemoryTypesSupported);
 REDGPU_2_DECLSPEC RedHandleStructDeclaration    REDGPU_2_API red2StructDeclarationGetRedHandle            (Red2HandleStructDeclaration structDeclaration);
 REDGPU_2_DECLSPEC Red2StructDeclarationMember * REDGPU_2_API red2StructDeclarationGetMembersPointer       (Red2HandleStructDeclaration structDeclaration);
 REDGPU_2_DECLSPEC void                          REDGPU_2_API red2StructDeclarationGetMembersCounts        (Red2HandleStructDeclaration structDeclaration, unsigned * outStructDeclarationMembersCount, unsigned * outMembersOfTypeArrayROConstantCount, unsigned * outMembersOfTypeArrayROOrArrayRWCount, unsigned * outMembersOfTypeTextureROCount, unsigned * outMembersOfTypeTextureRWCount, unsigned * outMembersOfTypeInlineSamplerCount, unsigned * outMembersOfTypeSamplerCount);
