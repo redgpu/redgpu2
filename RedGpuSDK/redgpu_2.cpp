@@ -881,7 +881,7 @@ void red2RedXOnlyCreateQueue(RedContext context, RedHandleGpu gpu, const char * 
 }
 
 // NOTE(Constantine):
-// In REDGPU and REDGPU X, you need to wait for present queue to finish before destroying resources that were submitted to it.
+// In REDGPU and REDGPU X, you need to wait for present queue to finish before destroying WSI resources that were submitted to it.
 // 
 // This function is optional.
 void red2PresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData) {
