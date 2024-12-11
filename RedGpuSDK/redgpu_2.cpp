@@ -1117,16 +1117,28 @@ void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu g
   }
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   return handle->handle;
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 Red2StructDeclarationMember * red2StructDeclarationGetMembersPointer(Red2HandleStructDeclaration structDeclaration) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   return handle->structDeclarationMembers;
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 void red2StructDeclarationGetMembersCounts(Red2HandleStructDeclaration structDeclaration, unsigned * outStructDeclarationMembersCount, unsigned * outMembersOfTypeArrayROConstantCount, unsigned * outMembersOfTypeArrayROOrArrayRWCount, unsigned * outMembersOfTypeTextureROCount, unsigned * outMembersOfTypeTextureRWCount, unsigned * outMembersOfTypeInlineSamplerCount, unsigned * outMembersOfTypeSamplerCount) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   if (outStructDeclarationMembersCount      != NULL) { outStructDeclarationMembersCount[0]      = handle->structDeclarationMembersCount;      }
@@ -1138,16 +1150,28 @@ void red2StructDeclarationGetMembersCounts(Red2HandleStructDeclaration structDec
   if (outMembersOfTypeSamplerCount          != NULL) { outMembersOfTypeSamplerCount[0]          = handle->membersOfTypeSamplerCount;          }
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 RedHandleProcedureParameters red2ProcedureParametersGetRedHandle(Red2HandleProcedureParameters procedureParameters) {
   Red2InternalTypeProcedureParameters * handle = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
   return handle->handle;
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 Red2HandleStructDeclaration red2ProcedureParametersGetStructDeclaration(Red2HandleProcedureParameters procedureParameters, unsigned structIndex) {
   Red2InternalTypeProcedureParameters * handle = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
   return handle->structsDeclarations[structIndex];
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 void red2CallsGetRedHandles(Red2HandleCalls calls, RedContext * outContext, RedHandleGpu * outGpu, RedCalls * outCalls) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   if (outContext != 0) { outContext[0] = handle->context; }
@@ -1159,11 +1183,10 @@ void red2CallsGetRedHandles(Red2HandleCalls calls, RedContext * outContext, RedH
   }
 }
 
-void red2CallsSetHandlesToDestroyCustomCallback(Red2HandleCalls calls, void * optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback) {
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  handle->handlesToDestroyWhenCallsAreResetCustomCallback = optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback;
-}
-
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 uint64_t * red2CallsGetHandlesToDestroy(Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetCount) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   if (outHandlesToDestroyWhenCallsAreResetCount != NULL) {
@@ -1172,6 +1195,10 @@ uint64_t * red2CallsGetHandlesToDestroy(Red2HandleCalls calls, uint64_t * outHan
   return handle->handlesToDestroyWhenCallsAreReset.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 unsigned * red2CallsGetHandlesToDestroyType(Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetTypeCount) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   if (outHandlesToDestroyWhenCallsAreResetTypeCount != NULL) {
@@ -1180,12 +1207,29 @@ unsigned * red2CallsGetHandlesToDestroyType(Red2HandleCalls calls, uint64_t * ou
   return handle->handlesToDestroyWhenCallsAreResetType.data(); // NOTE(Constantine): Do not store this returned pointer on user side, it's not stable after each append.
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2CallsSetHandlesToDestroyCustomCallback(Red2HandleCalls calls, void * optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  handle->handlesToDestroyWhenCallsAreResetCustomCallback = optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback;
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 void red2CallsGetQueueSubmitTrackableTicket(Red2HandleCalls calls, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = handle->lastQueueSubmitTrackableTicketArrayIndex; }
   if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = handle->lastQueueSubmitTrackableTicket;           }
 }
 
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
 void red2CallsSetQueueSubmitTrackableTicket(Red2HandleCalls calls, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket) {
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmissionTicketArrayIndex;
@@ -2305,6 +2349,8 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
   void * optionalUserData
 )
 {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
   Red2InternalTypeCalls *               handle     = (Red2InternalTypeCalls *)(void *)calls;
   Red2InternalTypeProcedureParameters * parameters = (Red2InternalTypeProcedureParameters *)(void *)procedureParameters;
 
@@ -2337,7 +2383,7 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
         outStatuses->statusError               = RED_STATUS_ERROR_MEMORY_OVERFLOW;
         outStatuses->statusErrorCode           = 0;
         outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = RED_PROCEDURE_ID_UNDEFINED;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
         outStatuses->statusErrorFile           = optionalFile;
         outStatuses->statusErrorLine           = optionalLine;
         outStatuses->statusErrorDescription[0] = 0;
@@ -2398,7 +2444,7 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
     optionalLine,
     optionalUserData
   );
-  if (structHandle == NULL) {
+  if (structHandle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
     return RED_STATUS_ERROR_MEMORY_OVERFLOW;
   }
 
