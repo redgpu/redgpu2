@@ -572,6 +572,97 @@ void red2DestroyCalls(RedContext context, RedHandleGpu gpu, Red2HandleCalls call
   delete handle;
 }
 
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redCallsSet() that destroys and resets internal to REDGPU 2 calls handles.
+// 
+// The following functions depend on this function:
+// * Any function that expects a parameter of type Red2HandleCalls
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
+void red2CallsSet(Red2HandleCalls calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+
+  redCallsSet(handle->context, handle->gpu, handle->handle, handle->memory, handle->reusable, outStatuses, optionalFile, optionalLine, optionalUserData);
+
+  handle->currentStructsMemoryIndex         = 0;
+  handle->currentStructsMemorySamplersIndex = 0;
+  for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
+#ifndef REDGPU_USE_REDGPU_X
+    redStructsMemoryReset(handle->context, handle->gpu, handle->structsMemorys[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
+    handle->structsMemorys[i].availableDescriptors                               = handle->structsMemorys[i].capacityDescriptors;
+    handle->structsMemorys[i].availableStructsCount                              = handle->structsMemorys[i].capacityStructsCount;
+    handle->structsMemorys[i].availableStructsMembersOfTypeArrayROConstantCount  = handle->structsMemorys[i].capacityStructsMembersOfTypeArrayROConstantCount;
+    handle->structsMemorys[i].availableStructsMembersOfTypeArrayROOrArrayRWCount = handle->structsMemorys[i].capacityStructsMembersOfTypeArrayROOrArrayRWCount;
+    handle->structsMemorys[i].availableStructsMembersOfTypeTextureROCount        = handle->structsMemorys[i].capacityStructsMembersOfTypeTextureROCount;
+    handle->structsMemorys[i].availableStructsMembersOfTypeTextureRWCount        = handle->structsMemorys[i].capacityStructsMembersOfTypeTextureRWCount;
+    handle->structsMemorys[i].availableStructsMembersOfTypeInlineSamplerCount    = handle->structsMemorys[i].capacityStructsMembersOfTypeInlineSamplerCount;
+    handle->structsMemorys[i].availableStructsMembersOfTypeSamplerCount          = handle->structsMemorys[i].capacityStructsMembersOfTypeSamplerCount;
+  }
+  for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
+#ifndef REDGPU_USE_REDGPU_X
+    redStructsMemoryReset(handle->context, handle->gpu, handle->structsMemorysSamplers[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
+    handle->structsMemorysSamplers[i].availableDescriptors                               = handle->structsMemorysSamplers[i].capacityDescriptors;
+    handle->structsMemorysSamplers[i].availableStructsCount                              = handle->structsMemorysSamplers[i].capacityStructsCount;
+    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeArrayROConstantCount  = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeArrayROConstantCount;
+    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeArrayROOrArrayRWCount = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeArrayROOrArrayRWCount;
+    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeTextureROCount        = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeTextureROCount;
+    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeTextureRWCount        = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeTextureRWCount;
+    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeInlineSamplerCount    = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeInlineSamplerCount;
+    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeSamplerCount          = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeSamplerCount;
+  }
+  {
+    for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
+      uint64_t h     = handle->handlesToDestroyWhenCallsAreReset[i];
+      unsigned htype = handle->handlesToDestroyWhenCallsAreResetType[i];
+      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, h, htype, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
+    }
+    handle->handlesToDestroyWhenCallsAreReset.clear();
+    handle->handlesToDestroyWhenCallsAreResetType.clear();
+  }
+}
+
+// NOTE(Constantine):
+// The REDGPU 2 wrapper around redCallsEnd().
+// 
+// The following functions depend on this function:
+// * red2CallsSet()
+// 
+// If you don't plan to use the functions listed above, then this function becomes optional.
+void red2CallsEnd(Red2HandleCalls calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  redCallsEnd(handle->context, handle->gpu, handle->handle, handle->memory, outStatuses, optionalFile, optionalLine, optionalUserData);
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDestroyWhenCallsAreReset, unsigned handleToDestroyWhenCallsAreResetType) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  handle->handlesToDestroyWhenCallsAreReset.push_back(handleToDestroyWhenCallsAreReset);
+  handle->handlesToDestroyWhenCallsAreResetType.push_back(handleToDestroyWhenCallsAreResetType);
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure.
+// 
+// This function is optional.
+void red2CallsFreeAllInlineStructsMemorys(Red2HandleCalls calls, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+  for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
+    redStructsMemoryFree(handle->context, handle->gpu, handle->structsMemorys[i].handle, optionalFile, optionalLine, optionalUserData);
+  }
+  for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
+    redStructsMemoryFree(handle->context, handle->gpu, handle->structsMemorysSamplers[i].handle, optionalFile, optionalLine, optionalUserData);
+  }
+  handle->currentStructsMemoryIndex         = 0;
+  handle->currentStructsMemorySamplersIndex = 0;
+  handle->structsMemorys                    = {};
+  handle->structsMemorysSamplers            = {};
+}
+
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
   Red2InternalTypeStructDeclaration * handle = (Red2InternalTypeStructDeclaration *)(void *)structDeclaration;
   return handle->handle;
@@ -645,74 +736,6 @@ void red2CallsSetQueueSubmitTrackableTicket(Red2HandleCalls calls, uint64_t queu
   Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
   handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmissionTicketArrayIndex;
   handle->lastQueueSubmitTrackableTicket           = queueSubmissionTicket;
-}
-
-void red2CallsSet(
-  Red2HandleCalls calls,
-  RedStatuses * outStatuses,
-  const char * optionalFile,
-  int optionalLine,
-  void * optionalUserData
-)
-{
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  handle->currentStructsMemoryIndex         = 0;
-  handle->currentStructsMemorySamplersIndex = 0;
-  for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
-#ifndef REDGPU_USE_REDGPU_X
-    redStructsMemoryReset(handle->context, handle->gpu, handle->structsMemorys[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
-#endif
-    handle->structsMemorys[i].availableDescriptors                               = handle->structsMemorys[i].capacityDescriptors;
-    handle->structsMemorys[i].availableStructsCount                              = handle->structsMemorys[i].capacityStructsCount;
-    handle->structsMemorys[i].availableStructsMembersOfTypeArrayROConstantCount  = handle->structsMemorys[i].capacityStructsMembersOfTypeArrayROConstantCount;
-    handle->structsMemorys[i].availableStructsMembersOfTypeArrayROOrArrayRWCount = handle->structsMemorys[i].capacityStructsMembersOfTypeArrayROOrArrayRWCount;
-    handle->structsMemorys[i].availableStructsMembersOfTypeTextureROCount        = handle->structsMemorys[i].capacityStructsMembersOfTypeTextureROCount;
-    handle->structsMemorys[i].availableStructsMembersOfTypeTextureRWCount        = handle->structsMemorys[i].capacityStructsMembersOfTypeTextureRWCount;
-    handle->structsMemorys[i].availableStructsMembersOfTypeInlineSamplerCount    = handle->structsMemorys[i].capacityStructsMembersOfTypeInlineSamplerCount;
-    handle->structsMemorys[i].availableStructsMembersOfTypeSamplerCount          = handle->structsMemorys[i].capacityStructsMembersOfTypeSamplerCount;
-  }
-  for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
-#ifndef REDGPU_USE_REDGPU_X
-    redStructsMemoryReset(handle->context, handle->gpu, handle->structsMemorysSamplers[i].handle, outStatuses, optionalFile, optionalLine, optionalUserData);
-#endif
-    handle->structsMemorysSamplers[i].availableDescriptors                               = handle->structsMemorysSamplers[i].capacityDescriptors;
-    handle->structsMemorysSamplers[i].availableStructsCount                              = handle->structsMemorysSamplers[i].capacityStructsCount;
-    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeArrayROConstantCount  = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeArrayROConstantCount;
-    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeArrayROOrArrayRWCount = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeArrayROOrArrayRWCount;
-    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeTextureROCount        = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeTextureROCount;
-    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeTextureRWCount        = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeTextureRWCount;
-    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeInlineSamplerCount    = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeInlineSamplerCount;
-    handle->structsMemorysSamplers[i].availableStructsMembersOfTypeSamplerCount          = handle->structsMemorysSamplers[i].capacityStructsMembersOfTypeSamplerCount;
-  }
-  redCallsSet(handle->context, handle->gpu, handle->handle, handle->memory, handle->reusable, outStatuses, optionalFile, optionalLine, optionalUserData);
-  
-  {
-    for (uint64_t i = 0, count = handle->handlesToDestroyWhenCallsAreReset.size(); i < count; i += 1) {
-      uint64_t h     = handle->handlesToDestroyWhenCallsAreReset[i];
-      unsigned htype = handle->handlesToDestroyWhenCallsAreResetType[i];
-      red2InternalDestroyHandleByHandleType(handle->context, handle->gpu, h, htype, handle->handlesToDestroyWhenCallsAreResetCustomCallback, optionalFile, optionalLine, optionalUserData);
-    }
-    handle->handlesToDestroyWhenCallsAreReset.clear();
-    handle->handlesToDestroyWhenCallsAreResetType.clear();
-  }
-}
-
-void red2CallsEnd(
-  Red2HandleCalls calls,
-  RedStatuses * outStatuses,
-  const char * optionalFile,
-  int optionalLine,
-  void * optionalUserData
-)
-{
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  redCallsEnd(handle->context, handle->gpu, handle->handle, handle->memory, outStatuses, optionalFile, optionalLine, optionalUserData);
-}
-
-void red2CallsAppendHandleToDestroy(Red2HandleCalls calls, uint64_t handleToDestroyWhenCallsAreReset, unsigned handleToDestroyWhenCallsAreResetType) {
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  handle->handlesToDestroyWhenCallsAreReset.push_back(handleToDestroyWhenCallsAreReset);
-  handle->handlesToDestroyWhenCallsAreResetType.push_back(handleToDestroyWhenCallsAreResetType);
 }
 
 void red2CallResolveDepthStencilTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture sourceDepthStencilTexture, RedFormat sourceDepthStencilTextureFormatRedOnly, RedMultisampleCountBitflag sourceDepthStencilTextureMultisampleCount, RedHandleTexture targetDepthStencilTexture, unsigned targetDepthStencilTextureFormatRedXOnly, RedResolveMode depthResolveModeRedOnly, RedResolveMode stencilResolveModeRedOnly, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -1556,26 +1579,6 @@ void red2CallEndRenderTargets(const RedCallProceduresAndAddresses * addresses, R
 #else
   redCallEndProcedureOutput(addresses->redCallEndProcedureOutput, handle->handle);
 #endif
-}
-
-void red2CallsFreeAllInlineStructsMemorys(
-  Red2HandleCalls calls,
-  const char * optionalFile,
-  int optionalLine,
-  void * optionalUserData
-)
-{
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-  for (size_t i = 0, count = handle->structsMemorys.size(); i < count; i += 1) {
-    redStructsMemoryFree(handle->context, handle->gpu, handle->structsMemorys[i].handle, optionalFile, optionalLine, optionalUserData);
-  }
-  for (size_t i = 0, count = handle->structsMemorysSamplers.size(); i < count; i += 1) {
-    redStructsMemoryFree(handle->context, handle->gpu, handle->structsMemorysSamplers[i].handle, optionalFile, optionalLine, optionalUserData);
-  }
-  handle->currentStructsMemoryIndex         = 0;
-  handle->currentStructsMemorySamplersIndex = 0;
-  handle->structsMemorys                    = {};
-  handle->structsMemorysSamplers            = {};
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory(
