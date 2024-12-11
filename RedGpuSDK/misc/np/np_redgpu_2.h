@@ -227,12 +227,12 @@
 #define _np11_red2RedXOnlyCreateQueue optionalLine
 #define _np12_red2RedXOnlyCreateQueue optionalUserData
 
-#define _np1_red2RedOnlyPresentQueueWaitIdle context
-#define _np2_red2RedOnlyPresentQueueWaitIdle gpu
-#define _np3_red2RedOnlyPresentQueueWaitIdle presentQueue
-#define _np4_red2RedOnlyPresentQueueWaitIdle optionalFile
-#define _np5_red2RedOnlyPresentQueueWaitIdle optionalLine
-#define _np6_red2RedOnlyPresentQueueWaitIdle optionalUserData
+#define _np1_red2PresentQueueWaitIdle context
+#define _np2_red2PresentQueueWaitIdle gpu
+#define _np3_red2PresentQueueWaitIdle presentQueue
+#define _np4_red2PresentQueueWaitIdle optionalFile
+#define _np5_red2PresentQueueWaitIdle optionalLine
+#define _np6_red2PresentQueueWaitIdle optionalUserData
 
 #define _np1_red2IsQueueSubmissionFinished context2
 #define _np2_red2IsQueueSubmissionFinished gpu

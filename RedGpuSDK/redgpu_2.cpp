@@ -156,7 +156,7 @@ void red2DestroyContext(Red2Context context2, const char * optionalFile, int opt
 }
 
 // NOTE(Constantine):
-// redXCreateImage() is available only in REDGPU X, so this procedure wraps it to eliminate #ifdef's on user side.
+// redXCreateImage() is available only in REDGPU X, so this function wraps it to eliminate #ifdef's on user side.
 // 
 // This function is optional.
 void red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedImage * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -168,7 +168,7 @@ void red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleNa
 }
 
 // NOTE(Constantine):
-// redXCreateTexture() is available only in REDGPU X, so this procedure wraps it to eliminate #ifdef's on user side.
+// redXCreateTexture() is available only in REDGPU X, so this function wraps it to eliminate #ifdef's on user side.
 // 
 // This function is optional.
 void red2CreateTexture(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -867,6 +867,26 @@ void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedH
     handle->lastQueueSubmitTrackableTicketArrayIndex = queueSubmitTrackableTicketArrayIndex;
     handle->lastQueueSubmitTrackableTicket           = queueSubmitTrackableTicket;
   }
+}
+
+// NOTE(Constantine):
+// redXCreateQueue() is available only in REDGPU X, so this function wraps it to eliminate #ifdef's on user side.
+// 
+// This function is optional.
+void red2RedXOnlyCreateQueue(RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 canCopy, RedBool32 canDraw, RedBool32 canCompute, unsigned priority, RedBool32 disableGpuTimeout, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+#ifdef REDGPU_USE_REDGPU_X
+  redXCreateQueue(context, gpu, handleName, canCopy, canDraw, canCompute, priority, disableGpuTimeout, outStatuses, optionalFile, optionalLine, optionalUserData);
+#endif
+  volatile int nothing = 0;
+}
+
+// NOTE(Constantine):
+// In REDGPU and REDGPU X, you need to wait for present queue to finish before destroying resources that were submitted to it.
+// 
+// This function is optional.
+void red2PresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  // NOTE(Constantine): For present queues only, to finish all their work. This function call depends on the particular REDGPU and REDGPU X implementations, see redgpu_wsi.h comment from Dec 01, 2022.
+  redQueuePresent(context, gpu, presentQueue, 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
 }
 
 RedHandleStructDeclaration red2StructDeclarationGetRedHandle(Red2HandleStructDeclaration structDeclaration) {
@@ -2477,13 +2497,6 @@ void * red2RedXOnlyImageGetHandleResource(RedHandleImage image) {
 #endif
 }
 
-void red2RedXOnlyCreateQueue(RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 canCopy, RedBool32 canDraw, RedBool32 canCompute, unsigned priority, RedBool32 disableGpuTimeout, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-#ifdef REDGPU_USE_REDGPU_X
-  redXCreateQueue(context, gpu, handleName, canCopy, canDraw, canCompute, priority, disableGpuTimeout, outStatuses, optionalFile, optionalLine, optionalUserData);
-#endif
-  volatile int nothing = 0;
-}
-
 void red2CallGpuToCpuSignalSignal(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleGpuToCpuSignal signalGpuToCpuSignal, unsigned setTo8192) {
   addresses->redCallGpuToCpuSignalSignal(calls, signalGpuToCpuSignal, setTo8192);
 }
@@ -2629,14 +2642,6 @@ RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses
   delete[] imageUsages;
 #endif
   return RED_STATUS_SUCCESS;
-}
-
-void red2RedOnlyPresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData) {
-#ifndef REDGPU_USE_REDGPU_X
-  // NOTE(Constantine): For present queues only, to finish all their work. This function call depends on a particular REDGPU implementation, see redgpu_wsi.h from Dec 01, 2022.
-  redQueuePresent(context, gpu, presentQueue, 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
-#endif
-  volatile int nothing = 0;
 }
 
 #ifndef REDGPU_USE_REDGPU_X

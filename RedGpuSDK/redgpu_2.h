@@ -103,7 +103,7 @@ REDGPU_2_DECLSPEC void      REDGPU_2_API red2QueueSubmit                      (R
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2QueueSubmitTrackableSimple       (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedXOnlyCreateQueue              (RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 canCopy, RedBool32 canDraw, RedBool32 canCompute, unsigned priority, RedBool32 disableGpuTimeout, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyPresentQueueWaitIdle      (RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2PresentQueueWaitIdle             (RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 // REDGPU 2 queue submission state procedures
 
