@@ -439,7 +439,7 @@ void red2CreateProcedure(RedContext context, RedHandleGpu gpu, const char * hand
     RedBool32 dependencyByRegion = 0;
     RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
     redCreateOutputDeclaration(context, gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
   }
@@ -474,7 +474,7 @@ void red2CreateCalls(RedContext context, RedHandleGpu gpu, const char * handleNa
         outStatuses->statusErrorDescription[0] = 0;
       }
     }
-    outCalls = {};
+    outCalls[0] = NULL;
     return;
   }
   redCreateCalls(context, gpu, handleName, queueFamilyIndex, (RedCalls *)(void *)handle, outStatuses, optionalFile, optionalLine, optionalUserData);
@@ -506,7 +506,7 @@ void red2CreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * 
         outStatuses->statusErrorDescription[0] = 0;
       }
     }
-    outCalls = {};
+    outCalls[0] = NULL;
     return;
   }
   redCreateCallsReusable(context, gpu, handleName, queueFamilyIndex, (RedCalls *)(void *)handle, outStatuses, optionalFile, optionalLine, optionalUserData);
@@ -769,7 +769,7 @@ void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queu
   }
   if (i == -1) {
     redCreateCpuSignal(context, gpu, NULL, 0, &cpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (cpuSignal == NULL) { // NOTE(Constantine): Assuming cpuSignal is always NULL and not a garbage value on any fail of redCreateCpuSignal().
+    if (cpuSignal == NULL) { // NOTE(Constantine): Assuming cpuSignal is always NULL and not a garbage value on any fail of redCreateCpuSignal(). Maybe need to check for outStatuses error too?
       if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = 0; }
       if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = 0; }
       return;
@@ -1446,7 +1446,7 @@ void red2CallResolveDepthStencilTexture(const RedCallProceduresAndAddresses * ad
     resolveSources.resolveDepthStencil = 1;
     resolveSources.resolveColors       = 0;
     redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, &resolveSources, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
@@ -1476,7 +1476,7 @@ void red2CallResolveDepthStencilTexture(const RedCallProceduresAndAddresses * ad
     resolveTargets.colors[6]    = NULL;
     resolveTargets.colors[7]    = NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, &resolveTargets, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (output.handle == NULL) {
+    if (output.handle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
@@ -1578,7 +1578,7 @@ void red2CallResolveColorTexture(const RedCallProceduresAndAddresses * addresses
     resolveSources.resolveDepthStencil = 0;
     resolveSources.resolveColors       = 1;
     redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, &resolveSources, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
@@ -1608,7 +1608,7 @@ void red2CallResolveColorTexture(const RedCallProceduresAndAddresses * addresses
     resolveTargets.colors[6]    = NULL;
     resolveTargets.colors[7]    = NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, &resolveTargets, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (output.handle == NULL) {
+    if (output.handle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
@@ -1702,7 +1702,7 @@ void red2CallClearDepthStencilTexture(const RedCallProceduresAndAddresses * addr
     RedBool32 dependencyByRegion = 0;
     RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
     redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
@@ -1722,7 +1722,7 @@ void red2CallClearDepthStencilTexture(const RedCallProceduresAndAddresses * addr
     outputMembers.colors[6]    = NULL;
     outputMembers.colors[7]    = NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (output.handle == NULL) {
+    if (output.handle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
@@ -1822,7 +1822,7 @@ void red2CallClearColorTexture(const RedCallProceduresAndAddresses * addresses, 
     RedBool32 dependencyByRegion = 0;
     RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
     redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
@@ -1842,7 +1842,7 @@ void red2CallClearColorTexture(const RedCallProceduresAndAddresses * addresses, 
     outputMembers.colors[6]    = NULL;
     outputMembers.colors[7]    = NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (output.handle == NULL) {
+    if (output.handle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
@@ -1936,7 +1936,7 @@ void red2CallDiscardDepthStencilTexture(const RedCallProceduresAndAddresses * ad
     RedBool32 dependencyByRegion = 0;
     RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
     redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
@@ -1956,7 +1956,7 @@ void red2CallDiscardDepthStencilTexture(const RedCallProceduresAndAddresses * ad
     outputMembers.colors[6]    = NULL;
     outputMembers.colors[7]    = NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (output.handle == NULL) {
+    if (output.handle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
@@ -2050,7 +2050,7 @@ void red2CallDiscardColorTexture(const RedCallProceduresAndAddresses * addresses
     RedBool32 dependencyByRegion = 0;
     RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
     redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
@@ -2070,7 +2070,7 @@ void red2CallDiscardColorTexture(const RedCallProceduresAndAddresses * addresses
     outputMembers.colors[6]    = NULL;
     outputMembers.colors[7]    = NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (output.handle == NULL) {
+    if (output.handle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
@@ -2164,7 +2164,7 @@ void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, R
     RedBool32 dependencyByRegion = 0;
     RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers = 0;
     redCreateOutputDeclaration(handle->context, handle->gpu, NULL, &members, NULL, dependencyByRegion, dependencyByRegionAllowUsageAliasOrderBarriers, &outputDeclaration, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (outputDeclaration == NULL) {
+    if (outputDeclaration == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)outputDeclaration, RED_HANDLE_TYPE_OUTPUT_DECLARATION);
@@ -2184,7 +2184,7 @@ void red2CallSetRenderTargets(const RedCallProceduresAndAddresses * addresses, R
     outputMembers.colors[6]    = colorsTextureCountMax8 > 6 ? colorsTexture[6] : NULL;
     outputMembers.colors[7]    = colorsTextureCountMax8 > 7 ? colorsTexture[7] : NULL;
     redCreateOutput(handle->context, handle->gpu, NULL, outputDeclaration, &outputMembers, NULL, width, height, &output, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (output.handle == NULL) {
+    if (output.handle == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       return;
     }
     red2CallsAppendHandleToDestroy(calls, (uint64_t)output.handle, RED_HANDLE_TYPE_OUTPUT);
@@ -2861,7 +2861,6 @@ RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses
 #endif
 
 RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays) {
-  if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
   VkBufferMemoryBarrier * bufferBarriers      = NULL;
@@ -2891,7 +2890,6 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
 }
 
 RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays) {
-  if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
   VkBufferMemoryBarrier * bufferBarriers      = NULL;
@@ -2933,7 +2931,6 @@ void red2RedOnlyCallBarrierGlobalMemory(const RedCallProceduresAndAddresses * ad
 }
 
 RedStatus red2RedOnlyCallBarrierResourceMemory(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays, unsigned imagesCount, const RedHandleImage * images, const RedImagePartBitflags * imagesAllParts) {
-  if (arraysCount == 0 && imagesCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
   VkBufferMemoryBarrier * bufferBarriers      = NULL;
