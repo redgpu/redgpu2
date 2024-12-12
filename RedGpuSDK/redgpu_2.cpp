@@ -1,5 +1,5 @@
-// cl /LD /EHsc /std:c++17 redgpu_2.cpp C:/RedGpuSDK/redgpudll.lib
-// cl /LD /EHsc /std:c++17 /DREDGPU_USE_REDGPU_X redgpu_2_x.cpp C:/RedGpuSDK/redgpu_x.lib
+// cl /LD /EHsc /GR- /std:c++17 redgpu_2.cpp C:/RedGpuSDK/redgpudll.lib
+// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_USE_REDGPU_X redgpu_2_x.cpp C:/RedGpuSDK/redgpu_x.lib
 
 #if defined(_WIN32) && !defined(__GNUC__)
 #define REDGPU_2_DECLSPEC __declspec(dllexport)

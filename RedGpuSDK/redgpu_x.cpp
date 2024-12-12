@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// cl /LD /EHsc redgpu_x.cpp
+// cl /LD /EHsc /GR- redgpu_x.cpp
 
 #define X12_DECLSPEC static
 #include "redgpu_x12.cpp"
