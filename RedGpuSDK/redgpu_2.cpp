@@ -209,22 +209,25 @@ void red2CreateStructDeclaration(RedContext context, RedHandleGpu gpu, const cha
     outStructDeclaration[0] = NULL;
     return;
   }
-  handle->structDeclarationMembers = new(std::nothrow) Red2StructDeclarationMember[structDeclarationMembersCount] /*---*/;
-  if (handle->structDeclarationMembers == NULL) {
-    if (outStatuses != NULL) {
-      if (outStatuses->statusError == RED_STATUS_SUCCESS) {
-        outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
-        outStatuses->statusErrorCode           = 0;
-        outStatuses->statusErrorHresult        = 0;
-        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
-        outStatuses->statusErrorFile           = optionalFile;
-        outStatuses->statusErrorLine           = optionalLine;
-        outStatuses->statusErrorDescription[0] = 0;
+  handle->structDeclarationMembers = NULL;
+  if (structDeclarationMembersCount > 0) {
+    handle->structDeclarationMembers = new(std::nothrow) Red2StructDeclarationMember[structDeclarationMembersCount] /*---*/;
+    if (handle->structDeclarationMembers == NULL) {
+      if (outStatuses != NULL) {
+        if (outStatuses->statusError == RED_STATUS_SUCCESS) {
+          outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+          outStatuses->statusErrorCode           = 0;
+          outStatuses->statusErrorHresult        = 0;
+          outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
+          outStatuses->statusErrorFile           = optionalFile;
+          outStatuses->statusErrorLine           = optionalLine;
+          outStatuses->statusErrorDescription[0] = 0;
+        }
       }
+      delete handle;
+      outStructDeclaration[0] = NULL;
+      return;
     }
-    delete handle;
-    outStructDeclaration[0] = NULL;
-    return;
   }
   handle->structDeclarationMembersCount = structDeclarationMembersCount;
 
@@ -2821,9 +2824,12 @@ void red2RedXOnlyCallBarrierUsageAliasOrder(RedHandleCalls calls, unsigned barri
 
 RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts) {
 #ifndef REDGPU_USE_REDGPU_X
-  RedUsageImage * imageUsages = new(std::nothrow) RedUsageImage[imagesCount] /*---*/;
-  if (imageUsages == NULL) {
-    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  RedUsageImage * imageUsages = NULL;
+  if (imagesCount > 0) {
+    imageUsages = new(std::nothrow) RedUsageImage[imagesCount] /*---*/;
+    if (imageUsages == NULL) {
+      return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+    }
   }
   for (unsigned i = 0; i < imagesCount; i += 1) {
     imageUsages[i].barrierSplit           = RED_BARRIER_SPLIT_NONE;
@@ -2843,7 +2849,9 @@ RedStatus red2RedOnlyCallSetImageStateUsable(const RedCallProceduresAndAddresses
     imageUsages[i].imageLayersCount       =-1;
   }
   redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, 0, NULL, imagesCount, imageUsages, 0, NULL, 0, NULL, 0);
-  delete[] imageUsages;
+  if (imagesCount > 0) {
+    delete[] imageUsages;
+  }
 #endif
   return RED_STATUS_SUCCESS;
 }
@@ -2856,9 +2864,12 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
-  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
-  if (bufferBarriers == NULL) {
-    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  VkBufferMemoryBarrier * bufferBarriers      = NULL;
+  if (bufferBarriersCount > 0) {
+    bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
+    if (bufferBarriers == NULL) {
+      return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+    }
   }
   for (unsigned i = 0; i < bufferBarriersCount; i += 1) {
     bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
@@ -2872,7 +2883,9 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
     bufferBarriers[i].size                =-1;
   }
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, 0, NULL);
-  delete[] bufferBarriers;
+  if (bufferBarriersCount > 0) {
+    delete[] bufferBarriers;
+  }
 #endif
   return RED_STATUS_SUCCESS;
 }
@@ -2881,9 +2894,12 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
   if (arraysCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
-  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
-  if (bufferBarriers == NULL) {
-    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  VkBufferMemoryBarrier * bufferBarriers      = NULL;
+  if (bufferBarriersCount > 0) {
+    bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
+    if (bufferBarriers == NULL) {
+      return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+    }
   }
   for (unsigned i = 0; i < bufferBarriersCount; i += 1) {
     bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
@@ -2897,7 +2913,9 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
     bufferBarriers[i].size                =-1;
   }
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, 0, NULL);
-  delete[] bufferBarriers;
+  if (bufferBarriersCount > 0) {
+    delete[] bufferBarriers;
+  }
 #endif
   return RED_STATUS_SUCCESS;
 }
@@ -2918,14 +2936,20 @@ RedStatus red2RedOnlyCallBarrierResourceMemory(const RedCallProceduresAndAddress
   if (arraysCount == 0 && imagesCount == 0) { return RED_STATUS_SUCCESS; }
 #ifndef REDGPU_USE_REDGPU_X
   unsigned                bufferBarriersCount = arraysCount;
-  VkBufferMemoryBarrier * bufferBarriers      = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
-  if (bufferBarriers == NULL) {
-    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
-  }
+  VkBufferMemoryBarrier * bufferBarriers      = NULL;
   unsigned                imageBarriersCount  = imagesCount;
-  VkImageMemoryBarrier *  imageBarriers       = new(std::nothrow) VkImageMemoryBarrier [imageBarriersCount] /*---*/;
-  if (imageBarriers == NULL) {
-    return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+  VkImageMemoryBarrier *  imageBarriers       = NULL;
+  if (bufferBarriersCount > 0) {
+    bufferBarriers = new(std::nothrow) VkBufferMemoryBarrier [bufferBarriersCount] /*---*/;
+    if (bufferBarriers == NULL) {
+      return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+    }
+  }
+  if (imageBarriersCount > 0) {
+    imageBarriers = new(std::nothrow) VkImageMemoryBarrier [imageBarriersCount] /*---*/;
+    if (imageBarriers == NULL) {
+      return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+    }
   }
   for (unsigned i = 0; i < bufferBarriersCount; i += 1) {
     bufferBarriers[i].sType               = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
@@ -2955,8 +2979,12 @@ RedStatus red2RedOnlyCallBarrierResourceMemory(const RedCallProceduresAndAddress
     imageBarriers[i].subresourceRange.layerCount     =-1;
   }
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, imageBarriersCount, imageBarriers);
-  delete[] bufferBarriers;
-  delete[] imageBarriers;
+  if (bufferBarriersCount > 0) {
+    delete[] bufferBarriers;
+  }
+  if (imageBarriersCount > 0) {
+    delete[] imageBarriers;
+  }
 #endif
   return RED_STATUS_SUCCESS;
 }
