@@ -1877,62 +1877,6 @@ void red2CallClearColorTexture(const RedCallProceduresAndAddresses * addresses, 
 #endif
 }
 
-void red2RedXOnlyCallDiscardDepthStencilTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, RedHandleTexture depthStencilTexture) {
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-#ifdef REDGPU_USE_REDGPU_X
-  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
-  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE;
-  redXCallSetProcedureOutput(handle->handle, depthStencilTexture, 0, NULL, RED_SET_PROCEDURE_OUTPUT_OP_DISCARD, RED_SET_PROCEDURE_OUTPUT_OP_DISCARD, colorsSetOps, 0, 0, NULL);
-
-  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
-  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
-#endif
-  volatile int nothing = 0;
-}
-
-void red2RedXOnlyCallDiscardColorTexture(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, RedHandleTexture colorTexture) {
-  Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
-#ifdef REDGPU_USE_REDGPU_X
-  RedSetProcedureOutputOp colorsSetOps[8] /*---*/;
-  colorsSetOps[0] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  colorsSetOps[1] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  colorsSetOps[2] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  colorsSetOps[3] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  colorsSetOps[4] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  colorsSetOps[5] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  colorsSetOps[6] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  colorsSetOps[7] = RED_SET_PROCEDURE_OUTPUT_OP_DISCARD;
-  redXCallSetProcedureOutput(handle->handle, NULL, 1, (RedHandleTexture *)&colorTexture, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, RED_SET_PROCEDURE_OUTPUT_OP_PRESERVE, colorsSetOps, 0, 0, NULL);
-
-  RedEndProcedureOutputOp colorsEndOps[8] /*---*/;
-  colorsEndOps[0] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[1] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[2] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[3] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[4] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[5] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
-  redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
-#endif
-  volatile int nothing = 0;
-}
-
 void red2RedXOnlyCallDiscardResource(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, void * handleResource, const void * optionalDiscardRegion) {
 #ifdef REDGPU_USE_REDGPU_X
   // NOTE(Constantine):
