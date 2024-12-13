@@ -2865,3 +2865,84 @@ RedStatus red2CallBarrierOrderResourceMemory(const RedCallProceduresAndAddresses
 #endif
   return RED_STATUS_SUCCESS;
 }
+
+static RedXAccessBitflags red2InternalRedAccessBitflagsToRedXAccessBitflags(RedAccessBitflags access) {
+  RedXAccessBitflags out = REDX_ACCESS_BITFLAG_COMMON;
+  if ((access & RED_ACCESS_BITFLAG_COPY_R)                               == RED_ACCESS_BITFLAG_COPY_R)                               { out |= REDX_ACCESS_BITFLAG_COPY_R;                               }
+  if ((access & RED_ACCESS_BITFLAG_COPY_W)                               == RED_ACCESS_BITFLAG_COPY_W)                               { out |= REDX_ACCESS_BITFLAG_COPY_W;                               }
+  if ((access & RED_ACCESS_BITFLAG_INDEX_R)                              == RED_ACCESS_BITFLAG_INDEX_R)                              { out |= REDX_ACCESS_BITFLAG_INDEX_R;                              }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           == RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           { out |= REDX_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R;           }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R; }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R;     }
+  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_RW;                   }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R;               }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW;              }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R;               }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW;              }
+  if ((access & RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       == RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       { out |= REDX_ACCESS_BITFLAG_OUTPUT_COLOR_W;                       }
+  if ((access & RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     == RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     { out |= REDX_ACCESS_BITFLAG_RESOLVE_SOURCE_R;                     }
+  if ((access & RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     == RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     { out |= REDX_ACCESS_BITFLAG_RESOLVE_TARGET_W;                     }
+  return out;
+}
+
+void red2CallBarrierUsagePresentToImage(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, RedHandleImage presentImage, RedAccessStageBitflags newAccessStages, RedAccessBitflags newAccess, RedBool32 presentImageDiscardPreviousContent) {
+#ifdef REDGPU_USE_REDGPU_X
+  RedXBarrier imageUsage = {};
+  imageUsage.usage.setTo0      = 0;
+  imageUsage.usage.split       = RED_BARRIER_SPLIT_NONE;
+  imageUsage.usage.resource    = redXGetHandleResourceImage(NULL, NULL, presentImage);
+  imageUsage.usage.level       =-1;
+  imageUsage.usage.oldAccesses = REDX_ACCESS_BITFLAG_PRESENT;
+  imageUsage.usage.newAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(newAccess);
+  redXCallUsageAliasOrderBarrier(calls, 1, &imageUsage);
+#else
+  RedUsageImage imageUsage = {};
+  imageUsage.barrierSplit           = RED_BARRIER_SPLIT_NONE;
+  imageUsage.oldAccessStages        = 0;
+  imageUsage.newAccessStages        = newAccessStages;
+  imageUsage.oldAccess              = 0;
+  imageUsage.newAccess              = newAccess;
+  imageUsage.oldState               = presentImageDiscardPreviousContent == 1 ? RED_STATE_UNUSABLE : RED_STATE_PRESENT;
+  imageUsage.newState               = RED_STATE_USABLE;
+  imageUsage.queueFamilyIndexSource =-1;
+  imageUsage.queueFamilyIndexTarget =-1;
+  imageUsage.image                  = presentImage;
+  imageUsage.imageAllParts          = RED_IMAGE_PART_BITFLAG_COLOR;
+  imageUsage.imageLevelsFirst       = 0;
+  imageUsage.imageLevelsCount       =-1;
+  imageUsage.imageLayersFirst       = 0;
+  imageUsage.imageLayersCount       =-1;
+  redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, 0, NULL, 1, &imageUsage, 0, NULL, 0, NULL, 0);
+#endif
+}
+
+void red2CallBarrierUsageImageToPresent(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, RedHandleImage presentImage, RedAccessStageBitflags oldAccessStages, RedAccessBitflags oldAccess) {
+#ifdef REDGPU_USE_REDGPU_X
+  RedXBarrier imageUsage = {};
+  imageUsage.usage.setTo0      = 0;
+  imageUsage.usage.split       = RED_BARRIER_SPLIT_NONE;
+  imageUsage.usage.resource    = redXGetHandleResourceImage(NULL, NULL, presentImage);
+  imageUsage.usage.level       =-1;
+  imageUsage.usage.oldAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(oldAccess);
+  imageUsage.usage.newAccesses = REDX_ACCESS_BITFLAG_PRESENT;
+  redXCallUsageAliasOrderBarrier(calls, 1, &imageUsage);
+#else
+  RedUsageImage imageUsage = {};
+  imageUsage.barrierSplit           = RED_BARRIER_SPLIT_NONE;
+  imageUsage.oldAccessStages        = oldAccessStages;
+  imageUsage.newAccessStages        = 0;
+  imageUsage.oldAccess              = oldAccess;
+  imageUsage.newAccess              = 0;
+  imageUsage.oldState               = RED_STATE_USABLE;
+  imageUsage.newState               = RED_STATE_PRESENT;
+  imageUsage.queueFamilyIndexSource =-1;
+  imageUsage.queueFamilyIndexTarget =-1;
+  imageUsage.image                  = presentImage;
+  imageUsage.imageAllParts          = RED_IMAGE_PART_BITFLAG_COLOR;
+  imageUsage.imageLevelsFirst       = 0;
+  imageUsage.imageLevelsCount       =-1;
+  imageUsage.imageLayersFirst       = 0;
+  imageUsage.imageLayersCount       =-1;
+  redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, 0, NULL, 1, &imageUsage, 0, NULL, 0, NULL, 0);
+#endif
+}
