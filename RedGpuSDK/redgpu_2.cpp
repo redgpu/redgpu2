@@ -1,5 +1,5 @@
 // cl /LD /EHsc /GR- /std:c++17 redgpu_2.cpp C:/RedGpuSDK/redgpudll.lib
-// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_USE_REDGPU_X redgpu_2_x.cpp C:/RedGpuSDK/redgpu_x.lib
+// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_USE_REDGPU_X redgpu_2_x.cpp C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib
 
 #if defined(_WIN32) && !defined(__GNUC__)
 #define REDGPU_2_DECLSPEC __declspec(dllexport)
@@ -1929,6 +1929,16 @@ void red2RedXOnlyCallDiscardColorTexture(const RedCallProceduresAndAddresses * a
   colorsEndOps[6] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
   colorsEndOps[7] = RED_END_PROCEDURE_OUTPUT_OP_PRESERVE;
   redXCallEndProcedureOutput(handle->handle, NULL, NULL, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, RED_END_PROCEDURE_OUTPUT_OP_PRESERVE, colorsEndOps);
+#endif
+  volatile int nothing = 0;
+}
+
+void red2RedXOnlyCallDiscardResource(const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, void * handleResource, const void * optionalDiscardRegion) {
+#ifdef REDGPU_USE_REDGPU_X
+  // NOTE(Constantine):
+  // https://learn.microsoft.com/en-us/windows/win32/api/d3d12/nf-d3d12-id3d12graphicscommandlist-discardresource
+  RedXInternalTypeCalls * handle = (RedXInternalTypeCalls *)calls;
+  x12CommandListDiscardResource(handle->handle, (X12Resource *)handleResource, (const D3D12_DISCARD_REGION *)optionalDiscardRegion);
 #endif
   volatile int nothing = 0;
 }
