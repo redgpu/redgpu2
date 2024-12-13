@@ -2480,10 +2480,7 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
 // REDGPU 2 new procedures from 28 Nov 2024:
 
 RedXAccessBitflags red2RedXOnlyGetRedXAccessBitflagsFromRed(RedAccessBitflags access) {
-  if (access == 0) {
-    return REDX_ACCESS_BITFLAG_COMMON;
-  }
-  RedXAccessBitflags out = 0;
+  RedXAccessBitflags out = REDX_ACCESS_BITFLAG_COMMON;
   if ((access & RED_ACCESS_BITFLAG_COPY_R)                               == RED_ACCESS_BITFLAG_COPY_R)                               { out |= REDX_ACCESS_BITFLAG_COPY_R;                               }
   if ((access & RED_ACCESS_BITFLAG_COPY_W)                               == RED_ACCESS_BITFLAG_COPY_W)                               { out |= REDX_ACCESS_BITFLAG_COPY_W;                               }
   if ((access & RED_ACCESS_BITFLAG_INDEX_R)                              == RED_ACCESS_BITFLAG_INDEX_R)                              { out |= REDX_ACCESS_BITFLAG_INDEX_R;                              }
@@ -2866,25 +2863,6 @@ RedStatus red2CallBarrierOrderResourceMemory(const RedCallProceduresAndAddresses
   return RED_STATUS_SUCCESS;
 }
 
-static RedXAccessBitflags red2InternalRedAccessBitflagsToRedXAccessBitflags(RedAccessBitflags access) {
-  RedXAccessBitflags out = REDX_ACCESS_BITFLAG_COMMON;
-  if ((access & RED_ACCESS_BITFLAG_COPY_R)                               == RED_ACCESS_BITFLAG_COPY_R)                               { out |= REDX_ACCESS_BITFLAG_COPY_R;                               }
-  if ((access & RED_ACCESS_BITFLAG_COPY_W)                               == RED_ACCESS_BITFLAG_COPY_W)                               { out |= REDX_ACCESS_BITFLAG_COPY_W;                               }
-  if ((access & RED_ACCESS_BITFLAG_INDEX_R)                              == RED_ACCESS_BITFLAG_INDEX_R)                              { out |= REDX_ACCESS_BITFLAG_INDEX_R;                              }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           == RED_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R)           { out |= REDX_ACCESS_BITFLAG_STRUCT_ARRAY_RO_CONSTANT_R;           }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R) { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_NON_FRAGMENT_STAGE_R; }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R)     { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_FRAGMENT_STAGE_R;     }
-  if ((access & RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    == RED_ACCESS_BITFLAG_STRUCT_RESOURCE_W)                    { out |= REDX_ACCESS_BITFLAG_STRUCT_RESOURCE_RW;                   }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_R)                       { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R;               }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      == RED_ACCESS_BITFLAG_OUTPUT_DEPTH_RW)                      { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW;              }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_R)                     { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_R;               }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    == RED_ACCESS_BITFLAG_OUTPUT_STENCIL_RW)                    { out |= REDX_ACCESS_BITFLAG_OUTPUT_DEPTH_STENCIL_RW;              }
-  if ((access & RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       == RED_ACCESS_BITFLAG_OUTPUT_COLOR_W)                       { out |= REDX_ACCESS_BITFLAG_OUTPUT_COLOR_W;                       }
-  if ((access & RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     == RED_ACCESS_BITFLAG_RESOLVE_SOURCE_R)                     { out |= REDX_ACCESS_BITFLAG_RESOLVE_SOURCE_R;                     }
-  if ((access & RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     == RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     { out |= REDX_ACCESS_BITFLAG_RESOLVE_TARGET_W;                     }
-  return out;
-}
-
 void red2CallBarrierUsagePresentToImage(const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, RedHandleImage presentImage, RedAccessStageBitflags newAccessStages, RedAccessBitflags newAccess, RedBool32 presentImageDiscardPreviousContent) {
 #ifdef REDGPU_USE_REDGPU_X
   RedXBarrier imageUsage = {};
@@ -2893,7 +2871,7 @@ void red2CallBarrierUsagePresentToImage(const RedCallProceduresAndAddresses * ad
   imageUsage.usage.resource    = redXGetHandleResourceImage(NULL, NULL, presentImage);
   imageUsage.usage.level       =-1;
   imageUsage.usage.oldAccesses = REDX_ACCESS_BITFLAG_PRESENT;
-  imageUsage.usage.newAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(newAccess);
+  imageUsage.usage.newAccesses = red2RedXOnlyGetRedXAccessBitflagsFromRed(newAccess);
   redXCallUsageAliasOrderBarrier(calls, 1, &imageUsage);
 #else
   RedUsageImage imageUsage = {};
@@ -2923,7 +2901,7 @@ void red2CallBarrierUsageImageToPresent(const RedCallProceduresAndAddresses * ad
   imageUsage.usage.split       = RED_BARRIER_SPLIT_NONE;
   imageUsage.usage.resource    = redXGetHandleResourceImage(NULL, NULL, presentImage);
   imageUsage.usage.level       =-1;
-  imageUsage.usage.oldAccesses = red2InternalRedAccessBitflagsToRedXAccessBitflags(oldAccess);
+  imageUsage.usage.oldAccesses = red2RedXOnlyGetRedXAccessBitflagsFromRed(oldAccess);
   imageUsage.usage.newAccesses = REDX_ACCESS_BITFLAG_PRESENT;
   redXCallUsageAliasOrderBarrier(calls, 1, &imageUsage);
 #else
