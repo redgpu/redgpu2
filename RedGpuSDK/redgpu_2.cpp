@@ -884,12 +884,22 @@ void red2RedXOnlyCreateQueue(RedContext context, RedHandleGpu gpu, const char * 
 }
 
 // NOTE(Constantine):
-// In REDGPU and REDGPU X, you need to wait for present queue to finish before destroying WSI resources that were submitted to it.
+// A new REDGPU 2 procedure that waits on CPU until a queue of a GPU is finished doing work. In REDGPU and REDGPU X, sometimes you need to wait for, say, a present queue to finish before destroying WSI resources that were submitted to it. See redgpu_wsi.h comment from Dec 01, 2022.
 // 
 // This function is optional.
-void red2PresentQueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  // NOTE(Constantine): For present queues only, to finish all their work. This function call depends on the particular REDGPU and REDGPU X implementations, see redgpu_wsi.h comment from Dec 01, 2022.
+void red2QueueWaitIdle(RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  // NOTE(Constantine): This function depends on the particular current REDGPU and REDGPU X implementations which allow to wait on any type of queue, not only present ones.
   redQueuePresent(context, gpu, presentQueue, 0, NULL, 0, NULL, NULL, NULL, NULL, optionalFile, optionalLine, optionalUserData);
+}
+
+// NOTE(Constantine):
+// A new REDGPU 2 procedure that waits on CPU until all the queues of a GPU are finished doing work.
+// 
+// This function is optional.
+void red2GpuWaitIdle(RedContext context, const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  for (unsigned i = 0; i < gpuInfo->queuesCount; i += 1) {
+    red2QueueWaitIdle(context, gpuInfo->gpu, gpuInfo->queues[i], optionalFile, optionalLine, optionalUserData);
+  }
 }
 
 // NOTE(Constantine):

@@ -227,12 +227,18 @@
 #define _np11_red2RedXOnlyCreateQueue optionalLine
 #define _np12_red2RedXOnlyCreateQueue optionalUserData
 
-#define _np1_red2PresentQueueWaitIdle context
-#define _np2_red2PresentQueueWaitIdle gpu
-#define _np3_red2PresentQueueWaitIdle presentQueue
-#define _np4_red2PresentQueueWaitIdle optionalFile
-#define _np5_red2PresentQueueWaitIdle optionalLine
-#define _np6_red2PresentQueueWaitIdle optionalUserData
+#define _np1_red2QueueWaitIdle context
+#define _np2_red2QueueWaitIdle gpu
+#define _np3_red2QueueWaitIdle presentQueue
+#define _np4_red2QueueWaitIdle optionalFile
+#define _np5_red2QueueWaitIdle optionalLine
+#define _np6_red2QueueWaitIdle optionalUserData
+
+#define _np1_red2GpuWaitIdle context
+#define _np2_red2GpuWaitIdle gpuInfo
+#define _np3_red2GpuWaitIdle optionalFile
+#define _np4_red2GpuWaitIdle optionalLine
+#define _np5_red2GpuWaitIdle optionalUserData
 
 #define _np1_red2PickResourceMemoryTypeIndex gpuInfo
 #define _np2_red2PickResourceMemoryTypeIndex requireMappableMemoryCoherency
