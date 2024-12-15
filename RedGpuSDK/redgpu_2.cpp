@@ -686,7 +686,7 @@ void red2PresentGetImageIndex(Red2Context context2, RedHandleGpu gpu, RedHandleP
 }
 
 // NOTE(Constantine):
-// A new REDGPU 2 procedure.
+// A new REDGPU 2 procedure. Each returned GPU signal is assumed to be in an unsignaled state.
 // 
 // This function is optional.
 void red2GetWsiStoredGpuSignal(Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -2923,4 +2923,195 @@ void red2CallBarrierUsageImageToPresent(const RedCallProceduresAndAddresses * ad
   imageUsage.imageLayersCount       =-1;
   redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, 0, NULL, 1, &imageUsage, 0, NULL, 0, NULL, 0);
 #endif
+}
+
+void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedHandleQueue gpuSignalSignaledOnQueue, Red2HandleStream * outStream, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
+
+  Red2InternalTypeStream * handle = new(std::nothrow) Red2InternalTypeStream();
+  if (handle == NULL) {
+    if (outStatuses != NULL) {
+      if (outStatuses->statusError == RED_STATUS_SUCCESS) {
+        outStatuses->statusError               = RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
+        outStatuses->statusErrorCode           = 0;
+        outStatuses->statusErrorHresult        = 0;
+        outStatuses->statusErrorProcedureId    = (RedProcedureId)procedureId;
+        outStatuses->statusErrorFile           = optionalFile;
+        outStatuses->statusErrorLine           = optionalLine;
+        outStatuses->statusErrorDescription[0] = 0;
+      }
+    }
+    outStream[0] = NULL;
+    return;
+  }
+
+  // Create GPU signal in signaled state.
+  RedHandleGpuSignal gpuSignal = NULL;
+  {
+    redCreateGpuSignal(context2->context, gpu, handleName, &gpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (gpuSignal == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
+      delete handle;
+      outStream[0] = NULL;
+      return;
+    }
+
+    RedGpuTimeline timeline /*---*/;
+    timeline.setTo4                            = 4;
+    timeline.setTo0                            = 0;
+    timeline.waitForAndUnsignalGpuSignalsCount = 0;
+    timeline.waitForAndUnsignalGpuSignals      = NULL;
+    timeline.setTo65536                        = NULL;
+    timeline.callsCount                        = 0;
+    timeline.calls                             = NULL;       // NOTE(Constantine): Should I submit a dummy calls handle to signal GPU signals? Assuming not for now.
+    timeline.signalGpuSignalsCount             = 1;
+    timeline.signalGpuSignals                  = &gpuSignal;
+    uint64_t ticketArrayIndex = 0;
+    uint64_t ticket           = 0;
+    red2QueueSubmit(context2, gpu, gpuSignalSignaledOnQueue, 1, &timeline, &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
+    red2WaitForQueueSubmissionToFinish(context2, gpu, ticketArrayIndex, ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
+  }
+
+  handle->value65536       = 65536;
+  handle->queueFamilyIndex = queueFamilyIndex;
+  handle->gpuSignalForSerialDependencyBetweenStreamSubmissions = gpuSignal;
+
+  outStream[0] = (Red2HandleStream)(void *)handle;
+}
+
+void red2DestroyStream(Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)stream;
+
+  redDestroyGpuSignal(context2->context, gpu, handle->gpuSignalForSerialDependencyBetweenStreamSubmissions, optionalFile, optionalLine, optionalUserData);
+  
+  for (Red2HandleCalls streamCalls : handle->streamCallsToGet) {
+    // NOTE(Constantine): The user should wait for all the stream calls to finish before destroying the stream.
+    red2DestroyCalls(context2->context, gpu, streamCalls, optionalFile, optionalLine, optionalUserData);
+  }
+
+  delete handle;
+}
+
+// NOTE(Constantine):
+// This procedure is not thread-safe and should be called from one thread at a time.
+// The returned different calls handles can still be recorded on different threads, though.
+// The returned calls are queue submit trackable.
+void red2StreamGetCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)stream;
+
+  Red2HandleCalls calls = NULL;
+  for (Red2HandleCalls streamCalls : handle->streamCallsToGet) {
+    uint64_t ticketArrayIndex = 0;
+    uint64_t ticket           = 0;
+    red2CallsGetQueueSubmitTrackableTicket(streamCalls, &ticketArrayIndex, &ticket);
+    RedBool32 isFinished = red2IsQueueSubmissionFinished(context2, gpu, ticketArrayIndex, ticket, optionalFile, optionalLine, optionalUserData);
+    if (isFinished == 1) {
+      calls = streamCalls;
+      break;
+    }
+  }
+  if (calls == NULL) {
+    red2CreateCalls(context2->context, gpu, NULL, handle->queueFamilyIndex, &calls, outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (calls == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
+      outCalls[0] = NULL;
+      return;
+    }
+    handle->streamCallsToGet.push_back(calls);
+  }
+
+  outCalls[0] = calls;
+}
+
+// NOTE(Constantine):
+// The submitted to the stream calls won't be submitted to the GPU yet, for that the whole stream must be flushed with a red2StreamFlushToQueue() call.
+// The submitted calls within a stream submission will be executed asynchronously relative to each other.
+void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)stream;
+
+  // NOTE(Constantine): Intentionally placed here, before the push_back's. Do not move this line.
+  size_t firstCallsToSubmitInATimeline = handle->streamCallsToSubmit.size();
+
+  for (unsigned i = 0; i < callsCount; i += 1) {
+    RedCalls redcalls /*---*/;
+    red2CallsGetRedHandles(calls[i], NULL, NULL, &redcalls);
+    handle->streamCallsToSubmit.push_back(redcalls.handle);
+    handle->streamCallsToSubmitType2.push_back(calls[i]);
+  }
+
+  handle->streamCallsToSubmitFirst.push_back(firstCallsToSubmitInATimeline); // NOTE(Constantine): streamCallsToSubmitFirst is an array of count streamCallsToSubmitTimelines.
+
+  RedGpuTimeline timeline /*---*/;
+  timeline.setTo4                            = 4;
+  timeline.setTo0                            = 0;
+  timeline.waitForAndUnsignalGpuSignalsCount = 1;
+  timeline.waitForAndUnsignalGpuSignals      = &handle->gpuSignalForSerialDependencyBetweenStreamSubmissions;
+  timeline.setTo65536                        = &handle->value65536;
+  timeline.callsCount                        = callsCount;
+  timeline.calls                             = NULL; // NOTE(Constantine): Set on flush. Calls are not set here since std::vector may change elements addresses when grown further.
+  timeline.signalGpuSignalsCount             = 1;
+  timeline.signalGpuSignals                  = &handle->gpuSignalForSerialDependencyBetweenStreamSubmissions;
+  handle->streamCallsToSubmitTimelines.push_back(timeline);
+}
+
+void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  std::vector<RedGpuTimeline> timelines;
+  unsigned                    timelinesCount = 0;
+  RedGpuTimeline *            timelinesArray = NULL;
+  if (streamsCount > 1) {
+    for (unsigned i = 0; i < streamsCount; i += 1) {
+      Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+      timelinesCount += stream->streamCallsToSubmitTimelines.size();
+    }
+    timelines.resize(timelinesCount);
+    timelinesArray = timelines.data();
+    // NOTE(Constantine): Copy all timelines from all streams into one array.
+    {
+      uint64_t j = 0;
+      for (unsigned i = 0; i < streamsCount; i += 1) {
+        Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+        for (const RedGpuTimeline & timeline : stream->streamCallsToSubmitTimelines) {
+          timelinesArray[j++] = timeline;
+        }
+      }
+    }
+  } else if (streamsCount == 1) {
+    Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[0];
+    timelinesCount = 1;
+    timelinesArray = stream->streamCallsToSubmitTimelines.data();
+  }
+
+  // NOTE(Constantine): Patch all timeline structs with correct calls array start addresses.
+  {
+    uint64_t timelineArrayIndex = 0;
+    for (unsigned i = 0; i < streamsCount; i += 1) {
+      Red2InternalTypeStream * stream              = (Red2InternalTypeStream *)(void *)streams[i];
+      RedHandleCalls *         streamCallsToSubmit = stream->streamCallsToSubmit.data();
+      for (size_t streamCallsToSubmitFirst : stream->streamCallsToSubmitFirst) {
+        timelinesArray[timelineArrayIndex++].calls = &streamCallsToSubmit[streamCallsToSubmitFirst];
+      }
+    }
+  }
+
+  uint64_t ticketArrayIndex = 0;
+  uint64_t ticket           = 0;
+  red2QueueSubmit(context2, gpu, queue, timelinesCount, timelinesArray, &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
+
+  for (unsigned i = 0; i < streamsCount; i += 1) {
+    Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+    for (Red2HandleCalls calls : stream->streamCallsToSubmitType2) {
+      Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
+      handle->lastQueueSubmitTrackableTicketArrayIndex = ticketArrayIndex;
+      handle->lastQueueSubmitTrackableTicket           = ticket;
+    }
+  }
+
+  for (unsigned i = 0; i < streamsCount; i += 1) {
+    Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)streams[i];
+    handle->streamCallsToSubmit.clear();
+    handle->streamCallsToSubmitType2.clear();
+    handle->streamCallsToSubmitFirst.clear();
+    handle->streamCallsToSubmitTimelines.clear();
+  }
+
+  if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = ticketArrayIndex; }
+  if (outQueueSubmissionTicket           != NULL) { outQueueSubmissionTicket[0]           = ticket;           }
 }

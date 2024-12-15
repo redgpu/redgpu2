@@ -10,6 +10,7 @@ typedef struct Red2TypeContext *                   Red2Context;
 typedef struct Red2TypeHandleStructDeclaration *   Red2HandleStructDeclaration;
 typedef struct Red2TypeHandleProcedureParameters * Red2HandleProcedureParameters;
 typedef struct Red2TypeHandleCalls *               Red2HandleCalls;
+typedef struct Red2TypeHandleStream *              Red2HandleStream;
 
 typedef enum Red2HandleType {
   RED2_HANDLE_TYPE_STRUCT_DECLARATION   = 20020,
@@ -208,6 +209,15 @@ REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLevelsCount        
 REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLayersCount          (RedHandleImage image);     // For red2RedXOnlyCallBarrierUsageAliasOrder
 REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyArrayGetHandleResource       (RedHandleArray array);     // For red2RedXOnlyCallBarrierUsageAliasOrder
 REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource       (RedHandleImage image);     // For red2RedXOnlyCallBarrierUsageAliasOrder
+
+// REDGPU 2 streams
+
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateStream                         (Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedHandleQueue gpuSignalSignaledOnQueue, Red2HandleStream * outStream, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStream                        (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, const char * optionalFile, int optionalLine, void * optionalUserData);
+
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamGetCalls                       (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamSubmitCalls                    (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamFlushToQueue                   (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 // REDGPU 2 changes from 28 Nov 2024:
 

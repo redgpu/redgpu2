@@ -678,3 +678,51 @@
 
 #define _np1_red2RedXOnlyImageGetHandleResource image
 
+#define _np1_red2CreateStream context2
+#define _np2_red2CreateStream gpu
+#define _np3_red2CreateStream handleName
+#define _np4_red2CreateStream queueFamilyIndex
+#define _np5_red2CreateStream gpuSignalSignaledOnQueue
+#define _np6_red2CreateStream outStream
+#define _np7_red2CreateStream outStatuses
+#define _np8_red2CreateStream optionalFile
+#define _np9_red2CreateStream optionalLine
+#define _np10_red2CreateStream optionalUserData
+
+#define _np1_red2DestroyStream context2
+#define _np2_red2DestroyStream gpu
+#define _np3_red2DestroyStream stream
+#define _np4_red2DestroyStream optionalFile
+#define _np5_red2DestroyStream optionalLine
+#define _np6_red2DestroyStream optionalUserData
+
+#define _np1_red2StreamGetCalls context2
+#define _np2_red2StreamGetCalls gpu
+#define _np3_red2StreamGetCalls stream
+#define _np4_red2StreamGetCalls outCalls
+#define _np5_red2StreamGetCalls outStatuses
+#define _np6_red2StreamGetCalls optionalFile
+#define _np7_red2StreamGetCalls optionalLine
+#define _np8_red2StreamGetCalls optionalUserData
+
+#define _np1_red2StreamSubmitCalls context2
+#define _np2_red2StreamSubmitCalls gpu
+#define _np3_red2StreamSubmitCalls stream
+#define _np4_red2StreamSubmitCalls callsCount
+#define _np5_red2StreamSubmitCalls calls
+#define _np6_red2StreamSubmitCalls optionalFile
+#define _np7_red2StreamSubmitCalls optionalLine
+#define _np8_red2StreamSubmitCalls optionalUserData
+
+#define _np1_red2StreamFlushToQueue context2
+#define _np2_red2StreamFlushToQueue gpu
+#define _np3_red2StreamFlushToQueue queue
+#define _np4_red2StreamFlushToQueue streamsCount
+#define _np5_red2StreamFlushToQueue streams
+#define _np6_red2StreamFlushToQueue outQueueSubmissionTicketArrayIndex
+#define _np7_red2StreamFlushToQueue outQueueSubmissionTicket
+#define _np8_red2StreamFlushToQueue outStatuses
+#define _np9_red2StreamFlushToQueue optionalFile
+#define _np10_red2StreamFlushToQueue optionalLine
+#define _np11_red2StreamFlushToQueue optionalUserData
+
