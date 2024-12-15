@@ -2999,13 +2999,15 @@ void red2StreamGetCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStream
   Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)stream;
 
   Red2HandleCalls calls = NULL;
-  for (Red2HandleCalls streamCalls : handle->streamCallsToGet) {
+  for (size_t i = 0, icount = handle->streamCallsToGet.size(); i < icount; i += 1) {
+    if (handle->streamCallsToGetTaken[i] == 1) { continue; }
     uint64_t ticketArrayIndex = 0;
     uint64_t ticket           = 0;
-    red2CallsGetQueueSubmitTrackableTicket(streamCalls, &ticketArrayIndex, &ticket);
+    red2CallsGetQueueSubmitTrackableTicket(handle->streamCallsToGet[i], &ticketArrayIndex, &ticket);
     RedBool32 isFinished = red2IsQueueSubmissionFinished(context2, gpu, ticketArrayIndex, ticket, optionalFile, optionalLine, optionalUserData);
     if (isFinished == 1) {
-      calls = streamCalls;
+      calls = handle->streamCallsToGet[i];
+      handle->streamCallsToGetTaken[i] = 1;
       break;
     }
   }
@@ -3016,6 +3018,7 @@ void red2StreamGetCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStream
       return;
     }
     handle->streamCallsToGet.push_back(calls);
+    handle->streamCallsToGetTaken.push_back(1);
   }
 
   outCalls[0] = calls;
@@ -3106,6 +3109,9 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
 
   for (unsigned i = 0; i < streamsCount; i += 1) {
     Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)streams[i];
+    for (size_t i = 0, icount = handle->streamCallsToGetTaken.size(); i < icount; i += 1) {
+      handle->streamCallsToGetTaken[i] = 0;
+    }
     handle->streamCallsToSubmit.clear();
     handle->streamCallsToSubmitType2.clear();
     handle->streamCallsToSubmitFirst.clear();
