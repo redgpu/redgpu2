@@ -854,9 +854,7 @@ void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedH
   uint64_t queueSubmitTrackableTicket           = 0;
   red2QueueSubmit(context2, gpu, queue, 1, &timeline, &queueSubmitTrackableTicketArrayIndex, &queueSubmitTrackableTicket, outStatuses, optionalFile, optionalLine, optionalUserData);
 
-  if (callsHandlesCount > 0) {
-    delete[] callsHandles;
-  }
+  if (callsHandles != NULL) { delete[] callsHandles; }
 
   for (unsigned i = 0; i < callsCount; i += 1) {
     Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls[i];
@@ -2686,9 +2684,7 @@ RedStatus red2RedOnlyCallDiscardImageAndSetState(const RedCallProceduresAndAddre
     imageUsages[i].imageLayersCount       =-1;
   }
   redCallUsageAliasOrderBarrier(addresses->redCallUsageAliasOrderBarrier, calls, context, 0, NULL, imagesCount, imageUsages, 0, NULL, 0, NULL, 0);
-  if (imagesCount > 0) {
-    delete[] imageUsages;
-  }
+  if (imageUsages != NULL) { delete[] imageUsages; }
 #endif
   return RED_STATUS_SUCCESS;
 }
@@ -2719,9 +2715,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuUpload(const RedCallProceduresAndAddres
     bufferBarriers[i].size                =-1;
   }
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, 0, NULL);
-  if (bufferBarriersCount > 0) {
-    delete[] bufferBarriers;
-  }
+  if (bufferBarriers != NULL) { delete[] bufferBarriers; }
 #endif
   return RED_STATUS_SUCCESS;
 }
@@ -2748,9 +2742,7 @@ RedStatus red2RedOnlyCallBarrierFinishCpuReadback(const RedCallProceduresAndAddr
     bufferBarriers[i].size                =-1;
   }
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_HOST_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, 0, NULL);
-  if (bufferBarriersCount > 0) {
-    delete[] bufferBarriers;
-  }
+  if (bufferBarriers != NULL) { delete[] bufferBarriers; }
 #endif
   return RED_STATUS_SUCCESS;
 }
@@ -2787,6 +2779,7 @@ RedStatus red2CallBarrierOrderResourceMemory(const RedCallProceduresAndAddresses
   if (imageBarriersCount > 0) {
     imageBarriers = new(std::nothrow) RedXBarrier [imageBarriersCount]();
     if (imageBarriers == NULL) {
+      if (bufferBarriers != NULL) { delete[] bufferBarriers; }
       return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
     }
   }
@@ -2802,12 +2795,8 @@ RedStatus red2CallBarrierOrderResourceMemory(const RedCallProceduresAndAddresses
   }
   if (bufferBarriersCount > 0) { redXCallUsageAliasOrderBarrier(calls, bufferBarriersCount, bufferBarriers); }
   if (imageBarriersCount  > 0) { redXCallUsageAliasOrderBarrier(calls, imageBarriersCount,  imageBarriers);  }
-  if (bufferBarriersCount > 0) {
-    delete[] bufferBarriers;
-  }
-  if (imageBarriersCount > 0) {
-    delete[] imageBarriers;
-  }
+  if (bufferBarriers != NULL) { delete[] bufferBarriers; }
+  if (imageBarriers  != NULL) { delete[] imageBarriers;  }
 #else
   unsigned                bufferBarriersCount = arraysCount;
   VkBufferMemoryBarrier * bufferBarriers      = NULL;
@@ -2822,6 +2811,7 @@ RedStatus red2CallBarrierOrderResourceMemory(const RedCallProceduresAndAddresses
   if (imageBarriersCount > 0) {
     imageBarriers = new(std::nothrow) VkImageMemoryBarrier [imageBarriersCount] /*---*/;
     if (imageBarriers == NULL) {
+      if (bufferBarriers != NULL) { delete[] bufferBarriers; }
       return RED_STATUS_ERROR_OUT_OF_CPU_MEMORY;
     }
   }
@@ -2853,12 +2843,8 @@ RedStatus red2CallBarrierOrderResourceMemory(const RedCallProceduresAndAddresses
     imageBarriers[i].subresourceRange.layerCount     =-1;
   }
   ((PFN_vkCmdPipelineBarrier)((void *)addresses->redCallUsageAliasOrderBarrier))((VkCommandBuffer)calls, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, 0, 0, NULL, bufferBarriersCount, bufferBarriers, imageBarriersCount, imageBarriers);
-  if (bufferBarriersCount > 0) {
-    delete[] bufferBarriers;
-  }
-  if (imageBarriersCount > 0) {
-    delete[] imageBarriers;
-  }
+  if (bufferBarriers != NULL) { delete[] bufferBarriers; }
+  if (imageBarriers  != NULL) { delete[] imageBarriers;  }
 #endif
   return RED_STATUS_SUCCESS;
 }
@@ -2979,6 +2965,10 @@ void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handl
 }
 
 void red2DestroyStream(Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  if (stream == NULL) {
+    return;
+  }
+
   Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)stream;
 
   redDestroyGpuSignal(context2->context, gpu, handle->gpuSignalForSerialDependencyBetweenStreamSubmissions, optionalFile, optionalLine, optionalUserData);
