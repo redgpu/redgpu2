@@ -91,6 +91,14 @@ typedef struct Red2InlineStructsMemoryFromProcedureParameters {
   unsigned                      procedureParametersStructsOptionalAllocationsCount[7];
 } Red2InlineStructsMemoryFromProcedureParameters;
 
+// REDGPU 2 streams
+
+typedef struct Red2StreamsHighway {
+  unsigned             maxStreamsBeforeNullCount;
+  RedHandleGpuSignal * perStreamsBeforeNullSignaledGpuSignal; // Array of maxStreamsBeforeNullCount
+  unsigned *           arrayOf65536;                          // Array of maxStreamsBeforeNullCount
+} Red2StreamsHighway;
+
 #ifndef REDGPU_2_DECLSPEC
 #define REDGPU_2_DECLSPEC
 #endif
@@ -217,7 +225,7 @@ REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStream                      
 
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamGetCalls                       (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamSubmitCalls                    (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamFlushToQueue                   (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, RedHandleGpuSignal * streamsOptionalGpuSignalToWaitForAndUnsignal, RedHandleGpuSignal * streamsOptionalGpuSignalToSignal, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamFlushToQueue                   (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, const Red2StreamsHighway * highway, unsigned streamsCount, const Red2HandleStream * streams, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 // REDGPU 2 changes from 28 Nov 2024:
 
