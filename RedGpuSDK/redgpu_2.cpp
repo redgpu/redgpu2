@@ -3046,7 +3046,7 @@ void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStr
 }
 
 void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, RedHandleGpuSignal * streamsOptionalGpuSignalToWaitForAndUnsignal, RedHandleGpuSignal * streamsOptionalGpuSignalToSignal, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  // NOTE(Constantine): Set streamsOptionalGpuSignalToWaitForAndUnsignal of each stream if streamsOptionalGpuSignalToWaitForAndUnsignal is requested.
+  // NOTE(Constantine): Set streamCallsToSubmitFirstTimelineGpuSignalsToWait of each stream if streamsOptionalGpuSignalToWaitForAndUnsignal is requested.
   if (streamsOptionalGpuSignalToWaitForAndUnsignal != NULL) {
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
