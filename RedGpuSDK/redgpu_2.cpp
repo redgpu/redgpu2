@@ -3105,24 +3105,17 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
 
           // NOTE(Constantine): Patching stream's first and last timeline structs with stream's 'highway lane' GPU signal.
           if (streamTimelinesCount > 0) {
-            RedGpuTimeline * timeline = NULL;
-            timeline = &stream->streamCallsToSubmitTimelines[0];
             {
+              RedGpuTimeline * timeline = &stream->streamCallsToSubmitTimelines[0];
               timeline->waitForAndUnsignalGpuSignalsCount = 2;
-              timeline->signalGpuSignalsCount             = 2;
               RedHandleGpuSignal * waitForAndUnsignalGpuSignals = (RedHandleGpuSignal *)&timeline->waitForAndUnsignalGpuSignals[0];
-              RedHandleGpuSignal * signalGpuSignals             = (RedHandleGpuSignal *)&timeline->signalGpuSignals[0];
               waitForAndUnsignalGpuSignals[1] = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
-              signalGpuSignals[1]             = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
             }
-            timeline = &stream->streamCallsToSubmitTimelines[streamTimelinesCount - 1];
             {
-              timeline->waitForAndUnsignalGpuSignalsCount = 2;
-              timeline->signalGpuSignalsCount             = 2;
-              RedHandleGpuSignal * waitForAndUnsignalGpuSignals = (RedHandleGpuSignal *)&timeline->waitForAndUnsignalGpuSignals[0];
-              RedHandleGpuSignal * signalGpuSignals             = (RedHandleGpuSignal *)&timeline->signalGpuSignals[0];
-              waitForAndUnsignalGpuSignals[1] = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
-              signalGpuSignals[1]             = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
+              RedGpuTimeline * timeline = &stream->streamCallsToSubmitTimelines[streamTimelinesCount - 1];
+              timeline->signalGpuSignalsCount = 2;
+              RedHandleGpuSignal * signalGpuSignals = (RedHandleGpuSignal *)&timeline->signalGpuSignals[0];
+              signalGpuSignals[1] = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
             }
           }
           highwayLaneIndex += 1;
