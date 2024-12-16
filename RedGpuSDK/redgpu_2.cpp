@@ -809,7 +809,7 @@ void red2QueueSubmit(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queu
 // * red2CallsSetQueueSubmitTrackableTicket()
 // 
 // If you don't plan to use the functions listed above, then this function becomes optional.
-void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2QueueSubmitTrackableSimple(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, const Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
 
   unsigned         callsHandlesCount = callsCount;
@@ -2911,7 +2911,7 @@ void red2CallBarrierUsageImageToPresent(const RedCallProceduresAndAddresses * ad
 #endif
 }
 
-void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedHandleQueue gpuSignalSignaledOnQueue, Red2HandleStream * outStream, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedHandleQueue signalGpuSignalOnQueue, Red2HandleStream * outStream, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_UNDEFINED; // TODO(Constantine): Assign a RED2_PROCEDURE_ID.
 
   Red2InternalTypeStream * handle = new(std::nothrow) Red2InternalTypeStream();
@@ -2953,7 +2953,7 @@ void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handl
     timeline.signalGpuSignals                  = &gpuSignal;
     uint64_t ticketArrayIndex = 0;
     uint64_t ticket           = 0;
-    red2QueueSubmit(context2, gpu, gpuSignalSignaledOnQueue, 1, &timeline, &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
+    red2QueueSubmit(context2, gpu, signalGpuSignalOnQueue, 1, &timeline, &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
     red2WaitForQueueSubmissionToFinish(context2, gpu, ticketArrayIndex, ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
 
@@ -3018,7 +3018,7 @@ void red2StreamGetCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStream
 // NOTE(Constantine):
 // The submitted to the stream calls won't be submitted to the GPU yet, for that the whole stream must be flushed with a red2StreamFlushToQueue() call.
 // The submitted calls within a stream submission will be executed asynchronously relative to each other.
-void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, const Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData) {
   Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)stream;
 
   // NOTE(Constantine): Intentionally placed here, before the push_back's. Do not move this line.
