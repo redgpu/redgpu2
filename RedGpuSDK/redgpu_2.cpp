@@ -3103,7 +3103,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
           timelinesCount += stream->streamCallsToSubmitTimelines.size();
 
           // NOTE(Constantine): Patching stream's first and last timeline structs with stream's 'highway lane' GPU signal.
-          if (timelinesCount > 0) {
+          if (stream->streamCallsToSubmitTimelines.size() > 0) {
             RedGpuTimeline * timeline = NULL;
             timeline = &stream->streamCallsToSubmitTimelines[0];
             {
