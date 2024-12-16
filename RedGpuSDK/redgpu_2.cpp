@@ -2957,9 +2957,9 @@ void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handl
     red2WaitForQueueSubmissionToFinish(context2, gpu, ticketArrayIndex, ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
 
+  handle->gpuSignalForSerialDependencyBetweenStreamSubmissions = gpuSignal;
   handle->value65536       = 65536;
   handle->queueFamilyIndex = queueFamilyIndex;
-  handle->gpuSignalForSerialDependencyBetweenStreamSubmissions = gpuSignal;
 
   outStream[0] = (Red2HandleStream)(void *)handle;
 }
@@ -3045,7 +3045,7 @@ void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStr
   handle->streamCallsToSubmitTimelines.push_back(timeline);
 }
 
-void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, RedHandleGpuSignal optionalGpuSignalToSignal, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   std::vector<RedGpuTimeline> timelines;
   unsigned                    timelinesCount = 0;
   RedGpuTimeline *            timelinesArray = NULL;
@@ -3082,6 +3082,17 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
         timelinesArray[timelineArrayIndex++].calls = &streamCallsToSubmit[streamCallsToSubmitFirst];
       }
     }
+  }
+
+  // NOTE(Constantine): Append the optionalGpuSignalToSignal to the last timeline, if needed.
+  RedHandleGpuSignal twoGpuSignals[2] /*---*/;
+  if (optionalGpuSignalToSignal != NULL && timelinesArray != NULL) {
+    unsigned lastTimelineIndex = timelinesCount - 1;
+    RedHandleGpuSignal firstGpuSignal = timelinesArray[lastTimelineIndex].signalGpuSignals[0];
+    twoGpuSignals[0] = firstGpuSignal;
+    twoGpuSignals[1] = optionalGpuSignalToSignal;
+    timelinesArray[lastTimelineIndex].signalGpuSignalsCount = 2;
+    timelinesArray[lastTimelineIndex].signalGpuSignals      = &twoGpuSignals[0];
   }
 
   uint64_t ticketArrayIndex = 0;
