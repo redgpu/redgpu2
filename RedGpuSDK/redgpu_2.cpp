@@ -3045,27 +3045,57 @@ void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStr
   handle->streamCallsToSubmitTimelines.push_back(timeline);
 }
 
-void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, RedHandleGpuSignal * streamsOptionalGpuSignalToSignal, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, RedHandleGpuSignal * streamsOptionalGpuSignalToWaitForAndUnsignal, RedHandleGpuSignal * streamsOptionalGpuSignalToSignal, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  // NOTE(Constantine): Set streamsOptionalGpuSignalToWaitForAndUnsignal of each stream if streamsOptionalGpuSignalToWaitForAndUnsignal is requested.
+  if (streamsOptionalGpuSignalToWaitForAndUnsignal != NULL) {
+    for (unsigned i = 0; i < streamsCount; i += 1) {
+      Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+
+      if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
+
+      const size_t firstTimelineIndex = 0;
+
+      stream->streamCallsToSubmitFirstTimelineGpuSignalsToWait[0] = stream->streamCallsToSubmitTimelines[firstTimelineIndex].waitForAndUnsignalGpuSignals[0];
+      stream->streamCallsToSubmitFirstTimelineGpuSignalsToWait[1] = streamsOptionalGpuSignalToWaitForAndUnsignal[i];
+    }
+  }
+  // NOTE(Constantine): Patch first timeline struct of each stream if streamsOptionalGpuSignalToWaitForAndUnsignal is requested.
+  if (streamsOptionalGpuSignalToWaitForAndUnsignal != NULL) {
+    for (unsigned i = 0; i < streamsCount; i += 1) {
+      Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+
+      if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
+
+      const size_t firstTimelineIndex = 0;
+
+      stream->streamCallsToSubmitTimelines[firstTimelineIndex].waitForAndUnsignalGpuSignalsCount =  stream->streamCallsToSubmitFirstTimelineGpuSignalsToWait[1] == NULL ? 1 : 2;
+      stream->streamCallsToSubmitTimelines[firstTimelineIndex].waitForAndUnsignalGpuSignals      = &stream->streamCallsToSubmitFirstTimelineGpuSignalsToWait[0];
+    }
+  }
+
   // NOTE(Constantine): Set streamCallsToSubmitLastTimelineGpuSignalsToSignal of each stream if streamsOptionalGpuSignalToSignal is requested.
   if (streamsOptionalGpuSignalToSignal != NULL) {
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
 
-      size_t lastTimelineIndex = stream->streamCallsToSubmitTimelines.size() - 1;
+      if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
+
+      const size_t lastTimelineIndex = stream->streamCallsToSubmitTimelines.size() - 1;
 
       stream->streamCallsToSubmitLastTimelineGpuSignalsToSignal[0] = stream->streamCallsToSubmitTimelines[lastTimelineIndex].signalGpuSignals[0];
       stream->streamCallsToSubmitLastTimelineGpuSignalsToSignal[1] = streamsOptionalGpuSignalToSignal[i];
     }
   }
-
   // NOTE(Constantine): Patch last timeline struct of each stream if streamsOptionalGpuSignalToSignal is requested.
   if (streamsOptionalGpuSignalToSignal != NULL) {
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
 
-      size_t lastTimelineIndex = stream->streamCallsToSubmitTimelines.size() - 1;
+      if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
 
-      stream->streamCallsToSubmitTimelines[lastTimelineIndex].signalGpuSignalsCount = 2;
+      const size_t lastTimelineIndex = stream->streamCallsToSubmitTimelines.size() - 1;
+
+      stream->streamCallsToSubmitTimelines[lastTimelineIndex].signalGpuSignalsCount =  stream->streamCallsToSubmitLastTimelineGpuSignalsToSignal[1] == NULL ? 1 : 2;
       stream->streamCallsToSubmitTimelines[lastTimelineIndex].signalGpuSignals      = &stream->streamCallsToSubmitLastTimelineGpuSignalsToSignal[0];
     }
   }
@@ -3130,6 +3160,8 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
     handle->streamCallsToSubmitType2.clear();
     handle->streamCallsToSubmitFirst.clear();
     handle->streamCallsToSubmitTimelines.clear();
+    handle->streamCallsToSubmitFirstTimelineGpuSignalsToWait[0] = NULL;
+    handle->streamCallsToSubmitFirstTimelineGpuSignalsToWait[1] = NULL;
     handle->streamCallsToSubmitLastTimelineGpuSignalsToSignal[0] = NULL;
     handle->streamCallsToSubmitLastTimelineGpuSignalsToSignal[1] = NULL;
   }
