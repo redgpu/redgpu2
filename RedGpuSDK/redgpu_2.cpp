@@ -3036,12 +3036,12 @@ void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStr
   RedGpuTimeline timeline /*---*/;
   timeline.setTo4                            = 4;
   timeline.setTo0                            = 0;
-  timeline.waitForAndUnsignalGpuSignalsCount = 2;    // NOTE(Constantine): Always adding streams highway's GPU signals.
+  timeline.waitForAndUnsignalGpuSignalsCount = 1;
   timeline.waitForAndUnsignalGpuSignals      = &handle->streamCallsToSubmitGpuSignals[0];
   timeline.setTo65536                        = &handle->value65536;
   timeline.callsCount                        = callsCount;
   timeline.calls                             = NULL; // NOTE(Constantine): Set on flush. Calls are not set here since std::vector may change elements addresses when grown further.
-  timeline.signalGpuSignalsCount             = 2;    // NOTE(Constantine): Always adding streams highway's GPU signals.
+  timeline.signalGpuSignalsCount             = 1;
   timeline.signalGpuSignals                  = &handle->streamCallsToSubmitGpuSignals[0];
   handle->streamCallsToSubmitTimelines.push_back(timeline);
 }
@@ -3107,6 +3107,8 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
             RedGpuTimeline * timeline = NULL;
             timeline = &stream->streamCallsToSubmitTimelines[0];
             {
+              timeline->waitForAndUnsignalGpuSignalsCount = 2;
+              timeline->signalGpuSignalsCount             = 2;
               RedHandleGpuSignal * waitForAndUnsignalGpuSignals = (RedHandleGpuSignal *)&timeline->waitForAndUnsignalGpuSignals[0];
               RedHandleGpuSignal * signalGpuSignals             = (RedHandleGpuSignal *)&timeline->signalGpuSignals[0];
               waitForAndUnsignalGpuSignals[1] = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
@@ -3114,6 +3116,8 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
             }
             timeline = &stream->streamCallsToSubmitTimelines[stream->streamCallsToSubmitTimelines.size() - 1];
             {
+              timeline->waitForAndUnsignalGpuSignalsCount = 2;
+              timeline->signalGpuSignalsCount             = 2;
               RedHandleGpuSignal * waitForAndUnsignalGpuSignals = (RedHandleGpuSignal *)&timeline->waitForAndUnsignalGpuSignals[0];
               RedHandleGpuSignal * signalGpuSignals             = (RedHandleGpuSignal *)&timeline->signalGpuSignals[0];
               waitForAndUnsignalGpuSignals[1] = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
