@@ -719,7 +719,7 @@
 #define _np3_red2StreamFlushToQueue queue
 #define _np4_red2StreamFlushToQueue streamsCount
 #define _np5_red2StreamFlushToQueue streams
-#define _np6_red2StreamFlushToQueue optionalGpuSignalToSignal
+#define _np6_red2StreamFlushToQueue streamsOptionalGpuSignalToSignal
 #define _np7_red2StreamFlushToQueue outQueueSubmissionTicketArrayIndex
 #define _np8_red2StreamFlushToQueue outQueueSubmissionTicket
 #define _np9_red2StreamFlushToQueue outStatuses

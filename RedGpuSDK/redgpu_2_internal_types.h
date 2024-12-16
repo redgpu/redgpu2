@@ -65,4 +65,5 @@ typedef struct Red2InternalTypeStream {
   std::vector<Red2HandleCalls> streamCallsToSubmitType2;     // NOTE(Constantine): Cleared on flush.
   std::vector<size_t>          streamCallsToSubmitFirst;     // NOTE(Constantine): Cleared on flush. Array of count streamCallsToSubmitTimelines.
   std::vector<RedGpuTimeline>  streamCallsToSubmitTimelines; // NOTE(Constantine): Cleared on flush.
+  RedHandleGpuSignal           streamCallsToSubmitLastTimelineGpuSignalsToSignal[2]; // NOTE(Constantine): Cleared on flush.
 } Red2InternalTypeStream;
