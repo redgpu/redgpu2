@@ -56,9 +56,9 @@ typedef struct Red2InternalTypeCalls {
 } Red2InternalTypeCalls;
 
 typedef struct Red2InternalTypeStream {
+  RedHandleGpuSignal           gpuSignalForSerialDependencyBetweenStreamSubmissions; // NOTE(Constantine): Always assumed to be in a signaled state.
   unsigned                     value65536;
   unsigned                     queueFamilyIndex;
-  RedHandleGpuSignal           gpuSignalForSerialDependencyBetweenStreamSubmissions; // NOTE(Constantine): Always assumed to be in a signaled state.
   std::vector<Red2HandleCalls> streamCallsToGet;
   std::vector<RedBool32>       streamCallsToGetTaken;
   std::vector<RedHandleCalls>  streamCallsToSubmit;          // NOTE(Constantine): Cleared on flush.
