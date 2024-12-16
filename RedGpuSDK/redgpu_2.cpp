@@ -3051,6 +3051,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
 
+      if (stream == NULL) { continue; }
       if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
 
       const size_t firstTimelineIndex = 0;
@@ -3064,6 +3065,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
 
+      if (stream == NULL) { continue; }
       if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
 
       const size_t firstTimelineIndex = 0;
@@ -3078,6 +3080,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
 
+      if (stream == NULL) { continue; }
       if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
 
       const size_t lastTimelineIndex = stream->streamCallsToSubmitTimelines.size() - 1;
@@ -3091,6 +3094,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
 
+      if (stream == NULL) { continue; }
       if (stream->streamCallsToSubmitTimelines.empty()) { continue; }
 
       const size_t lastTimelineIndex = stream->streamCallsToSubmitTimelines.size() - 1;
@@ -3106,6 +3110,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   if (streamsCount > 1) {
     for (unsigned i = 0; i < streamsCount; i += 1) {
       Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+      if (stream == NULL) { continue; }
       timelinesCount += stream->streamCallsToSubmitTimelines.size();
     }
     timelines.resize(timelinesCount);
@@ -3115,12 +3120,14 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
       uint64_t timelineArrayIndex = 0;
       for (unsigned i = 0; i < streamsCount; i += 1) {
         Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+        if (stream == NULL) { continue; }
         for (const RedGpuTimeline & timeline : stream->streamCallsToSubmitTimelines) {
           timelinesArray[timelineArrayIndex++] = timeline;
         }
       }
     }
   } else if (streamsCount == 1) {
+    // NOTE(Constantine): The only stream passed must not be NULL.
     Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[0];
     timelinesCount = 1;
     timelinesArray = stream->streamCallsToSubmitTimelines.data();
@@ -3130,8 +3137,9 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   {
     uint64_t timelineArrayIndex = 0;
     for (unsigned i = 0; i < streamsCount; i += 1) {
-      Red2InternalTypeStream * stream              = (Red2InternalTypeStream *)(void *)streams[i];
-      RedHandleCalls *         streamCallsToSubmit = stream->streamCallsToSubmit.data();
+      Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+      if (stream == NULL) { continue; }
+      RedHandleCalls * streamCallsToSubmit = stream->streamCallsToSubmit.data();
       for (size_t streamCallsToSubmitFirst : stream->streamCallsToSubmitFirst) {
         timelinesArray[timelineArrayIndex++].calls = &streamCallsToSubmit[streamCallsToSubmitFirst];
       }
@@ -3144,6 +3152,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
 
   for (unsigned i = 0; i < streamsCount; i += 1) {
     Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+    if (stream == NULL) { continue; }
     for (Red2HandleCalls calls : stream->streamCallsToSubmitType2) {
       Red2InternalTypeCalls * handle = (Red2InternalTypeCalls *)(void *)calls;
       handle->lastQueueSubmitTrackableTicketArrayIndex = ticketArrayIndex;
@@ -3152,18 +3161,19 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   }
 
   for (unsigned i = 0; i < streamsCount; i += 1) {
-    Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)streams[i];
-    for (size_t i = 0, icount = handle->streamCallsToGetTaken.size(); i < icount; i += 1) {
-      handle->streamCallsToGetTaken[i] = 0;
+    Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
+    if (stream == NULL) { continue; }
+    for (size_t i = 0, icount = stream->streamCallsToGetTaken.size(); i < icount; i += 1) {
+      stream->streamCallsToGetTaken[i] = 0;
     }
-    handle->streamCallsToSubmit.clear();
-    handle->streamCallsToSubmitType2.clear();
-    handle->streamCallsToSubmitFirst.clear();
-    handle->streamCallsToSubmitTimelines.clear();
-    handle->streamCallsToSubmitFirstTimelineGpuSignalsToWait[0] = NULL;
-    handle->streamCallsToSubmitFirstTimelineGpuSignalsToWait[1] = NULL;
-    handle->streamCallsToSubmitLastTimelineGpuSignalsToSignal[0] = NULL;
-    handle->streamCallsToSubmitLastTimelineGpuSignalsToSignal[1] = NULL;
+    stream->streamCallsToSubmit.clear();
+    stream->streamCallsToSubmitType2.clear();
+    stream->streamCallsToSubmitFirst.clear();
+    stream->streamCallsToSubmitTimelines.clear();
+    stream->streamCallsToSubmitFirstTimelineGpuSignalsToWait[0] = NULL;
+    stream->streamCallsToSubmitFirstTimelineGpuSignalsToWait[1] = NULL;
+    stream->streamCallsToSubmitLastTimelineGpuSignalsToSignal[0] = NULL;
+    stream->streamCallsToSubmitLastTimelineGpuSignalsToSignal[1] = NULL;
   }
 
   if (outQueueSubmissionTicketArrayIndex != NULL) { outQueueSubmissionTicketArrayIndex[0] = ticketArrayIndex; }
