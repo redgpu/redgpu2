@@ -717,14 +717,13 @@
 #define _np1_red2StreamFlushToQueue context2
 #define _np2_red2StreamFlushToQueue gpu
 #define _np3_red2StreamFlushToQueue queue
-#define _np4_red2StreamFlushToQueue streamsCount
-#define _np5_red2StreamFlushToQueue streams
-#define _np6_red2StreamFlushToQueue streamsOptionalGpuSignalToWaitForAndUnsignal
-#define _np7_red2StreamFlushToQueue streamsOptionalGpuSignalToSignal
-#define _np8_red2StreamFlushToQueue outQueueSubmissionTicketArrayIndex
-#define _np9_red2StreamFlushToQueue outQueueSubmissionTicket
-#define _np10_red2StreamFlushToQueue outStatuses
-#define _np11_red2StreamFlushToQueue optionalFile
-#define _np12_red2StreamFlushToQueue optionalLine
-#define _np13_red2StreamFlushToQueue optionalUserData
+#define _np4_red2StreamFlushToQueue highway
+#define _np5_red2StreamFlushToQueue streamsCount
+#define _np6_red2StreamFlushToQueue streams
+#define _np7_red2StreamFlushToQueue outQueueSubmissionTicketArrayIndex
+#define _np8_red2StreamFlushToQueue outQueueSubmissionTicket
+#define _np9_red2StreamFlushToQueue outStatuses
+#define _np10_red2StreamFlushToQueue optionalFile
+#define _np11_red2StreamFlushToQueue optionalLine
+#define _np12_red2StreamFlushToQueue optionalUserData
 
