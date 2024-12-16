@@ -682,7 +682,7 @@
 #define _np2_red2CreateStream gpu
 #define _np3_red2CreateStream handleName
 #define _np4_red2CreateStream queueFamilyIndex
-#define _np5_red2CreateStream gpuSignalSignaledOnQueue
+#define _np5_red2CreateStream signalGpuSignalOnQueue
 #define _np6_red2CreateStream outStream
 #define _np7_red2CreateStream outStatuses
 #define _np8_red2CreateStream optionalFile
