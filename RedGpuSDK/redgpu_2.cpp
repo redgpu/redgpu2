@@ -2981,11 +2981,6 @@ void red2DestroyStream(Red2Context context2, RedHandleGpu gpu, Red2HandleStream 
   delete handle;
 }
 
-RedHandleGpuSignal red2StreamGetSignaledGpuSignal(Red2HandleStream stream) {
-  Red2InternalTypeStream * handle = (Red2InternalTypeStream *)(void *)stream;
-  return handle->gpuSignalForSerialDependencyBetweenStreamSubmissions;
-}
-
 // NOTE(Constantine):
 // This procedure is not thread-safe and should be called from one thread at a time.
 // The returned different calls handles can still be recorded on different threads, though.

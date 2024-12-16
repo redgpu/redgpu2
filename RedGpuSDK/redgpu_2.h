@@ -215,8 +215,6 @@ REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource     
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateStream                         (Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedHandleQueue gpuSignalSignaledOnQueue, Red2HandleStream * outStream, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStream                        (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-REDGPU_2_DECLSPEC RedHandleGpuSignal REDGPU_2_API red2StreamGetSignaledGpuSignal  (Red2HandleStream stream);
-
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamGetCalls                       (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamSubmitCalls                    (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamFlushToQueue                   (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
