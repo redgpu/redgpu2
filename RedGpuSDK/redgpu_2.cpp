@@ -3046,6 +3046,47 @@ void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStr
 }
 
 void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned streamsCount, Red2HandleStream * streams, RedHandleGpuSignal * streamsOptionalGpuSignalToWaitForAndUnsignal, RedHandleGpuSignal * streamsOptionalGpuSignalToSignal, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  // NOTE(Constantine):
+  //
+  // NULL synchronization streams and GPU signal 'highway lanes' feature idea description:
+  //
+  // For streams S with timelines T:
+  //
+  // [ S0[T0, T1, T2], S1[T0, T1], S2[T0], S3[T0], ...]
+  //
+  // Linearized to a flat array of 'std::vector<RedGpuTimeline> timelines':
+  //
+  // [ S0T0, S0T1, S0T2, S1T0, S1T1, S2T0, S3T0, ...]
+  //
+  // With a NULL synchronization stream inserted:
+  //
+  // [ S0[T0, T1, T2], S1[T0, T1], NULL, S2[T0], S3[T0], ...]
+  // [ S0T0, S0T1, S0T2, S1T0, S1T1, NULL, S2T0, S3T0, ...]
+  //
+  // That NULL stream takes separately provided extra 'highway lanes' GPU signals that weave into every stream:
+  //
+  // S0T0,S0T1,S0T2,S1T0,S1T1
+  //   |   |    |    |   |
+  //   |   |    |    |   |
+  //    \  \    |    /  /
+  //     \  \   |   /  /
+  //      \  \  |  /  /
+  //       \  \ | /  /
+  //         \ \|/ /    <--- Wait for all the extra 'highway lanes' GPU signals and unsignal them.
+  //           NULL
+  //         / /|\ \    <--- Signal all the extra 'highway lanes' GPU signals back.
+  //       /  / | \  \
+  //      /  /  |  \  \
+  //     /  /   |   \  \
+  //    /  /    |    \  \
+  //   |   |    |    |   |  <--- NOTE: This is the maximum number of streams allowed before another NULL stream
+  //   |   |    |    |   |             (in this example, 5 streams max, 1 'highway lane' GPU signal per stream).
+  //   |   |    |    |   |             Provide more 'highway lane' GPU signals to increase this maximum number.
+  // S2T0,S3T0  |    |   |
+  //   |   |    |    |   |
+  //   |   |    |    |   |
+  //
+
   // NOTE(Constantine): Set streamCallsToSubmitFirstTimelineGpuSignalsToWait of each stream if streamsOptionalGpuSignalToWaitForAndUnsignal is requested.
   if (streamsOptionalGpuSignalToWaitForAndUnsignal != NULL) {
     for (unsigned i = 0; i < streamsCount; i += 1) {
