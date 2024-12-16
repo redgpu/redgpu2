@@ -3100,10 +3100,11 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
           timelinesCount  += 1; // NOTE(Constantine): NULL synchronization stream's timeline struct.
           highwayLaneIndex = 0; // NOTE(Constantine): NULL synchronization stream is encountered, resetting highway lane index back to 0. 
         } else {
-          timelinesCount += stream->streamCallsToSubmitTimelines.size();
+          unsigned streamTimelinesCount = (unsigned)stream->streamCallsToSubmitTimelines.size();
+          timelinesCount += streamTimelinesCount;
 
           // NOTE(Constantine): Patching stream's first and last timeline structs with stream's 'highway lane' GPU signal.
-          if (stream->streamCallsToSubmitTimelines.size() > 0) {
+          if (streamTimelinesCount > 0) {
             RedGpuTimeline * timeline = NULL;
             timeline = &stream->streamCallsToSubmitTimelines[0];
             {
@@ -3114,7 +3115,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
               waitForAndUnsignalGpuSignals[1] = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
               signalGpuSignals[1]             = highway->perStreamsBeforeNullSignaledGpuSignal[highwayLaneIndex];
             }
-            timeline = &stream->streamCallsToSubmitTimelines[stream->streamCallsToSubmitTimelines.size() - 1];
+            timeline = &stream->streamCallsToSubmitTimelines[streamTimelinesCount - 1];
             {
               timeline->waitForAndUnsignalGpuSignalsCount = 2;
               timeline->signalGpuSignalsCount             = 2;
