@@ -3046,7 +3046,7 @@ void red2StreamSubmitCalls(Red2Context context2, RedHandleGpu gpu, Red2HandleStr
   handle->streamCallsToSubmitTimelines.push_back(timeline);
 }
 
-void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, const Red2StreamsHighway * highway, unsigned streamsCount, const Red2HandleStream * streams, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, const Red2StreamsHighway * highway, unsigned waitForAndUnsignalGpuSignalsCount, const RedHandleGpuSignal * waitForAndUnsignalGpuSignals, unsigned streamsCount, const Red2HandleStream * streams, unsigned signalGpuSignalsCount, const RedHandleGpuSignal * signalGpuSignals, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   // NOTE(Constantine):
   //
   // NULL synchronization streams and GPU signal 'highway lanes' feature idea description:
@@ -3089,7 +3089,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   //
 
   std::vector<unsigned> arrayOf65536;
-  arrayOf65536.resize(highway->maxStreamsBeforeNullCount);
+  arrayOf65536.resize((size_t)highway->maxStreamsBeforeNullCount + (size_t)waitForAndUnsignalGpuSignalsCount);
   for (unsigned & value : arrayOf65536) {
     value = 65536;
   }
@@ -3173,9 +3173,65 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
     }
   }
 
+  timelinesArray = NULL; // NOTE(Constantine): Intentionally here, do not remove, timelines vector can now be further grown dynamically.
+  
+  // NOTE(Constantine): Prepend a GPU timeline struct for waitForAndUnsignalGpuSignals.
+  if (waitForAndUnsignalGpuSignalsCount > 0) {
+    timelines.insert(timelines.begin(), {});
+    RedGpuTimeline * timeline = &timelines[0];
+
+    std::vector<RedHandleGpuSignal> waitForAndUnsignal;
+    waitForAndUnsignal.resize((size_t)highway->maxStreamsBeforeNullCount + (size_t)waitForAndUnsignalGpuSignalsCount);
+    for (size_t i = 0, offset = 0; i < highway->maxStreamsBeforeNullCount; i += 1) {
+      waitForAndUnsignal[offset + i] = highway->perStreamsBeforeNullSignaledGpuSignal[i];
+    }
+    for (size_t i = 0, offset = highway->maxStreamsBeforeNullCount; i < waitForAndUnsignalGpuSignalsCount; i += 1) {
+      waitForAndUnsignal[offset + i] = waitForAndUnsignalGpuSignals[i];
+    }
+
+    // NOTE(Constantine): NULL synchronization stream.
+
+    timeline->setTo4                            = 4;
+    timeline->setTo0                            = 0;
+    timeline->waitForAndUnsignalGpuSignalsCount = waitForAndUnsignal.size();
+    timeline->waitForAndUnsignalGpuSignals      = waitForAndUnsignal.data();
+    timeline->setTo65536                        = arrayOf65536.data();
+    timeline->callsCount                        = 0;
+    timeline->calls                             = NULL; // NOTE(Constantine): Should I submit a dummy calls handle to signal GPU signals? Assuming not for now.
+    timeline->signalGpuSignalsCount             = highway->maxStreamsBeforeNullCount;
+    timeline->signalGpuSignals                  = highway->perStreamsBeforeNullSignaledGpuSignal;
+  }
+
+  // NOTE(Constantine): Append a GPU timeline struct for signalGpuSignals.
+  if (signalGpuSignalsCount > 0) {
+    timelines.push_back({});
+    RedGpuTimeline * timeline = &timelines[timelines.size() - 1];
+
+    std::vector<RedHandleGpuSignal> signal;
+    signal.resize((size_t)highway->maxStreamsBeforeNullCount + (size_t)signalGpuSignalsCount);
+    for (size_t i = 0, offset = 0; i < highway->maxStreamsBeforeNullCount; i += 1) {
+      signal[offset + i] = highway->perStreamsBeforeNullSignaledGpuSignal[i];
+    }
+    for (size_t i = 0, offset = highway->maxStreamsBeforeNullCount; i < signalGpuSignalsCount; i += 1) {
+      signal[offset + i] = signalGpuSignals[i];
+    }
+
+    // NOTE(Constantine): NULL synchronization stream.
+
+    timeline->setTo4                            = 4;
+    timeline->setTo0                            = 0;
+    timeline->waitForAndUnsignalGpuSignalsCount = highway->maxStreamsBeforeNullCount;
+    timeline->waitForAndUnsignalGpuSignals      = highway->perStreamsBeforeNullSignaledGpuSignal;
+    timeline->setTo65536                        = arrayOf65536.data();
+    timeline->callsCount                        = 0;
+    timeline->calls                             = NULL; // NOTE(Constantine): Should I submit a dummy calls handle to signal GPU signals? Assuming not for now.
+    timeline->signalGpuSignalsCount             = signal.size();
+    timeline->signalGpuSignals                  = signal.data();
+  }
+
   uint64_t ticketArrayIndex = 0;
   uint64_t ticket           = 0;
-  red2QueueSubmit(context2, gpu, queue, timelinesCount, timelinesArray, &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
+  red2QueueSubmit(context2, gpu, queue, timelinesCount, timelines.data(), &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
 
   for (unsigned i = 0; i < streamsCount; i += 1) {
     Red2InternalTypeStream * stream = (Red2InternalTypeStream *)(void *)streams[i];
