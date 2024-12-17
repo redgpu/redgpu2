@@ -3176,11 +3176,11 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   timelinesArray = NULL; // NOTE(Constantine): Intentionally here, do not remove, timelines vector can now be further grown dynamically.
   
   // NOTE(Constantine): Prepend a GPU timeline struct for waitForAndUnsignalGpuSignals.
+  std::vector<RedHandleGpuSignal> waitForAndUnsignal;
   if (waitForAndUnsignalGpuSignalsCount > 0) {
     timelines.insert(timelines.begin(), {});
     RedGpuTimeline * timeline = &timelines[0];
 
-    std::vector<RedHandleGpuSignal> waitForAndUnsignal;
     waitForAndUnsignal.resize((size_t)highway->maxStreamsBeforeNullCount + (size_t)waitForAndUnsignalGpuSignalsCount);
     for (size_t i = 0, offset = 0; i < highway->maxStreamsBeforeNullCount; i += 1) {
       waitForAndUnsignal[offset + i] = highway->perStreamsBeforeNullSignaledGpuSignal[i];
@@ -3203,11 +3203,11 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   }
 
   // NOTE(Constantine): Append a GPU timeline struct for signalGpuSignals.
+  std::vector<RedHandleGpuSignal> signal;
   if (signalGpuSignalsCount > 0) {
     timelines.push_back({});
     RedGpuTimeline * timeline = &timelines[timelines.size() - 1];
 
-    std::vector<RedHandleGpuSignal> signal;
     signal.resize((size_t)highway->maxStreamsBeforeNullCount + (size_t)signalGpuSignalsCount);
     for (size_t i = 0, offset = 0; i < highway->maxStreamsBeforeNullCount; i += 1) {
       signal[offset + i] = highway->perStreamsBeforeNullSignaledGpuSignal[i];
