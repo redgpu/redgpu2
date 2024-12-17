@@ -96,7 +96,6 @@ typedef struct Red2InlineStructsMemoryFromProcedureParameters {
 typedef struct Red2StreamsHighway {
   unsigned             maxStreamsBeforeNullCount;
   RedHandleGpuSignal * perStreamsBeforeNullSignaledGpuSignal; // Array of maxStreamsBeforeNullCount
-  unsigned *           arrayOf65536;                          // Array of maxStreamsBeforeNullCount
 } Red2StreamsHighway;
 
 #ifndef REDGPU_2_DECLSPEC

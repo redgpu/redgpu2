@@ -3088,6 +3088,12 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   //   |   |    |    |   |
   //
 
+  std::vector<unsigned> arrayOf65536;
+  arrayOf65536.resize(highway->maxStreamsBeforeNullCount);
+  for (unsigned & value : arrayOf65536) {
+    value = 65536;
+  }
+
   std::vector<RedGpuTimeline> timelines;
   unsigned                    timelinesCount = 0;
   RedGpuTimeline *            timelinesArray = NULL;
@@ -3141,7 +3147,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
           timelinesArray[timelineArrayIndex].setTo0                            = 0;
           timelinesArray[timelineArrayIndex].waitForAndUnsignalGpuSignalsCount = highway->maxStreamsBeforeNullCount;
           timelinesArray[timelineArrayIndex].waitForAndUnsignalGpuSignals      = highway->perStreamsBeforeNullSignaledGpuSignal;
-          timelinesArray[timelineArrayIndex].setTo65536                        = highway->arrayOf65536;
+          timelinesArray[timelineArrayIndex].setTo65536                        = arrayOf65536.data();
           timelinesArray[timelineArrayIndex].callsCount                        = 0;
           timelinesArray[timelineArrayIndex].calls                             = NULL; // NOTE(Constantine): Should I submit a dummy calls handle to signal GPU signals? Assuming not for now.
           timelinesArray[timelineArrayIndex].signalGpuSignalsCount             = highway->maxStreamsBeforeNullCount;
