@@ -220,7 +220,9 @@ REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource     
 // REDGPU 2 streams
 
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateStream                         (Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedHandleQueue signalGpuSignalOnQueue, Red2HandleStream * outStream, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateStreamsHighway                 (Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned maxStreamsBeforeNullCount, RedHandleQueue signalGpuSignalsOnQueue, Red2StreamsHighway * outHighway, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStream                        (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStreamsHighway                (Red2Context context2, RedHandleGpu gpu, const Red2StreamsHighway * highway, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamGetCalls                       (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamSubmitCalls                    (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, const Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData);

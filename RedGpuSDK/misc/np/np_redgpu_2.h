@@ -689,12 +689,30 @@
 #define _np9_red2CreateStream optionalLine
 #define _np10_red2CreateStream optionalUserData
 
+#define _np1_red2CreateStreamsHighway context2
+#define _np2_red2CreateStreamsHighway gpu
+#define _np3_red2CreateStreamsHighway handleName
+#define _np4_red2CreateStreamsHighway maxStreamsBeforeNullCount
+#define _np5_red2CreateStreamsHighway signalGpuSignalsOnQueue
+#define _np6_red2CreateStreamsHighway outHighway
+#define _np7_red2CreateStreamsHighway outStatuses
+#define _np8_red2CreateStreamsHighway optionalFile
+#define _np9_red2CreateStreamsHighway optionalLine
+#define _np10_red2CreateStreamsHighway optionalUserData
+
 #define _np1_red2DestroyStream context2
 #define _np2_red2DestroyStream gpu
 #define _np3_red2DestroyStream stream
 #define _np4_red2DestroyStream optionalFile
 #define _np5_red2DestroyStream optionalLine
 #define _np6_red2DestroyStream optionalUserData
+
+#define _np1_red2DestroyStreamsHighway context2
+#define _np2_red2DestroyStreamsHighway gpu
+#define _np3_red2DestroyStreamsHighway highway
+#define _np4_red2DestroyStreamsHighway optionalFile
+#define _np5_red2DestroyStreamsHighway optionalLine
+#define _np6_red2DestroyStreamsHighway optionalUserData
 
 #define _np1_red2StreamGetCalls context2
 #define _np2_red2StreamGetCalls gpu

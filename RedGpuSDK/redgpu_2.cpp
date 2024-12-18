@@ -2931,16 +2931,16 @@ void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handl
     return;
   }
 
-  // Create GPU signal in signaled state.
   RedHandleGpuSignal gpuSignal = NULL;
-  {
-    redCreateGpuSignal(context2->context, gpu, handleName, &gpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
-    if (gpuSignal == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
-      delete handle;
-      outStream[0] = NULL;
-      return;
-    }
+  redCreateGpuSignal(context2->context, gpu, handleName, &gpuSignal, outStatuses, optionalFile, optionalLine, optionalUserData);
+  if (gpuSignal == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
+    delete handle;
+    outStream[0] = NULL;
+    return;
+  }
 
+  // NOTE(Constantine): Signal GPU signals.
+  {
     RedGpuTimeline timeline /*---*/;
     timeline.setTo4                            = 4;
     timeline.setTo0                            = 0;
@@ -2954,7 +2954,6 @@ void red2CreateStream(Red2Context context2, RedHandleGpu gpu, const char * handl
     uint64_t ticketArrayIndex = 0;
     uint64_t ticket           = 0;
     red2QueueSubmit(context2, gpu, signalGpuSignalOnQueue, 1, &timeline, &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
-    red2WaitForQueueSubmissionToFinish(context2, gpu, ticketArrayIndex, ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
   }
 
   handle->value65536       = 65536;
@@ -2980,6 +2979,50 @@ void red2DestroyStream(Red2Context context2, RedHandleGpu gpu, Red2HandleStream 
   }
 
   delete handle;
+}
+
+void red2CreateStreamsHighway(Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned maxStreamsBeforeNullCount, RedHandleQueue signalGpuSignalsOnQueue, Red2StreamsHighway * outHighway, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  outHighway[0] = {};
+
+  std::string handleNamePartString = std::string(handleName) + "_Lane";
+
+  for (unsigned i = 0; i < maxStreamsBeforeNullCount; i += 1) {
+    std::string handleNameString = handleNamePartString + std::to_string(i);
+    redCreateGpuSignal(context2->context, gpu, handleNameString.c_str(), &outHighway->perStreamsBeforeNullSignaledGpuSignal[i], outStatuses, optionalFile, optionalLine, optionalUserData);
+    if (outHighway->perStreamsBeforeNullSignaledGpuSignal[i] == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
+      for (unsigned j = 0; j < maxStreamsBeforeNullCount; j += 1) {
+        if (outHighway->perStreamsBeforeNullSignaledGpuSignal[j] != NULL) {
+          redDestroyGpuSignal(context2->context, gpu, outHighway->perStreamsBeforeNullSignaledGpuSignal[j], optionalFile, optionalLine, optionalUserData);
+        }
+      }
+      outHighway[0] = {};
+      return;
+    }
+  }
+  outHighway->maxStreamsBeforeNullCount = maxStreamsBeforeNullCount;
+
+  // NOTE(Constantine): Signal GPU signals.
+  {
+    RedGpuTimeline timeline /*---*/;
+    timeline.setTo4                            = 4;
+    timeline.setTo0                            = 0;
+    timeline.waitForAndUnsignalGpuSignalsCount = 0;
+    timeline.waitForAndUnsignalGpuSignals      = NULL;
+    timeline.setTo65536                        = NULL;
+    timeline.callsCount                        = 0;
+    timeline.calls                             = NULL; // NOTE(Constantine): Should I submit a dummy calls handle to signal GPU signals? Assuming not for now.
+    timeline.signalGpuSignalsCount             = outHighway->maxStreamsBeforeNullCount;
+    timeline.signalGpuSignals                  = outHighway->perStreamsBeforeNullSignaledGpuSignal;
+    uint64_t ticketArrayIndex = 0;
+    uint64_t ticket           = 0;
+    red2QueueSubmit(context2, gpu, signalGpuSignalsOnQueue, 1, &timeline, &ticketArrayIndex, &ticket, outStatuses, optionalFile, optionalLine, optionalUserData);
+  }
+}
+
+void red2DestroyStreamsHighway(Red2Context context2, RedHandleGpu gpu, const Red2StreamsHighway * highway, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  for (unsigned i = 0; i < highway->maxStreamsBeforeNullCount; i += 1) {
+    redDestroyGpuSignal(context2->context, gpu, highway->perStreamsBeforeNullSignaledGpuSignal[i], optionalFile, optionalLine, optionalUserData);
+  }
 }
 
 // NOTE(Constantine):
