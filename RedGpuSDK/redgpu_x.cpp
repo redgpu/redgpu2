@@ -12,7 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// cl /LD /EHsc /GR- redgpu_x.cpp
+// cl /LD /EHsc /GR- /DREDGPU_X_INTERNAL_USE_STD_VECTOR redgpu_x.cpp
+// cl /LD /EHsc /GR- /DREDGPU_X_INTERNAL_USE_EASTL_VECTOR /IEABase/include/Common /IEASTL/include redgpu_x.cpp
+
+#if !defined(REDGPU_X_INTERNAL_USE_STD_VECTOR) && !defined(REDGPU_X_INTERNAL_USE_EASTL_VECTOR)
+#error
+#endif
+#if  defined(REDGPU_X_INTERNAL_USE_STD_VECTOR) &&  defined(REDGPU_X_INTERNAL_USE_EASTL_VECTOR)
+#error
+#endif
 
 #define X12_DECLSPEC static
 #include "redgpu_x12.cpp"
@@ -27,42 +35,80 @@
 
 #include <pix.h>
 
-#include <vector>
 #include <string>
+#if defined(REDGPU_X_INTERNAL_USE_STD_VECTOR)
+#include <vector> // For std::vector
+#define REDGPU_VECTOR std::vector
+#endif
+#if defined(REDGPU_X_INTERNAL_USE_EASTL_VECTOR)
+#include <EASTL/vector.h> // For eastl::vector, needs to include EABase/include/Common and EASTL/include folders.
+#define REDGPU_VECTOR eastl::vector
 
-typedef struct RedInternalMemoryTypesArray {
+// https://github.com/electronicarts/EASTL/issues/497
+
+void * __cdecl operator new[](size_t size, const char * name, int flags, unsigned debugFlags, const char * file, int line) {
+  return new uint8_t[size];
+}
+
+void * __cdecl operator new[](unsigned __int64 size, unsigned __int64 alignment, unsigned __int64 offset, char const * pName, int flags, unsigned int debugFlags, char const * file, int line) {
+  return new uint8_t[size];
+}
+
+#endif
+
+#define                  X12Factory4 IDXGIFactory4
+#define                  X12Adapter3 IDXGIAdapter3
+#define                   X12Device3 ID3D12Device3
+#define                      X12Heap ID3D12Heap
+#define                  X12Resource ID3D12Resource
+#define            X12DescriptorHeap ID3D12DescriptorHeap
+#define                  X12Pageable ID3D12Pageable
+#define                      X12Blob ID3D10Blob
+#define             X12RootSignature ID3D12RootSignature
+#define X12RootSignatureDeserializer ID3D12RootSignatureDeserializer
+#define             X12PipelineState ID3D12PipelineState
+#define                     X12Fence ID3D12Fence
+#define              X12CommandQueue ID3D12CommandQueue
+#define          X12CommandAllocator ID3D12CommandAllocator
+#define               X12CommandList ID3D12GraphicsCommandList
+#define                X12SwapChain3 IDXGISwapChain3
+#define                   X12Output4 IDXGIOutput4
+
+#include "redgpu_x_internal_types.h"
+
+typedef struct RedXInternalMemoryTypesArray {
   RedMemoryType memoryTypes[6];
-} RedInternalMemoryTypesArray;
+} RedXInternalMemoryTypesArray;
 
-typedef struct RedInternalMemoryTypesDescriptionArray {
+typedef struct RedXInternalMemoryTypesDescriptionArray {
   const char * memoryTypesDescription[6];
-} RedInternalMemoryTypesDescriptionArray;
+} RedXInternalMemoryTypesDescriptionArray;
 
-typedef struct RedInternalMemoryTypesDescriptionStringArray {
+typedef struct RedXInternalMemoryTypesDescriptionStringArray {
   std::string memoryTypesDescriptionString[6];
-} RedInternalMemoryTypesDescriptionStringArray;
+} RedXInternalMemoryTypesDescriptionStringArray;
 
-typedef struct RedInternalMemoryHeapsArray {
+typedef struct RedXInternalMemoryHeapsArray {
   RedMemoryHeap memoryHeaps[2];
-} RedInternalMemoryHeapsArray;
+} RedXInternalMemoryHeapsArray;
 
-typedef struct RedInternalImageFormatsLimitsArray {
+typedef struct RedXInternalImageFormatsLimitsArray {
   RedImageFormatLimits imageFormatsLimits[131];
-} RedInternalImageFormatsLimitsArray;
+} RedXInternalImageFormatsLimitsArray;
 
-typedef struct RedInternalImageFormatsFeaturesArray {
+typedef struct RedXInternalImageFormatsFeaturesArray {
   RedImageFormatFeatures imageFormatsFeatures[131];
-} RedInternalImageFormatsFeaturesArray;
+} RedXInternalImageFormatsFeaturesArray;
 
-typedef struct RedInternalImageXFormatsLimitsArray {
+typedef struct RedXInternalImageXFormatsLimitsArray {
   RedImageFormatLimits imageXFormatsLimits[14];
-} RedInternalImageXFormatsLimitsArray;
+} RedXInternalImageXFormatsLimitsArray;
 
-typedef struct RedInternalImageXFormatsFeaturesArray {
+typedef struct RedXInternalImageXFormatsFeaturesArray {
   RedImageFormatFeatures  imageXFormatsFeatures[14];
   RedXImageFormatFeatures imageFormatsFeatures1[131];
   RedXImageFormatFeatures imageXFormatsFeatures1[14];
-} RedInternalImageXFormatsFeaturesArray;
+} RedXInternalImageXFormatsFeaturesArray;
 
 typedef struct RED_INTERNAL_D3D12_FEATURE_DATA_FORMAT_SUPPORT {
   HRESULT               hresult;
@@ -70,20 +116,20 @@ typedef struct RED_INTERNAL_D3D12_FEATURE_DATA_FORMAT_SUPPORT {
   D3D12_FORMAT_SUPPORT2 Support2;
 } RED_INTERNAL_D3D12_FEATURE_DATA_FORMAT_SUPPORT;
 
-typedef struct RedInternalImageD3D12FormatsFeaturesArray {
+typedef struct RedXInternalImageD3D12FormatsFeaturesArray {
   RED_INTERNAL_D3D12_FEATURE_DATA_FORMAT_SUPPORT imageD3D12FormatsFeatures[116];
-} RedInternalImageD3D12FormatsFeaturesArray;
+} RedXInternalImageD3D12FormatsFeaturesArray;
 
 typedef struct RED_INTERNAL_D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS {
   RedMultisampleCountBitflags supportedMultisampleCounts;
 } RED_INTERNAL_D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS;
 
-typedef struct RedInternalImageD3D12FormatsMultisampleFeaturesArray {
+typedef struct RedXInternalImageD3D12FormatsMultisampleFeaturesArray {
   RED_INTERNAL_D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS imageD3D12FormatsMultisampleFeatures[116];
-} RedInternalImageD3D12FormatsMultisampleFeaturesArray;
+} RedXInternalImageD3D12FormatsMultisampleFeaturesArray;
 
 // NOTE(Constantine): Copy of RedGpuInfo without const's.
-typedef struct RedInternalTypeGpuInfo {
+typedef struct RedXInternalTypeGpuInfo {
   RedHandleGpu                   gpu;
   RedHandleGpuDevice             gpuDevice;
   char                           gpuName[256];
@@ -237,63 +283,63 @@ typedef struct RedInternalTypeGpuInfo {
   RedImageFormatLimits *         imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered;     // Count: 131, indexable with RedFormat values
   RedImageFormatFeatures *       imageFormatsFeatures;                                                       // Count: 131, indexable with RedFormat values
   void *                         optionalInfo;                                                               // A 0 or a pointer to a singly linked list of RedGpuInfoOptionalInfo* structs
-} RedInternalTypeGpuInfo;
+} RedXInternalTypeGpuInfo;
 
-typedef struct RedInternalTypeContext {
-  unsigned                                                            gpusCount;
-  RedInternalTypeGpuInfo *                                            gpus;
-  RedStatuses *                                                       gpusStatuses;
-  RedHandleContext                                                    contextHandle;
-  void *                                                              userData;
+typedef struct RedXInternalTypeContext {
+  unsigned                                                               gpusCount;
+  RedXInternalTypeGpuInfo *                                              gpus;
+  RedStatuses *                                                          gpusStatuses;
+  RedHandleContext                                                       contextHandle;
+  void *                                                                 userData;
   struct {
-    RedTypeProcedureDebugCallback                                     debugCallback;
-    void *                                                            debugContext;
-    D3D_FEATURE_LEVEL                                                 d3dFeatureLevel;
-    RedBool32                                                         requestedExtensions[16];
-    RedBool32                                                         memoryAllocateZeroed;
-    std::vector<IDXGIAdapter3 *>                                      adapters;
-    std::vector<RedInternalMemoryTypesArray>                          adaptersMemoryTypes;
-    std::vector<RedInternalMemoryTypesDescriptionArray>               adaptersMemoryTypesDescription;
-    std::vector<RedInternalMemoryTypesDescriptionStringArray>         adaptersMemoryTypesDescriptionString;
-    std::vector<RedInternalMemoryHeapsArray>                          adaptersMemoryHeaps;
-    std::vector<std::vector<RedHandleQueue>>                          adaptersQueues;
-    std::vector<std::vector<unsigned>>                                adaptersQueuesFamilyIndex;
-    std::vector<std::vector<RedBool32>>                               adaptersQueuesCanCopy;
-    std::vector<std::vector<RedBool32>>                               adaptersQueuesCanDraw;
-    std::vector<std::vector<RedBool32>>                               adaptersQueuesCanCompute;
-    std::vector<std::vector<RedQueueCopyLimits>>                      adaptersQueuesCopyLimits;
-    std::vector<RedInternalImageD3D12FormatsFeaturesArray>            adaptersImageD3D12FormatsFeatures;
-    std::vector<RedInternalImageD3D12FormatsMultisampleFeaturesArray> adaptersImageD3D12FormatsMultisampleFeatures;
-    std::vector<RedInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions1D;
-    std::vector<RedInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions2D;
-    std::vector<RedInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions2DMultisample;
-    std::vector<RedInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered;
-    std::vector<RedInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions3D;
-    std::vector<RedInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered;
-    std::vector<RedInternalImageFormatsFeaturesArray>                 adaptersImageFormatsFeatures;
-    std::vector<RedInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions1D;
-    std::vector<RedInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions2D;
-    std::vector<RedInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions2DMultisample;
-    std::vector<RedInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered;
-    std::vector<RedInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions3D;
-    std::vector<RedInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered;
-    std::vector<RedInternalImageXFormatsFeaturesArray>                adaptersImageXFormatsFeatures;
-    std::vector<RedGpuInfoOptionalInfoImageXFormatsLimitsAndFeatures> adaptersOptionalInfoImageXFormatsLimitsAndFeatures;
-    std::vector<unsigned>                                             adaptersDescriptorHandleIncrementSizesCBVSRVUAV;
-    std::vector<unsigned>                                             adaptersDescriptorHandleIncrementSizesSampler;
-    std::vector<RedGpuInfoOptionalInfoArrayTimestamp>                 adaptersGpuInfoOptionalInfoArrayTimestamp;
-    std::vector<RedGpuInfoOptionalInfoComputingLanguageFeatureLevel1> adaptersGpuInfoOptionalInfoComputingLanguageFeatureLevel1;
-    std::vector<RedGpuInfoOptionalInfoRayTracing>                     adaptersGpuInfoOptionalInfoRayTracing;
-    std::vector<RedGpuInfoOptionalInfoDriverProperties>               adaptersGpuInfoOptionalInfoDriverProperties;
-    std::vector<RedGpuInfoOptionalInfoResolveDepthStencil>            adaptersGpuInfoOptionalInfoResolveDepthStencil;
-    std::vector<RedGpuInfoOptionalInfoProcedureParametersHandles>     adaptersGpuInfoOptionalInfoProcedureParametersHandles;
-    std::vector<RedGpuInfoOptionalInfoRasterizationMode>              adaptersGpuInfoOptionalInfoRasterizationMode;
-    std::vector<RedGpuInfoOptionalInfoFormalMemoryModel>              adaptersGpuInfoOptionalInfoFormalMemoryModel;
-    std::vector<RedGpuInfoOptionalInfoAdditionalInfo0>                adaptersGpuInfoOptionalInfoAdditionalInfo0;
-  }                                                                   internal;
-} RedInternalTypeContext;
+    RedTypeProcedureDebugCallback                                        debugCallback;
+    void *                                                               debugContext;
+    D3D_FEATURE_LEVEL                                                    d3dFeatureLevel;
+    RedBool32                                                            requestedExtensions[16];
+    RedBool32                                                            memoryAllocateZeroed;
+    REDGPU_VECTOR<IDXGIAdapter3 *>                                       adapters;
+    REDGPU_VECTOR<RedXInternalMemoryTypesArray>                          adaptersMemoryTypes;
+    REDGPU_VECTOR<RedXInternalMemoryTypesDescriptionArray>               adaptersMemoryTypesDescription;
+    REDGPU_VECTOR<RedXInternalMemoryTypesDescriptionStringArray>         adaptersMemoryTypesDescriptionString;
+    REDGPU_VECTOR<RedXInternalMemoryHeapsArray>                          adaptersMemoryHeaps;
+    REDGPU_VECTOR<REDGPU_VECTOR<RedHandleQueue>>                         adaptersQueues;
+    REDGPU_VECTOR<REDGPU_VECTOR<unsigned>>                               adaptersQueuesFamilyIndex;
+    REDGPU_VECTOR<REDGPU_VECTOR<RedBool32>>                              adaptersQueuesCanCopy;
+    REDGPU_VECTOR<REDGPU_VECTOR<RedBool32>>                              adaptersQueuesCanDraw;
+    REDGPU_VECTOR<REDGPU_VECTOR<RedBool32>>                              adaptersQueuesCanCompute;
+    REDGPU_VECTOR<REDGPU_VECTOR<RedQueueCopyLimits>>                     adaptersQueuesCopyLimits;
+    REDGPU_VECTOR<RedXInternalImageD3D12FormatsFeaturesArray>            adaptersImageD3D12FormatsFeatures;
+    REDGPU_VECTOR<RedXInternalImageD3D12FormatsMultisampleFeaturesArray> adaptersImageD3D12FormatsMultisampleFeatures;
+    REDGPU_VECTOR<RedXInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions1D;
+    REDGPU_VECTOR<RedXInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions2D;
+    REDGPU_VECTOR<RedXInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions2DMultisample;
+    REDGPU_VECTOR<RedXInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered;
+    REDGPU_VECTOR<RedXInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions3D;
+    REDGPU_VECTOR<RedXInternalImageFormatsLimitsArray>                   adaptersImageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered;
+    REDGPU_VECTOR<RedXInternalImageFormatsFeaturesArray>                 adaptersImageFormatsFeatures;
+    REDGPU_VECTOR<RedXInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions1D;
+    REDGPU_VECTOR<RedXInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions2D;
+    REDGPU_VECTOR<RedXInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions2DMultisample;
+    REDGPU_VECTOR<RedXInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered;
+    REDGPU_VECTOR<RedXInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions3D;
+    REDGPU_VECTOR<RedXInternalImageXFormatsLimitsArray>                  adaptersImageXFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered;
+    REDGPU_VECTOR<RedXInternalImageXFormatsFeaturesArray>                adaptersImageXFormatsFeatures;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoImageXFormatsLimitsAndFeatures>  adaptersOptionalInfoImageXFormatsLimitsAndFeatures;
+    REDGPU_VECTOR<unsigned>                                              adaptersDescriptorHandleIncrementSizesCBVSRVUAV;
+    REDGPU_VECTOR<unsigned>                                              adaptersDescriptorHandleIncrementSizesSampler;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoArrayTimestamp>                  adaptersGpuInfoOptionalInfoArrayTimestamp;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoComputingLanguageFeatureLevel1>  adaptersGpuInfoOptionalInfoComputingLanguageFeatureLevel1;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoRayTracing>                      adaptersGpuInfoOptionalInfoRayTracing;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoDriverProperties>                adaptersGpuInfoOptionalInfoDriverProperties;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoResolveDepthStencil>             adaptersGpuInfoOptionalInfoResolveDepthStencil;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoProcedureParametersHandles>      adaptersGpuInfoOptionalInfoProcedureParametersHandles;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoRasterizationMode>               adaptersGpuInfoOptionalInfoRasterizationMode;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoFormalMemoryModel>               adaptersGpuInfoOptionalInfoFormalMemoryModel;
+    REDGPU_VECTOR<RedGpuInfoOptionalInfoAdditionalInfo0>                 adaptersGpuInfoOptionalInfoAdditionalInfo0;
+  }                                                                      internal;
+} RedXInternalTypeContext;
 
-static void redInternalSetStatus(RedInternalTypeContext * context, RedHandleGpu gpu, RedStatuses * outStatuses, unsigned statusIndex, RedStatus status, RedProcedureId procedureId, const char * optionalFile, int optionalLine, HRESULT hresult, const char * errorMessage) {
+static void redInternalSetStatus(RedXInternalTypeContext * context, RedHandleGpu gpu, RedStatuses * outStatuses, unsigned statusIndex, RedStatus status, RedProcedureId procedureId, const char * optionalFile, int optionalLine, HRESULT hresult, const char * errorMessage) {
   if (status == RED_STATUS_SUCCESS) {
     return;
   }
@@ -365,7 +411,7 @@ static void redInternalSetStatus(RedInternalTypeContext * context, RedHandleGpu 
 // Internal utils
 
 static unsigned redInternalGetGpuIndex(RedContext context, RedHandleGpu gpu) {
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
   unsigned gpuIndex = (unsigned)-1;
   for (unsigned i = 0; i < ctx->gpusCount; i += 1) {
     if (ctx->gpus[i].gpu == gpu) {
@@ -673,7 +719,7 @@ static D3D12_COMPARISON_FUNC redInternalREDGPUCompareOpToD3D12ComparisonFunc(Red
   return (D3D12_COMPARISON_FUNC)-1;
 }
 
-static D3D12_HEAP_TYPE redInternalREDGPUMemoryTypeIndexToD3D12HeapType(RedInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
+static D3D12_HEAP_TYPE redInternalREDGPUMemoryTypeIndexToD3D12HeapType(RedXInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
   const unsigned memoryType0OnlyBuffers          = 0;
   const unsigned memoryType1OnlyTextures         = 1;
   const unsigned memoryType2OnlyRtDsTextures     = 2;
@@ -698,15 +744,15 @@ static D3D12_HEAP_TYPE redInternalREDGPUMemoryTypeIndexToD3D12HeapType(RedIntern
   return (D3D12_HEAP_TYPE)(unsigned)-1;
 }
 
-static D3D12_CPU_PAGE_PROPERTY redInternalREDGPUMemoryTypeIndexToD3D12CpuPageProperty(RedInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
+static D3D12_CPU_PAGE_PROPERTY redInternalREDGPUMemoryTypeIndexToD3D12CpuPageProperty(RedXInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
   return D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
 }
 
-static D3D12_MEMORY_POOL redInternalREDGPUMemoryTypeIndexToD3D12MemoryPool(RedInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
+static D3D12_MEMORY_POOL redInternalREDGPUMemoryTypeIndexToD3D12MemoryPool(RedXInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
   return D3D12_MEMORY_POOL_UNKNOWN;
 }
 
-static D3D12_HEAP_FLAGS redInternalREDGPUMemoryTypeIndexToD3D12HeapFlags(RedInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
+static D3D12_HEAP_FLAGS redInternalREDGPUMemoryTypeIndexToD3D12HeapFlags(RedXInternalTypeContext * context, unsigned gpuIndex, unsigned memoryTypeIndex) {
   const unsigned memoryType0OnlyBuffers          = 0;
   const unsigned memoryType1OnlyTextures         = 1;
   const unsigned memoryType2OnlyRtDsTextures     = 2;
@@ -776,257 +822,8 @@ static D3D12_RESOURCE_STATES redInternalREDGPUAccessBitflagsToD3D12ResourceState
   return state;
 }
 
-// Internal types
-
-typedef enum RedInternalTypeMemoryKind {
-  RED_INTERNAL_TYPE_MEMORY_KIND_UNDEFINED = 0,
-  RED_INTERNAL_TYPE_MEMORY_KIND_PLACED    = 1,
-  RED_INTERNAL_TYPE_MEMORY_KIND_DEDICATED = 2,
-} RedInternalTypeMemoryKind;
-
-typedef enum RedInternalTypeSurfaceType {
-  RED_INTERNAL_TYPE_SURFACE_TYPE_UNDEFINED = 0,
-  RED_INTERNAL_TYPE_SURFACE_TYPE_WIN32     = 1,
-  RED_INTERNAL_TYPE_SURFACE_TYPE_WINRT     = 2,
-} RedInternalTypeSurfaceType;
-
-typedef struct RedInternalCpuDescriptorCBVSRVUAV {
-  ID3D12DescriptorHeap *      cpuDescriptorHeapCBVSRVUAV;
-  D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptorCBVSRVUAV;
-} RedInternalCpuDescriptorCBVSRVUAV;
-
-typedef struct RedInternalCpuDescriptorSampler {
-  ID3D12DescriptorHeap *      cpuDescriptorHeapSampler;
-  D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptorSampler;
-} RedInternalCpuDescriptorSampler;
-
-typedef struct RedInternalCpuDescriptorRTV {
-  ID3D12DescriptorHeap *      cpuDescriptorHeapRTV;
-  D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptorRTV;
-} RedInternalCpuDescriptorRTV;
-
-typedef struct RedInternalCpuDescriptorDSV {
-  ID3D12DescriptorHeap *      cpuDescriptorHeapDSV;
-  D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptorDSV;
-} RedInternalCpuDescriptorDSV;
-
-typedef struct RedInternalTypeMemory {
-  ID3D12Heap *                handle;
-  ID3D12Resource *            resource;
-  RedInternalTypeContext *    context;
-  unsigned                    gpuIndex;
-  uint64_t                    bytesCount;
-  unsigned                    memoryTypeIndex;
-  RedBool32                   mapMemory;
-  RedHandleArray              dedicateToArray;
-  RedHandleImage              dedicateToImage;
-  uint64_t                    mappedPointerRangeBytesFirst;
-  uint64_t                    mappedPointerRangeBytesCount;
-  void *                      mappedPointer;
-  RedInternalTypeMemoryKind   kind;
-  std::string                 handleName;
-} RedInternalTypeMemory;
-
-typedef struct RedInternalTypeStructsMemory {
-  ID3D12DescriptorHeap *      handle;
-  RedInternalTypeContext *    context;
-  unsigned                    gpuIndex;
-  unsigned                    maxStructsCount;
-  unsigned                    maxStructsMembersOfTypeArrayROConstantCount;
-  unsigned                    maxStructsMembersOfTypeArrayROOrArrayRWCount;
-  unsigned                    maxStructsMembersOfTypeSamplerCount;
-  unsigned                    maxStructsMembersOfTypeTextureROCount;
-  unsigned                    maxStructsMembersOfTypeTextureRWCount;
-  std::string                 handleName;
-} RedInternalTypeStructsMemory;
-
-typedef struct RedInternalTypeArray {
-  ID3D12Resource *                  handle;
-  RedInternalTypeContext *          context;
-  unsigned                          gpuIndex;
-  RedArrayType                      type;
-  uint64_t                          bytesCount;
-  uint64_t                          structuredBufferElementBytesCount;
-  RedAccessBitflags                 initialAccess;
-  unsigned                          initialQueueFamilyIndex;
-  RedBool32                         dedicate;
-  uint64_t                          memoryBytesAlignment;
-  uint64_t                          memoryBytesCount;
-  unsigned                          memoryTypesSupported;
-  RedInternalTypeMemoryKind         memoryKind;
-  unsigned                          memoryTypeIndex;
-  RedMemoryArray                    memoryArray;
-  D3D12_RESOURCE_DESC               resourceDescription;
-  RedInternalCpuDescriptorCBVSRVUAV cpuDescriptor;
-  RedBool32                         destroyHandle;
-  uint64_t                          mappedMemoryBytesFirst;
-  std::string                       handleName;
-} RedInternalTypeArray;
-
-typedef struct RedInternalTypeImage {
-  ID3D12Resource *            handle;
-  RedInternalTypeContext *    context;
-  unsigned                    gpuIndex;
-  RedImageDimensions          dimensions;
-  RedFormat                   format;
-  unsigned                    xformat;
-  unsigned                    width;
-  unsigned                    height;
-  unsigned                    depth;
-  unsigned                    levelsCount;
-  unsigned                    layersCount;
-  RedMultisampleCountBitflag  multisampleCount;
-  RedAccessBitflags           restrictToAccess;
-  RedAccessBitflags           restrictToAccessFinal;
-  RedAccessBitflags           initialAccess;
-  unsigned                    initialQueueFamilyIndex;
-  RedBool32                   dedicate;
-  uint64_t                    memoryBytesAlignment;
-  uint64_t                    memoryBytesCount;
-  unsigned                    memoryTypesSupported;
-  RedInternalTypeMemoryKind   memoryKind;
-  RedMemoryImage              memoryImage;
-  D3D12_RESOURCE_DESC         resourceDescription;
-  void *                      ownedByPresent;
-  RedBool32                   destroyHandle;
-  std::string                 handleName;
-} RedInternalTypeImage;
-
-typedef struct RedInternalTypeSampler {
-  RedInternalTypeContext *                   context;
-  unsigned                                   gpuIndex;
-  RedSamplerFiltering                        filteringMag;
-  RedSamplerFiltering                        filteringMin;
-  RedSamplerFilteringMip                     filteringMip;
-  RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateU;
-  RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateV;
-  RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateW;
-  float                                      mipLodBias;
-  RedBool32                                  enableAnisotropy;
-  float                                      maxAnisotropy;
-  RedBool32                                  enableCompare;
-  RedCompareOp                               compareOp;
-  float                                      minLod;
-  float                                      maxLod;
-  D3D12_SAMPLER_DESC                         samplerDescription;
-  RedInternalCpuDescriptorSampler            cpuDescriptor;
-  std::string                                handleName;
-} RedInternalTypeSampler;
-
-typedef struct RedInternalTypeTexture {
-  RedInternalTypeContext *                   context;
-  unsigned                                   gpuIndex;
-  RedInternalTypeImage *                     image;
-  RedImagePartBitflags                       parts;
-  RedTextureDimensions                       dimensions;
-  RedFormat                                  format;
-  unsigned                                   xformat;
-  unsigned                                   levelsFirst;
-  unsigned                                   levelsCount;
-  unsigned                                   layersFirst;
-  unsigned                                   layersCount;
-  RedAccessBitflags                          restrictToAccess;
-  RedInternalCpuDescriptorCBVSRVUAV          cpuDescriptorSRV;
-  RedInternalCpuDescriptorCBVSRVUAV          cpuDescriptorUAV;
-  RedInternalCpuDescriptorDSV                cpuDescriptorDSV;
-  RedInternalCpuDescriptorRTV                cpuDescriptorRTV;
-  std::string                                handleName;
-} RedInternalTypeTexture;
-
-typedef struct RedInternalTypeStructDeclaration {
-  RedInternalTypeContext *                context;
-  unsigned                                gpuIndex;
-  RedBool32                               procedureParametersHandlesDeclaration;
-  std::vector<RedStructDeclarationMember> structDeclarationMembers;
-  std::string                             handleName;
-} RedInternalTypeStructDeclaration;
-
-typedef struct RedInternalTypeProcedureParameters {
-  ID3D12RootSignature *                handle;
-  RedInternalTypeContext *             context;
-  unsigned                             gpuIndex;
-  RedProcedureParametersDeclaration    procedureParametersDeclaration;
-  ID3D10Blob *                         blob;
-  ID3D10Blob *                         blobError;
-  unsigned                             rootParameterIndexStartVariables;
-  unsigned                             rootParameterIndexStartHandles;
-  unsigned                             rootParameterIndexStartStructs;
-  std::string                          handleName;
-} RedInternalTypeProcedureParameters;
-
-typedef struct RedInternalTypeProcedure {
-  ID3D12PipelineState *                handle;
-  RedInternalTypeContext *             context;
-  unsigned                             gpuIndex;
-  RedBool32                            isCompute;
-  RedHandleProcedureCache              procedureCache;
-  RedHandleOutputDeclaration           outputDeclaration;
-  RedHandleProcedureParameters         procedureParameters;
-  RedHandleGpuCode                     gpuCodeVertex;
-  RedHandleGpuCode                     gpuCodeFragment;
-  RedHandleGpuCode                     gpuCodeCompute;
-  RedProcedureState                    state;
-  RedBool32                            deriveBase;
-  RedHandleProcedure                   deriveFrom;
-  std::string                          gpuCodeVertexMainProcedureName;
-  std::string                          gpuCodeFragmentMainProcedureName;
-  std::string                          gpuCodeComputeMainProcedureName;
-  std::string                          handleName;
-} RedInternalTypeProcedure;
-
-typedef struct RedInternalTypeQueue {
-  ID3D12CommandQueue *                 handle;
-  RedInternalTypeContext *             context;
-  unsigned                             gpuIndex;
-  unsigned                             queueFamilyIndex;
-  std::string                          handleName;
-} RedInternalTypeQueue;
-
-typedef struct RedInternalTypeSignal {
-  ID3D12Fence *                        handle;
-  uint64_t                             value;
-  RedInternalTypeContext *             context;
-  unsigned                             gpuIndex;
-  std::string                          handleName;
-} RedInternalTypeSignal;
-
-typedef struct RedInternalTypeCalls {
-  ID3D12GraphicsCommandList4 *         handle;
-  ID3D12CommandAllocator *             memory;
-  RedInternalTypeContext *             context;
-  unsigned                             gpuIndex;
-  RedBool32                            reusable;
-  RedProcedureType                     currentProcedureTypeContext;
-  RedInternalTypeTexture *             currentDepthStencil;
-  unsigned                             currentColorsCount;
-  RedInternalTypeTexture *             currentColors[8];
-  RedStatuses                          statuses;
-  size_t                               gpuToCpuSignalsToSignalCount;
-  std::vector<RedHandleGpuToCpuSignal> gpuToCpuSignalsToSignal;
-  std::string                          handleName;
-} RedInternalTypeCalls;
-
-typedef struct RedInternalTypeSurface {
-  const void *               window;
-  RedInternalTypeContext *   context;
-  unsigned                   gpuIndex;
-  RedInternalTypeSurfaceType type;
-  std::string                handleName;
-} RedInternalTypeSurface;
-
-typedef struct RedInternalTypePresent {
-  IDXGISwapChain3 *          handle;
-  RedInternalTypeContext *   context;
-  unsigned                   gpuIndex;
-  RedInternalTypeQueue *     queue;
-  RedInternalTypeSurface *   surface;
-  RedInternalTypeImage *     images[2];
-  RedPresentVsyncMode        vsyncMode;
-  std::string                handleName;
-} RedInternalTypePresent;
-
 static void redInternalDestroyContext(RedContext context, RedBool32 reportLiveObjects, const char * optionalFile, int optionalLine) {
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
 
   if (ctx == 0) {
     return;
@@ -1036,7 +833,7 @@ static void redInternalDestroyContext(RedContext context, RedBool32 reportLiveOb
     for (unsigned i = 0; i < ctx->gpusCount; i += 1) {
       for (unsigned j = 0; j < ctx->gpus[i].queuesCount; j += 1) {
         if (ctx->gpus[i].queues[j] != 0) {
-          RedInternalTypeQueue * ih = (RedInternalTypeQueue *)ctx->gpus[i].queues[j];
+          RedXInternalTypeQueue * ih = (RedXInternalTypeQueue *)ctx->gpus[i].queues[j];
           ih->handle->Release();
           delete ih;
           ctx->gpus[i].queues[j] = 0;
@@ -1084,15 +881,15 @@ static void redInternalDestroyContext(RedContext context, RedBool32 reportLiveOb
   delete ctx;
 }
 
-static RedInternalTypeMemory * redInternalTypeMemoryAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, RedBool32 mapMemory, RedHandleArray dedicateToArray, RedHandleImage dedicateToImage, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeMemory * ih = new(std::nothrow) RedInternalTypeMemory();
+static RedXInternalTypeMemory * redInternalTypeMemoryAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, RedBool32 mapMemory, RedHandleArray dedicateToArray, RedHandleImage dedicateToImage, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeMemory * ih = new(std::nothrow) RedXInternalTypeMemory();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle                       = 0;
   ih->resource                     = 0;
-  ih->context                      = context;
+  ih->context                      = (RedContext)context;
   ih->gpuIndex                     = gpuIndex;
   ih->bytesCount                   = bytesCount;
   ih->memoryTypeIndex              = memoryTypeIndex;
@@ -1102,13 +899,13 @@ static RedInternalTypeMemory * redInternalTypeMemoryAllocate(RedInternalTypeCont
   ih->mappedPointerRangeBytesFirst = 0;
   ih->mappedPointerRangeBytesCount = 0;
   ih->mappedPointer                = 0;
-  ih->kind                         = RED_INTERNAL_TYPE_MEMORY_KIND_UNDEFINED;
+  ih->kind                         = REDX_INTERNAL_TYPE_MEMORY_KIND_UNDEFINED;
   ih->handleName                   = handleName == 0 ? "" : handleName;
   return ih;
 }
 
 static void redInternalDestroyMemory(RedHandleMemory memory, const char * optionalFile, int optionalLine) {
-  RedInternalTypeMemory * ih = (RedInternalTypeMemory *)memory;
+  RedXInternalTypeMemory * ih = (RedXInternalTypeMemory *)memory;
 
   if (ih == 0) {
     return;
@@ -1124,14 +921,14 @@ static void redInternalDestroyMemory(RedHandleMemory memory, const char * option
   delete ih;
 }
 
-static RedInternalTypeStructsMemory * redInternalTypeStructsMemoryAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeSamplerCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeStructsMemory * ih = new(std::nothrow) RedInternalTypeStructsMemory();
+static RedXInternalTypeStructsMemory * redInternalTypeStructsMemoryAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeSamplerCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeStructsMemory * ih = new(std::nothrow) RedXInternalTypeStructsMemory();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle                                       = 0;
-  ih->context                                      = context;
+  ih->context                                      = (RedContext)context;
   ih->gpuIndex                                     = gpuIndex;
   ih->maxStructsCount                              = maxStructsCount;
   ih->maxStructsMembersOfTypeArrayROConstantCount  = maxStructsMembersOfTypeArrayROConstantCount;
@@ -1144,7 +941,7 @@ static RedInternalTypeStructsMemory * redInternalTypeStructsMemoryAllocate(RedIn
 }
 
 static void redInternalDestroyStructsMemory(RedHandleStructsMemory structsMemory, const char * optionalFile, int optionalLine) {
-  RedInternalTypeStructsMemory * ih = (RedInternalTypeStructsMemory *)structsMemory;
+  RedXInternalTypeStructsMemory * ih = (RedXInternalTypeStructsMemory *)structsMemory;
 
   if (ih == 0) {
     return;
@@ -1157,17 +954,17 @@ static void redInternalDestroyStructsMemory(RedHandleStructsMemory structsMemory
   delete ih;
 }
 
-static RedInternalTypeArray * redInternalTypeArrayAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  const RedMemoryArray                    _0 = {};
-  const D3D12_RESOURCE_DESC               _1 = {};
-  const RedInternalCpuDescriptorCBVSRVUAV _2 = {};
-  RedInternalTypeArray * ih = new(std::nothrow) RedInternalTypeArray();
+static RedXInternalTypeArray * redInternalTypeArrayAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  const RedMemoryArray                         _0 = {};
+  const D3D12_RESOURCE_DESC                    _1 = {};
+  const RedXInternalTypeCpuDescriptorCBVSRVUAV _2 = {};
+  RedXInternalTypeArray * ih = new(std::nothrow) RedXInternalTypeArray();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle                  = 0;
-  ih->context                 = context;
+  ih->context                 = (RedContext)context;
   ih->gpuIndex                = gpuIndex;
   ih->type                    = type;
   ih->bytesCount              = bytesCount;
@@ -1178,7 +975,7 @@ static RedInternalTypeArray * redInternalTypeArrayAllocate(RedInternalTypeContex
   ih->memoryBytesAlignment    = 0;
   ih->memoryBytesCount        = 0;
   ih->memoryTypesSupported    = 0;
-  ih->memoryKind              = RED_INTERNAL_TYPE_MEMORY_KIND_UNDEFINED;
+  ih->memoryKind              = REDX_INTERNAL_TYPE_MEMORY_KIND_UNDEFINED;
   ih->memoryTypeIndex         = 0;
   ih->memoryArray             = _0;
   ih->resourceDescription     = _1;
@@ -1190,7 +987,7 @@ static RedInternalTypeArray * redInternalTypeArrayAllocate(RedInternalTypeContex
 }
 
 static void redInternalDestroyArray(RedHandleArray array, const char * optionalFile, int optionalLine) {
-  RedInternalTypeArray * ih = (RedInternalTypeArray *)array;
+  RedXInternalTypeArray * ih = (RedXInternalTypeArray *)array;
 
   if (ih == 0) {
     return;
@@ -1207,16 +1004,16 @@ static void redInternalDestroyArray(RedHandleArray array, const char * optionalF
   delete ih;
 }
 
-static RedInternalTypeImage * redInternalTypeImageAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+static RedXInternalTypeImage * redInternalTypeImageAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
   const RedMemoryImage      _0 = {};
   const D3D12_RESOURCE_DESC _1 = {};
-  RedInternalTypeImage * ih = new(std::nothrow) RedInternalTypeImage();
+  RedXInternalTypeImage * ih = new(std::nothrow) RedXInternalTypeImage();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle                  = 0;
-  ih->context                 = context;
+  ih->context                 = (RedContext)context;
   ih->gpuIndex                = gpuIndex;
   ih->dimensions              = dimensions;
   ih->format                  = format;
@@ -1235,7 +1032,7 @@ static RedInternalTypeImage * redInternalTypeImageAllocate(RedInternalTypeContex
   ih->memoryBytesAlignment    = 0;
   ih->memoryBytesCount        = 0;
   ih->memoryTypesSupported    = 0;
-  ih->memoryKind              = RED_INTERNAL_TYPE_MEMORY_KIND_UNDEFINED;
+  ih->memoryKind              = REDX_INTERNAL_TYPE_MEMORY_KIND_UNDEFINED;
   ih->memoryImage             = _0;
   ih->resourceDescription     = _1;
   ih->ownedByPresent          = 0;
@@ -1245,7 +1042,7 @@ static RedInternalTypeImage * redInternalTypeImageAllocate(RedInternalTypeContex
 }
 
 static void redInternalDestroyImage(RedHandleImage image, const char * optionalFile, int optionalLine) {
-  RedInternalTypeImage * ih = (RedInternalTypeImage *)image;
+  RedXInternalTypeImage * ih = (RedXInternalTypeImage *)image;
 
   if (ih == 0) {
     return;
@@ -1258,15 +1055,15 @@ static void redInternalDestroyImage(RedHandleImage image, const char * optionalF
   delete ih;
 }
 
-static RedInternalTypeSampler * redInternalTypeSamplerAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedSamplerFiltering filteringMag, RedSamplerFiltering filteringMin, RedSamplerFilteringMip filteringMip, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateU, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateV, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateW, float mipLodBias, RedBool32 enableAnisotropy, float maxAnisotropy, RedBool32 enableCompare, RedCompareOp compareOp, float minLod, float maxLod, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  const D3D12_SAMPLER_DESC              _0 = {};
-  const RedInternalCpuDescriptorSampler _1 = {};
-  RedInternalTypeSampler * ih = new(std::nothrow) RedInternalTypeSampler();
+static RedXInternalTypeSampler * redInternalTypeSamplerAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedSamplerFiltering filteringMag, RedSamplerFiltering filteringMin, RedSamplerFilteringMip filteringMip, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateU, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateV, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateW, float mipLodBias, RedBool32 enableAnisotropy, float maxAnisotropy, RedBool32 enableCompare, RedCompareOp compareOp, float minLod, float maxLod, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  const D3D12_SAMPLER_DESC                   _0 = {};
+  const RedXInternalTypeCpuDescriptorSampler _1 = {};
+  RedXInternalTypeSampler * ih = new(std::nothrow) RedXInternalTypeSampler();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
-  ih->context                           = context;
+  ih->context                           = (RedContext)context;
   ih->gpuIndex                          = gpuIndex;
   ih->filteringMag                      = filteringMag;
   ih->filteringMin                      = filteringMin;
@@ -1288,7 +1085,7 @@ static RedInternalTypeSampler * redInternalTypeSamplerAllocate(RedInternalTypeCo
 }
 
 static void redInternalDestroySampler(RedHandleSampler sampler, const char * optionalFile, int optionalLine) {
-  RedInternalTypeSampler * ih = (RedInternalTypeSampler *)sampler;
+  RedXInternalTypeSampler * ih = (RedXInternalTypeSampler *)sampler;
 
   if (ih == 0) {
     return;
@@ -1301,19 +1098,19 @@ static void redInternalDestroySampler(RedHandleSampler sampler, const char * opt
   delete ih;
 }
 
-static RedInternalTypeTexture * redInternalTypeTextureAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  const RedInternalCpuDescriptorCBVSRVUAV _0 = {};
-  const RedInternalCpuDescriptorCBVSRVUAV _1 = {};
-  const RedInternalCpuDescriptorDSV       _2 = {};
-  const RedInternalCpuDescriptorRTV       _3 = {};
-  RedInternalTypeTexture * ih = new(std::nothrow) RedInternalTypeTexture();
+static RedXInternalTypeTexture * redInternalTypeTextureAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  const RedXInternalTypeCpuDescriptorCBVSRVUAV _0 = {};
+  const RedXInternalTypeCpuDescriptorCBVSRVUAV _1 = {};
+  const RedXInternalTypeCpuDescriptorDSV       _2 = {};
+  const RedXInternalTypeCpuDescriptorRTV       _3 = {};
+  RedXInternalTypeTexture * ih = new(std::nothrow) RedXInternalTypeTexture();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
-  ih->context          = context;
+  ih->context          = (RedContext)context;
   ih->gpuIndex         = gpuIndex;
-  ih->image            = (RedInternalTypeImage *)image;
+  ih->image            = (RedXInternalTypeImage *)image;
   ih->parts            = parts;
   ih->dimensions       = dimensions;
   ih->format           = format;
@@ -1332,7 +1129,7 @@ static RedInternalTypeTexture * redInternalTypeTextureAllocate(RedInternalTypeCo
 }
 
 static void redInternalDestroyTexture(RedHandleTexture texture, const char * optionalFile, int optionalLine) {
-  RedInternalTypeTexture * ih = (RedInternalTypeTexture *)texture;
+  RedXInternalTypeTexture * ih = (RedXInternalTypeTexture *)texture;
 
   if (ih == 0) {
     return;
@@ -1374,13 +1171,13 @@ static void redInternalDestroyOutputDeclaration(RedHandleOutputDeclaration outpu
   delete[] ih;
 }
 
-static RedInternalTypeStructDeclaration * redInternalTypeStructDeclarationAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, RedBool32 procedureParametersHandlesDeclaration, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeStructDeclaration * ih = new(std::nothrow) RedInternalTypeStructDeclaration();
+static RedXInternalTypeStructDeclaration * redInternalTypeStructDeclarationAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, RedBool32 procedureParametersHandlesDeclaration, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeStructDeclaration * ih = new(std::nothrow) RedXInternalTypeStructDeclaration();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
-  ih->context                               = context;
+  ih->context                               = (RedContext)context;
   ih->gpuIndex                              = gpuIndex;
   try {
     ih->structDeclarationMembers.resize(structDeclarationMembersCount);
@@ -1396,7 +1193,7 @@ static RedInternalTypeStructDeclaration * redInternalTypeStructDeclarationAlloca
 }
 
 static void redInternalDestroyStructDeclaration(RedHandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine) {
-  RedInternalTypeStructDeclaration * ih = (RedInternalTypeStructDeclaration *)structDeclaration;
+  RedXInternalTypeStructDeclaration * ih = (RedXInternalTypeStructDeclaration *)structDeclaration;
 
   if (ih == 0) {
     return;
@@ -1405,14 +1202,14 @@ static void redInternalDestroyStructDeclaration(RedHandleStructDeclaration struc
   delete ih;
 }
 
-static RedInternalTypeProcedureParameters * redInternalTypeProcedureParametersAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, const RedProcedureParametersDeclaration * procedureParametersDeclaration, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeProcedureParameters * ih = new(std::nothrow) RedInternalTypeProcedureParameters();
+static RedXInternalTypeProcedureParameters * redInternalTypeProcedureParametersAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, const RedProcedureParametersDeclaration * procedureParametersDeclaration, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeProcedureParameters * ih = new(std::nothrow) RedXInternalTypeProcedureParameters();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle                           = 0;
-  ih->context                          = context;
+  ih->context                          = (RedContext)context;
   ih->gpuIndex                         = gpuIndex;
   if (procedureParametersDeclaration != 0) {
     ih->procedureParametersDeclaration = procedureParametersDeclaration[0];
@@ -1427,7 +1224,7 @@ static RedInternalTypeProcedureParameters * redInternalTypeProcedureParametersAl
 }
 
 static void redInternalDestroyProcedureParameters(RedHandleProcedureParameters procedureParameters, const char * optionalFile, int optionalLine) {
-  RedInternalTypeProcedureParameters * ih = (RedInternalTypeProcedureParameters *)procedureParameters;
+  RedXInternalTypeProcedureParameters * ih = (RedXInternalTypeProcedureParameters *)procedureParameters;
 
   if (ih == 0) {
     return;
@@ -1440,14 +1237,14 @@ static void redInternalDestroyProcedureParameters(RedHandleProcedureParameters p
   delete ih;
 }
 
-static RedInternalTypeProcedure * redInternalTypeProcedureAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedHandleProcedureCache procedureCache, RedHandleOutputDeclaration outputDeclaration, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const char * gpuCodeComputeMainProcedureName, RedHandleGpuCode gpuCodeCompute, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeProcedure * ih = new(std::nothrow) RedInternalTypeProcedure();
+static RedXInternalTypeProcedure * redInternalTypeProcedureAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedHandleProcedureCache procedureCache, RedHandleOutputDeclaration outputDeclaration, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const char * gpuCodeComputeMainProcedureName, RedHandleGpuCode gpuCodeCompute, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeProcedure * ih = new(std::nothrow) RedXInternalTypeProcedure();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle                           = 0;
-  ih->context                          = context;
+  ih->context                          = (RedContext)context;
   ih->gpuIndex                         = gpuIndex;
   ih->isCompute                        = procedureId == RED_PROCEDURE_ID_redCreateProcedureCompute ? 1 : 0;
   ih->procedureCache                   = procedureCache;
@@ -1469,7 +1266,7 @@ static RedInternalTypeProcedure * redInternalTypeProcedureAllocate(RedInternalTy
 }
 
 static void redInternalDestroyProcedure(RedHandleProcedure procedure, const char * optionalFile, int optionalLine) {
-  RedInternalTypeProcedure * ih = (RedInternalTypeProcedure *)procedure;
+  RedXInternalTypeProcedure * ih = (RedXInternalTypeProcedure *)procedure;
 
   if (ih == 0) {
     return;
@@ -1482,22 +1279,22 @@ static void redInternalDestroyProcedure(RedHandleProcedure procedure, const char
   delete ih;
 }
 
-static RedInternalTypeSignal * redInternalTypeSignalAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, uint64_t value, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeSignal * ih = new(std::nothrow) RedInternalTypeSignal();
+static RedXInternalTypeSignal * redInternalTypeSignalAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, uint64_t value, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeSignal * ih = new(std::nothrow) RedXInternalTypeSignal();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle     = 0;
   ih->value      = value;
-  ih->context    = context;
+  ih->context    = (RedContext)context;
   ih->gpuIndex   = gpuIndex;
   ih->handleName = handleName == 0 ? "" : handleName;
   return ih;
 }
 
 static void redInternalDestroyCpuSignal(RedHandleCpuSignal cpuSignal, const char * optionalFile, int optionalLine) {
-  RedInternalTypeSignal * ih = (RedInternalTypeSignal *)cpuSignal;
+  RedXInternalTypeSignal * ih = (RedXInternalTypeSignal *)cpuSignal;
 
   if (ih == 0) {
     return;
@@ -1511,7 +1308,7 @@ static void redInternalDestroyCpuSignal(RedHandleCpuSignal cpuSignal, const char
 }
 
 static void redInternalDestroyGpuSignal(RedHandleGpuSignal gpuSignal, const char * optionalFile, int optionalLine) {
-  RedInternalTypeSignal * ih = (RedInternalTypeSignal *)gpuSignal;
+  RedXInternalTypeSignal * ih = (RedXInternalTypeSignal *)gpuSignal;
 
   if (ih == 0) {
     return;
@@ -1525,7 +1322,7 @@ static void redInternalDestroyGpuSignal(RedHandleGpuSignal gpuSignal, const char
 }
 
 static void redInternalDestroyGpuToCpuSignal(RedHandleGpuToCpuSignal gpuToCpuSignal, const char * optionalFile, int optionalLine) {
-  RedInternalTypeSignal * ih = (RedInternalTypeSignal *)gpuToCpuSignal;
+  RedXInternalTypeSignal * ih = (RedXInternalTypeSignal *)gpuToCpuSignal;
 
   if (ih == 0) {
     return;
@@ -1538,14 +1335,14 @@ static void redInternalDestroyGpuToCpuSignal(RedHandleGpuToCpuSignal gpuToCpuSig
   delete ih;
 }
 
-static RedInternalTypeQueue * redInternalTypeQueueAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, unsigned queueFamilyIndex, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeQueue * ih = new(std::nothrow) RedInternalTypeQueue();
+static RedXInternalTypeQueue * redInternalTypeQueueAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, unsigned queueFamilyIndex, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeQueue * ih = new(std::nothrow) RedXInternalTypeQueue();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle           = 0;
-  ih->context          = context;
+  ih->context          = (RedContext)context;
   ih->gpuIndex         = gpuIndex;
   ih->queueFamilyIndex = queueFamilyIndex;
   ih->handleName       = handleName == 0 ? "" : handleName;
@@ -1553,7 +1350,7 @@ static RedInternalTypeQueue * redInternalTypeQueueAllocate(RedInternalTypeContex
 }
 
 static void redInternalDestroyQueue(RedHandleQueue queue, const char * optionalFile, int optionalLine) {
-  RedInternalTypeQueue * ih = (RedInternalTypeQueue *)queue;
+  RedXInternalTypeQueue * ih = (RedXInternalTypeQueue *)queue;
 
   if (ih == 0) {
     return;
@@ -1566,16 +1363,16 @@ static void redInternalDestroyQueue(RedHandleQueue queue, const char * optionalF
   delete ih;
 }
 
-static RedInternalTypeCalls * redInternalTypeCallsAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+static RedXInternalTypeCalls * redInternalTypeCallsAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
   const RedStatuses _0 = {};
-  RedInternalTypeCalls * ih = new(std::nothrow) RedInternalTypeCalls();
+  RedXInternalTypeCalls * ih = new(std::nothrow) RedXInternalTypeCalls();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle                       = 0;
   ih->memory                       = 0;
-  ih->context                      = context;
+  ih->context                      = (RedContext)context;
   ih->gpuIndex                     = gpuIndex;
   ih->reusable                     = 0;
   ih->currentProcedureTypeContext  = RED_PROCEDURE_TYPE_COMPUTE;
@@ -1596,7 +1393,7 @@ static RedInternalTypeCalls * redInternalTypeCallsAllocate(RedInternalTypeContex
 }
 
 static void redInternalDestroyCalls(RedHandleCallsMemory callsMemory, const char * optionalFile, int optionalLine) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)callsMemory;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)callsMemory;
 
   if (ih == 0) {
     return;
@@ -1612,14 +1409,14 @@ static void redInternalDestroyCalls(RedHandleCallsMemory callsMemory, const char
   delete ih;
 }
 
-static RedInternalTypeSurface * redInternalTypeSurfaceAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedInternalTypeSurfaceType type, const void * window, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypeSurface * ih = new(std::nothrow) RedInternalTypeSurface();
+static RedXInternalTypeSurface * redInternalTypeSurfaceAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedXInternalTypeSurfaceType type, const void * window, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypeSurface * ih = new(std::nothrow) RedXInternalTypeSurface();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->window     = window;
-  ih->context    = context;
+  ih->context    = (RedContext)context;
   ih->gpuIndex   = gpuIndex;
   ih->type       = type;
   ih->handleName = handleName == 0 ? "" : handleName;
@@ -1627,7 +1424,7 @@ static RedInternalTypeSurface * redInternalTypeSurfaceAllocate(RedInternalTypeCo
 }
 
 static void redInternalDestroySurface(RedHandleSurface surface, const char * optionalFile, int optionalLine) {
-  RedInternalTypeSurface * ih = (RedInternalTypeSurface *)surface;
+  RedXInternalTypeSurface * ih = (RedXInternalTypeSurface *)surface;
 
   if (ih == 0) {
     return;
@@ -1636,14 +1433,14 @@ static void redInternalDestroySurface(RedHandleSurface surface, const char * opt
   delete ih;
 }
 
-static RedInternalTypePresent * redInternalTypePresentAllocate(RedInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedInternalTypeQueue * queue, RedInternalTypeSurface * surface, unsigned imagesWidth, unsigned imagesHeight, unsigned imagesLayersCount, RedPresentVsyncMode vsyncMode, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
-  RedInternalTypePresent * ih = new(std::nothrow) RedInternalTypePresent();
+static RedXInternalTypePresent * redInternalTypePresentAllocate(RedXInternalTypeContext * context, unsigned gpuIndex, const char * handleName, RedXInternalTypeQueue * queue, RedXInternalTypeSurface * surface, unsigned imagesWidth, unsigned imagesHeight, unsigned imagesLayersCount, RedPresentVsyncMode vsyncMode, RedStatuses * outStatuses, RedProcedureId procedureId, int procedureCallIndex, const char * optionalFile, int optionalLine) {
+  RedXInternalTypePresent * ih = new(std::nothrow) RedXInternalTypePresent();
   if (ih == 0) {
     redInternalSetStatus(context, context->gpus[gpuIndex].gpu, outStatuses, procedureCallIndex, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return 0;
   }
   ih->handle     = 0;
-  ih->context    = context;
+  ih->context    = (RedContext)context;
   ih->gpuIndex   = gpuIndex;
   ih->queue      = queue;
   ih->surface    = surface;
@@ -1655,7 +1452,7 @@ static RedInternalTypePresent * redInternalTypePresentAllocate(RedInternalTypeCo
 }
 
 static void redInternalDestroyPresent(RedHandlePresent present, const char * optionalFile, int optionalLine) {
-  RedInternalTypePresent * ih = (RedInternalTypePresent *)present;
+  RedXInternalTypePresent * ih = (RedXInternalTypePresent *)present;
 
   if (ih == 0) {
     return;
@@ -1706,7 +1503,7 @@ __declspec(dllexport) void redCreateContext(RedTypeProcedureMalloc malloc, RedTy
     }
   }
 
-  RedInternalTypeContext * ctx = new(std::nothrow) RedInternalTypeContext();
+  RedXInternalTypeContext * ctx = new(std::nothrow) RedXInternalTypeContext();
   if (ctx == 0) {
     redInternalSetStatus(ctx, 0, outStatuses, 0, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     outContext[0] = 0;
@@ -1811,7 +1608,7 @@ __declspec(dllexport) void redCreateContext(RedTypeProcedureMalloc malloc, RedTy
     return;
   }
 
-  ctx->gpus = new(std::nothrow) RedInternalTypeGpuInfo[ctx->gpusCount]();
+  ctx->gpus = new(std::nothrow) RedXInternalTypeGpuInfo[ctx->gpusCount]();
   if (ctx->gpus == 0) {
     redInternalSetStatus(ctx, 0, outStatuses, 18, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, procedureId, optionalFile, optionalLine, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     redInternalDestroyContext((RedContext)ctx, 0, optionalFile, optionalLine);
@@ -1979,7 +1776,7 @@ __declspec(dllexport) void redCreateContext(RedTypeProcedureMalloc malloc, RedTy
     desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
     desc.Flags    = D3D12_COMMAND_QUEUE_FLAG_NONE;
     desc.NodeMask = 0;
-    RedInternalTypeQueue * queue = redInternalTypeQueueAllocate(ctx, i, "[REDGPU X Context Internal Handle] the first queue", queueFamilyIndex0Direct, &ctx->gpusStatuses[i], procedureId, 25, optionalFile, optionalLine);
+    RedXInternalTypeQueue * queue = redInternalTypeQueueAllocate(ctx, i, "[REDGPU X Context Internal Handle] the first queue", queueFamilyIndex0Direct, &ctx->gpusStatuses[i], procedureId, 25, optionalFile, optionalLine);
     if (queue == 0) {
       continue;
     }
@@ -2974,7 +2771,7 @@ __declspec(dllexport) void redDestroyContext(RedContext context, const char * op
 __declspec(dllexport) void redMemoryGetBudget(RedContext context, RedHandleGpu gpu, RedMemoryBudget * outMemoryBudget, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redMemoryGetBudget;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -3005,8 +2802,8 @@ __declspec(dllexport) void redMemoryGetBudget(RedContext context, RedHandleGpu g
 __declspec(dllexport) void redXMemoryCallbackBudgetChangeRegister(RedContext context, RedHandleGpu gpu, void * eventHandle, RedXHandleMemoryCallbackBudgetChange * outMemoryCallbackBudgetChange, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXMemoryCallbackBudgetChangeRegister;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  DWORD                    h   = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  DWORD                     h   = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -3026,7 +2823,7 @@ __declspec(dllexport) void redXMemoryCallbackBudgetChangeRegister(RedContext con
 __declspec(dllexport) void redXMemoryCallbackBudgetChangeUnregister(RedContext context, RedHandleGpu gpu, RedXHandleMemoryCallbackBudgetChange memoryCallbackBudgetChange, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXMemoryCallbackBudgetChangeUnregister;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -3043,7 +2840,7 @@ __declspec(dllexport) void redXMemoryCallbackBudgetChangeUnregister(RedContext c
 __declspec(dllexport) void redXMemoryReserve(RedContext context, RedHandleGpu gpu, RedBool32 sharedMemory, uint64_t bytesCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXMemoryReserve;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -3058,8 +2855,8 @@ __declspec(dllexport) void redXMemoryReserve(RedContext context, RedHandleGpu gp
 }
 
 static void redInternalMemoryAllocate(RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, RedBool32 mapMemory, RedHandleArray mapMemoryArray, RedHandleArray dedicateToArray, RedHandleImage dedicateToImage, RedXMemoryBitflags optionalMemoryBitflags, RedHandleMemory * outMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, const RedProcedureId procedureId) {
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeMemory *  ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeMemory *  ih  = 0;
 
   const unsigned memoryType0OnlyBuffers          = 0;
   const unsigned memoryType1OnlyTextures         = 1;
@@ -3111,7 +2908,7 @@ static void redInternalMemoryAllocate(RedContext context, RedHandleGpu gpu, cons
   }
 
   if (dedicateToArray != 0) {
-    RedInternalTypeArray * iharray = (RedInternalTypeArray *)dedicateToArray;
+    RedXInternalTypeArray * iharray = (RedXInternalTypeArray *)dedicateToArray;
 
     rdesc = iharray->resourceDescription;
     D3D12_RESOURCE_STATES initstates = redInternalREDGPUInitialD3D12ResourceStates(memoryTypeIndex);
@@ -3143,10 +2940,10 @@ static void redInternalMemoryAllocate(RedContext context, RedHandleGpu gpu, cons
       }
     }
 
-    ih->kind = RED_INTERNAL_TYPE_MEMORY_KIND_DEDICATED;
+    ih->kind = REDX_INTERNAL_TYPE_MEMORY_KIND_DEDICATED;
 
   } else if (dedicateToImage != 0) {
-    RedInternalTypeImage * ihimage = (RedInternalTypeImage *)dedicateToImage;
+    RedXInternalTypeImage * ihimage = (RedXInternalTypeImage *)dedicateToImage;
 
     rdesc = ihimage->resourceDescription;
     D3D12_RESOURCE_STATES initstates = redInternalREDGPUInitialD3D12ResourceStates(memoryTypeIndex);
@@ -3170,7 +2967,7 @@ static void redInternalMemoryAllocate(RedContext context, RedHandleGpu gpu, cons
       }
     }
 
-    ih->kind = RED_INTERNAL_TYPE_MEMORY_KIND_DEDICATED;
+    ih->kind = REDX_INTERNAL_TYPE_MEMORY_KIND_DEDICATED;
 
   } else {
     uint64_t alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
@@ -3200,7 +2997,7 @@ static void redInternalMemoryAllocate(RedContext context, RedHandleGpu gpu, cons
     }
 
     if (mapMemory == 1) {
-      RedInternalTypeArray * iharray = (RedInternalTypeArray *)mapMemoryArray;
+      RedXInternalTypeArray * iharray = (RedXInternalTypeArray *)mapMemoryArray;
       D3D12_RESOURCE_STATES initstates = redInternalREDGPUInitialD3D12ResourceStates(memoryTypeIndex);
       hr = x12DeviceCreatePlacedResource((ID3D12Device3 *)gpu, ih->handle, 0, &iharray->resourceDescription, initstates, 0, &ih->resource, optionalFile, optionalLine);
       if (hr < 0) {
@@ -3219,7 +3016,7 @@ static void redInternalMemoryAllocate(RedContext context, RedHandleGpu gpu, cons
       }
     }
 
-    ih->kind = RED_INTERNAL_TYPE_MEMORY_KIND_PLACED;
+    ih->kind = REDX_INTERNAL_TYPE_MEMORY_KIND_PLACED;
   }
 
   outMemory[0] = (RedHandleMemory)ih;
@@ -3249,7 +3046,7 @@ __declspec(dllexport) void redMemoryFree(RedContext context, RedHandleGpu gpu, R
 __declspec(dllexport) void redMemorySet(RedContext context, RedHandleGpu gpu, unsigned memoryArraysCount, const RedMemoryArray * memoryArrays, unsigned memoryImagesCount, const RedMemoryImage * memoryImages, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redMemorySet;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
 
   const unsigned memoryType0OnlyBuffers          = 0;
   const unsigned memoryType1OnlyTextures         = 1;
@@ -3260,15 +3057,15 @@ __declspec(dllexport) void redMemorySet(RedContext context, RedHandleGpu gpu, un
 
   for (unsigned i = 0; i < memoryArraysCount; i += 1) {
     const RedMemoryArray set = memoryArrays[i];
-    RedInternalTypeArray *  iharray  = (RedInternalTypeArray *)set.array;
-    RedInternalTypeMemory * ihmemory = (RedInternalTypeMemory *)set.memory;
+    RedXInternalTypeArray *  iharray  = (RedXInternalTypeArray *)set.array;
+    RedXInternalTypeMemory * ihmemory = (RedXInternalTypeMemory *)set.memory;
 
     HRESULT hr = S_OK;
 
-    if (ihmemory->kind == RED_INTERNAL_TYPE_MEMORY_KIND_DEDICATED) {
+    if (ihmemory->kind == REDX_INTERNAL_TYPE_MEMORY_KIND_DEDICATED) {
       iharray->handle        = ihmemory->resource;
       iharray->destroyHandle = 0;
-    } else if (ihmemory->kind == RED_INTERNAL_TYPE_MEMORY_KIND_PLACED) {
+    } else if (ihmemory->kind == REDX_INTERNAL_TYPE_MEMORY_KIND_PLACED) {
       if (ihmemory->memoryTypeIndex == memoryType4Upload || ihmemory->memoryTypeIndex == memoryType5Readback) {
         iharray->handle                 = ihmemory->resource;
         iharray->destroyHandle          = 0;
@@ -3292,7 +3089,7 @@ __declspec(dllexport) void redMemorySet(RedContext context, RedHandleGpu gpu, un
       continue;
     }
 
-    RedInternalCpuDescriptorCBVSRVUAV cpuDescriptor = {};
+    RedXInternalTypeCpuDescriptorCBVSRVUAV cpuDescriptor = {};
     if (hr >= 0) {
       if (iharray->type != RED_ARRAY_TYPE_INDEX_RO) {
         D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc = {};
@@ -3380,13 +3177,13 @@ __declspec(dllexport) void redMemorySet(RedContext context, RedHandleGpu gpu, un
 
   for (unsigned i = 0; i < memoryImagesCount; i += 1) {
     const RedMemoryImage set = memoryImages[i];
-    RedInternalTypeImage *  ihimage  = (RedInternalTypeImage *)set.image;
-    RedInternalTypeMemory * ihmemory = (RedInternalTypeMemory *)set.memory;
+    RedXInternalTypeImage *  ihimage  = (RedXInternalTypeImage *)set.image;
+    RedXInternalTypeMemory * ihmemory = (RedXInternalTypeMemory *)set.memory;
 
-    if (ihmemory->kind == RED_INTERNAL_TYPE_MEMORY_KIND_DEDICATED) {
+    if (ihmemory->kind == REDX_INTERNAL_TYPE_MEMORY_KIND_DEDICATED) {
       ihimage->handle        = ihmemory->resource;
       ihimage->destroyHandle = 0;
-    } else if (ihmemory->kind == RED_INTERNAL_TYPE_MEMORY_KIND_PLACED) {
+    } else if (ihmemory->kind == REDX_INTERNAL_TYPE_MEMORY_KIND_PLACED) {
       D3D12_RESOURCE_DESC desc = ihimage->resourceDescription;
       D3D12_RESOURCE_STATES initstates = redInternalREDGPUInitialD3D12ResourceStates(ihmemory->memoryTypeIndex);
       if (ihimage->initialAccess != 0) {
@@ -3409,8 +3206,8 @@ __declspec(dllexport) void redMemorySet(RedContext context, RedHandleGpu gpu, un
 __declspec(dllexport) void redMemoryMap(RedContext context, RedHandleGpu gpu, RedHandleMemory mappableMemory, uint64_t mappableMemoryBytesFirst, uint64_t mappableMemoryBytesCount, void ** outVolatilePointer, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redMemoryMap;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeMemory *  ih  = (RedInternalTypeMemory *)mappableMemory;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeMemory *  ih  = (RedXInternalTypeMemory *)mappableMemory;
 
   D3D12_RANGE range = {};
   range.Begin = mappableMemoryBytesFirst;
@@ -3427,8 +3224,8 @@ __declspec(dllexport) void redMemoryMap(RedContext context, RedHandleGpu gpu, Re
 __declspec(dllexport) void redMemoryUnmap(RedContext context, RedHandleGpu gpu, RedHandleMemory mappableMemory, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redMemoryUnmap;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeMemory *  ih  = (RedInternalTypeMemory *)mappableMemory;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeMemory *  ih  = (RedXInternalTypeMemory *)mappableMemory;
 
   D3D12_RANGE range = {};
   range.Begin = 0;
@@ -3452,8 +3249,8 @@ __declspec(dllexport) void redMemoryNonCoherentInvalidate(RedContext context, Re
 }
 
 static void redInternalStructsMemoryAllocate(RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 createDescriptorHeapDescCBVSRVUAV, RedBool32 createDescriptorHeapDescSampler, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeSamplerCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData, const RedProcedureId procedureId) {
-  RedInternalTypeContext *       ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeStructsMemory * ih  = 0;
+  RedXInternalTypeContext *       ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeStructsMemory * ih  = 0;
 
   D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDescCBVSRVUAV = {};
   D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDescSampler   = {};
@@ -3553,28 +3350,28 @@ __declspec(dllexport) void redStructsMemoryFree(RedContext context, RedHandleGpu
 
 __declspec(dllexport) uint64_t redXGetMemoryAddressArray(RedContext context, RedHandleGpu gpu, RedHandleArray array) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetMemoryAddressArray;
-  RedInternalTypeArray * ih = (RedInternalTypeArray *)array;
+  RedXInternalTypeArray * ih = (RedXInternalTypeArray *)array;
   uint64_t memoryAddress = (uint64_t)ih->cpuDescriptor.cpuDescriptorCBVSRVUAV.ptr;
   return memoryAddress;
 }
 
 __declspec(dllexport) uint64_t redXGetMemoryAddressSampler(RedContext context, RedHandleGpu gpu, RedHandleSampler sampler) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetMemoryAddressSampler;
-  RedInternalTypeSampler * ih = (RedInternalTypeSampler *)sampler;
+  RedXInternalTypeSampler * ih = (RedXInternalTypeSampler *)sampler;
   uint64_t memoryAddress = (uint64_t)ih->cpuDescriptor.cpuDescriptorSampler.ptr;
   return memoryAddress;
 }
 
 __declspec(dllexport) uint64_t redXGetMemoryAddressTextureRO(RedContext context, RedHandleGpu gpu, RedHandleTexture texture) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetMemoryAddressTextureRO;
-  RedInternalTypeTexture * ih = (RedInternalTypeTexture *)texture;
+  RedXInternalTypeTexture * ih = (RedXInternalTypeTexture *)texture;
   uint64_t memoryAddress = (uint64_t)ih->cpuDescriptorSRV.cpuDescriptorCBVSRVUAV.ptr;
   return memoryAddress;
 }
 
 __declspec(dllexport) uint64_t redXGetMemoryAddressTextureRW(RedContext context, RedHandleGpu gpu, RedHandleTexture texture) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetMemoryAddressTextureRW;
-  RedInternalTypeTexture * ih = (RedInternalTypeTexture *)texture;
+  RedXInternalTypeTexture * ih = (RedXInternalTypeTexture *)texture;
   uint64_t memoryAddress = (uint64_t)ih->cpuDescriptorUAV.cpuDescriptorCBVSRVUAV.ptr;
   return memoryAddress;
 }
@@ -3582,9 +3379,9 @@ __declspec(dllexport) uint64_t redXGetMemoryAddressTextureRW(RedContext context,
 __declspec(dllexport) uint64_t redXGetMemoryAddressStructMember(RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory, unsigned structMemberIndex) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetMemoryAddressStructMember;
 
-  RedInternalTypeContext *       ctx           = (RedInternalTypeContext *)context;
-  RedInternalTypeStructsMemory * ih            = (RedInternalTypeStructsMemory *)structsMemory;
-  D3D12_CPU_DESCRIPTOR_HANDLE    cpuDescriptor = {};
+  RedXInternalTypeContext *       ctx           = (RedXInternalTypeContext *)context;
+  RedXInternalTypeStructsMemory * ih            = (RedXInternalTypeStructsMemory *)structsMemory;
+  D3D12_CPU_DESCRIPTOR_HANDLE     cpuDescriptor = {};
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -3606,7 +3403,7 @@ __declspec(dllexport) uint64_t redXGetMemoryAddressStructMember(RedContext conte
 __declspec(dllexport) void redXStructsMemorySet(RedContext context, RedHandleGpu gpu, RedBool32 copyingSamplers, unsigned sourceCopiesCount, const RedXMemoryAddress * sourceCopiesAddressFirst, const unsigned * sourceCopiesAddressCount, unsigned targetCopiesCount, const RedXMemoryAddress * targetCopiesAddressFirst, const unsigned * targetCopiesAddressCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXStructsMemorySet;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
   x12DeviceCopyDescriptors((ID3D12Device3 *)gpu, targetCopiesCount, (const D3D12_CPU_DESCRIPTOR_HANDLE *)targetCopiesAddressFirst, targetCopiesAddressCount, sourceCopiesCount, (const D3D12_CPU_DESCRIPTOR_HANDLE *)sourceCopiesAddressFirst, sourceCopiesAddressCount, copyingSamplers == 1 ? D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER : D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, optionalFile, optionalLine);
   PIXEndEvent();
 }
@@ -3614,9 +3411,9 @@ __declspec(dllexport) void redXStructsMemorySet(RedContext context, RedHandleGpu
 __declspec(dllexport) RedHandleStruct redXGetHandleStruct(RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory, unsigned structMemberIndex) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetHandleStruct;
 
-  RedInternalTypeContext *       ctx           = (RedInternalTypeContext *)context;
-  RedInternalTypeStructsMemory * ih            = (RedInternalTypeStructsMemory *)structsMemory;
-  D3D12_GPU_DESCRIPTOR_HANDLE    gpuDescriptor = {};
+  RedXInternalTypeContext *       ctx           = (RedXInternalTypeContext *)context;
+  RedXInternalTypeStructsMemory * ih            = (RedXInternalTypeStructsMemory *)structsMemory;
+  D3D12_GPU_DESCRIPTOR_HANDLE     gpuDescriptor = {};
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -3638,8 +3435,8 @@ __declspec(dllexport) RedHandleStruct redXGetHandleStruct(RedContext context, Re
 __declspec(dllexport) void redXCreateQueue(RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 canCopy, RedBool32 canDraw, RedBool32 canCompute, unsigned priority, RedBool32 disableGpuTimeout, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXCreateQueue;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeQueue *   ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeQueue *   ih  = 0;
 
   const unsigned queueFamilyIndex0Direct  = 0;
   const unsigned queueFamilyIndex1Compute = 1;
@@ -3730,8 +3527,8 @@ __declspec(dllexport) void redXCreateQueue(RedContext context, RedHandleGpu gpu,
 }
 
 static void redInternalCreateArray(RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedArray * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, const RedProcedureId procedureId) {
-  RedInternalTypeContext * ctx  = (RedInternalTypeContext *)context;
-  RedInternalTypeArray *   ih   = 0;
+  RedXInternalTypeContext * ctx  = (RedXInternalTypeContext *)context;
+  RedXInternalTypeArray *   ih   = 0;
   uint64_t memoryBytesAlignment = 0;
   uint64_t memoryBytesCount     = 0;
   unsigned memoryTypesSupported = 0;
@@ -3810,8 +3607,8 @@ __declspec(dllexport) void redCreateArray(RedContext context, RedHandleGpu gpu, 
 }
 
 static void redInternalCreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedImage * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData, const RedProcedureId procedureId) {
-  RedInternalTypeContext * ctx  = (RedInternalTypeContext *)context;
-  RedInternalTypeImage *   ih   = 0;
+  RedXInternalTypeContext * ctx  = (RedXInternalTypeContext *)context;
+  RedXInternalTypeImage *   ih   = 0;
   uint64_t memoryBytesAlignment = 0;
   uint64_t memoryBytesCount     = 0;
   unsigned memoryTypesSupported = 0;
@@ -3950,8 +3747,8 @@ __declspec(dllexport) void redCreateSampler(RedContext context, RedHandleGpu gpu
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateSampler;
   PIXBeginEvent(0, __FUNCTION__);
 
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSampler * ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSampler * ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -4064,12 +3861,12 @@ __declspec(dllexport) void redCreateSampler(RedContext context, RedHandleGpu gpu
 }
 
 static void redInternalCreateTexture(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, const RedProcedureId procedureId, unsigned statusIndexOffset) {
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeTexture * ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeTexture * ih  = 0;
 
   HRESULT hr = S_OK;
 
-  const RedInternalTypeImage * ihimage = (const RedInternalTypeImage *)image;
+  const RedXInternalTypeImage * ihimage = (const RedXInternalTypeImage *)image;
 
   RedBool32 createSRV = 0;
   RedBool32 createUAV = 0;
@@ -4463,9 +4260,9 @@ __declspec(dllexport) void redXCreateTexture(RedContext context, RedHandleGpu gp
 __declspec(dllexport) void redCreateGpuCode(RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t irBytesCount, const void * ir, RedHandleGpuCode * outGpuCode, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateGpuCode;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx             = (RedInternalTypeContext *)context;
-  unsigned char *          pointer         = 0;
-  uint64_t *               pointerAsUInt64 = 0;
+  RedXInternalTypeContext * ctx             = (RedXInternalTypeContext *)context;
+  unsigned char *           pointer         = 0;
+  uint64_t *                pointerAsUInt64 = 0;
 
   pointer = new(std::nothrow) unsigned char[sizeof(uint64_t) + irBytesCount];
   if (pointer == 0) {
@@ -4492,8 +4289,8 @@ __declspec(dllexport) void redCreateGpuCode(RedContext context, RedHandleGpu gpu
 __declspec(dllexport) void redCreateOutputDeclaration(RedContext context, RedHandleGpu gpu, const char * handleName, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, RedHandleOutputDeclaration * outOutputDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateOutputDeclaration;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx     = (RedInternalTypeContext *)context;
-  unsigned *               pointer = 0;
+  RedXInternalTypeContext * ctx     = (RedXInternalTypeContext *)context;
+  unsigned *                pointer = 0;
 
   pointer = new(std::nothrow) unsigned[9]();
   if (pointer == 0) {
@@ -4523,8 +4320,8 @@ __declspec(dllexport) void redCreateOutputDeclaration(RedContext context, RedHan
 __declspec(dllexport) void redCreateStructDeclaration(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, RedBool32 procedureParametersHandlesDeclaration, RedHandleStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateStructDeclaration;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext *           ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeStructDeclaration * ih  = 0;
+  RedXInternalTypeContext *           ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeStructDeclaration * ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -4550,8 +4347,8 @@ __declspec(dllexport) void redCreateProcedureParameters(RedContext context, RedH
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateProcedureParameters;
   PIXBeginEvent(0, __FUNCTION__);
 
-  RedInternalTypeContext *             ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeProcedureParameters * ih  = 0;
+  RedXInternalTypeContext *             ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeProcedureParameters * ih  = 0;
 
   RedProcedureParametersDeclaration declaration = {};
   if (procedureParametersDeclaration != 0) {
@@ -4602,7 +4399,7 @@ __declspec(dllexport) void redCreateProcedureParameters(RedContext context, RedH
     }
 
     for (unsigned i = 0; i < declaration.structsDeclarationsCount; i += 1) {
-      const RedInternalTypeStructDeclaration * ihstructDeclaration = (const RedInternalTypeStructDeclaration *)declaration.structsDeclarations[i];
+      const RedXInternalTypeStructDeclaration * ihstructDeclaration = (const RedXInternalTypeStructDeclaration *)declaration.structsDeclarations[i];
       const size_t membersCount = ihstructDeclaration->structDeclarationMembers.size();
       for (size_t j = 0; j < membersCount; j += 1) {
         const RedStructDeclarationMember * member = &ihstructDeclaration->structDeclarationMembers[j];
@@ -4625,7 +4422,7 @@ __declspec(dllexport) void redCreateProcedureParameters(RedContext context, RedH
       }
     }
 
-    RedInternalTypeStructDeclaration * ihhandlesDeclaration = (RedInternalTypeStructDeclaration *)declaration.handlesDeclaration;
+    RedXInternalTypeStructDeclaration * ihhandlesDeclaration = (RedXInternalTypeStructDeclaration *)declaration.handlesDeclaration;
     size_t handlesCount = 0;
     if (ihhandlesDeclaration != 0) {
       handlesCount = ihhandlesDeclaration->structDeclarationMembers.size();
@@ -4644,15 +4441,15 @@ __declspec(dllexport) void redCreateProcedureParameters(RedContext context, RedH
       }
     }
 
-    std::vector<D3D12_ROOT_PARAMETER>      handles;
-    std::vector<D3D12_DESCRIPTOR_RANGE>    structs0Members;
-    std::vector<D3D12_DESCRIPTOR_RANGE>    structs1Members;
-    std::vector<D3D12_DESCRIPTOR_RANGE>    structs2Members;
-    std::vector<D3D12_DESCRIPTOR_RANGE>    structs3Members;
-    std::vector<D3D12_DESCRIPTOR_RANGE>    structs4Members;
-    std::vector<D3D12_DESCRIPTOR_RANGE>    structs5Members;
-    std::vector<D3D12_DESCRIPTOR_RANGE>    structs6Members;
-    std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers;
+    REDGPU_VECTOR<D3D12_ROOT_PARAMETER>      handles;
+    REDGPU_VECTOR<D3D12_DESCRIPTOR_RANGE>    structs0Members;
+    REDGPU_VECTOR<D3D12_DESCRIPTOR_RANGE>    structs1Members;
+    REDGPU_VECTOR<D3D12_DESCRIPTOR_RANGE>    structs2Members;
+    REDGPU_VECTOR<D3D12_DESCRIPTOR_RANGE>    structs3Members;
+    REDGPU_VECTOR<D3D12_DESCRIPTOR_RANGE>    structs4Members;
+    REDGPU_VECTOR<D3D12_DESCRIPTOR_RANGE>    structs5Members;
+    REDGPU_VECTOR<D3D12_DESCRIPTOR_RANGE>    structs6Members;
+    REDGPU_VECTOR<D3D12_STATIC_SAMPLER_DESC> staticSamplers;
 
     try {
       handles.resize(handlesCount);
@@ -4692,14 +4489,14 @@ __declspec(dllexport) void redCreateProcedureParameters(RedContext context, RedH
 
     size_t staticSamplerIndex = 0;
     for (unsigned i = 0; i < declaration.structsDeclarationsCount; i += 1) {
-      const RedInternalTypeStructDeclaration * ihstructDeclaration = (const RedInternalTypeStructDeclaration *)declaration.structsDeclarations[i];
+      const RedXInternalTypeStructDeclaration * ihstructDeclaration = (const RedXInternalTypeStructDeclaration *)declaration.structsDeclarations[i];
       const size_t membersCount = ihstructDeclaration->structDeclarationMembers.size();
       size_t structMemberIndex = 0;
       for (size_t j = 0; j < membersCount; j += 1) {
         const RedStructDeclarationMember * member = &ihstructDeclaration->structDeclarationMembers[j];
         if (member->type == RED_STRUCT_MEMBER_TYPE_SAMPLER && member->inlineSampler != 0) {
           for (unsigned k = 0, kcount = member->count; k < kcount; k += 1) {
-            const RedInternalTypeSampler * ihsampler = (const RedInternalTypeSampler *)member->inlineSampler[k];
+            const RedXInternalTypeSampler * ihsampler = (const RedXInternalTypeSampler *)member->inlineSampler[k];
             staticSamplers[staticSamplerIndex].Filter           = ihsampler->samplerDescription.Filter;
             staticSamplers[staticSamplerIndex].AddressU         = ihsampler->samplerDescription.AddressU;
             staticSamplers[staticSamplerIndex].AddressV         = ihsampler->samplerDescription.AddressV;
@@ -4918,7 +4715,7 @@ __declspec(dllexport) void redCreateProcedureParameters(RedContext context, RedH
 __declspec(dllexport) void redCreateProcedureCache(RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t fromBlobBytesCount, const void * fromBlob, RedHandleProcedureCache * outProcedureCache, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateProcedureCache;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
 
   // TODO(Constantine): Implement procedure caching.
   outProcedureCache[0] = 0;
@@ -4929,8 +4726,8 @@ __declspec(dllexport) void redCreateProcedureCache(RedContext context, RedHandle
 __declspec(dllexport) void redCreateProcedure(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, RedHandleOutputDeclaration outputDeclaration, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateProcedure;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext *   ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeProcedure * ih  = 0;
+  RedXInternalTypeContext *   ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeProcedure * ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -4964,8 +4761,8 @@ __declspec(dllexport) void redCreateProcedure(RedContext context, RedHandleGpu g
   }
 
   {
-    RedInternalTypeProcedureParameters * ihparameters             = (RedInternalTypeProcedureParameters *)procedureParameters;
-    unsigned *                           outputDeclarationFormats = (unsigned *)outputDeclaration;
+    RedXInternalTypeProcedureParameters * ihparameters             = (RedXInternalTypeProcedureParameters *)procedureParameters;
+    unsigned *                            outputDeclarationFormats = (unsigned *)outputDeclaration;
 
     void *     vsPointer         = 0;
     uint64_t * vsPointerAsUInt64 = (uint64_t *)gpuCodeVertex;
@@ -5053,7 +4850,7 @@ __declspec(dllexport) void redCreateProcedure(RedContext context, RedHandleGpu g
     desc.SampleDesc.Quality                               = 0;
     desc.NodeMask                                         = 0;
     desc.CachedPSO.pCachedBlob                            = 0; // TODO(Constantine): Implement procedure caching.
-    desc.CachedPSO.CachedBlobSizeInBytes                  = 0;    // TODO(Constantine): Implement procedure caching.
+    desc.CachedPSO.CachedBlobSizeInBytes                  = 0; // TODO(Constantine): Implement procedure caching.
     desc.Flags                                            = D3D12_PIPELINE_STATE_FLAG_NONE;
     HRESULT hr = x12DeviceCreateGraphicsPipelineState((ID3D12Device3 *)gpu, &desc, &ih->handle, optionalFile, optionalLine);
     if (hr < 0) {
@@ -5080,8 +4877,8 @@ __declspec(dllexport) void redCreateProcedure(RedContext context, RedHandleGpu g
 __declspec(dllexport) void redCreateProcedureCompute(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, RedHandleProcedureParameters procedureParameters, const char * gpuCodeMainProcedureName, RedHandleGpuCode gpuCode, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateProcedureCompute;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext *   ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeProcedure * ih  = 0;
+  RedXInternalTypeContext *   ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeProcedure * ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -5099,7 +4896,7 @@ __declspec(dllexport) void redCreateProcedureCompute(RedContext context, RedHand
   }
 
   {
-    RedInternalTypeProcedureParameters * ihparameters = (RedInternalTypeProcedureParameters *)procedureParameters;
+    RedXInternalTypeProcedureParameters * ihparameters = (RedXInternalTypeProcedureParameters *)procedureParameters;
 
     void *     csPointer         = 0;
     uint64_t * csPointerAsUInt64 = (uint64_t *)gpuCode;
@@ -5113,7 +4910,7 @@ __declspec(dllexport) void redCreateProcedureCompute(RedContext context, RedHand
     desc.CS.BytecodeLength               = csBytesCount;
     desc.NodeMask                        = 0;
     desc.CachedPSO.pCachedBlob           = 0; // TODO(Constantine): Implement procedure caching.
-    desc.CachedPSO.CachedBlobSizeInBytes = 0;    // TODO(Constantine): Implement procedure caching.
+    desc.CachedPSO.CachedBlobSizeInBytes = 0; // TODO(Constantine): Implement procedure caching.
     desc.Flags                           = D3D12_PIPELINE_STATE_FLAG_NONE;
     HRESULT hr = x12DeviceCreateComputePipelineState((ID3D12Device3 *)gpu, &desc, &ih->handle, optionalFile, optionalLine);
     if (hr < 0) {
@@ -5180,8 +4977,8 @@ __declspec(dllexport) void redCreateOutput(RedContext context, RedHandleGpu gpu,
 __declspec(dllexport) void redCreateCpuSignal(RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 createSignaled, RedHandleCpuSignal * outCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateCpuSignal;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSignal *  ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSignal *  ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -5216,8 +5013,8 @@ __declspec(dllexport) void redCreateCpuSignal(RedContext context, RedHandleGpu g
 __declspec(dllexport) void redCreateGpuSignal(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateGpuSignal;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSignal *  ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSignal *  ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -5252,8 +5049,8 @@ __declspec(dllexport) void redCreateGpuSignal(RedContext context, RedHandleGpu g
 __declspec(dllexport) void redCreateGpuToCpuSignal(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleGpuToCpuSignal * outGpuToCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateGpuToCpuSignal;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSignal *  ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSignal *  ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -5288,8 +5085,8 @@ __declspec(dllexport) void redCreateGpuToCpuSignal(RedContext context, RedHandle
 __declspec(dllexport) void redCreateCalls(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateCalls;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeCalls *   ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeCalls *   ih  = 0;
 
   const unsigned queueFamilyIndex0Direct  = 0;
   const unsigned queueFamilyIndex1Compute = 1;
@@ -5378,8 +5175,8 @@ __declspec(dllexport) void redCreateCalls(RedContext context, RedHandleGpu gpu, 
 __declspec(dllexport) void redCreateCallsReusable(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateCallsReusable;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeCalls *   ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeCalls *   ih  = 0;
 
   const unsigned queueFamilyIndex0Direct  = 0;
   const unsigned queueFamilyIndex1Compute = 1;
@@ -5573,7 +5370,7 @@ __declspec(dllexport) void redDestroyCalls(RedContext context, RedHandleGpu gpu,
 __declspec(dllexport) void redProcedureCacheGetBlob(RedContext context, RedHandleGpu gpu, RedHandleProcedureCache procedureCache, uint64_t * outBlobBytesCount, void * outBlob, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redProcedureCacheGetBlob;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
 
   // TODO(Constantine): Implement procedure caching.
   if (outBlobBytesCount != 0) {
@@ -5586,7 +5383,7 @@ __declspec(dllexport) void redProcedureCacheGetBlob(RedContext context, RedHandl
 __declspec(dllexport) void redProcedureCacheMergeCaches(RedContext context, RedHandleGpu gpu, unsigned sourceProcedureCachesCount, const RedHandleProcedureCache * sourceProcedureCaches, RedHandleProcedureCache targetProcedureCache, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redProcedureCacheMergeCaches;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
   // TODO(Constantine): Implement procedure caching.
   PIXEndEvent();
 }
@@ -5594,8 +5391,8 @@ __declspec(dllexport) void redProcedureCacheMergeCaches(RedContext context, RedH
 __declspec(dllexport) void redCpuSignalGetStatus(RedContext context, RedHandleGpu gpu, RedHandleCpuSignal cpuSignal, RedStatus * outStatus, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCpuSignalGetStatus;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSignal *  ih  = (RedInternalTypeSignal *)cpuSignal;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSignal *  ih  = (RedXInternalTypeSignal *)cpuSignal;
   uint64_t value = x12FenceGetCompletedValue(ih->handle, optionalFile, optionalLine);
   outStatus[0] = value < ih->value ? RED_STATUS_NOT_READY : RED_STATUS_SUCCESS;
   PIXEndEvent();
@@ -5604,8 +5401,8 @@ __declspec(dllexport) void redCpuSignalGetStatus(RedContext context, RedHandleGp
 __declspec(dllexport) void redCpuSignalWait(RedContext context, RedHandleGpu gpu, unsigned cpuSignalsCount, const RedHandleCpuSignal * cpuSignals, RedBool32 waitAll, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCpuSignalWait;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSignal ** ihs = (RedInternalTypeSignal **)cpuSignals;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSignal ** ihs = (RedXInternalTypeSignal **)cpuSignals;
 
   if (cpuSignalsCount == 0) {
     PIXEndEvent();
@@ -5621,8 +5418,8 @@ __declspec(dllexport) void redCpuSignalWait(RedContext context, RedHandleGpu gpu
     }
     x12DeviceSetEventOnMultipleFenceCompletion((ID3D12Device3 *)gpu, signals, waitfor, cpuSignalsCount, waitAll == 0 ? D3D12_MULTIPLE_FENCE_WAIT_FLAG_ANY : D3D12_MULTIPLE_FENCE_WAIT_FLAG_ALL, 0, optionalFile, optionalLine);
   } else {
-    std::vector<ID3D12Fence *> signals;
-    std::vector<uint64_t>      waitfor;
+    REDGPU_VECTOR<ID3D12Fence *> signals;
+    REDGPU_VECTOR<uint64_t>      waitfor;
     try {
       waitfor.resize(cpuSignalsCount);
     } catch (...) {
@@ -5649,8 +5446,8 @@ __declspec(dllexport) void redCpuSignalUnsignal(RedContext context, RedHandleGpu
 __declspec(dllexport) void redGpuToCpuSignalGetStatus(RedContext context, RedHandleGpu gpu, RedHandleGpuToCpuSignal gpuToCpuSignal, RedStatus * outStatus, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redGpuToCpuSignalGetStatus;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSignal *  ih  = (RedInternalTypeSignal *)gpuToCpuSignal;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSignal *  ih  = (RedXInternalTypeSignal *)gpuToCpuSignal;
   uint64_t value = x12FenceGetCompletedValue(ih->handle, optionalFile, optionalLine);
   outStatus[0] = value < ih->value ? RED_STATUS_NOT_READY : RED_STATUS_SUCCESS;
   PIXEndEvent();
@@ -5664,22 +5461,22 @@ __declspec(dllexport) void redGpuToCpuSignalUnsignal(RedContext context, RedHand
 
 __declspec(dllexport) RedXHandlePageable redXGetHandlePageableMemory(RedContext context, RedHandleGpu gpu, RedHandleMemory memory) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetHandlePageableMemory;
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeMemory *  ih  = (RedInternalTypeMemory *)memory;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeMemory *  ih  = (RedXInternalTypeMemory *)memory;
   return (RedXHandlePageable)ih->handle;
 }
 
 __declspec(dllexport) RedXHandlePageable redXGetHandlePageableStructsMemory(RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetHandlePageableStructsMemory;
-  RedInternalTypeContext *       ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeStructsMemory * ih  = (RedInternalTypeStructsMemory *)structsMemory;
+  RedXInternalTypeContext *       ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeStructsMemory * ih  = (RedXInternalTypeStructsMemory *)structsMemory;
   return (RedXHandlePageable)ih->handle;
 }
 
 __declspec(dllexport) void redXPageableSetResidencyPriority(RedContext context, RedHandleGpu gpu, unsigned pageablesCount, const RedXHandlePageable * pageables, const RedXPageableResidencyPriorityBitflags * pageablesResidencyPriority, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXPageableSetResidencyPriority;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
   x12DeviceSetResidencyPriority((ID3D12Device3 *)gpu, pageablesCount, (ID3D12Pageable * const *)pageables, (const UINT *)pageablesResidencyPriority, optionalFile, optionalLine);
   PIXEndEvent();
 }
@@ -5687,8 +5484,8 @@ __declspec(dllexport) void redXPageableSetResidencyPriority(RedContext context, 
 __declspec(dllexport) void redXPageableMakeResident(RedContext context, RedHandleGpu gpu, unsigned pageablesCount, const RedXHandlePageable * pageables, RedBool32 denyOverbudget, RedHandleCpuSignal signalCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXPageableMakeResident;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSignal *  ih  = (RedInternalTypeSignal *)signalCpuSignal;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSignal *  ih  = (RedXInternalTypeSignal *)signalCpuSignal;
   if (signalCpuSignal == 0) {
     x12DeviceMakeResident((ID3D12Device3 *)gpu, pageablesCount, (ID3D12Pageable * const *)pageables, optionalFile, optionalLine);
   } else {
@@ -5701,30 +5498,30 @@ __declspec(dllexport) void redXPageableMakeResident(RedContext context, RedHandl
 __declspec(dllexport) void redXPageableEvict(RedContext context, RedHandleGpu gpu, unsigned pageablesCount, const RedXHandlePageable * pageables, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXPageableEvict;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
   x12DeviceEvict((ID3D12Device3 *)gpu, pageablesCount, (ID3D12Pageable * const *)pageables, optionalFile, optionalLine);
   PIXEndEvent();
 }
 
 __declspec(dllexport) RedXHandleResource redXGetHandleResourceArray(RedContext context, RedHandleGpu gpu, RedHandleArray array) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetHandleResourceArray;
-  RedInternalTypeArray * ih = (RedInternalTypeArray *)array;
-  RedXHandleResource     h  = (RedXHandleResource)ih->handle;
+  RedXInternalTypeArray * ih = (RedXInternalTypeArray *)array;
+  RedXHandleResource      h  = (RedXHandleResource)ih->handle;
   return h;
 }
 
 __declspec(dllexport) RedXHandleResource redXGetHandleResourceImage(RedContext context, RedHandleGpu gpu, RedHandleImage image) {
   const RedXProcedureId procedureId = REDX_PROCEDURE_ID_redXGetHandleResourceImage;
-  RedInternalTypeImage * ih = (RedInternalTypeImage *)image;
-  RedXHandleResource     h  = (RedXHandleResource)ih->handle;
+  RedXInternalTypeImage * ih = (RedXInternalTypeImage *)image;
+  RedXHandleResource      h  = (RedXHandleResource)ih->handle;
   return h;
 }
 
 __declspec(dllexport) void redCallsSet(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCallsSet;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeCalls *   ih  = (RedInternalTypeCalls *)callsMemory;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeCalls *   ih  = (RedXInternalTypeCalls *)callsMemory;
   const RedStatuses _0 = {};
   ih->statuses = _0;
   if (ih->gpuToCpuSignalsToSignalCount > 0) {
@@ -5743,17 +5540,17 @@ __declspec(dllexport) void redCallsSet(RedContext context, RedHandleGpu gpu, Red
 __declspec(dllexport) void redCallsEnd(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCallsEnd;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeCalls *   ih  = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeCalls *   ih  = (RedXInternalTypeCalls *)calls;
   redInternalSetStatus(ctx, gpu, outStatuses, ih->statuses.statusErrorCode, ih->statuses.statusError, ih->statuses.statusErrorProcedureId, optionalFile, optionalLine, ih->statuses.statusErrorHresult, ih->statuses.statusErrorDescription);
   x12CommandListClose(ih->handle, optionalFile, optionalLine);
   PIXEndEvent();
 }
 
 __declspec(dllexport) void redCallSetStructsMemory(RedTypeProcedureAddressCallSetStructsMemory address, RedHandleCalls calls, RedHandleStructsMemory structsMemory, RedHandleStructsMemory structsMemorySamplers) {
-  RedInternalTypeCalls *         ih                      = (RedInternalTypeCalls *)calls;
-  RedInternalTypeStructsMemory * ihstructsMemory         = (RedInternalTypeStructsMemory *)structsMemory;
-  RedInternalTypeStructsMemory * ihstructsMemorySamplers = (RedInternalTypeStructsMemory *)structsMemorySamplers;
+  RedXInternalTypeCalls *         ih                      = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeStructsMemory * ihstructsMemory         = (RedXInternalTypeStructsMemory *)structsMemory;
+  RedXInternalTypeStructsMemory * ihstructsMemorySamplers = (RedXInternalTypeStructsMemory *)structsMemorySamplers;
 
   unsigned               heapsCount = 0;
   ID3D12DescriptorHeap * heaps[2];
@@ -5776,8 +5573,8 @@ __declspec(dllexport) void redCallSetStructsMemory(RedTypeProcedureAddressCallSe
 }
 
 __declspec(dllexport) void redCallSetProcedureParameters(RedTypeProcedureAddressCallSetProcedureParameters address, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters) {
-  RedInternalTypeCalls *               ih                    = (RedInternalTypeCalls *)calls;
-  RedInternalTypeProcedureParameters * ihprocedureParameters = (RedInternalTypeProcedureParameters *)procedureParameters;
+  RedXInternalTypeCalls *               ih                    = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeProcedureParameters * ihprocedureParameters = (RedXInternalTypeProcedureParameters *)procedureParameters;
   if (procedureType == RED_PROCEDURE_TYPE_DRAW) {
     x12CommandListSetGraphicsRootSignature(ih->handle, ihprocedureParameters->handle);
   } else {
@@ -5786,22 +5583,22 @@ __declspec(dllexport) void redCallSetProcedureParameters(RedTypeProcedureAddress
 }
 
 __declspec(dllexport) void redXCallSetProcedureOutput(RedHandleCalls calls, RedHandleTexture depthStencil, unsigned colorsCount, RedHandleTexture * colors, RedSetProcedureOutputOp depthSetProcedureOutputOp, RedSetProcedureOutputOp stencilSetProcedureOutputOp, RedSetProcedureOutputOp * colorsSetProcedureOutputOp, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   ih->currentProcedureTypeContext = RED_PROCEDURE_TYPE_DRAW;
 
-  ih->currentDepthStencil = (RedInternalTypeTexture *)depthStencil;
+  ih->currentDepthStencil = (RedXInternalTypeTexture *)depthStencil;
   ih->currentColorsCount  = colorsCount;
   for (unsigned i = 0; i < colorsCount; i += 1) {
-    ih->currentColors[i]  = (RedInternalTypeTexture *)colors[i];
+    ih->currentColors[i]  = (RedXInternalTypeTexture *)colors[i];
   }
 
   D3D12_CPU_DESCRIPTOR_HANDLE colorsRTVs[8];
   for (unsigned i = 0; i < colorsCount; i += 1) {
-    RedInternalTypeTexture * ihcolor = (RedInternalTypeTexture *)colors[i];
+    RedXInternalTypeTexture * ihcolor = (RedXInternalTypeTexture *)colors[i];
     colorsRTVs[i] = ihcolor->cpuDescriptorRTV.cpuDescriptorRTV;
   }
 
-  RedInternalTypeTexture * ihdepthStencil = (RedInternalTypeTexture *)depthStencil;
+  RedXInternalTypeTexture * ihdepthStencil = (RedXInternalTypeTexture *)depthStencil;
   x12CommandListOMSetRenderTargets(ih->handle, colorsCount, colorsCount == 0 ? 0 : colorsRTVs, 0, ihdepthStencil == 0 ? 0 : &ihdepthStencil->cpuDescriptorDSV.cpuDescriptorDSV);
 
   if (ihdepthStencil != 0) {
@@ -5822,7 +5619,7 @@ __declspec(dllexport) void redXCallSetProcedureOutput(RedHandleCalls calls, RedH
 
   float colorRGBA[4];
   for (unsigned i = 0; i < colorsCount; i += 1) {
-    RedInternalTypeTexture * ihcolor = (RedInternalTypeTexture *)colors[i];
+    RedXInternalTypeTexture * ihcolor = (RedXInternalTypeTexture *)colors[i];
     if (colorsSetProcedureOutputOp[i] == RED_SET_PROCEDURE_OUTPUT_OP_CLEAR) {
       if (colorsClearValuesFloat != 0) {
         colorRGBA[0] = colorsClearValuesFloat->r[i];
@@ -5843,13 +5640,13 @@ __declspec(dllexport) void redXCallSetProcedureOutput(RedHandleCalls calls, RedH
 }
 
 __declspec(dllexport) void redXCallEndProcedureOutput(RedHandleCalls calls, RedHandleTexture * resolveTargetColors, unsigned * resolveTargetColorsFormat, RedEndProcedureOutputOp depthEndProcedureOutputOp, RedEndProcedureOutputOp stencilEndProcedureOutputOp, RedEndProcedureOutputOp * colorsEndProcedureOutputOp) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   ih->currentProcedureTypeContext = RED_PROCEDURE_TYPE_COMPUTE;
 
   if (resolveTargetColors != 0) {
     for (unsigned i = 0; i < ih->currentColorsCount; i += 1) {
-      RedInternalTypeTexture * sourceColor = ih->currentColors[i];
-      RedInternalTypeTexture * targetColor = (RedInternalTypeTexture *)resolveTargetColors[i];
+      RedXInternalTypeTexture * sourceColor = ih->currentColors[i];
+      RedXInternalTypeTexture * targetColor = (RedXInternalTypeTexture *)resolveTargetColors[i];
       unsigned sourceSubresource = (sourceColor->layersFirst * sourceColor->levelsCount) + sourceColor->levelsFirst;
       unsigned targetSubresource = (targetColor->layersFirst * targetColor->levelsCount) + targetColor->levelsFirst;
       x12CommandListResolveSubresource(ih->handle, targetColor->image->handle, targetSubresource, sourceColor->image->handle, sourceSubresource, redInternalREDGPUFormatToD3D12Format(resolveTargetColorsFormat[i]));
@@ -5877,12 +5674,12 @@ __declspec(dllexport) void redXCallEndProcedureOutput(RedHandleCalls calls, RedH
 }
 
 __declspec(dllexport) void redXCallUsageAliasOrderBarrier(RedHandleCalls calls, unsigned barriersCount, const void * barriers) {
-  RedInternalTypeCalls * ih  = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih  = (RedXInternalTypeCalls *)calls;
   x12CommandListResourceBarrier(ih->handle, barriersCount, (const D3D12_RESOURCE_BARRIER *)barriers);
 }
 
 __declspec(dllexport) void redXCallCopyImageRegion(RedHandleCalls calls, unsigned copiesCount, const void * copies) {
-  RedInternalTypeCalls * ih  = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih  = (RedXInternalTypeCalls *)calls;
   struct CopyTextureRegionParameters {
     const D3D12_TEXTURE_COPY_LOCATION * pDst;
     unsigned                            DstX;
@@ -5898,20 +5695,20 @@ __declspec(dllexport) void redXCallCopyImageRegion(RedHandleCalls calls, unsigne
 }
 
 static void redCallGpuToCpuSignalSignal(RedHandleCalls calls, RedHandleGpuToCpuSignal signalGpuToCpuSignal, unsigned setTo8192) {
-  RedInternalTypeCalls * ih  = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih  = (RedXInternalTypeCalls *)calls;
   try {
     ih->gpuToCpuSignalsToSignal.push_back(signalGpuToCpuSignal);
   } catch (...) {
-    redInternalSetStatus(ih->context, ih->context->gpus[ih->gpuIndex].gpu, &ih->statuses, 1, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, RED_PROCEDURE_ID_redCallsEnd, 0, 0, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
+    redInternalSetStatus((RedXInternalTypeContext *)(ih->context), ih->context->gpus[ih->gpuIndex].gpu, &ih->statuses, 1, RED_STATUS_ERROR_OUT_OF_CPU_MEMORY, RED_PROCEDURE_ID_redCallsEnd, 0, 0, E_FAIL, "RED_STATUS_ERROR_OUT_OF_CPU_MEMORY");
     return;
   }
   ih->gpuToCpuSignalsToSignalCount += 1;
 }
 
 static void redCallCopyArrayToArray(RedHandleCalls calls, RedHandleArray arrayR, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayRange * ranges) {
-  RedInternalTypeCalls * ih       = (RedInternalTypeCalls *)calls;
-  RedInternalTypeArray * ihArrayR = (RedInternalTypeArray *)arrayR;
-  RedInternalTypeArray * ihArrayW = (RedInternalTypeArray *)arrayW;
+  RedXInternalTypeCalls * ih       = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeArray * ihArrayR = (RedXInternalTypeArray *)arrayR;
+  RedXInternalTypeArray * ihArrayW = (RedXInternalTypeArray *)arrayW;
   for (unsigned i = 0; i < rangesCount; i += 1) {
     const RedCopyArrayRange range = ranges[i];
     x12CommandListCopyBufferRegion(ih->handle, ihArrayW->handle, ihArrayW->mappedMemoryBytesFirst + range.arrayWBytesFirst, ihArrayR->handle, ihArrayR->mappedMemoryBytesFirst + range.arrayRBytesFirst, range.bytesCount);
@@ -5919,17 +5716,17 @@ static void redCallCopyArrayToArray(RedHandleCalls calls, RedHandleArray arrayR,
 }
 
 static void redCallProcedure(RedHandleCalls calls, unsigned vertexCount, unsigned instanceCount, unsigned vertexFirst, unsigned instanceFirst) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   x12CommandListDrawInstanced(ih->handle, vertexCount, instanceCount, vertexFirst, instanceFirst);
 }
 
 static void redCallProcedureIndexed(RedHandleCalls calls, unsigned indexCount, unsigned instanceCount, unsigned indexFirst, int vertexBase, unsigned instanceFirst) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   x12CommandListDrawIndexedInstanced(ih->handle, indexCount, instanceCount, indexFirst, vertexBase, instanceFirst);
 }
 
 static void redCallProcedureCompute(RedHandleCalls calls, unsigned workgroupsCountX, unsigned workgroupsCountY, unsigned workgroupsCountZ) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   x12CommandListDispatch(ih->handle, workgroupsCountX, workgroupsCountY, workgroupsCountZ);
 }
 
@@ -5937,8 +5734,8 @@ static void redCallSetDynamicStencilReference (RedHandleCalls calls, RedStencilF
 static void redCallSetDynamicBlendConstants   (RedHandleCalls calls, const float * blendConstants);
 
 static void redCallSetProcedure(RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedure procedure) {
-  RedInternalTypeCalls *     ih          = (RedInternalTypeCalls *)calls;
-  RedInternalTypeProcedure * ihprocedure = (RedInternalTypeProcedure *)procedure;
+  RedXInternalTypeCalls *     ih          = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeProcedure * ihprocedure = (RedXInternalTypeProcedure *)procedure;
   x12CommandListSetPipelineState(ih->handle, ihprocedure->handle);
   x12CommandListIASetPrimitiveTopology(ih->handle, ihprocedure->state.inputAssemblyTopology == RED_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP ? D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP : D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
   if (ihprocedure->state.viewportDynamic == 0) {
@@ -5956,8 +5753,8 @@ static void redCallSetProcedure(RedHandleCalls calls, RedProcedureType procedure
 }
 
 static void redCallSetProcedureIndices(RedHandleCalls calls, RedHandleArray array, uint64_t setTo0, unsigned setTo1) {
-  RedInternalTypeCalls * ih      = (RedInternalTypeCalls *)calls;
-  RedInternalTypeArray * iharray = (RedInternalTypeArray *)array;
+  RedXInternalTypeCalls * ih      = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeArray * iharray = (RedXInternalTypeArray *)array;
   D3D12_INDEX_BUFFER_VIEW view;
   view.BufferLocation = x12ResourceGetGPUVirtualAddress(iharray->handle);
   view.SizeInBytes    = (unsigned)iharray->bytesCount;
@@ -5966,8 +5763,8 @@ static void redCallSetProcedureIndices(RedHandleCalls calls, RedHandleArray arra
 }
 
 static void redCallSetProcedureParametersStructs(RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsFirst, unsigned structsCount, const RedHandleStruct * structs, unsigned setTo0, size_t setTo00) {
-  RedInternalTypeCalls *               ih                    = (RedInternalTypeCalls *)calls;
-  RedInternalTypeProcedureParameters * ihprocedureParameters = (RedInternalTypeProcedureParameters *)procedureParameters;
+  RedXInternalTypeCalls *               ih                    = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeProcedureParameters * ihprocedureParameters = (RedXInternalTypeProcedureParameters *)procedureParameters;
   D3D12_GPU_DESCRIPTOR_HANDLE gpuDescriptor;
   if (procedureType == RED_PROCEDURE_TYPE_DRAW) {
     for (unsigned i = 0; i < structsCount; i += 1) {
@@ -5983,12 +5780,12 @@ static void redCallSetProcedureParametersStructs(RedHandleCalls calls, RedProced
 }
 
 static void redCallSetProcedureParametersHandles(RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsCount, unsigned handlesCount, const RedProcedureParametersHandle * handles) {
-  RedInternalTypeCalls *               ih                    = (RedInternalTypeCalls *)calls;
-  RedInternalTypeProcedureParameters * ihprocedureParameters = (RedInternalTypeProcedureParameters *)procedureParameters;
+  RedXInternalTypeCalls *               ih                    = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeProcedureParameters * ihprocedureParameters = (RedXInternalTypeProcedureParameters *)procedureParameters;
   if (procedureType == RED_PROCEDURE_TYPE_DRAW) {
     for (unsigned i = 0; i < handlesCount; i += 1) {
       RedProcedureParametersHandle handle  = handles[i];
-      RedInternalTypeArray *       iharray = (RedInternalTypeArray *)handle.array->array;
+      RedXInternalTypeArray *      iharray = (RedXInternalTypeArray *)handle.array->array;
       if (iharray->type == RED_ARRAY_TYPE_ARRAY_RO_CONSTANT) {
         x12CommandListSetGraphicsRootConstantBufferView(ih->handle, ihprocedureParameters->rootParameterIndexStartHandles + i, x12ResourceGetGPUVirtualAddress(iharray->handle));
       } else if (iharray->type == RED_ARRAY_TYPE_ARRAY_RO) {
@@ -6000,7 +5797,7 @@ static void redCallSetProcedureParametersHandles(RedHandleCalls calls, RedProced
   } else {
     for (unsigned i = 0; i < handlesCount; i += 1) {
       RedProcedureParametersHandle handle  = handles[i];
-      RedInternalTypeArray *       iharray = (RedInternalTypeArray *)handle.array->array;
+      RedXInternalTypeArray *      iharray = (RedXInternalTypeArray *)handle.array->array;
       if (iharray->type == RED_ARRAY_TYPE_ARRAY_RO_CONSTANT) {
         x12CommandListSetComputeRootConstantBufferView(ih->handle, ihprocedureParameters->rootParameterIndexStartHandles + i, x12ResourceGetGPUVirtualAddress(iharray->handle));
       } else if (iharray->type == RED_ARRAY_TYPE_ARRAY_RO) {
@@ -6013,8 +5810,8 @@ static void redCallSetProcedureParametersHandles(RedHandleCalls calls, RedProced
 }
 
 static void redCallSetProcedureParametersVariables(RedHandleCalls calls, RedHandleProcedureParameters procedureParameters, RedVisibleToStageBitflags visibleToStages, unsigned variablesBytesFirst, unsigned dataBytesCount, const void * data) {
-  RedInternalTypeCalls *               ih                    = (RedInternalTypeCalls *)calls;
-  RedInternalTypeProcedureParameters * ihprocedureParameters = (RedInternalTypeProcedureParameters *)procedureParameters;
+  RedXInternalTypeCalls *               ih                    = (RedXInternalTypeCalls *)calls;
+  RedXInternalTypeProcedureParameters * ihprocedureParameters = (RedXInternalTypeProcedureParameters *)procedureParameters;
   if (ih->currentProcedureTypeContext == RED_PROCEDURE_TYPE_DRAW) {
     x12CommandListSetGraphicsRoot32BitConstants(ih->handle, ihprocedureParameters->rootParameterIndexStartVariables, dataBytesCount / 4, data, variablesBytesFirst / 4);
   } else {
@@ -6023,17 +5820,17 @@ static void redCallSetProcedureParametersVariables(RedHandleCalls calls, RedHand
 }
 
 static void redCallSetDynamicStencilReference(RedHandleCalls calls, RedStencilFace face, unsigned reference) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   x12CommandListOMSetStencilRef(ih->handle, reference);
 }
 
 static void redCallSetDynamicBlendConstants(RedHandleCalls calls, const float * blendConstants) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   x12CommandListOMSetBlendFactor(ih->handle, blendConstants);
 }
 
 __declspec(dllexport) void redCallSetDynamicViewport(RedTypeProcedureAddressCallSetDynamicViewport address, RedHandleCalls calls, float x, float y, float width, float height, float depthMin, float depthMax) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   D3D12_VIEWPORT viewport;
   viewport.TopLeftX = x;
   viewport.TopLeftY = y;
@@ -6045,7 +5842,7 @@ __declspec(dllexport) void redCallSetDynamicViewport(RedTypeProcedureAddressCall
 }
 
 __declspec(dllexport) void redCallSetDynamicScissor(RedTypeProcedureAddressCallSetDynamicScissor address, RedHandleCalls calls, int x, int y, unsigned width, unsigned height) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   D3D12_RECT scissor;
   scissor.left   = x;
   scissor.top    = y;
@@ -6055,17 +5852,17 @@ __declspec(dllexport) void redCallSetDynamicScissor(RedTypeProcedureAddressCallS
 }
 
 __declspec(dllexport) void redCallMark(RedTypeProcedureAddressCallMark address, RedHandleCalls calls, const char * mark) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   PIXSetMarker(ih->handle, 0, mark);
 }
 
 __declspec(dllexport) void redCallMarkSet(RedTypeProcedureAddressCallMarkSet address, RedHandleCalls calls, const char * mark) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   PIXBeginEvent(ih->handle, 0, mark);
 }
 
 __declspec(dllexport) void redCallMarkEnd(RedTypeProcedureAddressCallMarkEnd address, RedHandleCalls calls) {
-  RedInternalTypeCalls * ih = (RedInternalTypeCalls *)calls;
+  RedXInternalTypeCalls * ih = (RedXInternalTypeCalls *)calls;
   PIXEndEvent(ih->handle);
 }
 
@@ -6107,11 +5904,11 @@ __declspec(dllexport) void redGetCallProceduresAndAddresses(RedContext context, 
 __declspec(dllexport) void redQueueSubmit(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, RedHandleCpuSignal signalCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redQueueSubmit;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeQueue *   ih  = (RedInternalTypeQueue *)queue;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeQueue *   ih  = (RedXInternalTypeQueue *)queue;
   for (unsigned i = 0; i < timelinesCount; i += 1) {
     const RedGpuTimeline timeline = timelines[i];
-    std::vector<ID3D12CommandList *> commandLists;
+    REDGPU_VECTOR<ID3D12CommandList *> commandLists;
     if (timeline.callsCount > 32) {
       try {
         commandLists.resize(timeline.callsCount);
@@ -6121,37 +5918,37 @@ __declspec(dllexport) void redQueueSubmit(RedContext context, RedHandleGpu gpu, 
       }
     }
     for (unsigned j = 0; j < timeline.waitForAndUnsignalGpuSignalsCount; j += 1) {
-      RedInternalTypeSignal * h = (RedInternalTypeSignal *)timeline.waitForAndUnsignalGpuSignals[j];
+      RedXInternalTypeSignal * h = (RedXInternalTypeSignal *)timeline.waitForAndUnsignalGpuSignals[j];
       x12CommandQueueWait(ih->handle, h->handle, h->value, optionalFile, optionalLine);
     }
     if (timeline.callsCount <= 32) {
       ID3D12CommandList * commandLists32[32];
       for (unsigned j = 0; j < timeline.callsCount; j += 1) {
-        commandLists32[j] = (ID3D12CommandList *)(((RedInternalTypeCalls *)timeline.calls[j])->handle);
+        commandLists32[j] = (ID3D12CommandList *)(((RedXInternalTypeCalls *)timeline.calls[j])->handle);
       }
       x12CommandQueueExecuteCommandLists(ih->handle, timeline.callsCount, commandLists32, optionalFile, optionalLine);
     } else {
       for (unsigned j = 0; j < timeline.callsCount; j += 1) {
-        commandLists[j] = (ID3D12CommandList *)(((RedInternalTypeCalls *)timeline.calls[j])->handle);
+        commandLists[j] = (ID3D12CommandList *)(((RedXInternalTypeCalls *)timeline.calls[j])->handle);
       }
       x12CommandQueueExecuteCommandLists(ih->handle, timeline.callsCount, &commandLists[0], optionalFile, optionalLine);
     }
     for (unsigned j = 0; j < timeline.signalGpuSignalsCount; j += 1) {
-      RedInternalTypeSignal * h = (RedInternalTypeSignal *)timeline.signalGpuSignals[j];
+      RedXInternalTypeSignal * h = (RedXInternalTypeSignal *)timeline.signalGpuSignals[j];
       h->value += 1;
       x12CommandQueueSignal(ih->handle, h->handle, h->value, optionalFile, optionalLine);
     }
     for (unsigned j = 0; j < timeline.callsCount; j += 1) {
-      const RedInternalTypeCalls * ihcalls = (const RedInternalTypeCalls *)timeline.calls[j];
+      const RedXInternalTypeCalls * ihcalls = (const RedXInternalTypeCalls *)timeline.calls[j];
       for (unsigned k = 0; k < ihcalls->gpuToCpuSignalsToSignalCount; k += 1) {
-        RedInternalTypeSignal * h = (RedInternalTypeSignal *)ihcalls->gpuToCpuSignalsToSignal[k];
+        RedXInternalTypeSignal * h = (RedXInternalTypeSignal *)ihcalls->gpuToCpuSignalsToSignal[k];
         h->value += 1;
         x12CommandQueueSignal(ih->handle, h->handle, h->value, optionalFile, optionalLine);
       }
     }
   }
   if (signalCpuSignal != 0) {
-    RedInternalTypeSignal * h = (RedInternalTypeSignal *)signalCpuSignal;
+    RedXInternalTypeSignal * h = (RedXInternalTypeSignal *)signalCpuSignal;
     h->value += 1;
     x12CommandQueueSignal(ih->handle, h->handle, h->value, optionalFile, optionalLine);
   }
@@ -6174,10 +5971,10 @@ __declspec(dllexport) void redCreatePresent(RedContext context, RedHandleGpu gpu
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreatePresent;
   PIXBeginEvent(0, __FUNCTION__);
 
-  RedInternalTypeContext * ctx       = (RedInternalTypeContext *)context;
-  RedInternalTypeSurface * ihsurface = (RedInternalTypeSurface *)surface;
-  RedInternalTypeQueue   * ihqueue   = (RedInternalTypeQueue   *)queue;
-  RedInternalTypePresent * ih        = 0;
+  RedXInternalTypeContext * ctx       = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSurface * ihsurface = (RedXInternalTypeSurface *)surface;
+  RedXInternalTypeQueue   * ihqueue   = (RedXInternalTypeQueue   *)queue;
+  RedXInternalTypePresent * ih        = 0;
 
   RedHandleTexture texture0 = 0;
   RedHandleTexture texture1 = 0;
@@ -6335,7 +6132,7 @@ __declspec(dllexport) void redCreatePresent(RedContext context, RedHandleGpu gpu
     swapchainDesc.SwapEffect         = discardAfterPresent == 1 ? DXGI_SWAP_EFFECT_FLIP_DISCARD : DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
     swapchainDesc.AlphaMode          = DXGI_ALPHA_MODE_IGNORE;
     swapchainDesc.Flags              = 0;
-    if (ihsurface->type == RED_INTERNAL_TYPE_SURFACE_TYPE_WIN32) {
+    if (ihsurface->type == REDX_INTERNAL_TYPE_SURFACE_TYPE_WIN32) {
       HRESULT hr = x12FactoryCreateSwapChainForHwnd((IDXGIFactory4 *)ctx->contextHandle, ihqueue->handle, (HWND)ihsurface->window, &swapchainDesc, 0, 0, &ih->handle, optionalFile, optionalLine);
       if (hr < 0) {
         redInternalDestroyPresent((RedHandlePresent)ih, optionalFile, optionalLine);
@@ -6350,7 +6147,7 @@ __declspec(dllexport) void redCreatePresent(RedContext context, RedHandleGpu gpu
         PIXEndEvent();
         return;
       }
-    } else if (ihsurface->type == RED_INTERNAL_TYPE_SURFACE_TYPE_WINRT) {
+    } else if (ihsurface->type == REDX_INTERNAL_TYPE_SURFACE_TYPE_WINRT) {
       HRESULT hr = x12FactoryCreateSwapChainForCoreWindow((IDXGIFactory4 *)ctx->contextHandle, ihqueue->handle, ihsurface->window, &swapchainDesc, 0, &ih->handle, optionalFile, optionalLine);
       if (hr < 0) {
         redInternalDestroyPresent((RedHandlePresent)ih, optionalFile, optionalLine);
@@ -6528,8 +6325,8 @@ __declspec(dllexport) void redSurfaceGetCurrentPropertiesAndPresentLimits(RedCon
 __declspec(dllexport) void redPresentGetImageIndex(RedContext context, RedHandleGpu gpu, RedHandlePresent present, RedHandleCpuSignal signalCpuSignal, RedHandleGpuSignal signalGpuSignal, unsigned * outImageIndex, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redPresentGetImageIndex;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypePresent * ih  = (RedInternalTypePresent *)present;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypePresent * ih  = (RedXInternalTypePresent *)present;
   outImageIndex[0] = x12SwapChainGetCurrentBackBufferIndex(ih->handle, optionalFile, optionalLine);
   PIXEndEvent();
 }
@@ -6537,8 +6334,8 @@ __declspec(dllexport) void redPresentGetImageIndex(RedContext context, RedHandle
 __declspec(dllexport) void redQueuePresent(RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned waitForAndUnsignalGpuSignalsCount, const RedHandleGpuSignal * waitForAndUnsignalGpuSignals, unsigned presentsCount, const RedHandlePresent * presents, const unsigned * presentsImageIndex, RedStatus * outPresentsStatus, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redQueuePresent;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeQueue   * iq  = (RedInternalTypeQueue *)queue;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeQueue   * iq  = (RedXInternalTypeQueue *)queue;
   if (waitForAndUnsignalGpuSignalsCount == 0 && presentsCount == 0) {
     RedHandleGpuSignal waitForQueuePresentGpuSignal = 0;
     RedHandleCpuSignal waitForQueuePresentCpuSignal = 0;
@@ -6563,8 +6360,8 @@ __declspec(dllexport) void redQueuePresent(RedContext context, RedHandleGpu gpu,
       optionalLine,
       optionalUserData
     );
-    RedInternalTypeSignal * sgpu = (RedInternalTypeSignal *)waitForQueuePresentGpuSignal;
-    RedInternalTypeSignal * scpu = (RedInternalTypeSignal *)waitForQueuePresentCpuSignal;
+    RedXInternalTypeSignal * sgpu = (RedXInternalTypeSignal *)waitForQueuePresentGpuSignal;
+    RedXInternalTypeSignal * scpu = (RedXInternalTypeSignal *)waitForQueuePresentCpuSignal;
     x12CommandQueueSignal(iq->handle, sgpu->handle, 1, optionalFile, optionalLine);
     x12CommandQueueWait(iq->handle, sgpu->handle, 1, optionalFile, optionalLine);
     x12CommandQueueSignal(iq->handle, scpu->handle, 1, optionalFile, optionalLine);
@@ -6574,7 +6371,7 @@ __declspec(dllexport) void redQueuePresent(RedContext context, RedHandleGpu gpu,
   }
   const DXGI_PRESENT_PARAMETERS params = {};
   for (unsigned i = 0; i < presentsCount; i += 1) {
-    RedInternalTypePresent * ih = (RedInternalTypePresent *)presents[i];
+    RedXInternalTypePresent * ih = (RedXInternalTypePresent *)presents[i];
     HRESULT hr = x12SwapChainPresent1(ih->handle, ih->vsyncMode == RED_PRESENT_VSYNC_MODE_ON ? 1 : 0, 0, &params, optionalFile, optionalLine);
     if (outPresentsStatus != 0) {
       outPresentsStatus[i] = (RedStatus)hr;
@@ -6586,8 +6383,8 @@ __declspec(dllexport) void redQueuePresent(RedContext context, RedHandleGpu gpu,
 __declspec(dllexport) void redCreateSurfaceWin32(RedContext context, RedHandleGpu gpu, const char * handleName, const void * win32Hinstance, const void * win32Hwnd, RedHandleSurface * outSurface, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = RED_PROCEDURE_ID_redCreateSurfaceWin32;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSurface * ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSurface * ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -6597,7 +6394,7 @@ __declspec(dllexport) void redCreateSurfaceWin32(RedContext context, RedHandleGp
     return;
   }
 
-  ih = redInternalTypeSurfaceAllocate(ctx, gpuIndex, handleName, RED_INTERNAL_TYPE_SURFACE_TYPE_WIN32, win32Hwnd, outStatuses, procedureId, 1, optionalFile, optionalLine);
+  ih = redInternalTypeSurfaceAllocate(ctx, gpuIndex, handleName, REDX_INTERNAL_TYPE_SURFACE_TYPE_WIN32, win32Hwnd, outStatuses, procedureId, 1, optionalFile, optionalLine);
 
   outSurface[0] = (RedHandleSurface)ih;
 
@@ -6640,8 +6437,8 @@ __declspec(dllexport) void redArrayTimestampRead(RedContext context, RedHandleGp
 __declspec(dllexport) void redXCreateSurfaceWinRT(RedContext context, RedHandleGpu gpu, const char * handleName, const void * winrtIUnknownPointerCoreWindow, RedHandleSurface * outSurface, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   const RedProcedureId procedureId = (RedProcedureId)REDX_PROCEDURE_ID_redXCreateSurfaceWinRT;
   PIXBeginEvent(0, __FUNCTION__);
-  RedInternalTypeContext * ctx = (RedInternalTypeContext *)context;
-  RedInternalTypeSurface * ih  = 0;
+  RedXInternalTypeContext * ctx = (RedXInternalTypeContext *)context;
+  RedXInternalTypeSurface * ih  = 0;
 
   unsigned gpuIndex = redInternalGetGpuIndex(context, gpu);
   if (gpuIndex == (unsigned)-1) {
@@ -6651,7 +6448,7 @@ __declspec(dllexport) void redXCreateSurfaceWinRT(RedContext context, RedHandleG
     return;
   }
 
-  ih = redInternalTypeSurfaceAllocate(ctx, gpuIndex, handleName, RED_INTERNAL_TYPE_SURFACE_TYPE_WINRT, winrtIUnknownPointerCoreWindow, outStatuses, procedureId, 1, optionalFile, optionalLine);
+  ih = redInternalTypeSurfaceAllocate(ctx, gpuIndex, handleName, REDX_INTERNAL_TYPE_SURFACE_TYPE_WINRT, winrtIUnknownPointerCoreWindow, outStatuses, procedureId, 1, optionalFile, optionalLine);
 
   outSurface[0] = (RedHandleSurface)ih;
 

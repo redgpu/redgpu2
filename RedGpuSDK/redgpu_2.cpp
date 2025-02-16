@@ -1,5 +1,61 @@
-// cl /LD /EHsc /GR- /std:c++17 redgpu_2.cpp C:/RedGpuSDK/redgpudll.lib
-// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_USE_REDGPU_X redgpu_2_x.cpp C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib
+// REDGPU 2 compile command examples:
+// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_2_INTERNAL_USE_STD_VECTOR /DREDGPU_2_INTERNAL_USE_STD_MAP redgpu_2.cpp /link C:/RedGpuSDK/redgpudll.lib
+// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_2_INTERNAL_USE_EASTL_VECTOR /DREDGPU_2_INTERNAL_USE_EASTL_MAP /IEABase/include/Common /IEASTL/include redgpu_2.cpp EASTL/source/red_black_tree.cpp /link C:/RedGpuSDK/redgpudll.lib
+
+// REDGPU 2 X compile command examples (rename redgpu_2.cpp to redgpu_2_x.cpp):
+// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_USE_REDGPU_X /DREDGPU_X_INTERNAL_USE_STD_VECTOR /DREDGPU_2_INTERNAL_USE_STD_VECTOR /DREDGPU_2_INTERNAL_USE_STD_MAP redgpu_2_x.cpp /link C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib
+// cl /LD /EHsc /GR- /std:c++17 /DREDGPU_USE_REDGPU_X /DREDGPU_X_INTERNAL_USE_EASTL_VECTOR /DREDGPU_2_INTERNAL_USE_EASTL_VECTOR /DREDGPU_2_INTERNAL_USE_EASTL_MAP /IEABase/include/Common /IEASTL/include redgpu_2_x.cpp EASTL/source/red_black_tree.cpp /link C:/RedGpuSDK/redgpu_x.lib C:/RedGpuSDK/redgpu_x12.lib
+
+#ifdef REDGPU_USE_REDGPU_X
+#if !defined(REDGPU_X_INTERNAL_USE_STD_VECTOR) && !defined(REDGPU_X_INTERNAL_USE_EASTL_VECTOR)
+#error
+#endif
+#if  defined(REDGPU_X_INTERNAL_USE_STD_VECTOR) &&  defined(REDGPU_X_INTERNAL_USE_EASTL_VECTOR)
+#error
+#endif
+#endif // #ifdef REDGPU_USE_REDGPU_X
+#if !defined(REDGPU_2_INTERNAL_USE_STD_VECTOR) && !defined(REDGPU_2_INTERNAL_USE_EASTL_VECTOR)
+#error
+#endif
+#if  defined(REDGPU_2_INTERNAL_USE_STD_VECTOR) &&  defined(REDGPU_2_INTERNAL_USE_EASTL_VECTOR)
+#error
+#endif
+#if !defined(REDGPU_2_INTERNAL_USE_STD_MAP) && !defined(REDGPU_2_INTERNAL_USE_EASTL_MAP)
+#error
+#endif
+#if  defined(REDGPU_2_INTERNAL_USE_STD_MAP) &&  defined(REDGPU_2_INTERNAL_USE_EASTL_MAP)
+#error
+#endif
+
+#if defined(REDGPU_2_INTERNAL_USE_STD_VECTOR) || defined(REDGPU_X_INTERNAL_USE_STD_VECTOR)
+#include <vector> // For std::vector
+#define REDGPU_VECTOR std::vector
+#endif
+#if defined(REDGPU_2_INTERNAL_USE_STD_MAP)
+#include <map> // For std::map
+#define REDGPU_MAP std::map
+#endif
+#if defined(REDGPU_2_INTERNAL_USE_EASTL_VECTOR) || defined(REDGPU_X_INTERNAL_USE_EASTL_VECTOR)
+#include <EASTL/vector.h> // For eastl::vector, needs to include EABase/include/Common and EASTL/include folders.
+#define REDGPU_VECTOR eastl::vector
+#endif
+#if defined(REDGPU_2_INTERNAL_USE_EASTL_MAP)
+#include <EASTL/map.h> // For eastl::map, needs to include EABase/include/Common and EASTL/include folders and compile EASTL/source/red_black_tree.cpp file.
+#define REDGPU_MAP eastl::map
+#endif
+#if defined(REDGPU_X_INTERNAL_USE_EASTL_VECTOR) || defined(REDGPU_2_INTERNAL_USE_EASTL_VECTOR) || defined(REDGPU_2_INTERNAL_USE_EASTL_MAP)
+
+// https://github.com/electronicarts/EASTL/issues/497
+
+void * __cdecl operator new[](size_t size, const char * name, int flags, unsigned debugFlags, const char * file, int line) {
+  return new uint8_t[size];
+}
+
+void * __cdecl operator new[](unsigned __int64 size, unsigned __int64 alignment, unsigned __int64 offset, char const * pName, int flags, unsigned int debugFlags, char const * file, int line) {
+  return new uint8_t[size];
+}
+
+#endif
 
 #if defined(_WIN32) && !defined(__GNUC__)
 #define REDGPU_2_DECLSPEC __declspec(dllexport)
@@ -7,21 +63,26 @@
 #define REDGPU_2_DECLSPEC __attribute__((visibility("default")))
 #endif
 
-#include <string> // For redgpu_x_internal_types.h
-#include <vector> // For redgpu_2_internal_types.h
+#ifdef REDGPU_USE_REDGPU_X
+#define REDGPU_X_INTERNAL_TYPES_EXCLUDE_STD_STRING // Exclude std::string's from redgpu_x_internal_types.h, REDGPU 2 doesn't need them.
+#endif
 
 #if defined(_WIN32)
 #include "C:/RedGpuSDK/redgpu.h"
 #include "C:/RedGpuSDK/redgpu_wsi.h"
+#ifdef REDGPU_USE_REDGPU_X
 #include "C:/RedGpuSDK/redgpu_x.h"
 #include "C:/RedGpuSDK/redgpu_x12.h"
 #include "C:/RedGpuSDK/redgpu_x_internal_types.h"
+#endif
 #else
 #include "/opt/RedGpuSDK/redgpu.h"
 #include "/opt/RedGpuSDK/redgpu_wsi.h"
+#ifdef REDGPU_USE_REDGPU_X
 #include "/opt/RedGpuSDK/redgpu_x.h"
 #include "/opt/RedGpuSDK/redgpu_x12.h"
 #include "/opt/RedGpuSDK/redgpu_x_internal_types.h"
+#endif
 #endif
 #include "redgpu_2.h"
 #include "redgpu_2_internal_types.h"
@@ -29,15 +90,14 @@
 #include <string.h> // For memcpy
 #include <mutex>    // For std::mutex
 #include <new>      // For std::nothrow
-#include <map>      // For std::map
 
 typedef struct Red2InternalWsiStoredGpuSignalsPresentImageIndexData {
-  uint64_t                        gpuSignalsCurrentFreeIndex;
-  std::vector<RedHandleGpuSignal> gpuSignals;
+  uint64_t                          gpuSignalsCurrentFreeIndex;
+  REDGPU_VECTOR<RedHandleGpuSignal> gpuSignals;
 } Red2InternalWsiStoredGpuSignalsPresentImageIndexData;
 
 typedef struct Red2InternalWsiStoredGpuSignalsPresentData {
-  std::map<unsigned, Red2InternalWsiStoredGpuSignalsPresentImageIndexData> map;
+  REDGPU_MAP<unsigned, Red2InternalWsiStoredGpuSignalsPresentImageIndexData> map;
   volatile unsigned char init;
 } Red2InternalWsiStoredGpuSignalsPresentData;
 
@@ -47,19 +107,19 @@ typedef struct Red2InternalQueueSubmissionData {
 } Red2InternalQueueSubmissionData;
 
 typedef struct Red2GpuInternalData {
-  std::mutex                                                             wsiStoredGpuSignalsDataMutex;
-  std::map<RedHandlePresent, Red2InternalWsiStoredGpuSignalsPresentData> wsiStoredGpuSignalsData;
+  std::mutex                                                               wsiStoredGpuSignalsDataMutex;
+  REDGPU_MAP<RedHandlePresent, Red2InternalWsiStoredGpuSignalsPresentData> wsiStoredGpuSignalsData;
 
-  std::mutex                                   queueSubmissionsMutex;
-  std::vector<Red2InternalQueueSubmissionData> queueSubmissions;
-  std::vector<uint64_t>                        queueSubmissionsTicket;        // NOTE(Constantine): Ticket == 0 means the array slot is free to use for other greater tickets.
-  uint64_t                                     queueSubmissionsCurrentTicket; // NOTE(Constantine): Starts with 0.
+  std::mutex                                     queueSubmissionsMutex;
+  REDGPU_VECTOR<Red2InternalQueueSubmissionData> queueSubmissions;
+  REDGPU_VECTOR<uint64_t>                        queueSubmissionsTicket;        // NOTE(Constantine): Ticket == 0 means the array slot is free to use for other greater tickets.
+  uint64_t                                       queueSubmissionsCurrentTicket; // NOTE(Constantine): Starts with 0.
 
   volatile unsigned char init;
 } Red2GpuInternalData;
 
 typedef struct Red2ContextInternalData {
-  std::map<RedHandleGpu, Red2GpuInternalData> gpus;
+  REDGPU_MAP<RedHandleGpu, Red2GpuInternalData> gpus;
 } Red2ContextInternalData;
 
 // NOTE(Constantine):
@@ -1199,8 +1259,8 @@ void red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket(Red2Context co
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
-  std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
-  std::vector<RedHandleCpuSignal> cpuSignal;
+  REDGPU_VECTOR<uint64_t>           queueSubmissionTicketArrayIndex;
+  REDGPU_VECTOR<RedHandleCpuSignal> cpuSignal;
   {
     std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
@@ -1233,8 +1293,8 @@ void red2WaitForAllQueueSubmissionsToFinish(Red2Context context2, RedHandleGpu g
   Red2ContextInternalData * context2Data    = (Red2ContextInternalData *)context2->redgpu2InternalData;
   Red2GpuInternalData *     context2GpuData = (Red2GpuInternalData *)&context2Data->gpus[gpu];
 
-  std::vector<uint64_t>           queueSubmissionTicketArrayIndex;
-  std::vector<RedHandleCpuSignal> cpuSignal;
+  REDGPU_VECTOR<uint64_t>           queueSubmissionTicketArrayIndex;
+  REDGPU_VECTOR<RedHandleCpuSignal> cpuSignal;
   {
     std::lock_guard<std::mutex> queueSubmissionsMutexLockGuard(context2GpuData->queueSubmissionsMutex);
     for (size_t i = 0, count = context2GpuData->queueSubmissions.size(); i < count; i += 1) {
@@ -2477,6 +2537,7 @@ REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParam
 
 // REDGPU 2 new procedures from 28 Nov 2024:
 
+#ifdef REDGPU_USE_REDGPU_X
 RedXAccessBitflags red2RedXOnlyGetRedXAccessBitflagsFromRed(RedAccessBitflags access) {
   RedXAccessBitflags out = REDX_ACCESS_BITFLAG_COMMON;
   if ((access & RED_ACCESS_BITFLAG_COPY_R)                               == RED_ACCESS_BITFLAG_COPY_R)                               { out |= REDX_ACCESS_BITFLAG_COPY_R;                               }
@@ -2495,6 +2556,7 @@ RedXAccessBitflags red2RedXOnlyGetRedXAccessBitflagsFromRed(RedAccessBitflags ac
   if ((access & RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     == RED_ACCESS_BITFLAG_RESOLVE_TARGET_W)                     { out |= REDX_ACCESS_BITFLAG_RESOLVE_TARGET_W;                     }
   return out;
 }
+#endif
 
 unsigned red2RedXOnlyArrayGetMemoryTypeIndex(RedHandleArray array) {
 #ifdef REDGPU_USE_REDGPU_X
@@ -2984,11 +3046,8 @@ void red2DestroyStream(Red2Context context2, RedHandleGpu gpu, Red2HandleStream 
 void red2CreateStreamsHighway(Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned maxStreamsBeforeNullCount, RedHandleQueue signalGpuSignalsOnQueue, Red2StreamsHighway * outHighway, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   outHighway[0] = {};
 
-  std::string handleNamePartString = std::string(handleName) + "_Lane";
-
   for (unsigned i = 0; i < maxStreamsBeforeNullCount; i += 1) {
-    std::string handleNameString = handleNamePartString + std::to_string(i);
-    redCreateGpuSignal(context2->context, gpu, handleNameString.c_str(), &outHighway->perStreamsBeforeNullSignaledGpuSignal[i], outStatuses, optionalFile, optionalLine, optionalUserData);
+    redCreateGpuSignal(context2->context, gpu, handleName, &outHighway->perStreamsBeforeNullSignaledGpuSignal[i], outStatuses, optionalFile, optionalLine, optionalUserData);
     if (outHighway->perStreamsBeforeNullSignaledGpuSignal[i] == NULL) { // NOTE(Constantine): Maybe need to check for outStatuses error too?
       for (unsigned j = 0; j < maxStreamsBeforeNullCount; j += 1) {
         if (outHighway->perStreamsBeforeNullSignaledGpuSignal[j] != NULL) {
@@ -3131,13 +3190,13 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   //   |   |    |    |   |
   //
 
-  std::vector<unsigned> arrayOf65536;
+  REDGPU_VECTOR<unsigned> arrayOf65536;
   arrayOf65536.resize((size_t)highway->maxStreamsBeforeNullCount + (size_t)waitForAndUnsignalGpuSignalsCount);
   for (unsigned & value : arrayOf65536) {
     value = 65536;
   }
 
-  std::vector<RedGpuTimeline> timelines;
+  REDGPU_VECTOR<RedGpuTimeline> timelines;
   unsigned                    timelinesCount = 0;
   RedGpuTimeline *            timelinesArray = NULL;
   {
@@ -3219,7 +3278,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   timelinesArray = NULL; // NOTE(Constantine): Intentionally here, do not remove, timelines vector can now be further grown dynamically.
   
   // NOTE(Constantine): Prepend a GPU timeline struct for waitForAndUnsignalGpuSignals.
-  std::vector<RedHandleGpuSignal> waitForAndUnsignal;
+  REDGPU_VECTOR<RedHandleGpuSignal> waitForAndUnsignal;
   if (waitForAndUnsignalGpuSignalsCount > 0) {
     timelines.insert(timelines.begin(), {});
     RedGpuTimeline * timeline = &timelines[0];
@@ -3246,7 +3305,7 @@ void red2StreamFlushToQueue(Red2Context context2, RedHandleGpu gpu, RedHandleQue
   }
 
   // NOTE(Constantine): Append a GPU timeline struct for signalGpuSignals.
-  std::vector<RedHandleGpuSignal> signal;
+  REDGPU_VECTOR<RedHandleGpuSignal> signal;
   if (signalGpuSignalsCount > 0) {
     timelines.push_back({});
     RedGpuTimeline * timeline = &timelines[timelines.size() - 1];
