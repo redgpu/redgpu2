@@ -1,3 +1,0 @@
-void redGpuVisTracingStart(char* optionalFile, int optionalLine, void* optionalUserData)
-void redGpuVisTracingCapture(char* optionalFile, int optionalLine, void* optionalUserData)
-void redGpuVisTracingStop(char* optionalFile, int optionalLine, void* optionalUserData)

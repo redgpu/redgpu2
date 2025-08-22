@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 2.8.12)
-project(redgpu_2)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_library(redgpu_2 SHARED redgpu_2.cpp)
-target_link_libraries(redgpu_2 C:/RedGpuSDK/redgpudll.lib)

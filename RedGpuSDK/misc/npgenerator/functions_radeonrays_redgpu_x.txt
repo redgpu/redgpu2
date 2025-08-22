@@ -1,3 +1,0 @@
-RRError rrGetDevicePtrFromD3D12Resource(RRContext context, ID3D12Resource* resource, size_t offset, RRDevicePtr* device_ptr)
-RRError rrCreateContextDX(uint32_t api_version, ID3D12Device* d3d_device, ID3D12CommandQueue* command_queue, RRContext* context)
-RRError rrGetCommandStreamFromD3D12CommandList(RRContext context, ID3D12GraphicsCommandList* command_list, RRCommandStream* command_stream)

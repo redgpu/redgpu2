@@ -1,5 +1,0 @@
-void greenCreateStructDeclaration(RedContext context, RedHandleGpu gpu, char* handleName, GreenStructDeclaration* outStructDeclaration, RedStatuses* outStatuses, char* optionalFile, int optionalLine, void* optionalUserData)
-void greenStructHeapAllocate(RedContext context, RedHandleGpu gpu, char* handleName, unsigned structDeclarationsCount, GreenStructDeclaration* structDeclarations, GreenStructHeap* outStructHeap, RedStatuses* outStatuses, char* optionalFile, int optionalLine, void* optionalUserData)
-void greenStructHeapReset(RedContext context, RedHandleGpu gpu, unsigned structDeclarationsCount, GreenStructDeclaration* structDeclarations, GreenStructHeap* outStructHeap, RedStatuses* outStatuses, char* optionalFile, int optionalLine, void* optionalUserData)
-void greenStructHeapsSet(RedContext context, RedHandleGpu gpu, unsigned structHeapsSetsCount, GreenStructHeapSet* structHeapsSets, char* optionalFile, int optionalLine, void* optionalUserData)
-void greenStructHeapFree(RedContext context, RedHandleGpu gpu, GreenStructHeap* structHeap, char* optionalFile, int optionalLine, void* optionalUserData)

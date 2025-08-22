@@ -1,7 +1,2 @@
-RedGpuSDK/CMakeLists.txt
-RedGpuSDK/build/*
-RedGpuSDK/imgui/*
-RedGpuSDK/glfw-3.3.2.bin.WIN64/*
-RedGpuSDK/glfw-3.3.8.bin.WIN64/*
-RedGpuSDK/EABase/*
-RedGpuSDK/EASTL/*
+RedGpuSDK/misc/redgpu_2_vs2019_project/.vs/*
+RedGpuSDK/misc/redgpu_2_vs2019_project/redgpu_2.vcxproj.user

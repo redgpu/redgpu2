@@ -1,102 +1,151 @@
 #pragma once
 
+#include "redgpu.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef unsigned char Red2Bool8;
+// Expected minimum guarantees
 
-typedef struct Red2TypeContext *                   Red2Context;
-typedef struct Red2TypeHandleStructDeclaration *   Red2HandleStructDeclaration;
-typedef struct Red2TypeHandleProcedureParameters * Red2HandleProcedureParameters;
-typedef struct Red2TypeHandleCalls *               Red2HandleCalls;
-typedef struct Red2TypeHandleStream *              Red2HandleStream;
+#define REDGPU_2_EXPECTED_maxMemoryAllocateCount_4096                        (4096)
+#define REDGPU_2_EXPECTED_minMemoryAllocateBytesAlignment_4096               (4096)
+#define REDGPU_2_EXPECTED_maxMemoryAllocateBytesCount_1073741824             (1073741824)
+#define REDGPU_2_EXPECTED_minMemoryNonCoherentBlockBytesCount_256            (256)
+#define REDGPU_2_EXPECTED_maxCreateSamplerCount_4000                         (4000)
+#define REDGPU_2_EXPECTED_minMemoryPageSeparationArrayImageBytesCount_65536  (65536)
+#define REDGPU_2_EXPECTED_minArrayROCStructMemberRangeBytesAlignment_256     (256)
+#define REDGPU_2_EXPECTED_maxArrayROCStructMemberRangeBytesCount_65536       (65536)
+#define REDGPU_2_EXPECTED_minArrayRORWStructMemberRangeBytesAlignment_64     (64)
+#define REDGPU_2_EXPECTED_maxArrayRORWStructMemberRangeBytesCount_536870912  (536870912)
+#define REDGPU_2_EXPECTED_maxImageDimensions1D_16384                         (16384)
+#define REDGPU_2_EXPECTED_maxImageDimensions2D_16384                         (16384)
+#define REDGPU_2_EXPECTED_maxImageDimensions3D_2048                          (2048)
+#define REDGPU_2_EXPECTED_maxImageDimensionsCube_16384                       (16384)
+#define REDGPU_2_EXPECTED_maxImageLayersCount_2048                           (2048)
+#define REDGPU_2_EXPECTED_maxSamplerMipLodBias_15                            (15)
+#define REDGPU_2_EXPECTED_maxSamplerAnisotropy_16                            (16)
+#define REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMagMin_8              (8)
+#define REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMip_8                 (8)
+#define REDGPU_2_EXPECTED_maxOutputWidth_16384                               (16384)
+#define REDGPU_2_EXPECTED_maxOutputHeight_16384                              (16384)
+#define REDGPU_2_EXPECTED_maxOutputColorsCount_8                             (8)
+#define REDGPU_2_EXPECTED_maxStructSlotsCount_1024                           (1024)
+#define REDGPU_2_EXPECTED_maxStructPerStageArrayROCsCount_12                 (12)
+#define REDGPU_2_EXPECTED_maxStructPerStageArrayRORWsCount_524288            (524288)
+#define REDGPU_2_EXPECTED_maxStructPerStageSamplersCount_524288              (524288)
+#define REDGPU_2_EXPECTED_maxStructPerStageTextureROsCount_524288            (524288)
+#define REDGPU_2_EXPECTED_maxStructPerStageTextureRWsCount_524288            (524288)
+#define REDGPU_2_EXPECTED_maxStructPerStageAllResourcesCount_1572864         (1572864)
+#define REDGPU_2_EXPECTED_maxStructArrayROCsCount_72                         (72)
+#define REDGPU_2_EXPECTED_maxStructArrayRORWsCount_524288                    (524288)
+#define REDGPU_2_EXPECTED_maxStructSamplersCount_524288                      (524288)
+#define REDGPU_2_EXPECTED_maxStructTextureROsCount_524288                    (524288)
+#define REDGPU_2_EXPECTED_maxStructTextureRWsCount_524288                    (524288)
+#define REDGPU_2_EXPECTED_maxProcedureParametersVariablesBytesCount_128      (128)
+#define REDGPU_2_EXPECTED_maxViewportDimensionsX_16384                       (16384)
+#define REDGPU_2_EXPECTED_maxViewportDimensionsY_16384                       (16384)
+#define REDGPU_2_EXPECTED_minViewportBoundsRange_minus_32768                 (-32768)
+#define REDGPU_2_EXPECTED_maxViewportBoundsRange_32767                       (32767)
+#define REDGPU_2_EXPECTED_precisionBitsViewportCoordinates_8                 (8)
+#define REDGPU_2_EXPECTED_precisionBitsViewportBounds_8                      (8)
+#define REDGPU_2_EXPECTED_maxPerStageClipDistances_8                         (8)
+#define REDGPU_2_EXPECTED_maxPerStageCullDistances_8                         (8)
+#define REDGPU_2_EXPECTED_maxPerStageClipAndCullDistances_8                  (8)
+#define REDGPU_2_EXPECTED_maxVertexOutputLocationsCount_128                  (128)
+#define REDGPU_2_EXPECTED_maxFragmentInputLocationsCount_112                 (112)
+#define REDGPU_2_EXPECTED_maxFragmentOutputColorsCount_8                     (8)
+#define REDGPU_2_EXPECTED_maxFragmentOutputColorsCountBlendDualSource_1      (1)
+#define REDGPU_2_EXPECTED_maxFragmentOutputResourcesCount_16                 (16)
+#define REDGPU_2_EXPECTED_maxComputeSharedMemoryBytesCount_16384             (16384)
+#define REDGPU_2_EXPECTED_maxComputeWorkgroupsCountX_65535                   (65535)
+#define REDGPU_2_EXPECTED_maxComputeWorkgroupsCountY_65535                   (65535)
+#define REDGPU_2_EXPECTED_maxComputeWorkgroupsCountZ_65535                   (65535)
+#define REDGPU_2_EXPECTED_maxComputeWorkgroupInvocationsCount_1024           (1024)
+#define REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsX_1024                (1024)
+#define REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsY_1024                (1024)
+#define REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsZ_64                  (64)
+#define REDGPU_2_EXPECTED_minImageSampleImageFetchOffset_minus_8             (-8)
+#define REDGPU_2_EXPECTED_maxImageSampleImageFetchOffset_7                   (7)
+#define REDGPU_2_EXPECTED_minImageGatherOffset_minus_32                      (-32)
+#define REDGPU_2_EXPECTED_maxImageGatherOffset_31                            (31)
+#define REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayBytesFirstBytesAlignment_128           (128)
+#define REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayTexelsCountToNextRowBytesAlignment_128 (128)
 
-typedef enum Red2HandleType {
-  RED2_HANDLE_TYPE_STRUCT_DECLARATION   = 20020,
-  RED2_HANDLE_TYPE_PROCEDURE_PARAMETERS = 20017,
-  RED2_HANDLE_TYPE_CALLS                = 20006,
-} Red2HandleType;
+// red2MemoryAllocate
 
-// red2CreateContext
+typedef struct Red2Memory {
+  RedHandleMemory handle;
+  uint64_t        currentSuballocateOffset;
+  uint64_t        bytesCount;
+  unsigned        gpuIndex;
+  unsigned        memoryTypeIndex;
+} Red2Memory;
 
-typedef struct Red2TypeContext {
-  RedContext context;
-  void *     redgpu2InternalData;
-} Red2TypeContext;
+// red2StructsMemorySuballocateStruct
 
-// red2CreateStructDeclaration
+typedef struct Red2Struct {
+  RedHandleStruct            handle;
+  RedHandleStructDeclaration handleDeclaration; // Kept alive for redStructsSet
+} Red2Struct;
 
-#ifdef REDGPU_USE_REDGPU_X
-#define RED2_STRUCT_MEMBER_TYPE_ARRAY_RO REDX_STRUCT_MEMBER_TYPE_ARRAY_RO
-#else
-#define RED2_STRUCT_MEMBER_TYPE_ARRAY_RO RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW
-#endif
+// red2CreateArray
+
+typedef struct Red2Array {
+  RedHandleArray  handle;
+  RedHandleMemory handleOptionalDedicatedOrMappableMemory;
+} Red2Array;
+
+// red2CreateImage
+
+typedef struct Red2Image {
+  RedHandleImage   handle;
+  RedHandleMemory  handleOptionalDedicatedMemory;
+  RedHandleTexture textureRO;                     // Color and depth-only
+  RedHandleTexture textureRW;                     // Color and depth-only
+  RedHandleTexture textureOutputRenderTarget;     // Color and depth-only
+} Red2Image;
 
 // red2CreateProcedureParameters
 
+typedef struct Red2ProcedureParametersDeclarationStruct {
+  unsigned                                  structDeclarationMembersCount;
+  const RedStructDeclarationMember *        structDeclarationMembers;
+  unsigned                                  structDeclarationMembersArrayROCount;
+  const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO;
+} Red2ProcedureParametersDeclarationStruct;
+
 typedef struct Red2ProcedureParametersDeclaration {
-  unsigned                    variablesSlot;
-  RedVisibleToStageBitflags   variablesVisibleToStages;
-  unsigned                    variablesBytesCount;
-  unsigned                    structsDeclarationsCount; // Max: 7
-  Red2HandleStructDeclaration structsDeclarations[7];
-  RedHandleStructDeclaration  handlesDeclaration;
+  unsigned                                   variablesSlot;
+  RedVisibleToStageBitflags                  variablesVisibleToStages;
+  unsigned                                   variablesBytesCount;
+  unsigned                                   structsDeclarationsCount; // Max: 7
+  Red2ProcedureParametersDeclarationStruct   structsDeclarations[7];
+  Red2ProcedureParametersDeclarationStruct * handlesDeclaration;
 } Red2ProcedureParametersDeclaration;
 
-// red2CreateProcedure
+// redCreateCalls
+// redCreateCallsReusable
 
-typedef struct Red2ProcedureDependencyOnRenderTargets {
-  unsigned                   colorsTextureFormat[8];              // RedFormat or RedXFormat
-  unsigned                   depthStencilTextureFormat;           // RedFormat or RedXFormat
-  RedMultisampleCountBitflag colorsTextureMultisampleCount[8];
-  RedMultisampleCountBitflag depthStencilTextureMultisampleCount;
-} Red2ProcedureDependencyOnRenderTargets;
+typedef struct Red2Output {
+  RedHandleOutput            handle;
+  RedHandleOutputDeclaration handleDeclaration;
+} Red2Output;
 
-// red2PickResourceMemoryTypeIndex
+typedef struct Red2Calls {
+  RedCalls     calls;
+  unsigned     outputsArrayMaxCount;            // Provided by the user
+  unsigned     mutableOutputsArrayCurrentCount;
+  Red2Output * mutableOutputsArray;             // Provided by the user and mutated internally by REDGPU 2, an array of outputsArrayMaxCount elements
+} Red2Calls;
 
-typedef enum Red2ResourceDesiredMemoryType {
-  RED2_RESOURCE_DESIRED_MEMORY_TYPE_VRAM     = 0,
-  RED2_RESOURCE_DESIRED_MEMORY_TYPE_UPLOAD   = 1,
-  RED2_RESOURCE_DESIRED_MEMORY_TYPE_READBACK = 2,
-} Red2ResourceDesiredMemoryType;
+#ifndef REDGPU_2_USER_DECLSPEC
+#define REDGPU_2_USER_DECLSPEC
+#endif
 
-// red2StructDeclarationGetMembersPointer
-
-typedef struct Red2StructDeclarationMember {
-  unsigned                  slot;
-  RedStructMemberType       type;
-  unsigned                  count;
-  RedVisibleToStageBitflags visibleToStages;
-  RedHandleSampler          inlineSampler;
-} Red2StructDeclarationMember;
-
-// red2CallSetRenderTargets
-
-typedef struct Red2RenderTargetsDiscard {
-  Red2Bool8 discardSetRenderTargetsColors[8];
-  Red2Bool8 discardSetRenderTargetsDepth;
-  Red2Bool8 discardSetRenderTargetsStencil;
-
-  Red2Bool8 discardEndRenderTargetsColors[8];
-  Red2Bool8 discardEndRenderTargetsDepth;
-  Red2Bool8 discardEndRenderTargetsStencil;
-} Red2RenderTargetsDiscard;
-
-// red2CallAllocateAndSetInlineStructsMemoryFromProcedureParameters
-
-typedef struct Red2InlineStructsMemoryFromProcedureParameters {
-  Red2HandleProcedureParameters procedureParameters;
-  unsigned                      procedureParametersAllocationsCount;
-  unsigned                      procedureParametersStructsOptionalAllocationsCount[7];
-} Red2InlineStructsMemoryFromProcedureParameters;
-
-// REDGPU 2 streams
-
-typedef struct Red2StreamsHighway {
-  unsigned             maxStreamsBeforeNullCount;
-  RedHandleGpuSignal * perStreamsBeforeNullSignaledGpuSignal; // Array of maxStreamsBeforeNullCount
-} Red2StreamsHighway;
+#ifndef REDGPU_2_USER_API
+#define REDGPU_2_USER_API
+#endif
 
 #ifndef REDGPU_2_DECLSPEC
 #define REDGPU_2_DECLSPEC
@@ -106,137 +155,102 @@ typedef struct Red2StreamsHighway {
 #define REDGPU_2_API
 #endif
 
-// REDGPU 2 use-instead procedures
+#define REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(CURRENT_BYTES, ALIGNMENT) ( ((ALIGNMENT) - (CURRENT_BYTES) % (ALIGNMENT)) % (ALIGNMENT) )
 
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateContext                    (RedTypeProcedureMalloc malloc, RedTypeProcedureFree free, RedTypeProcedureMallocTagged optionalMallocTagged, RedTypeProcedureFreeTagged optionalFreeTagged, RedTypeProcedureDebugCallback debugCallback, RedSdkVersion sdkVersion, unsigned sdkExtensionsCount, const unsigned * sdkExtensions, const char * optionalProgramName, unsigned optionalProgramVersion, const char * optionalEngineName, unsigned optionalEngineVersion, const void * optionalSettings, Red2Context * outContext2, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateImage                      (RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned xformat, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, RedImage * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateTexture                    (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned xformat, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateStructDeclaration          (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, RedBool32 procedureParametersHandlesDeclaration, Red2HandleStructDeclaration * outStructDeclaration, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateProcedureParameters        (RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, Red2HandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateProcedure                  (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, const Red2ProcedureDependencyOnRenderTargets * procedureDependencyOnRenderTargets, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateCalls                      (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateCallsReusable              (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+#define REDGPU_2_EXPECT(CONDITION) if (!(CONDITION)) { red2Crash(#CONDITION, __FUNCTION__, optionalFile, optionalLine); }
 
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyContext                   (Red2Context context2, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStructDeclaration         (RedContext context, RedHandleGpu gpu, Red2HandleStructDeclaration structDeclaration, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyProcedureParameters       (RedContext context, RedHandleGpu gpu, Red2HandleProcedureParameters procedureParameters, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyCalls                     (RedContext context, RedHandleGpu gpu, Red2HandleCalls calls, const char * optionalFile, int optionalLine, void * optionalUserData);
+// red2Crash is expected to be defined and exposed by the user.
+REDGPU_2_USER_DECLSPEC void REDGPU_2_USER_API red2Crash(const char * error, const char * functionName, const char * optionalFile, int optionalLine);
 
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallsSet                         (Red2HandleCalls calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallsEnd                         (Red2HandleCalls calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallsAppendHandleToDestroy       (Red2HandleCalls calls, uint64_t handleToDestroyWhenCallsAreReset, unsigned handleToDestroyWhenCallsAreResetType);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallsFreeAllInlineStructsMemorys (Red2HandleCalls calls, const char * optionalFile, int optionalLine, void * optionalUserData);
+// Memory
 
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2PresentGetImageIndex             (Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, RedHandleCpuSignal signalCpuSignal, RedHandleGpuSignal signalGpuSignal, unsigned * outImageIndex, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2GetWsiStoredGpuSignal            (Red2Context context2, RedHandleGpu gpu, RedHandlePresent present, unsigned presentImageIndex, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2QueueSubmit                      (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2QueueSubmitTrackableSimple       (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, unsigned callsCount, const Red2HandleCalls * calls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redMemoryGetBudget                 (RedContext context, RedHandleGpu gpu, RedMemoryBudget * outMemoryBudget, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2MemoryAllocate                 (RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, unsigned memoryBitflags, Red2Memory * outMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redMemoryMap                       (RedContext context, RedHandleGpu gpu, RedHandleMemory mappableMemory, uint64_t mappableMemoryBytesFirst, uint64_t mappableMemoryBytesCount, void ** outVolatilePointer, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redMemoryUnmap                     (RedContext context, RedHandleGpu gpu, RedHandleMemory mappableMemory, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redMemoryNonCoherentFlush          (RedContext context, RedHandleGpu gpu, unsigned mappableMemoryRangesCount, const RedMappableMemoryRange * mappableMemoryRanges, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redMemoryNonCoherentInvalidate     (RedContext context, RedHandleGpu gpu, unsigned mappableMemoryRangesCount, const RedMappableMemoryRange * mappableMemoryRanges, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedXOnlyCreateQueue              (RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 canCopy, RedBool32 canDraw, RedBool32 canCompute, unsigned priority, RedBool32 disableGpuTimeout, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2QueueWaitIdle                    (RedContext context, RedHandleGpu gpu, RedHandleQueue presentQueue, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2GpuWaitIdle                      (RedContext context, const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine, void * optionalUserData);
+// Struct
 
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2PickResourceMemoryTypeIndex      (const RedGpuInfo * gpuInfo, RedBool32 requireMappableMemoryCoherency, Red2ResourceDesiredMemoryType resourceDesiredMemoryType, unsigned resourceMemoryTypesSupported);
+REDGPU_DECLSPEC   void REDGPU_API   redStructsMemoryAllocate           (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redStructsMemoryAllocateSamplersWithInlineSamplers (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned maxStructsCount, unsigned maxStructsMembersOfTypeSamplerCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, RedHandleStructsMemory * outStructsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleStructsMemory structsMemory, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, Red2Struct * outStruct, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redStructsMemoryReset              (RedContext context, RedHandleGpu gpu, RedHandleStructsMemory structsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redStructsSet                      (RedContext context, RedHandleGpu gpu, unsigned structsMembersCount, const RedStructMember * structsMembers, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-// REDGPU 2 queue submission state procedures
+// Create
 
-REDGPU_2_DECLSPEC RedBool32 REDGPU_2_API red2IsQueueSubmissionFinished                                    (Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC RedBool32 REDGPU_2_API red2IsQueueSubmissionFinishedByTicketAlone                       (Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC RedBool32 REDGPU_2_API red2AreAllQueueSubmissionsFinishedUpToAndIncludingTicket         (Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2WaitForQueueSubmissionToFinish                               (Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2WaitForQueueSubmissionToFinishByTicketAlone                  (Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2WaitForAllQueueSubmissionsToFinishUpToAndIncludingTicket     (Red2Context context2, RedHandleGpu gpu, uint64_t queueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2WaitForAllQueueSubmissionsToFinish                           (Red2Context context2, RedHandleGpu gpu, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateContext                   (RedTypeProcedureMalloc malloc, RedTypeProcedureFree free, RedTypeProcedureMallocTagged optionalMallocTagged, RedTypeProcedureFreeTagged optionalFreeTagged, RedTypeProcedureDebugCallback debugCallback, RedSdkVersion sdkVersion, unsigned sdkExtensionsCount, const unsigned * sdkExtensions, const char * optionalProgramName, unsigned optionalProgramVersion, const char * optionalEngineName, unsigned optionalEngineVersion, const void * optionalSettings, RedContext * outContext, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuarantees        (const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectAllMemoryToBeCoherent    (const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMemoryTypes              (const RedGpuInfo * gpuInfo, unsigned expectedMemoryHeapsCount, const RedMemoryHeap * expectedMemoryHeaps, unsigned expectedMemoryTypesCount, const RedMemoryType * expectedMemoryTypes, const char * optionalFile, int optionalLine);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray                    (RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, unsigned initialQueueFamilyIndex, uint64_t maxAllowedOverallocationBytesCount, RedBool32 dedicate, RedBool32 mappable, unsigned dedicateOrMappableMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Array * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage                    (RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, unsigned initialQueueFamilyIndex, RedBool32 createTextureRO, RedBool32 createTextureRW, RedBool32 createTextureOutputRenderTarget, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateSampler                   (RedContext context, RedHandleGpu gpu, const char * handleName, RedSamplerFiltering filteringMag, RedSamplerFiltering filteringMin, RedSamplerFilteringMip filteringMip, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateU, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateV, RedSamplerBehaviorOutsideTextureCoordinate behaviorOutsideTextureCoordinateW, float mipLodBias, RedBool32 enableAnisotropy, float maxAnisotropy, RedBool32 enableCompare, RedCompareOp compareOp, float minLod, float maxLod, RedHandleSampler * outSampler, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateTexture                   (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleImage image, RedImagePartBitflags parts, RedTextureDimensions dimensions, RedFormat format, unsigned levelsFirst, unsigned levelsCount, unsigned layersFirst, unsigned layersCount, RedAccessBitflags restrictToAccess, RedHandleTexture * outTexture, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateGpuCode                   (RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t irBytesCount, const void * ir, RedHandleGpuCode * outGpuCode, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters      (RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, RedHandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateProcedureCache            (RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t fromBlobBytesCount, const void * fromBlob, RedHandleProcedureCache * outProcedureCache, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_API   red2CreateProcedure                (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateProcedureCompute          (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, RedHandleProcedureParameters procedureParameters, const char * gpuCodeMainProcedureName, RedHandleGpuCode gpuCode, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateCpuSignal                 (RedContext context, RedHandleGpu gpu, const char * handleName, RedBool32 createSignaled, RedHandleCpuSignal * outCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateGpuSignal                 (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleGpuSignal * outGpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateGpuToCpuSignal            (RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleGpuToCpuSignal * outGpuToCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateCalls                     (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCreateCallsReusable             (RedContext context, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-// REDGPU 2 get and set handle data procedures
+// Destroy
 
-REDGPU_2_DECLSPEC RedHandleStructDeclaration    REDGPU_2_API red2StructDeclarationGetRedHandle            (Red2HandleStructDeclaration structDeclaration);
-REDGPU_2_DECLSPEC Red2StructDeclarationMember * REDGPU_2_API red2StructDeclarationGetMembersPointer       (Red2HandleStructDeclaration structDeclaration);
-REDGPU_2_DECLSPEC void                          REDGPU_2_API red2StructDeclarationGetMembersCounts        (Red2HandleStructDeclaration structDeclaration, unsigned * outStructDeclarationMembersCount, unsigned * outMembersOfTypeArrayROConstantCount, unsigned * outMembersOfTypeArrayROOrArrayRWCount, unsigned * outMembersOfTypeTextureROCount, unsigned * outMembersOfTypeTextureRWCount, unsigned * outMembersOfTypeInlineSamplerCount, unsigned * outMembersOfTypeSamplerCount);
-REDGPU_2_DECLSPEC RedHandleProcedureParameters  REDGPU_2_API red2ProcedureParametersGetRedHandle          (Red2HandleProcedureParameters procedureParameters);
-REDGPU_2_DECLSPEC Red2HandleStructDeclaration   REDGPU_2_API red2ProcedureParametersGetStructDeclaration  (Red2HandleProcedureParameters procedureParameters, unsigned structIndex);
-REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsGetRedHandles                       (Red2HandleCalls calls, RedContext * outContext, RedHandleGpu * outGpu, RedCalls * outCalls);
-REDGPU_2_DECLSPEC uint64_t *                    REDGPU_2_API red2CallsGetHandlesToDestroy                 (Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetCount);
-REDGPU_2_DECLSPEC unsigned *                    REDGPU_2_API red2CallsGetHandlesToDestroyType             (Red2HandleCalls calls, uint64_t * outHandlesToDestroyWhenCallsAreResetTypeCount);
-REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsSetHandlesToDestroyCustomCallback   (Red2HandleCalls calls, void * optionalCustomHandleAndHandleTypeDestroyWhenCallsAreResetCallback);
-REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsGetQueueSubmitTrackableTicket       (Red2HandleCalls calls, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket);
-REDGPU_2_DECLSPEC void                          REDGPU_2_API red2CallsSetQueueSubmitTrackableTicket       (Red2HandleCalls calls, uint64_t queueSubmissionTicketArrayIndex, uint64_t queueSubmissionTicket);
+REDGPU_DECLSPEC   void REDGPU_API   redDestroyContext                  (RedContext context, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyHandle                  (RedContext context, RedHandleGpu gpu, RedHandleType handleType, void * handle, void * optionalHandle2, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-// REDGPU 2 calls recording
+// Procedure cache
 
-// REDGPU 2
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallResolveDepthStencilTexture                               (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture sourceDepthStencilTexture, RedFormat sourceDepthStencilTextureFormatRedOnly, RedMultisampleCountBitflag sourceDepthStencilTextureMultisampleCount, RedHandleTexture targetDepthStencilTexture, unsigned targetDepthStencilTextureFormatRedXOnly, RedResolveMode depthResolveModeRedOnly, RedResolveMode stencilResolveModeRedOnly, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallResolveColorTexture                                      (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture sourceColorTexture, RedFormat sourceColorTextureFormatRedOnly, RedMultisampleCountBitflag sourceColorTextureMultisampleCount, RedHandleTexture targetColorTexture, unsigned targetColorTextureFormatRedXOnly, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallClearDepthStencilTexture                                 (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormatRedOnly, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, RedBool32 clearDepth, float depthClearValue, RedBool32 clearStencil, unsigned stencilClearValue, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallClearColorTexture                                        (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture colorTexture, RedFormat colorTextureFormatRedOnly, RedMultisampleCountBitflag colorTextureMultisampleCount, float colorClearValueR, float colorClearValueG, float colorClearValueB, float colorClearValueA, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedXOnlyCallDiscardResource                                  (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, void * handleResource, const void * optionalDiscardRegion);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetRenderTargets                                         (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, unsigned width, unsigned height, RedHandleTexture depthStencilTexture, RedFormat depthStencilTextureFormatRedOnly, RedMultisampleCountBitflag depthStencilTextureMultisampleCount, unsigned colorsTextureCountMax8, const RedHandleTexture * colorsTexture, const RedFormat * colorsTextureFormatRedOnly, const RedMultisampleCountBitflag * colorsTextureMultisampleCount, const Red2RenderTargetsDiscard * optionalDiscardRedOnly, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallEndRenderTargets                                         (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallAllocateAndSetInlineStructsMemory                        (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, const char * structsMemoryHandleName, unsigned maxStructsCount, unsigned maxStructsOfTypeSamplerCount, unsigned maxStructsMembersOfTypeArrayROConstantCount, unsigned maxStructsMembersOfTypeArrayROOrArrayRWCount, unsigned maxStructsMembersOfTypeTextureROCount, unsigned maxStructsMembersOfTypeTextureRWCount, unsigned maxStructsMembersOfTypeInlineSamplerCount, unsigned maxStructsMembersOfTypeSamplerCount, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallAllocateAndSetInlineStructsMemoryFromProcedureParameters (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, const char * structsMemoryHandleName, unsigned procedureParametersCount, const Red2InlineStructsMemoryFromProcedureParameters * procedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallSuballocateAndSetProcedureParametersInlineStruct         (const RedCallProceduresAndAddresses * addresses, Red2HandleCalls calls, RedProcedureType procedureType, Red2HandleProcedureParameters procedureParameters, unsigned structIndex, void ** structAllRedHandlesInParameterArrayOrderOfRed2CreateStructDeclarationStructDeclarationMembers, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-// REDGPU
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallGpuToCpuSignalSignal             (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleGpuToCpuSignal signalGpuToCpuSignal, unsigned setTo8192);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallCopyArrayToArray                 (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray arrayR, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayRange * ranges);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallProcedure                        (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned vertexCount, unsigned instanceCount, unsigned vertexFirst, unsigned instanceFirst);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallProcedureIndexed                 (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned indexCount, unsigned instanceCount, unsigned indexFirst, int vertexBase, unsigned instanceFirst);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallProcedureCompute                 (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned workgroupsCountX, unsigned workgroupsCountY, unsigned workgroupsCountZ);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetProcedure                     (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedure procedure);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetProcedureIndices              (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray array, uint64_t setTo0, unsigned setTo1);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetProcedureParametersVariables  (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleProcedureParameters procedureParameters, RedVisibleToStageBitflags visibleToStages, unsigned variablesBytesFirst, unsigned dataBytesCount, const void * data);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetProcedureParametersStructs    (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsFirst, unsigned structsCount, const RedHandleStruct * structs, unsigned setTo0, size_t setTo00);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetProcedureParametersHandles    (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters, unsigned procedureParametersDeclarationStructsDeclarationsCount, unsigned handlesCount, const RedProcedureParametersHandle * handles);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetDynamicStencilReference       (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedStencilFace face, unsigned reference);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetDynamicBlendConstants         (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, const float * blendConstants);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetDynamicViewport               (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, float x, float y, float width, float height, float depthMin, float depthMax);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetDynamicScissor                (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, int x, int y, unsigned width, unsigned height);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetStructsMemory                 (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleStructsMemory structsMemory, RedHandleStructsMemory structsMemorySamplers);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallSetProcedureParameters           (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallMark                             (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, const char * mark);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallMarkSet                          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, const char * mark);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallMarkEnd                          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls);
-// Backend-specific
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallCopyImageToImage          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleImage imageW, unsigned setTo01, unsigned rangesCount, const RedCopyImageRange * ranges);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallCopyArrayToImage          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleArray arrayR, RedHandleImage imageW, unsigned setTo1, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallCopyImageToArray          (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedHandleImage imageR, unsigned setTo1, RedHandleArray arrayW, unsigned rangesCount, const RedCopyArrayImageRange * ranges);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedXOnlyCallCopyImageRegion          (RedHandleCalls calls, unsigned copiesCount, const void * copies);
-REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2RedOnlyCallDiscardImageAndSetState   (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned imagesCount, const RedHandleImage * images, RedImagePartBitflags imagesAllParts, RedState state);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallBarrierUsagePresentToImage       (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, RedHandleImage presentImage, RedAccessStageBitflags newAccessStages, RedAccessBitflags newAccess, RedBool32 presentImageDiscardPreviousContent);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallBarrierUsageImageToPresent       (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, RedHandleImage presentImage, RedAccessStageBitflags oldAccessStages, RedAccessBitflags oldAccess);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CallBarrierOrderGlobalMemory         (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls);
-REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2CallBarrierOrderResourceMemory       (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays, unsigned imagesCount, const RedHandleImage * images, const RedImagePartBitflags * imagesAllParts);
-REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2RedOnlyCallBarrierFinishCpuUpload    (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays);
-REDGPU_2_DECLSPEC RedStatus REDGPU_2_API red2RedOnlyCallBarrierFinishCpuReadback  (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, unsigned arraysCount, const RedHandleArray * arrays);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedOnlyCallBarrierUsageAliasOrder    (const RedCallProceduresAndAddresses * addresses, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, RedBool32 dependencyByRegion);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2RedXOnlyCallBarrierUsageAliasOrder   (RedHandleCalls calls, unsigned barriersCount, const void * barriers);
+REDGPU_DECLSPEC   void REDGPU_API   redProcedureCacheGetBlob           (RedContext context, RedHandleGpu gpu, RedHandleProcedureCache procedureCache, uint64_t * outBlobBytesCount, void * outBlob, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redProcedureCacheMergeCaches       (RedContext context, RedHandleGpu gpu, unsigned sourceProcedureCachesCount, const RedHandleProcedureCache * sourceProcedureCaches, RedHandleProcedureCache targetProcedureCache, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyGetRedXAccessBitflagsFromRed (RedAccessBitflags access); // For red2RedXOnlyCallBarrierUsageAliasOrder
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyArrayGetMemoryTypeIndex      (RedHandleArray array);     // For red2RedXOnlyCallBarrierUsageAliasOrder
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLevelsCount          (RedHandleImage image);     // For red2RedXOnlyCallBarrierUsageAliasOrder
-REDGPU_2_DECLSPEC unsigned  REDGPU_2_API red2RedXOnlyImageGetLayersCount          (RedHandleImage image);     // For red2RedXOnlyCallBarrierUsageAliasOrder
-REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyArrayGetHandleResource       (RedHandleArray array);     // For red2RedXOnlyCallBarrierUsageAliasOrder
-REDGPU_2_DECLSPEC void *    REDGPU_2_API red2RedXOnlyImageGetHandleResource       (RedHandleImage image);     // For red2RedXOnlyCallBarrierUsageAliasOrder
+// CPU signal
 
-// REDGPU 2 streams
+REDGPU_DECLSPEC   void REDGPU_API   redCpuSignalGetStatus              (RedContext context, RedHandleGpu gpu, RedHandleCpuSignal cpuSignal, RedStatus * outStatus, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCpuSignalWait                   (RedContext context, RedHandleGpu gpu, unsigned cpuSignalsCount, const RedHandleCpuSignal * cpuSignals, RedBool32 waitAll, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCpuSignalUnsignal               (RedContext context, RedHandleGpu gpu, unsigned cpuSignalsCount, const RedHandleCpuSignal * cpuSignals, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateStream                         (Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned queueFamilyIndex, RedHandleQueue signalGpuSignalOnQueue, Red2HandleStream * outStream, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2CreateStreamsHighway                 (Red2Context context2, RedHandleGpu gpu, const char * handleName, unsigned maxStreamsBeforeNullCount, RedHandleQueue signalGpuSignalsOnQueue, Red2StreamsHighway * outHighway, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStream                        (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2DestroyStreamsHighway                (Red2Context context2, RedHandleGpu gpu, const Red2StreamsHighway * highway, const char * optionalFile, int optionalLine, void * optionalUserData);
+// GPU to CPU signal
 
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamGetCalls                       (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, Red2HandleCalls * outCalls, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamSubmitCalls                    (Red2Context context2, RedHandleGpu gpu, Red2HandleStream stream, unsigned callsCount, const Red2HandleCalls * calls, const char * optionalFile, int optionalLine, void * optionalUserData);
-REDGPU_2_DECLSPEC void      REDGPU_2_API red2StreamFlushToQueue                   (Red2Context context2, RedHandleGpu gpu, RedHandleQueue queue, const Red2StreamsHighway * highway, unsigned waitForAndUnsignalGpuSignalsCount, const RedHandleGpuSignal * waitForAndUnsignalGpuSignals, unsigned streamsCount, const Red2HandleStream * streams, unsigned signalGpuSignalsCount, const RedHandleGpuSignal * signalGpuSignals, uint64_t * outQueueSubmissionTicketArrayIndex, uint64_t * outQueueSubmissionTicket, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redGpuToCpuSignalGetStatus         (RedContext context, RedHandleGpu gpu, RedHandleGpuToCpuSignal gpuToCpuSignal, RedStatus * outStatus, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redGpuToCpuSignalUnsignal          (RedContext context, RedHandleGpu gpu, RedHandleGpuToCpuSignal gpuToCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-// REDGPU 2 changes from 28 Nov 2024:
+// Calls
 
-#ifndef red2CreateWsiTransientGpuSignal
-#define red2CreateWsiTransientGpuSignal REDGPU_2_COMPILE_TIME_ERROR_on_28_Nov_2024_red2CreateWsiTransientGpuSignal_was_renamed_to_red2GetWsiStoredGpuSignal
-#endif
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet                       (RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, unsigned * mutateOutputsArrayCurrentCount, Red2Output * mutateOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCallsEnd                        (RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
-#ifndef red2CallUsageAliasOrderBarrier
-#define red2CallUsageAliasOrderBarrier REDGPU_2_COMPILE_TIME_ERROR_on_28_Nov_2024_red2CallUsageAliasOrderBarrier_was_removed_so_use_both_red2RedOnlyCallBarrierUsageAliasOrder_and_red2RedXOnlyCallBarrierUsageAliasOrder_instead
-#endif
+// Calls recording
+
+REDGPU_DECLSPEC   void REDGPU_API   redGetCallProceduresAndAddresses   (RedContext context, RedHandleGpu gpu, RedCallProceduresAndAddresses * outCallProceduresAndAddresses, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCallSetDynamicViewport          (RedTypeProcedureAddressCallSetDynamicViewport     address, RedHandleCalls calls, float x, float y, float width, float height, float depthMin, float depthMax);
+REDGPU_DECLSPEC   void REDGPU_API   redCallSetDynamicScissor           (RedTypeProcedureAddressCallSetDynamicScissor      address, RedHandleCalls calls, int x, int y, unsigned width, unsigned height);
+REDGPU_DECLSPEC   void REDGPU_API   redCallSetStructsMemory            (RedTypeProcedureAddressCallSetStructsMemory       address, RedHandleCalls calls, RedHandleStructsMemory structsMemory, RedHandleStructsMemory structsMemorySamplers);
+REDGPU_DECLSPEC   void REDGPU_API   redCallSetProcedureParameters      (RedTypeProcedureAddressCallSetProcedureParameters address, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput         (RedTypeProcedureAddressCallSetProcedureOutput     address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, unsigned outputsArrayMaxCount, unsigned * mutateOutputsArrayCurrentCount, Red2Output * mutateOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redCallEndProcedureOutput          (RedTypeProcedureAddressCallEndProcedureOutput     address, RedHandleCalls calls);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalOrderBarrier         (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalReadbackBarrier      (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
+REDGPU_DECLSPEC   void REDGPU_API   redCallUsageAliasOrderBarrier      (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, unsigned aliasesCount, const RedAlias * aliases, unsigned ordersCount, const RedOrder * orders, RedBool32 dependencyByRegion);
+REDGPU_DECLSPEC   void REDGPU_API   redCallMark                        (RedTypeProcedureAddressCallMark                   address, RedHandleCalls calls, const char * mark);
+REDGPU_DECLSPEC   void REDGPU_API   redCallMarkSet                     (RedTypeProcedureAddressCallMarkSet                address, RedHandleCalls calls, const char * mark);
+REDGPU_DECLSPEC   void REDGPU_API   redCallMarkEnd                     (RedTypeProcedureAddressCallMarkEnd                address, RedHandleCalls calls);
+
+// Queue
+
+REDGPU_DECLSPEC   void REDGPU_API   redQueueSubmit                     (RedContext context, RedHandleGpu gpu, RedHandleQueue queue, unsigned timelinesCount, const RedGpuTimeline * timelines, RedHandleCpuSignal signalCpuSignal, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+
+// Mark
+
+REDGPU_DECLSPEC   void REDGPU_API   redMark                            (const char * mark, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redMarkSet                         (const char * mark, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_DECLSPEC   void REDGPU_API   redMarkEnd                         (const char * optionalFile, int optionalLine, void * optionalUserData);
 
 #ifdef __cplusplus
 }
