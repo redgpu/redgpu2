@@ -6,16 +6,10 @@
 #define REDGPU_DISABLE_NAMED_PARAMETERS
 #endif
 
-#ifdef _WIN32
-#include "C:/RedGpuSDK/misc/np/np.h"
-#include "C:/RedGpuSDK/misc/np/np_redgpu.h"
-#endif
-#ifdef __linux__
-#include "/opt/RedGpuSDK/misc/np/np.h"
-#include "/opt/RedGpuSDK/misc/np/np_redgpu.h"
-#endif
+#include "misc/np/np.h"
+#include "misc/np/np_redgpu.h"
 
-static unsigned red2InternalGetGpuIndex(RedContext context, RedHandleGpu gpu, const char * optionalFile, int optionalLine) {
+static unsigned red2InternalGetGpuIndex(RedContext context, RedHandleGpu gpu) {
   unsigned gpuIndex = (unsigned)-1;
   for (unsigned i = 0; i < context->gpusCount; i += 1) {
     if (context->gpus[i].gpu == gpu) {
@@ -23,12 +17,12 @@ static unsigned red2InternalGetGpuIndex(RedContext context, RedHandleGpu gpu, co
       break;
     }
   }
-  REDGPU_2_EXPECT(gpuIndex != (unsigned)-1);
   return gpuIndex;
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2MemoryAllocate(RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, unsigned memoryBitflags, Red2Memory * outMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu, optionalFile, optionalLine);
+  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
+  REDGPU_2_EXPECT(gpuIndex != (unsigned)-1);
 
   REDGPU_2_EXPECT(context->gpus[gpuIndex].memoryTypes[memoryTypeIndex].isCpuMappable == 0);
 
@@ -291,7 +285,8 @@ static void red2InternalStatusesCopyFromTo(const RedStatuses * from, RedStatuses
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, unsigned initialQueueFamilyIndex, uint64_t maxAllowedOverallocationBytesCount, RedBool32 dedicate, RedBool32 mappable, unsigned dedicateOrMappableMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Array * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu, optionalFile, optionalLine);
+  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
+  REDGPU_2_EXPECT(gpuIndex != (unsigned)-1);
   
   RedArray array = {0};
   np14(redCreateArray,
@@ -431,11 +426,11 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
   outArray->handleOptionalDedicatedOrMappableMemory = (dedicate == 1 || mappable == 1) ? pickedMemory->handle : NULL;
 }
 
-static RedImagePartBitflags red2InternalGetFormatToImageParts(RedFormat format, const char * optionalFile, int optionalLine) {
-  REDGPU_2_EXPECT(format != RED_FORMAT_UNDEFINED);
+static RedImagePartBitflags red2InternalGetFormatToImageParts(RedFormat format) {
   // Filling
   RedFormat;
-  if      (format == RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1)                { return RED_IMAGE_PART_BITFLAG_DEPTH; }
+  if      (format == RED_FORMAT_UNDEFINED)                                 { return 0; }
+  else if (format == RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1)                { return RED_IMAGE_PART_BITFLAG_DEPTH; }
   else if (format == RED_FORMAT_DEPTH_32_FLOAT)                            { return RED_IMAGE_PART_BITFLAG_DEPTH; }
   else if (format == RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT) { return RED_IMAGE_PART_BITFLAG_DEPTH | RED_IMAGE_PART_BITFLAG_STENCIL; }
   else if (format == RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT)             { return RED_IMAGE_PART_BITFLAG_DEPTH | RED_IMAGE_PART_BITFLAG_STENCIL; }
@@ -445,7 +440,8 @@ static RedImagePartBitflags red2InternalGetFormatToImageParts(RedFormat format, 
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, unsigned initialQueueFamilyIndex, RedBool32 createTextureRO, RedBool32 createTextureRW, RedBool32 createTextureOutputRenderTarget, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu, optionalFile, optionalLine);
+  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
+  REDGPU_2_EXPECT(gpuIndex != (unsigned)-1);
   
   REDGPU_2_EXPECT(dimensions != RED_IMAGE_DIMENSIONS_2D ? (createTextureRO == 0 && createTextureRW == 0 && createTextureOutputRenderTarget == 0) : 1); // Not supported: non-2D image textures.
   REDGPU_2_EXPECT(layersCount > 1 ? (createTextureOutputRenderTarget == 0) : 1); // Not supported: layered image output render target texture.
@@ -572,7 +568,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
   RedHandleTexture textureRW = NULL;
   RedHandleTexture textureOutputRenderTarget = NULL;
 
-  RedImagePartBitflags imageParts = red2InternalGetFormatToImageParts(format, optionalFile, optionalLine);
+  RedImagePartBitflags imageParts = red2InternalGetFormatToImageParts(format);
 
   if (imageParts == RED_IMAGE_PART_BITFLAG_COLOR || imageParts == RED_IMAGE_PART_BITFLAG_DEPTH) {
     if (createTextureRO == 1) {
