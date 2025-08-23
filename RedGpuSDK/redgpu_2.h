@@ -157,10 +157,11 @@ typedef struct Red2Calls {
 
 #define REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(CURRENT_BYTES, ALIGNMENT) ( ((ALIGNMENT) - (CURRENT_BYTES) % (ALIGNMENT)) % (ALIGNMENT) )
 
-#define REDGPU_2_EXPECT(CONDITION) if (!(CONDITION)) { red2Crash(#CONDITION, __FUNCTION__, optionalFile, optionalLine); }
+#define REDGPU_2_EXPECT(CONDITION)   if (!(CONDITION)) { red2Crash(#CONDITION, __FUNCTION__, 0, optionalFile, optionalLine); }
+#define REDGPU_2_EXPECTWG(CONDITION) if (!(CONDITION)) { red2Crash(#CONDITION, __FUNCTION__, gpu, optionalFile, optionalLine); }
 
 // red2Crash is expected to be defined and exposed by the user.
-REDGPU_2_USER_DECLSPEC void REDGPU_2_USER_API red2Crash(const char * error, const char * functionName, const char * optionalFile, int optionalLine);
+REDGPU_2_USER_DECLSPEC void REDGPU_2_USER_API red2Crash(const char * error, const char * functionName, RedHandleGpu optionalGpuHandle, const char * optionalFile, int optionalLine);
 
 // Memory
 

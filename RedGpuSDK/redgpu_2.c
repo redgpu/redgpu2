@@ -22,9 +22,9 @@ static unsigned red2InternalGetGpuIndex(RedContext context, RedHandleGpu gpu) {
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2MemoryAllocate(RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, unsigned memoryBitflags, Red2Memory * outMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
-  REDGPU_2_EXPECT(gpuIndex != (unsigned)-1);
+  REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
 
-  REDGPU_2_EXPECT(context->gpus[gpuIndex].memoryTypes[memoryTypeIndex].isCpuMappable == 0);
+  REDGPU_2_EXPECTWG(context->gpus[gpuIndex].memoryTypes[memoryTypeIndex].isCpuMappable == 0);
 
   RedHandleMemory handle = NULL;
   np13(redMemoryAllocate,
@@ -87,136 +87,139 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct(RedContex
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuarantees(const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine) {
-  REDGPU_2_EXPECT(gpuInfo->maxMemoryAllocateCount                      >= REDGPU_2_EXPECTED_maxMemoryAllocateCount_4096); // maxMemoryAllocationCount
-  REDGPU_2_EXPECT(gpuInfo->minMemoryAllocateBytesAlignment             <= REDGPU_2_EXPECTED_minMemoryAllocateBytesAlignment_4096); // minMemoryMapAlignment; RX 550 and Arc A770 and Arc B580 on Linux
-  REDGPU_2_EXPECT(gpuInfo->maxMemoryAllocateBytesCount                 >= REDGPU_2_EXPECTED_maxMemoryAllocateBytesCount_1073741824); // maxMemoryAllocationSize; Redmi Note 8 on Android 11; Not used: RX 550 and RX 9070 XT on Windows is 2147483648
-  REDGPU_2_EXPECT(gpuInfo->minMemoryNonCoherentBlockBytesCount         <= REDGPU_2_EXPECTED_minMemoryNonCoherentBlockBytesCount_256); // nonCoherentAtomSize
-  REDGPU_2_EXPECT(gpuInfo->maxCreateSamplerCount                       >= REDGPU_2_EXPECTED_maxCreateSamplerCount_4000); // maxSamplerAllocationCount
-  REDGPU_2_EXPECT(gpuInfo->minMemoryPageSeparationArrayImageBytesCount <= REDGPU_2_EXPECTED_minMemoryPageSeparationArrayImageBytesCount_65536); // bufferImageGranularity; D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT (65536)
-  REDGPU_2_EXPECT(gpuInfo->minArrayROCStructMemberRangeBytesAlignment  <= REDGPU_2_EXPECTED_minArrayROCStructMemberRangeBytesAlignment_256); // minUniformBufferOffsetAlignment; D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT (256)
-  REDGPU_2_EXPECT(gpuInfo->maxArrayROCStructMemberRangeBytesCount      >= REDGPU_2_EXPECTED_maxArrayROCStructMemberRangeBytesCount_65536); // maxUniformBufferRange; D3D12_REQ_CONSTANT_BUFFER_ELEMENT_COUNT (4096) * 16
-  REDGPU_2_EXPECT(gpuInfo->minArrayRORWStructMemberRangeBytesAlignment <= REDGPU_2_EXPECTED_minArrayRORWStructMemberRangeBytesAlignment_64); // minStorageBufferOffsetAlignment; Arc A770 and Arc B580 on Windows, Redmi Note 8 on Android 11; Not used: D3D12_RAW_UAV_SRV_BYTE_ALIGNMENT (16)
-  REDGPU_2_EXPECT(gpuInfo->maxArrayRORWStructMemberRangeBytesCount     >= REDGPU_2_EXPECTED_maxArrayRORWStructMemberRangeBytesCount_536870912); // maxStorageBufferRange; Redmi Note 8 on Android 11; Not used: Arc A770 and Arc B580 on Windows is 1073741820
-  REDGPU_2_EXPECT(gpuInfo->maxArrayIndexUint32Value                    == 0xFFFFFFFF); // maxDrawIndexedIndexValue
-  REDGPU_2_EXPECT(gpuInfo->maxImageDimensions1D                        >= REDGPU_2_EXPECTED_maxImageDimensions1D_16384); // maxImageDimension1D; D3D12_REQ_TEXTURE1D_U_DIMENSION (16384)
-  REDGPU_2_EXPECT(gpuInfo->maxImageDimensions2D                        >= REDGPU_2_EXPECTED_maxImageDimensions2D_16384); // maxImageDimension2D; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
-  REDGPU_2_EXPECT(gpuInfo->maxImageDimensions3D                        >= REDGPU_2_EXPECTED_maxImageDimensions3D_2048); // maxImageDimension3D; D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION (2048)
-  REDGPU_2_EXPECT(gpuInfo->maxImageDimensionsCube                      >= REDGPU_2_EXPECTED_maxImageDimensionsCube_16384); // maxImageDimensionCube; D3D12_REQ_TEXTURECUBE_DIMENSION (16384)
-  REDGPU_2_EXPECT(gpuInfo->maxImageLayersCount                         >= REDGPU_2_EXPECTED_maxImageLayersCount_2048); // maxImageArrayLayers; D3D12_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION (2048)
-  REDGPU_2_EXPECT(gpuInfo->maxSamplerMipLodBias                        >= REDGPU_2_EXPECTED_maxSamplerMipLodBias_15); // maxSamplerLodBias; RTX 2060; Not used: D3D12_MIP_LOD_BIAS_MAX (15.99f)
-  REDGPU_2_EXPECT(gpuInfo->maxSamplerAnisotropy                        >= REDGPU_2_EXPECTED_maxSamplerAnisotropy_16); // maxSamplerAnisotropy; D3D12_MAX_MAXANISOTROPY (16)
-  REDGPU_2_EXPECT(gpuInfo->precisionBitsSamplerFilteringMagMin         >= REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMagMin_8); // subTexelPrecisionBits; D3D12_SUBTEXEL_FRACTIONAL_BIT_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->precisionBitsSamplerFilteringMip            >= REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMip_8); // mipmapPrecisionBits; D3D12_MIP_LOD_FRACTIONAL_BIT_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->maxOutputWidth                              >= REDGPU_2_EXPECTED_maxOutputWidth_16384); // maxFramebufferWidth; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
-  REDGPU_2_EXPECT(gpuInfo->maxOutputHeight                             >= REDGPU_2_EXPECTED_maxOutputHeight_16384); // maxFramebufferHeight; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
-  REDGPU_2_EXPECT(gpuInfo->maxOutputColorsCount                        >= REDGPU_2_EXPECTED_maxOutputColorsCount_8); // maxColorAttachments; D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->supportedMultisampleCountsForOutputDepth    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
-  REDGPU_2_EXPECT(gpuInfo->supportedMultisampleCountsForOutputStencil  >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
-  REDGPU_2_EXPECT(gpuInfo->supportedMultisampleCountsForOutputColor    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
-  REDGPU_2_EXPECT(gpuInfo->supportedMultisampleCountsForEmptyOutput    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
-  REDGPU_2_EXPECT(gpuInfo->maxStructSlotsCount                         >= REDGPU_2_EXPECTED_maxStructSlotsCount_1024); // maxPerSetDescriptors; Arc A770 and Arc B580 on Linux
-  REDGPU_2_EXPECT(gpuInfo->maxStructPerStageArrayROCsCount             >= REDGPU_2_EXPECTED_maxStructPerStageArrayROCsCount_12); // maxPerStageDescriptorUniformBuffers; Not used: Tegra X1 on Linux is 15
-  REDGPU_2_EXPECT(gpuInfo->maxStructPerStageArrayRORWsCount            >= REDGPU_2_EXPECTED_maxStructPerStageArrayRORWsCount_524288); // maxPerStageDescriptorStorageBuffers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxStructPerStageSamplersCount              >= REDGPU_2_EXPECTED_maxStructPerStageSamplersCount_524288); // maxPerStageDescriptorSamplers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxStructPerStageTextureROsCount            >= REDGPU_2_EXPECTED_maxStructPerStageTextureROsCount_524288); // maxPerStageDescriptorSampledImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxStructPerStageTextureRWsCount            >= REDGPU_2_EXPECTED_maxStructPerStageTextureRWsCount_524288); // maxPerStageDescriptorStorageImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxStructPerStageAllResourcesCount          >= REDGPU_2_EXPECTED_maxStructPerStageAllResourcesCount_1572864); // maxPerStageResources; Redmi Note 8 on Android 11; Not used: RX 550 and RX 9070 XT on Linux is 8388606
-  REDGPU_2_EXPECT(gpuInfo->maxStructArrayROCsCount                     >= REDGPU_2_EXPECTED_maxStructArrayROCsCount_72); // maxDescriptorSetUniformBuffers; Not used: Tegra X1 on Linux is 90
-  REDGPU_2_EXPECT(gpuInfo->maxStructArrayRORWsCount                    >= REDGPU_2_EXPECTED_maxStructArrayRORWsCount_524288); // maxDescriptorSetStorageBuffers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxStructSamplersCount                      >= REDGPU_2_EXPECTED_maxStructSamplersCount_524288); // maxDescriptorSetSamplers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxStructTextureROsCount                    >= REDGPU_2_EXPECTED_maxStructTextureROsCount_524288); // maxDescriptorSetSampledImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxStructTextureRWsCount                    >= REDGPU_2_EXPECTED_maxStructTextureRWsCount_524288); // maxDescriptorSetStorageImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
-  REDGPU_2_EXPECT(gpuInfo->maxProcedureParametersVariablesBytesCount   >= REDGPU_2_EXPECTED_maxProcedureParametersVariablesBytesCount_128); // maxPushConstantsSize; Arc A770 on Linux, RX 550 on Windows, Redmi Note 8 on Android 11
-  REDGPU_2_EXPECT(gpuInfo->maxViewportDimensions[0]                    >= REDGPU_2_EXPECTED_maxViewportDimensionsX_16384); // maxViewportDimensions[0]; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
-  REDGPU_2_EXPECT(gpuInfo->maxViewportDimensions[1]                    >= REDGPU_2_EXPECTED_maxViewportDimensionsY_16384); // maxViewportDimensions[1]; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
-  REDGPU_2_EXPECT(gpuInfo->minViewportBoundsRange                      <= REDGPU_2_EXPECTED_minViewportBoundsRange_minus_32768); // viewportBoundsRange[0]; D3D12_VIEWPORT_BOUNDS_MIN (-32768)
-  REDGPU_2_EXPECT(gpuInfo->maxViewportBoundsRange                      >= REDGPU_2_EXPECTED_maxViewportBoundsRange_32767); // viewportBoundsRange[1]; D3D12_VIEWPORT_BOUNDS_MAX (32767)
-  REDGPU_2_EXPECT(gpuInfo->precisionBitsViewportCoordinates            >= REDGPU_2_EXPECTED_precisionBitsViewportCoordinates_8); // subPixelPrecisionBits; D3D12_SUBPIXEL_FRACTIONAL_BIT_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->precisionBitsViewportBounds                 >= REDGPU_2_EXPECTED_precisionBitsViewportBounds_8); // viewportSubPixelBits; D3D12_SUBPIXEL_FRACTIONAL_BIT_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->maxPerStageClipDistances                    >= REDGPU_2_EXPECTED_maxPerStageClipDistances_8); // maxClipDistances; D3D12_CLIP_OR_CULL_DISTANCE_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->maxPerStageCullDistances                    >= REDGPU_2_EXPECTED_maxPerStageCullDistances_8); // maxCullDistances; D3D12_CLIP_OR_CULL_DISTANCE_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->maxPerStageClipAndCullDistances             >= REDGPU_2_EXPECTED_maxPerStageClipAndCullDistances_8); // maxCombinedClipAndCullDistances; D3D12_CLIP_OR_CULL_DISTANCE_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->maxVertexOutputLocationsCount               >= REDGPU_2_EXPECTED_maxVertexOutputLocationsCount_128); // maxVertexOutputComponents; D3D12_VS_INPUT_REGISTER_COUNT (32) * D3D12_VS_INPUT_REGISTER_COMPONENTS (4)
-  REDGPU_2_EXPECT(gpuInfo->maxFragmentInputLocationsCount              >= REDGPU_2_EXPECTED_maxFragmentInputLocationsCount_112); // maxFragmentInputComponents; Redmi Note 8 on Android 11; Not used: Arc A770 and Arc B580 on Linux is 116; Not used: D3D12_PS_INPUT_REGISTER_COUNT (32) * D3D12_PS_INPUT_REGISTER_COMPONENTS (4)
-  REDGPU_2_EXPECT(gpuInfo->maxFragmentOutputColorsCount                >= REDGPU_2_EXPECTED_maxFragmentOutputColorsCount_8); // maxFragmentOutputAttachments; D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT (8)
-  REDGPU_2_EXPECT(gpuInfo->maxFragmentOutputColorsCountBlendDualSource >= REDGPU_2_EXPECTED_maxFragmentOutputColorsCountBlendDualSource_1); // maxFragmentDualSrcAttachments
-  REDGPU_2_EXPECT(gpuInfo->maxFragmentOutputResourcesCount             >= REDGPU_2_EXPECTED_maxFragmentOutputResourcesCount_16); // maxFragmentCombinedOutputResources; Tegra X1 on Linux, D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT (8) + D3D12_PS_CS_UAV_REGISTER_COUNT (8); Not used: Redmi Note 8 on Android 11 is 72
-  REDGPU_2_EXPECT(gpuInfo->maxComputeSharedMemoryBytesCount            >= REDGPU_2_EXPECTED_maxComputeSharedMemoryBytesCount_16384); // maxComputeSharedMemorySize; Redmi Note 8 on Android 11, D3D12_CS_THREAD_LOCAL_TEMP_REGISTER_POOL (16384); Not used: Arc A770 and Arc B580 and RX 9070 XT on Windows is 32768
-  REDGPU_2_EXPECT(gpuInfo->maxComputeWorkgroupsCount[0]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountX_65535); // maxComputeWorkGroupCount[0]; D3D12_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535)
-  REDGPU_2_EXPECT(gpuInfo->maxComputeWorkgroupsCount[1]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountY_65535); // maxComputeWorkGroupCount[1]; D3D12_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535)
-  REDGPU_2_EXPECT(gpuInfo->maxComputeWorkgroupsCount[2]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountZ_65535); // maxComputeWorkGroupCount[2]; D3D12_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535)
-  REDGPU_2_EXPECT(gpuInfo->maxComputeWorkgroupInvocationsCount         >= REDGPU_2_EXPECTED_maxComputeWorkgroupInvocationsCount_1024); // maxComputeWorkGroupInvocations; D3D12_CS_THREAD_GROUP_MAX_THREADS_PER_GROUP (1024)
-  REDGPU_2_EXPECT(gpuInfo->maxComputeWorkgroupDimensions[0]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsX_1024); // maxComputeWorkGroupSize[0]; D3D12_CS_THREAD_GROUP_MAX_X (1024)
-  REDGPU_2_EXPECT(gpuInfo->maxComputeWorkgroupDimensions[1]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsY_1024); // maxComputeWorkGroupSize[1]; D3D12_CS_THREAD_GROUP_MAX_Y (1024)
-  REDGPU_2_EXPECT(gpuInfo->maxComputeWorkgroupDimensions[2]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsZ_64); // maxComputeWorkGroupSize[2]; D3D12_CS_THREAD_GROUP_MAX_Z (64)
-  REDGPU_2_EXPECT(gpuInfo->minImageSampleImageFetchOffset              <= REDGPU_2_EXPECTED_minImageSampleImageFetchOffset_minus_8); // minTexelOffset; D3D12_COMMONSHADER_TEXEL_OFFSET_MAX_NEGATIVE (-8)
-  REDGPU_2_EXPECT(gpuInfo->maxImageSampleImageFetchOffset              >= REDGPU_2_EXPECTED_maxImageSampleImageFetchOffset_7); // maxTexelOffset; D3D12_COMMONSHADER_TEXEL_OFFSET_MAX_POSITIVE (7)
-  REDGPU_2_EXPECT(gpuInfo->minImageGatherOffset                        <= REDGPU_2_EXPECTED_minImageGatherOffset_minus_32); // minTexelGatherOffset
-  REDGPU_2_EXPECT(gpuInfo->maxImageGatherOffset                        >= REDGPU_2_EXPECTED_maxImageGatherOffset_31); // maxTexelGatherOffset
-  REDGPU_2_EXPECT(gpuInfo->minInterpolateAtOffset                      <= -0.5f); // minInterpolationOffset
-  REDGPU_2_EXPECT(gpuInfo->maxInterpolateAtOffset                      >= 0.4375f); // maxInterpolationOffset
-  REDGPU_2_EXPECT(gpuInfo->precisionBitsInterpolateAtOffset            >= 4); // subPixelInterpolationOffsetBits
-  REDGPU_2_EXPECT(gpuInfo->optimalCopyArrayImageRangeArrayBytesFirstBytesAlignment           <= REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayBytesFirstBytesAlignment_128); // optimalBufferCopyOffsetAlignment
-  REDGPU_2_EXPECT(gpuInfo->optimalCopyArrayImageRangeArrayTexelsCountToNextRowBytesAlignment <= REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayTexelsCountToNextRowBytesAlignment_128); // optimalBufferCopyRowPitchAlignment
-  REDGPU_2_EXPECT(gpuInfo->supportsWsi                                                       == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsMemoryGetBudget                                           >= 0); // Not supported on Redmi Note 8 on Android 11
-  REDGPU_2_EXPECT(gpuInfo->supportsFullArrayIndexUint32Value                                 == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsSamplerAnisotropy                                         == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsTextureDimensionsCubeLayered                              == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateRasterizationDepthClamp                     == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateRasterizationDepthBiasDynamic               == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateRasterizationDepthBiasClamp                 == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateMultisampleSampleShading                    == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateMultisampleAlphaToOne                       >= 0); // Not supported on RX 550 and RX 9070 XT on Windows
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateDepthTestBoundsTest                         == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateDepthTestBoundsTestDynamic                  == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicCompareMask   == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicWriteMask     == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateBlendLogicOp                                >= 0); // Not supported on Redmi Note 8 on Android 11
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateOutputColorsBlendVaryingPerColor            == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsProcedureStateOutputColorsBlendDualSource                 == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsMultisampleEmptyOutputVariableMultisampleCount            >= 0); // Not supported on Redmi Note 8 on Android 11
-  REDGPU_2_EXPECT(gpuInfo->supportsMultisampleStandardSampleLocations                        == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeWritesAndAtomicsInStageVertex                      == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeWritesAndAtomicsInStageFragment                    == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeImageGatherExtended                                == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeTextureRWExtendedFormats                           == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeTextureRWMultisample                               >= 0); // Not supported on Redmi Note 8 on Android 11
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeTextureRWReadWithoutFormat                         == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeTextureRWWriteWithoutFormat                        == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfArrayROCs              == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfArrayRORWs             == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfSamplers               == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfTextureROs             == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfTextureRWs             == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeClipDistance                                       == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeCullDistance                                       == 1);
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeInt64                                              >= 0); // Not supported on Redmi Note 8 on Android 11
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeFloat64                                            >= 0); // Not supported on Redmi Note 8 on Android 11
-  REDGPU_2_EXPECT(gpuInfo->supportsGpuCodeMinLod                                             >= 0); // Not supported on Redmi Note 8 on Android 11
+  RedHandleGpu gpu = gpuInfo->gpu;
+  REDGPU_2_EXPECTWG(gpuInfo->maxMemoryAllocateCount                      >= REDGPU_2_EXPECTED_maxMemoryAllocateCount_4096); // maxMemoryAllocationCount
+  REDGPU_2_EXPECTWG(gpuInfo->minMemoryAllocateBytesAlignment             <= REDGPU_2_EXPECTED_minMemoryAllocateBytesAlignment_4096); // minMemoryMapAlignment; RX 550 and Arc A770 and Arc B580 on Linux
+  REDGPU_2_EXPECTWG(gpuInfo->maxMemoryAllocateBytesCount                 >= REDGPU_2_EXPECTED_maxMemoryAllocateBytesCount_1073741824); // maxMemoryAllocationSize; Redmi Note 8 on Android 11; Not used: RX 550 and RX 9070 XT on Windows is 2147483648
+  REDGPU_2_EXPECTWG(gpuInfo->minMemoryNonCoherentBlockBytesCount         <= REDGPU_2_EXPECTED_minMemoryNonCoherentBlockBytesCount_256); // nonCoherentAtomSize
+  REDGPU_2_EXPECTWG(gpuInfo->maxCreateSamplerCount                       >= REDGPU_2_EXPECTED_maxCreateSamplerCount_4000); // maxSamplerAllocationCount
+  REDGPU_2_EXPECTWG(gpuInfo->minMemoryPageSeparationArrayImageBytesCount <= REDGPU_2_EXPECTED_minMemoryPageSeparationArrayImageBytesCount_65536); // bufferImageGranularity; D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT (65536)
+  REDGPU_2_EXPECTWG(gpuInfo->minArrayROCStructMemberRangeBytesAlignment  <= REDGPU_2_EXPECTED_minArrayROCStructMemberRangeBytesAlignment_256); // minUniformBufferOffsetAlignment; D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT (256)
+  REDGPU_2_EXPECTWG(gpuInfo->maxArrayROCStructMemberRangeBytesCount      >= REDGPU_2_EXPECTED_maxArrayROCStructMemberRangeBytesCount_65536); // maxUniformBufferRange; D3D12_REQ_CONSTANT_BUFFER_ELEMENT_COUNT (4096) * 16
+  REDGPU_2_EXPECTWG(gpuInfo->minArrayRORWStructMemberRangeBytesAlignment <= REDGPU_2_EXPECTED_minArrayRORWStructMemberRangeBytesAlignment_64); // minStorageBufferOffsetAlignment; Arc A770 and Arc B580 on Windows, Redmi Note 8 on Android 11; Not used: D3D12_RAW_UAV_SRV_BYTE_ALIGNMENT (16)
+  REDGPU_2_EXPECTWG(gpuInfo->maxArrayRORWStructMemberRangeBytesCount     >= REDGPU_2_EXPECTED_maxArrayRORWStructMemberRangeBytesCount_536870912); // maxStorageBufferRange; Redmi Note 8 on Android 11; Not used: Arc A770 and Arc B580 on Windows is 1073741820
+  REDGPU_2_EXPECTWG(gpuInfo->maxArrayIndexUint32Value                    == 0xFFFFFFFF); // maxDrawIndexedIndexValue
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensions1D                        >= REDGPU_2_EXPECTED_maxImageDimensions1D_16384); // maxImageDimension1D; D3D12_REQ_TEXTURE1D_U_DIMENSION (16384)
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensions2D                        >= REDGPU_2_EXPECTED_maxImageDimensions2D_16384); // maxImageDimension2D; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensions3D                        >= REDGPU_2_EXPECTED_maxImageDimensions3D_2048); // maxImageDimension3D; D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION (2048)
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensionsCube                      >= REDGPU_2_EXPECTED_maxImageDimensionsCube_16384); // maxImageDimensionCube; D3D12_REQ_TEXTURECUBE_DIMENSION (16384)
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageLayersCount                         >= REDGPU_2_EXPECTED_maxImageLayersCount_2048); // maxImageArrayLayers; D3D12_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION (2048)
+  REDGPU_2_EXPECTWG(gpuInfo->maxSamplerMipLodBias                        >= REDGPU_2_EXPECTED_maxSamplerMipLodBias_15); // maxSamplerLodBias; RTX 2060; Not used: D3D12_MIP_LOD_BIAS_MAX (15.99f)
+  REDGPU_2_EXPECTWG(gpuInfo->maxSamplerAnisotropy                        >= REDGPU_2_EXPECTED_maxSamplerAnisotropy_16); // maxSamplerAnisotropy; D3D12_MAX_MAXANISOTROPY (16)
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsSamplerFilteringMagMin         >= REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMagMin_8); // subTexelPrecisionBits; D3D12_SUBTEXEL_FRACTIONAL_BIT_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsSamplerFilteringMip            >= REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMip_8); // mipmapPrecisionBits; D3D12_MIP_LOD_FRACTIONAL_BIT_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->maxOutputWidth                              >= REDGPU_2_EXPECTED_maxOutputWidth_16384); // maxFramebufferWidth; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
+  REDGPU_2_EXPECTWG(gpuInfo->maxOutputHeight                             >= REDGPU_2_EXPECTED_maxOutputHeight_16384); // maxFramebufferHeight; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
+  REDGPU_2_EXPECTWG(gpuInfo->maxOutputColorsCount                        >= REDGPU_2_EXPECTED_maxOutputColorsCount_8); // maxColorAttachments; D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForOutputDepth    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForOutputStencil  >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForOutputColor    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForEmptyOutput    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructSlotsCount                         >= REDGPU_2_EXPECTED_maxStructSlotsCount_1024); // maxPerSetDescriptors; Arc A770 and Arc B580 on Linux
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageArrayROCsCount             >= REDGPU_2_EXPECTED_maxStructPerStageArrayROCsCount_12); // maxPerStageDescriptorUniformBuffers; Not used: Tegra X1 on Linux is 15
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageArrayRORWsCount            >= REDGPU_2_EXPECTED_maxStructPerStageArrayRORWsCount_524288); // maxPerStageDescriptorStorageBuffers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageSamplersCount              >= REDGPU_2_EXPECTED_maxStructPerStageSamplersCount_524288); // maxPerStageDescriptorSamplers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageTextureROsCount            >= REDGPU_2_EXPECTED_maxStructPerStageTextureROsCount_524288); // maxPerStageDescriptorSampledImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageTextureRWsCount            >= REDGPU_2_EXPECTED_maxStructPerStageTextureRWsCount_524288); // maxPerStageDescriptorStorageImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageAllResourcesCount          >= REDGPU_2_EXPECTED_maxStructPerStageAllResourcesCount_1572864); // maxPerStageResources; Redmi Note 8 on Android 11; Not used: RX 550 and RX 9070 XT on Linux is 8388606
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructArrayROCsCount                     >= REDGPU_2_EXPECTED_maxStructArrayROCsCount_72); // maxDescriptorSetUniformBuffers; Not used: Tegra X1 on Linux is 90
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructArrayRORWsCount                    >= REDGPU_2_EXPECTED_maxStructArrayRORWsCount_524288); // maxDescriptorSetStorageBuffers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructSamplersCount                      >= REDGPU_2_EXPECTED_maxStructSamplersCount_524288); // maxDescriptorSetSamplers; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructTextureROsCount                    >= REDGPU_2_EXPECTED_maxStructTextureROsCount_524288); // maxDescriptorSetSampledImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructTextureRWsCount                    >= REDGPU_2_EXPECTED_maxStructTextureRWsCount_524288); // maxDescriptorSetStorageImages; Redmi Note 8 on Android 11; Not used: Tegra X1 on Linux and RTX 2060 on both Windows and Linux is 1048576
+  REDGPU_2_EXPECTWG(gpuInfo->maxProcedureParametersVariablesBytesCount   >= REDGPU_2_EXPECTED_maxProcedureParametersVariablesBytesCount_128); // maxPushConstantsSize; Arc A770 on Linux, RX 550 on Windows, Redmi Note 8 on Android 11
+  REDGPU_2_EXPECTWG(gpuInfo->maxViewportDimensions[0]                    >= REDGPU_2_EXPECTED_maxViewportDimensionsX_16384); // maxViewportDimensions[0]; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
+  REDGPU_2_EXPECTWG(gpuInfo->maxViewportDimensions[1]                    >= REDGPU_2_EXPECTED_maxViewportDimensionsY_16384); // maxViewportDimensions[1]; D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION (16384)
+  REDGPU_2_EXPECTWG(gpuInfo->minViewportBoundsRange                      <= REDGPU_2_EXPECTED_minViewportBoundsRange_minus_32768); // viewportBoundsRange[0]; D3D12_VIEWPORT_BOUNDS_MIN (-32768)
+  REDGPU_2_EXPECTWG(gpuInfo->maxViewportBoundsRange                      >= REDGPU_2_EXPECTED_maxViewportBoundsRange_32767); // viewportBoundsRange[1]; D3D12_VIEWPORT_BOUNDS_MAX (32767)
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsViewportCoordinates            >= REDGPU_2_EXPECTED_precisionBitsViewportCoordinates_8); // subPixelPrecisionBits; D3D12_SUBPIXEL_FRACTIONAL_BIT_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsViewportBounds                 >= REDGPU_2_EXPECTED_precisionBitsViewportBounds_8); // viewportSubPixelBits; D3D12_SUBPIXEL_FRACTIONAL_BIT_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->maxPerStageClipDistances                    >= REDGPU_2_EXPECTED_maxPerStageClipDistances_8); // maxClipDistances; D3D12_CLIP_OR_CULL_DISTANCE_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->maxPerStageCullDistances                    >= REDGPU_2_EXPECTED_maxPerStageCullDistances_8); // maxCullDistances; D3D12_CLIP_OR_CULL_DISTANCE_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->maxPerStageClipAndCullDistances             >= REDGPU_2_EXPECTED_maxPerStageClipAndCullDistances_8); // maxCombinedClipAndCullDistances; D3D12_CLIP_OR_CULL_DISTANCE_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->maxVertexOutputLocationsCount               >= REDGPU_2_EXPECTED_maxVertexOutputLocationsCount_128); // maxVertexOutputComponents; D3D12_VS_INPUT_REGISTER_COUNT (32) * D3D12_VS_INPUT_REGISTER_COMPONENTS (4)
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentInputLocationsCount              >= REDGPU_2_EXPECTED_maxFragmentInputLocationsCount_112); // maxFragmentInputComponents; Redmi Note 8 on Android 11; Not used: Arc A770 and Arc B580 on Linux is 116; Not used: D3D12_PS_INPUT_REGISTER_COUNT (32) * D3D12_PS_INPUT_REGISTER_COMPONENTS (4)
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentOutputColorsCount                >= REDGPU_2_EXPECTED_maxFragmentOutputColorsCount_8); // maxFragmentOutputAttachments; D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT (8)
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentOutputColorsCountBlendDualSource >= REDGPU_2_EXPECTED_maxFragmentOutputColorsCountBlendDualSource_1); // maxFragmentDualSrcAttachments
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentOutputResourcesCount             >= REDGPU_2_EXPECTED_maxFragmentOutputResourcesCount_16); // maxFragmentCombinedOutputResources; Tegra X1 on Linux, D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT (8) + D3D12_PS_CS_UAV_REGISTER_COUNT (8); Not used: Redmi Note 8 on Android 11 is 72
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeSharedMemoryBytesCount            >= REDGPU_2_EXPECTED_maxComputeSharedMemoryBytesCount_16384); // maxComputeSharedMemorySize; Redmi Note 8 on Android 11, D3D12_CS_THREAD_LOCAL_TEMP_REGISTER_POOL (16384); Not used: Arc A770 and Arc B580 and RX 9070 XT on Windows is 32768
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupsCount[0]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountX_65535); // maxComputeWorkGroupCount[0]; D3D12_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535)
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupsCount[1]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountY_65535); // maxComputeWorkGroupCount[1]; D3D12_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535)
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupsCount[2]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountZ_65535); // maxComputeWorkGroupCount[2]; D3D12_CS_DISPATCH_MAX_THREAD_GROUPS_PER_DIMENSION (65535)
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupInvocationsCount         >= REDGPU_2_EXPECTED_maxComputeWorkgroupInvocationsCount_1024); // maxComputeWorkGroupInvocations; D3D12_CS_THREAD_GROUP_MAX_THREADS_PER_GROUP (1024)
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupDimensions[0]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsX_1024); // maxComputeWorkGroupSize[0]; D3D12_CS_THREAD_GROUP_MAX_X (1024)
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupDimensions[1]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsY_1024); // maxComputeWorkGroupSize[1]; D3D12_CS_THREAD_GROUP_MAX_Y (1024)
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupDimensions[2]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsZ_64); // maxComputeWorkGroupSize[2]; D3D12_CS_THREAD_GROUP_MAX_Z (64)
+  REDGPU_2_EXPECTWG(gpuInfo->minImageSampleImageFetchOffset              <= REDGPU_2_EXPECTED_minImageSampleImageFetchOffset_minus_8); // minTexelOffset; D3D12_COMMONSHADER_TEXEL_OFFSET_MAX_NEGATIVE (-8)
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageSampleImageFetchOffset              >= REDGPU_2_EXPECTED_maxImageSampleImageFetchOffset_7); // maxTexelOffset; D3D12_COMMONSHADER_TEXEL_OFFSET_MAX_POSITIVE (7)
+  REDGPU_2_EXPECTWG(gpuInfo->minImageGatherOffset                        <= REDGPU_2_EXPECTED_minImageGatherOffset_minus_32); // minTexelGatherOffset
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageGatherOffset                        >= REDGPU_2_EXPECTED_maxImageGatherOffset_31); // maxTexelGatherOffset
+  REDGPU_2_EXPECTWG(gpuInfo->minInterpolateAtOffset                      <= -0.5f); // minInterpolationOffset
+  REDGPU_2_EXPECTWG(gpuInfo->maxInterpolateAtOffset                      >= 0.4375f); // maxInterpolationOffset
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsInterpolateAtOffset            >= 4); // subPixelInterpolationOffsetBits
+  REDGPU_2_EXPECTWG(gpuInfo->optimalCopyArrayImageRangeArrayBytesFirstBytesAlignment           <= REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayBytesFirstBytesAlignment_128); // optimalBufferCopyOffsetAlignment
+  REDGPU_2_EXPECTWG(gpuInfo->optimalCopyArrayImageRangeArrayTexelsCountToNextRowBytesAlignment <= REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayTexelsCountToNextRowBytesAlignment_128); // optimalBufferCopyRowPitchAlignment
+  REDGPU_2_EXPECTWG(gpuInfo->supportsWsi                                                       == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsMemoryGetBudget                                           >= 0); // Not supported on Redmi Note 8 on Android 11
+  REDGPU_2_EXPECTWG(gpuInfo->supportsFullArrayIndexUint32Value                                 == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsSamplerAnisotropy                                         == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsTextureDimensionsCubeLayered                              == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateRasterizationDepthClamp                     == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateRasterizationDepthBiasDynamic               == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateRasterizationDepthBiasClamp                 == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateMultisampleSampleShading                    == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateMultisampleAlphaToOne                       >= 0); // Not supported on RX 550 and RX 9070 XT on Windows
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTest                         == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTestDynamic                  == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicCompareMask   == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicWriteMask     == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateBlendLogicOp                                >= 0); // Not supported on Redmi Note 8 on Android 11
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateOutputColorsBlendVaryingPerColor            == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateOutputColorsBlendDualSource                 == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsMultisampleEmptyOutputVariableMultisampleCount            >= 0); // Not supported on Redmi Note 8 on Android 11
+  REDGPU_2_EXPECTWG(gpuInfo->supportsMultisampleStandardSampleLocations                        == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeWritesAndAtomicsInStageVertex                      == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeWritesAndAtomicsInStageFragment                    == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeImageGatherExtended                                == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWExtendedFormats                           == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWMultisample                               >= 0); // Not supported on Redmi Note 8 on Android 11
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWReadWithoutFormat                         == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWWriteWithoutFormat                        == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfArrayROCs              == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfArrayRORWs             == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfSamplers               == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfTextureROs             == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfTextureRWs             == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeClipDistance                                       == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeCullDistance                                       == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeInt64                                              >= 0); // Not supported on Redmi Note 8 on Android 11
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeFloat64                                            >= 0); // Not supported on Redmi Note 8 on Android 11
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeMinLod                                             >= 0); // Not supported on Redmi Note 8 on Android 11
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectAllMemoryToBeCoherent(const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine) {
+  RedHandleGpu gpu = gpuInfo->gpu;
   for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
     if (gpuInfo->memoryTypes[i].isCpuMappable == 1) {
-      REDGPU_2_EXPECT(gpuInfo->memoryTypes[i].isCpuCoherent == 1);
+      REDGPU_2_EXPECTWG(gpuInfo->memoryTypes[i].isCpuCoherent == 1);
     }
   }
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMemoryTypes(const RedGpuInfo * gpuInfo, unsigned expectedMemoryHeapsCount, const RedMemoryHeap * expectedMemoryHeaps, unsigned expectedMemoryTypesCount, const RedMemoryType * expectedMemoryTypes, const char * optionalFile, int optionalLine) {
-  REDGPU_2_EXPECT(expectedMemoryHeapsCount == gpuInfo->memoryHeapsCount);
-  REDGPU_2_EXPECT(expectedMemoryTypesCount == gpuInfo->memoryTypesCount);
+  RedHandleGpu gpu = gpuInfo->gpu;
+  REDGPU_2_EXPECTWG(expectedMemoryHeapsCount == gpuInfo->memoryHeapsCount);
+  REDGPU_2_EXPECTWG(expectedMemoryTypesCount == gpuInfo->memoryTypesCount);
   for (unsigned i = 0; i < gpuInfo->memoryHeapsCount; i += 1) {
-    REDGPU_2_EXPECT(gpuInfo->memoryHeaps[i].isGpuVram        == expectedMemoryHeaps[i].isGpuVram);
-    REDGPU_2_EXPECT(gpuInfo->memoryHeaps[i].memoryBytesCount >= expectedMemoryHeaps[i].memoryBytesCount);
+    REDGPU_2_EXPECTWG(gpuInfo->memoryHeaps[i].isGpuVram        == expectedMemoryHeaps[i].isGpuVram);
+    REDGPU_2_EXPECTWG(gpuInfo->memoryHeaps[i].memoryBytesCount >= expectedMemoryHeaps[i].memoryBytesCount);
   }
   for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
-    REDGPU_2_EXPECT(gpuInfo->memoryTypes[i].memoryHeapIndex  == expectedMemoryTypes[i].memoryHeapIndex);
-    REDGPU_2_EXPECT(gpuInfo->memoryTypes[i].isGpuVram        == expectedMemoryTypes[i].isGpuVram);
-    REDGPU_2_EXPECT(gpuInfo->memoryTypes[i].isCpuMappable    == expectedMemoryTypes[i].isCpuMappable);
-    REDGPU_2_EXPECT(gpuInfo->memoryTypes[i].isCpuCoherent    == expectedMemoryTypes[i].isCpuCoherent);
-    REDGPU_2_EXPECT(gpuInfo->memoryTypes[i].isCpuCached      == expectedMemoryTypes[i].isCpuCached);
+    REDGPU_2_EXPECTWG(gpuInfo->memoryTypes[i].memoryHeapIndex  == expectedMemoryTypes[i].memoryHeapIndex);
+    REDGPU_2_EXPECTWG(gpuInfo->memoryTypes[i].isGpuVram        == expectedMemoryTypes[i].isGpuVram);
+    REDGPU_2_EXPECTWG(gpuInfo->memoryTypes[i].isCpuMappable    == expectedMemoryTypes[i].isCpuMappable);
+    REDGPU_2_EXPECTWG(gpuInfo->memoryTypes[i].isCpuCoherent    == expectedMemoryTypes[i].isCpuCoherent);
+    REDGPU_2_EXPECTWG(gpuInfo->memoryTypes[i].isCpuCached      == expectedMemoryTypes[i].isCpuCached);
   }
 }
 
@@ -286,7 +289,7 @@ static void red2InternalStatusesCopyFromTo(const RedStatuses * from, RedStatuses
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, unsigned initialQueueFamilyIndex, uint64_t maxAllowedOverallocationBytesCount, RedBool32 dedicate, RedBool32 mappable, unsigned dedicateOrMappableMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Array * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
-  REDGPU_2_EXPECT(gpuIndex != (unsigned)-1);
+  REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
   
   RedArray array = {0};
   np14(redCreateArray,
@@ -306,7 +309,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
     "optionalUserData", optionalUserData
   );
   
-  REDGPU_2_EXPECT((array.memoryBytesCount - bytesCount) <= maxAllowedOverallocationBytesCount);
+  REDGPU_2_EXPECTWG((array.memoryBytesCount - bytesCount) <= maxAllowedOverallocationBytesCount);
 
   Red2Memory * pickedMemory            = NULL;
   Red2Memory   stackmemForPickedMemory = {0};
@@ -378,7 +381,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
           break;
         }
       }
-      REDGPU_2_EXPECT(suballocateFromMemoryTypeIndexFound == 1);
+      REDGPU_2_EXPECTWG(suballocateFromMemoryTypeIndexFound == 1);
       suballocateFromMemoryOnFirstMatchPointersIndex = i;
     }
 
@@ -389,7 +392,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
   uint64_t pickedMemoryBytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(pickedMemoryBytesFirst, array.memoryBytesAlignment);
   pickedMemoryBytesFirst += pickedMemoryBytesToNextAlignmentBoundary;
 
-  REDGPU_2_EXPECT((pickedMemoryBytesFirst + array.memoryBytesCount) <= pickedMemory->bytesCount);
+  REDGPU_2_EXPECTWG((pickedMemoryBytesFirst + array.memoryBytesCount) <= pickedMemory->bytesCount);
 
   RedMemoryArray memoryArray = {0};
   memoryArray.setTo1000157000  = 1000157000;
@@ -441,10 +444,10 @@ static RedImagePartBitflags red2InternalGetFormatToImageParts(RedFormat format) 
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, unsigned initialQueueFamilyIndex, RedBool32 createTextureRO, RedBool32 createTextureRW, RedBool32 createTextureOutputRenderTarget, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
-  REDGPU_2_EXPECT(gpuIndex != (unsigned)-1);
+  REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
   
-  REDGPU_2_EXPECT(dimensions != RED_IMAGE_DIMENSIONS_2D ? (createTextureRO == 0 && createTextureRW == 0 && createTextureOutputRenderTarget == 0) : 1); // Not supported: non-2D image textures.
-  REDGPU_2_EXPECT(layersCount > 1 ? (createTextureOutputRenderTarget == 0) : 1); // Not supported: layered image output render target texture.
+  REDGPU_2_EXPECTWG(dimensions != RED_IMAGE_DIMENSIONS_2D ? (createTextureRO == 0 && createTextureRW == 0 && createTextureOutputRenderTarget == 0) : 1); // Not supported: non-2D image textures.
+  REDGPU_2_EXPECTWG(layersCount > 1 ? (createTextureOutputRenderTarget == 0) : 1); // Not supported: layered image output render target texture.
 
   RedImage image = {0};
   np20(redCreateImage,
@@ -522,7 +525,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
           break;
         }
       }
-      REDGPU_2_EXPECT(suballocateFromMemoryTypeIndexFound == 1);
+      REDGPU_2_EXPECTWG(suballocateFromMemoryTypeIndexFound == 1);
       suballocateFromMemoryOnFirstMatchPointersIndex = i;
     }
 
@@ -533,7 +536,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
   uint64_t pickedMemoryBytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(pickedMemoryBytesFirst, image.memoryBytesAlignment);
   pickedMemoryBytesFirst += pickedMemoryBytesToNextAlignmentBoundary;
 
-  REDGPU_2_EXPECT((pickedMemoryBytesFirst + image.memoryBytesCount) <= pickedMemory->bytesCount);
+  REDGPU_2_EXPECTWG((pickedMemoryBytesFirst + image.memoryBytesCount) <= pickedMemory->bytesCount);
 
   RedMemoryImage memoryImage = {0};
   memoryImage.setTo1000157001  = 1000157001;
@@ -793,7 +796,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyHandle(RedContext context, RedHan
   else if (handleType == RED_HANDLE_TYPE_PRESENT)              { redDestroyPresent(context, gpu, (RedHandlePresent)handle, optionalFile, optionalLine, optionalUserData); }
   else {
     RedBool32 handle_type_to_destroy_is_not_found = 1;
-    REDGPU_2_EXPECT(handle_type_to_destroy_is_not_found == 0);
+    REDGPU_2_EXPECTWG(handle_type_to_destroy_is_not_found == 0);
   }
 }
 
@@ -826,7 +829,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGp
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureAddressCallSetProcedureOutput address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, unsigned outputsArrayMaxCount, unsigned * mutateOutputsArrayCurrentCount, Red2Output * mutateOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  REDGPU_2_EXPECT((mutateOutputsArrayCurrentCount[0] + 1) <= outputsArrayMaxCount);
+  REDGPU_2_EXPECTWG((mutateOutputsArrayCurrentCount[0] + 1) <= outputsArrayMaxCount);
   
   RedHandleOutputDeclaration outputDeclaration = NULL;
   np12(redCreateOutputDeclaration,
