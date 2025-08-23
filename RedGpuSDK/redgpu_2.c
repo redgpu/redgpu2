@@ -309,6 +309,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
     "optionalUserData", optionalUserData
   );
   
+  REDGPU_2_EXPECTWG(REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(array.memoryBytesCount, array.memoryBytesAlignment) == 0);
   REDGPU_2_EXPECTWG((array.memoryBytesCount - bytesCount) <= maxAllowedOverallocationBytesCount);
 
   Red2Memory * pickedMemory            = NULL;
@@ -472,6 +473,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
     "optionalLine", optionalLine,
     "optionalUserData", optionalUserData
   );
+
+  REDGPU_2_EXPECTWG(REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(image.memoryBytesCount, image.memoryBytesAlignment) == 0);
 
   Red2Memory * pickedMemory            = NULL;
   Red2Memory   stackmemForPickedMemory = {0};
