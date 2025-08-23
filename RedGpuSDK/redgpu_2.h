@@ -157,6 +157,7 @@ typedef struct Red2Calls {
 
 #define REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(CURRENT_BYTES, ALIGNMENT) ( ((ALIGNMENT) - (CURRENT_BYTES) % (ALIGNMENT)) % (ALIGNMENT) )
 
+#define REDGPU_2_EXPECTFL(CONDITION) if (!(CONDITION)) { red2Crash(#CONDITION, __FUNCTION__, 0, __FILE__, __LINE__); }
 #define REDGPU_2_EXPECT(CONDITION)   if (!(CONDITION)) { red2Crash(#CONDITION, __FUNCTION__, 0, optionalFile, optionalLine); }
 #define REDGPU_2_EXPECTWG(CONDITION) if (!(CONDITION)) { red2Crash(#CONDITION, __FUNCTION__, gpu, optionalFile, optionalLine); }
 
