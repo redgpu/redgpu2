@@ -34,14 +34,13 @@ extern __declspec(dllexport) void * red32WindowCreate(const char * title) {
 }
 
 extern __declspec(dllexport) int red32WindowDestroy(void * windowHandle) {
-  int out = 0;
   if (windowHandle != NULL) {
     int destroyWindowSuccess = DestroyWindow((HWND)windowHandle);
     if (destroyWindowSuccess == 0) { // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroywindow
-      out = -1;
+      return -1;
     }
   }
-  return out;
+  return 0;
 }
 
 extern __declspec(dllexport) int red32WindowLoop() {
@@ -95,44 +94,121 @@ extern __declspec(dllexport) int red32FileMap(const unsigned short * filepath, v
 }
 
 extern __declspec(dllexport) int red32FileUnmap(void * fileDescriptorHandle, void * fileMappingHandle) {
-  int out = 0;
-  if (fileDescriptorHandle != INVALID_HANDLE_VALUE) {
-    int closeHandleSuccess = CloseHandle(fileDescriptorHandle);
-    if (closeHandleSuccess == 0) {     // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
-      out = -1;
-    }
-  }
   if (fileMappingHandle != INVALID_HANDLE_VALUE) {
     int unmapViewOfFileSuccess = UnmapViewOfFile(fileMappingHandle);
     if (unmapViewOfFileSuccess == 0) { // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
-      out = -2;
+      return -1;
     }
   }
-  return out;
+  if (fileDescriptorHandle != INVALID_HANDLE_VALUE) {
+    int closeHandleSuccess = CloseHandle(fileDescriptorHandle);
+    if (closeHandleSuccess == 0) {     // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+      return -2;
+    }
+  }
+  return 0;
 }
 
 extern __declspec(dllexport) void red32OutputDebugString(const char * string) {
   OutputDebugStringA(string);
 }
 
-extern __declspec(dllexport) void red32StringJoin(char * joinTo, const char * joinFrom) {
+extern __declspec(dllexport) uint64_t red32MirrorBytesOfUint64(uint64_t value) {
+  uint64_t out = value;
+  uint8_t * bytes = (uint8_t *)(void *)&out;
+  uint8_t b1 = bytes[0];
+  uint8_t b2 = bytes[1];
+  uint8_t b3 = bytes[2];
+  uint8_t b4 = bytes[3];
+  uint8_t b5 = bytes[4];
+  uint8_t b6 = bytes[5];
+  uint8_t b7 = bytes[6];
+  uint8_t b8 = bytes[7];
+  bytes[0] = b8;
+  bytes[1] = b7;
+  bytes[2] = b6;
+  bytes[3] = b5;
+  bytes[4] = b4;
+  bytes[5] = b3;
+  bytes[6] = b2;
+  bytes[7] = b1;
+  return out;
+}
+
+extern __declspec(dllexport) int red32StringJoin(char * joinTo, const char * joinFrom) {
   if (joinFrom == NULL) { return; }
 
-  size_t start = 0;
-  for (size_t i = 0; ; i += 1) {
+  uint64_t start = 0;
+  for (uint64_t i = 0; ; i += 1) {
     char c = joinTo[i];
     if (c == 0) {
       start = i;
       break;
     }
   }
-  for (size_t i = 0; ; i += 1) {
+
+  uint64_t length_mirrored = ((uint64_t *)(void *)(&joinTo[start]))[0];
+  uint64_t length = red32MirrorBytesOfUint64(length_mirrored);
+
+  // Bounds checks
+  if (1) {
+    uint64_t joinFromStrLengthNoNullTerm = 0;
+    for (uint64_t i = 0; ; i += 1) {
+      char c = joinFrom[i];
+      if (c == 0) {
+        break;
+      }
+      joinFromStrLengthNoNullTerm += sizeof(char);
+    }
+
+    // Min string length: 8 bytes (1 byte for null term + 7 bytes for string length).
+    //
+    // String example:
+    //
+    // char * str = calloc(1, 13);
+    // ((uint64_t *)(void *)str)[0] = red32MirrorBytesOfUint64(13);
+    // red32StringJoin(str, "Hi");
+    //
+    // Hi0xxxxxxx000
+    // +
+    // !!!0
+    // =
+    // Hi!!!0xxxxxxx
+    //
+    // Hi0xxxxxxx000
+    //   ^      ^
+    //   2start 13length
+    //
+    // 2 chars taken + 7 chars for string length = 9 chars taken total.
+    // 13 length - 9 chars taken total = 4 chars left to use, including for null term.
+    // So the strlen of joinFrom string must not be bigger than 4 - 1 = 3 chars.
+
+    if (length > 0b0000000011111111111111111111111111111111111111111111111111111111) {
+      return -1;
+    }
+
+    if (
+      joinFromStrLengthNoNullTerm > (length - (start + 7) - 1)
+    )
+    {
+      return -2;
+    }
+  }
+
+  uint64_t newstart = 0;
+
+  for (uint64_t i = 0; ; i += 1) {
     char c = joinFrom[i];
     joinTo[start + i] = c;
     if (c == 0) {
+      newstart = start + i;
       break;
     }
   }
+
+  ((uint64_t *)(void *)(&joinTo[newstart]))[0] = length_mirrored;
+
+  return 0;
 }
 
 extern __declspec(dllexport) void red32Exit(int exitCode) {

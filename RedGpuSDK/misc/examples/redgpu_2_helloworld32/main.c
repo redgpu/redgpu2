@@ -18,7 +18,9 @@ clang main.c redgpu.o redgpu_2.o redgpu_32.o
 
 void red2Crash(const char * error, const char * functionName, RedHandleGpu optionalGpuHandle, const char * optionalFile, int optionalLine) {
   char * optionalLineStr = (char *)red32MemoryCalloc(4096);
-  char * out             = (char *)red32MemoryCalloc(32768);
+
+  char * out = (char *)red32MemoryCalloc(32768);
+  ((uint64_t *)(void *)out)[0] = red32MirrorBytesOfUint64(32768);
 
   red32IntToChars(optionalLine, optionalLineStr);
 
