@@ -1,6 +1,7 @@
 #include "C:/RedGpuSDK/redgpu_2.h"
 #include "C:/RedGpuSDK/redgpu_32.h"
 
+#include <stdlib.h> // For exit
 #include <stdio.h>  // For printf
 
 void red2Crash(const char * error, const char * functionName, RedHandleGpu optionalGpuHandle, const char * optionalFile, int optionalLine) {

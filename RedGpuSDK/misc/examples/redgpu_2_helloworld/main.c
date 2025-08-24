@@ -24,7 +24,7 @@ void red2Crash(const char * error, const char * functionName, RedHandleGpu optio
 
 int main() {
   RedContext redcontext = NULL;
-  np18(redCreateContext,
+  np(redCreateContext,
     "malloc", malloc,
     "free", free,
     "optionalMallocTagged", NULL,
@@ -48,12 +48,12 @@ int main() {
   REDGPU_2_EXPECTFL(redcontext != NULL);
   REDGPU_2_EXPECTFL(redcontext->gpusCount > 0);
 
-  np3(red2ExpectMinimumGuarantees,
+  np(red2ExpectMinimumGuarantees,
     "gpuInfo", &redcontext->gpus[0],
     "optionalFile", __FILE__,
     "optionalLine", __LINE__
   );
-  np3(red2ExpectAllMemoryToBeCoherent,
+  np(red2ExpectAllMemoryToBeCoherent,
     "gpuInfo", &redcontext->gpus[0],
     "optionalFile", __FILE__,
     "optionalLine", __LINE__
