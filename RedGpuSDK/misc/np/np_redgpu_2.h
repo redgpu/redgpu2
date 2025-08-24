@@ -1,6 +1,5 @@
 #pragma once
 
-#define red2MemoryAllocate_np_count_11
 #define _np1_red2MemoryAllocate context
 #define _np2_red2MemoryAllocate gpu
 #define _np3_red2MemoryAllocate handleName
@@ -13,7 +12,6 @@
 #define _np10_red2MemoryAllocate optionalLine
 #define _np11_red2MemoryAllocate optionalUserData
 
-#define red2StructsMemorySuballocateStruct_np_count_13
 #define _np1_red2StructsMemorySuballocateStruct context
 #define _np2_red2StructsMemorySuballocateStruct gpu
 #define _np3_red2StructsMemorySuballocateStruct handleName
@@ -28,17 +26,14 @@
 #define _np12_red2StructsMemorySuballocateStruct optionalLine
 #define _np13_red2StructsMemorySuballocateStruct optionalUserData
 
-#define red2ExpectMinimumGuarantees_np_count_3
 #define _np1_red2ExpectMinimumGuarantees gpuInfo
 #define _np2_red2ExpectMinimumGuarantees optionalFile
 #define _np3_red2ExpectMinimumGuarantees optionalLine
 
-#define red2ExpectAllMemoryToBeCoherent_np_count_3
 #define _np1_red2ExpectAllMemoryToBeCoherent gpuInfo
 #define _np2_red2ExpectAllMemoryToBeCoherent optionalFile
 #define _np3_red2ExpectAllMemoryToBeCoherent optionalLine
 
-#define red2ExpectMemoryTypes_np_count_7
 #define _np1_red2ExpectMemoryTypes gpuInfo
 #define _np2_red2ExpectMemoryTypes expectedMemoryHeapsCount
 #define _np3_red2ExpectMemoryTypes expectedMemoryHeaps
@@ -47,7 +42,6 @@
 #define _np6_red2ExpectMemoryTypes optionalFile
 #define _np7_red2ExpectMemoryTypes optionalLine
 
-#define red2CreateArray_np_count_18
 #define _np1_red2CreateArray context
 #define _np2_red2CreateArray gpu
 #define _np3_red2CreateArray handleName
@@ -67,7 +61,6 @@
 #define _np17_red2CreateArray optionalLine
 #define _np18_red2CreateArray optionalUserData
 
-#define red2CreateImage_np_count_24
 #define _np1_red2CreateImage context
 #define _np2_red2CreateImage gpu
 #define _np3_red2CreateImage handleName
@@ -93,7 +86,6 @@
 #define _np23_red2CreateImage optionalLine
 #define _np24_red2CreateImage optionalUserData
 
-#define red2CreateProcedureParameters_np_count_9
 #define _np1_red2CreateProcedureParameters context
 #define _np2_red2CreateProcedureParameters gpu
 #define _np3_red2CreateProcedureParameters handleName
@@ -104,7 +96,6 @@
 #define _np8_red2CreateProcedureParameters optionalLine
 #define _np9_red2CreateProcedureParameters optionalUserData
 
-#define red2CreateProcedure_np_count_22
 #define _np1_red2CreateProcedure context
 #define _np2_red2CreateProcedure gpu
 #define _np3_red2CreateProcedure handleName
@@ -128,7 +119,6 @@
 #define _np21_red2CreateProcedure optionalLine
 #define _np22_red2CreateProcedure optionalUserData
 
-#define red2DestroyHandle_np_count_8
 #define _np1_red2DestroyHandle context
 #define _np2_red2DestroyHandle gpu
 #define _np3_red2DestroyHandle handleType
@@ -138,7 +128,6 @@
 #define _np7_red2DestroyHandle optionalLine
 #define _np8_red2DestroyHandle optionalUserData
 
-#define red2CallsSet_np_count_11
 #define _np1_red2CallsSet context
 #define _np2_red2CallsSet gpu
 #define _np3_red2CallsSet calls
@@ -151,7 +140,6 @@
 #define _np10_red2CallsSet optionalLine
 #define _np11_red2CallsSet optionalUserData
 
-#define red2CallSetProcedureOutput_np_count_24
 #define _np1_red2CallSetProcedureOutput address
 #define _np2_red2CallSetProcedureOutput calls
 #define _np3_red2CallSetProcedureOutput context
@@ -177,11 +165,9 @@
 #define _np23_red2CallSetProcedureOutput optionalLine
 #define _np24_red2CallSetProcedureOutput optionalUserData
 
-#define red2CallGlobalOrderBarrier_np_count_2
 #define _np1_red2CallGlobalOrderBarrier address
 #define _np2_red2CallGlobalOrderBarrier calls
 
-#define red2CallGlobalReadbackBarrier_np_count_2
 #define _np1_red2CallGlobalReadbackBarrier address
 #define _np2_red2CallGlobalReadbackBarrier calls
 
