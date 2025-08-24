@@ -6,24 +6,24 @@
 #include <Windows.h>
 
 #if 0
-extern "C" HANDLE CreateFile2              (LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition, LPCREATEFILE2_EXTENDED_PARAMETERS pCreateExParams);
-extern "C" HANDLE CreateFileMappingFromApp (HANDLE hFile, PSECURITY_ATTRIBUTES SecurityAttributes, ULONG PageProtection, ULONG64 MaximumSize, PCWSTR Name);
-extern "C" PVOID  MapViewOfFileFromApp     (HANDLE hFileMappingObject, ULONG DesiredAccess, ULONG64 FileOffset, SIZE_T NumberOfBytesToMap);
+extern HANDLE CreateFile2              (LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition, LPCREATEFILE2_EXTENDED_PARAMETERS pCreateExParams);
+extern HANDLE CreateFileMappingFromApp (HANDLE hFile, PSECURITY_ATTRIBUTES SecurityAttributes, ULONG PageProtection, ULONG64 MaximumSize, PCWSTR Name);
+extern PVOID  MapViewOfFileFromApp     (HANDLE hFileMappingObject, ULONG DesiredAccess, ULONG64 FileOffset, SIZE_T NumberOfBytesToMap);
 #endif
 
-extern "C" __declspec(dllexport) void * red32MemoryCalloc(size_t bytesCount) {
+extern __declspec(dllexport) void * red32MemoryCalloc(size_t bytesCount) {
   return calloc(1, bytesCount);
 }
 
-extern "C" __declspec(dllexport) void red32MemoryFree(void * pointer) {
+extern __declspec(dllexport) void red32MemoryFree(void * pointer) {
   free(pointer);
 }
 
-extern "C" __declspec(dllexport) void * red32GetModuleHandle(const char * moduleName) {
+extern __declspec(dllexport) void * red32GetModuleHandle(const char * moduleName) {
   return GetModuleHandleA(moduleName);
 }
 
-extern "C" __declspec(dllexport) void * red32WindowCreate(const char * title) {
+extern __declspec(dllexport) void * red32WindowCreate(const char * title) {
   WNDCLASSEXA wndClassEx = {0};
   wndClassEx.cbSize        = sizeof(wndClassEx);
   wndClassEx.lpfnWndProc   = DefWindowProcA;
@@ -33,7 +33,7 @@ extern "C" __declspec(dllexport) void * red32WindowCreate(const char * title) {
   return (void *)window;
 }
 
-extern "C" __declspec(dllexport) int red32WindowDestroy(void * windowHandle) {
+extern __declspec(dllexport) int red32WindowDestroy(void * windowHandle) {
   int out = 0;
   if (windowHandle != NULL) {
     int destroyWindowSuccess = DestroyWindow((HWND)windowHandle);
@@ -44,7 +44,7 @@ extern "C" __declspec(dllexport) int red32WindowDestroy(void * windowHandle) {
   return out;
 }
 
-extern "C" __declspec(dllexport) int red32WindowLoop() {
+extern __declspec(dllexport) int red32WindowLoop() {
   int loop = 1;
   MSG msg = {0};
   while (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -57,17 +57,17 @@ extern "C" __declspec(dllexport) int red32WindowLoop() {
   return loop;
 }
 
-extern "C" __declspec(dllexport) void red32ConsolePrint(const char * string) {
+extern __declspec(dllexport) void red32ConsolePrint(const char * string) {
   DWORD _;
   WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), string, strlen(string), &_, 0);
 }
 
-extern "C" __declspec(dllexport) void red32ConsolePrintError(const char * string) {
+extern __declspec(dllexport) void red32ConsolePrintError(const char * string) {
   DWORD _;
   WriteConsoleA(GetStdHandle(STD_ERROR_HANDLE), string, strlen(string), &_, 0);
 }
 
-extern "C" __declspec(dllexport) int red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer) {
+extern __declspec(dllexport) int red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer) {
   HANDLE fd = CreateFile2((LPCWSTR)filepath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, OPEN_EXISTING, 0);
   if (fd == INVALID_HANDLE_VALUE) {
     return -1;
@@ -94,7 +94,7 @@ extern "C" __declspec(dllexport) int red32FileMap(const unsigned short * filepat
   return 0;
 }
 
-extern "C" __declspec(dllexport) int red32FileUnmap(void * fileDescriptorHandle, void * fileMappingHandle) {
+extern __declspec(dllexport) int red32FileUnmap(void * fileDescriptorHandle, void * fileMappingHandle) {
   int out = 0;
   if (fileDescriptorHandle != INVALID_HANDLE_VALUE) {
     int closeHandleSuccess = CloseHandle(fileDescriptorHandle);
@@ -111,11 +111,11 @@ extern "C" __declspec(dllexport) int red32FileUnmap(void * fileDescriptorHandle,
   return out;
 }
 
-extern "C" __declspec(dllexport) void red32OutputDebugString(const char * string) {
+extern __declspec(dllexport) void red32OutputDebugString(const char * string) {
   OutputDebugStringA(string);
 }
 
-extern "C" __declspec(dllexport) void red32StringJoin(char * joinTo, const char * joinFrom) {
+extern __declspec(dllexport) void red32StringJoin(char * joinTo, const char * joinFrom) {
   if (joinFrom == NULL) { return; }
 
   size_t start = 0;
@@ -135,11 +135,11 @@ extern "C" __declspec(dllexport) void red32StringJoin(char * joinTo, const char 
   }
 }
 
-extern "C" __declspec(dllexport) void red32Exit(int exitCode) {
+extern __declspec(dllexport) void red32Exit(int exitCode) {
   exit(exitCode);
 }
 
-extern "C" __declspec(dllexport) int red32IntToChars(int value, char * outChars) {
+extern __declspec(dllexport) int red32IntToChars(int value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%d", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%d", value);
@@ -147,7 +147,7 @@ extern "C" __declspec(dllexport) int red32IntToChars(int value, char * outChars)
   return size + 1;
 }
 
-extern "C" __declspec(dllexport) int red32UnsignedToChars(unsigned value, char * outChars) {
+extern __declspec(dllexport) int red32UnsignedToChars(unsigned value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%u", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%u", value);
@@ -155,7 +155,7 @@ extern "C" __declspec(dllexport) int red32UnsignedToChars(unsigned value, char *
   return size + 1;
 }
 
-extern "C" __declspec(dllexport) int red32Int64ToChars(int64_t value, char * outChars) {
+extern __declspec(dllexport) int red32Int64ToChars(int64_t value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%lld", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%lld", value);
@@ -163,7 +163,7 @@ extern "C" __declspec(dllexport) int red32Int64ToChars(int64_t value, char * out
   return size + 1;
 }
 
-extern "C" __declspec(dllexport) int red32Uint64ToChars(uint64_t value, char * outChars) {
+extern __declspec(dllexport) int red32Uint64ToChars(uint64_t value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%llu", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%llu", value);
@@ -171,7 +171,7 @@ extern "C" __declspec(dllexport) int red32Uint64ToChars(uint64_t value, char * o
   return size + 1;
 }
 
-extern "C" __declspec(dllexport) int red32FloatToChars(float value, char * outChars) {
+extern __declspec(dllexport) int red32FloatToChars(float value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%.9g", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%.9g", value);
@@ -179,7 +179,7 @@ extern "C" __declspec(dllexport) int red32FloatToChars(float value, char * outCh
   return size + 1;
 }
 
-extern "C" __declspec(dllexport) int red32DoubleToChars(double value, char * outChars) {
+extern __declspec(dllexport) int red32DoubleToChars(double value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%.17g", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%.17g", value);
@@ -187,7 +187,7 @@ extern "C" __declspec(dllexport) int red32DoubleToChars(double value, char * out
   return size + 1;
 }
 
-extern "C" __declspec(dllexport) void red32BinaryUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
+extern __declspec(dllexport) void red32BinaryUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
   uint8_t b = value;
   outCharsNoNullTerm[0]  = (b & 0b10000000) == 0 ? '0' : '1';
   outCharsNoNullTerm[1]  = (b & 0b01000000) == 0 ? '0' : '1';
@@ -199,7 +199,7 @@ extern "C" __declspec(dllexport) void red32BinaryUint8ToCharsNoNullTerm(uint8_t 
   outCharsNoNullTerm[7]  = (b & 0b00000001) == 0 ? '0' : '1';
 }
 
-extern "C" __declspec(dllexport) void red32BinaryUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
+extern __declspec(dllexport) void red32BinaryUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
   unsigned b = value;
   outCharsNoNullTerm[0]  = (b & 0b10000000000000000000000000000000) == 0 ? '0' : '1';
   outCharsNoNullTerm[1]  = (b & 0b01000000000000000000000000000000) == 0 ? '0' : '1';
@@ -235,7 +235,7 @@ extern "C" __declspec(dllexport) void red32BinaryUnsignedToCharsNoNullTerm(unsig
   outCharsNoNullTerm[31] = (b & 0b00000000000000000000000000000001) == 0 ? '0' : '1';
 }
 
-extern "C" __declspec(dllexport) void red32BinaryUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
+extern __declspec(dllexport) void red32BinaryUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
   uint64_t b = value;
   outCharsNoNullTerm[0]  = (b & 0b1000000000000000000000000000000000000000000000000000000000000000) == 0 ? '0' : '1';
   outCharsNoNullTerm[1]  = (b & 0b0100000000000000000000000000000000000000000000000000000000000000) == 0 ? '0' : '1';
@@ -303,7 +303,7 @@ extern "C" __declspec(dllexport) void red32BinaryUint64ToCharsNoNullTerm(uint64_
   outCharsNoNullTerm[63] = (b & 0b0000000000000000000000000000000000000000000000000000000000000001) == 0 ? '0' : '1';
 }
 
-extern "C" __declspec(dllexport) void red32HexUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
+extern __declspec(dllexport) void red32HexUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
   const char * hexTable[256] = {
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",
@@ -327,7 +327,7 @@ extern "C" __declspec(dllexport) void red32HexUint8ToCharsNoNullTerm(uint8_t val
   outCharsNoNullTerm[1] = hex0[1];
 }
 
-extern "C" __declspec(dllexport) void red32HexUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
+extern __declspec(dllexport) void red32HexUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
   const char * hexTable[256] = {
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",
@@ -365,7 +365,7 @@ extern "C" __declspec(dllexport) void red32HexUnsignedToCharsNoNullTerm(unsigned
   outCharsNoNullTerm[7] = hex0[1];
 }
 
-extern "C" __declspec(dllexport) void red32HexUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
+extern __declspec(dllexport) void red32HexUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
   const char * hexTable[256] = {
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",

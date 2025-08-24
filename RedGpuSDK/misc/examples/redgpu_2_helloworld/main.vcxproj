@@ -14,7 +14,7 @@
   <ItemGroup>
     <ClCompile Include="C:\RedGpuSDK\redgpu_2.c" />
     <ClCompile Include="C:\RedGpuSDK\redgpu.c" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
