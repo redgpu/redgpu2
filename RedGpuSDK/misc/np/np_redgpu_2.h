@@ -1,5 +1,25 @@
 #pragma once
 
+#define _np1_red2ExpectMinimumGuarantees gpuInfo
+#define _np2_red2ExpectMinimumGuarantees optionalFile
+#define _np3_red2ExpectMinimumGuarantees optionalLine
+
+#define _np1_red2ExpectAllMemoryToBeCoherent gpuInfo
+#define _np2_red2ExpectAllMemoryToBeCoherent optionalFile
+#define _np3_red2ExpectAllMemoryToBeCoherent optionalLine
+
+#define _np1_red2ExpectMinimumImageFormatsLimitsAndFeatures gpuInfo
+#define _np2_red2ExpectMinimumImageFormatsLimitsAndFeatures optionalFile
+#define _np3_red2ExpectMinimumImageFormatsLimitsAndFeatures optionalLine
+
+#define _np1_red2ExpectMemoryTypes gpuInfo
+#define _np2_red2ExpectMemoryTypes expectedMemoryHeapsCount
+#define _np3_red2ExpectMemoryTypes expectedMemoryHeaps
+#define _np4_red2ExpectMemoryTypes expectedMemoryTypesCount
+#define _np5_red2ExpectMemoryTypes expectedMemoryTypes
+#define _np6_red2ExpectMemoryTypes optionalFile
+#define _np7_red2ExpectMemoryTypes optionalLine
+
 #define _np1_red2MemoryAllocate context
 #define _np2_red2MemoryAllocate gpu
 #define _np3_red2MemoryAllocate handleName
@@ -25,22 +45,6 @@
 #define _np11_red2StructsMemorySuballocateStruct optionalFile
 #define _np12_red2StructsMemorySuballocateStruct optionalLine
 #define _np13_red2StructsMemorySuballocateStruct optionalUserData
-
-#define _np1_red2ExpectMinimumGuarantees gpuInfo
-#define _np2_red2ExpectMinimumGuarantees optionalFile
-#define _np3_red2ExpectMinimumGuarantees optionalLine
-
-#define _np1_red2ExpectAllMemoryToBeCoherent gpuInfo
-#define _np2_red2ExpectAllMemoryToBeCoherent optionalFile
-#define _np3_red2ExpectAllMemoryToBeCoherent optionalLine
-
-#define _np1_red2ExpectMemoryTypes gpuInfo
-#define _np2_red2ExpectMemoryTypes expectedMemoryHeapsCount
-#define _np3_red2ExpectMemoryTypes expectedMemoryHeaps
-#define _np4_red2ExpectMemoryTypes expectedMemoryTypesCount
-#define _np5_red2ExpectMemoryTypes expectedMemoryTypes
-#define _np6_red2ExpectMemoryTypes optionalFile
-#define _np7_red2ExpectMemoryTypes optionalLine
 
 #define _np1_red2CreateArray context
 #define _np2_red2CreateArray gpu

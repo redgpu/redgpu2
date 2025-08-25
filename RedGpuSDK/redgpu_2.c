@@ -206,6 +206,1379 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectAllMemoryToBeCoherent(const RedGpu
   }
 }
 
+REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatures(const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine) {
+  // The following minimum image formats limits and features checks are based on Redmi Note 8 on Android 11.
+  RedHandleGpu gpu = gpuInfo->gpu;
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxDepth >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxDepth >= 2048);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 12);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsTextureROFilteringLinear >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_SINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureROFilteringLinear >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_SINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsTextureRW >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsTextureROFilteringLinear >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureRW >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureROFilteringLinear >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_UINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_SINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsTextureROFilteringLinear >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_16_FLOAT].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_UINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_SINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsTextureROFilteringLinear >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsTextureRWAtomics >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_UINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsTextureRWAtomics >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_SINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_32_FLOAT].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_UINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_SINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsTextureRW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsOutputDepthStencil >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsOutputColor >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportsOutputColorBlend >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsTextureRW >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsOutputDepthStencil >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsOutputColor >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsTextureRW >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsOutputDepthStencil >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsOutputColor >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsTextureRW >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsOutputDepthStencil >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsOutputColor >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsTextureROFilteringLinear >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportsOutputColorBlend >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsCopyR >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsCopyW >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsTextureRO >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsTextureRW >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsOutputDepthStencil >= 1);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsOutputColor >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsTextureROFilteringLinear >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsTextureRWAtomics >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportsOutputColorBlend >= 0);
+}
+
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMemoryTypes(const RedGpuInfo * gpuInfo, unsigned expectedMemoryHeapsCount, const RedMemoryHeap * expectedMemoryHeaps, unsigned expectedMemoryTypesCount, const RedMemoryType * expectedMemoryTypes, const char * optionalFile, int optionalLine) {
   RedHandleGpu gpu = gpuInfo->gpu;
   REDGPU_2_EXPECTWG(expectedMemoryHeapsCount == gpuInfo->memoryHeapsCount);
