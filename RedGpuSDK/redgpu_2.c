@@ -315,11 +315,16 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
   Red2Memory * pickedMemory            = NULL;
   Red2Memory   stackmemForPickedMemory = {0};
 
+  unsigned char arrayMemoryTypeIsSupported[32] = {0};
+  red2InternalFillMemoryTypeIsSupportedArray(array.memoryTypesSupported, arrayMemoryTypeIsSupported);
+
   if (dedicate == 1 || mappable == 1) {
     // NOTE(Constantine):
     // dedicate or mappable arrays use dedicateOrMappableMemoryTypeIndex
     // to allocate their own dedicated memory; suballocateFromMemoryOnFirstMatchPointers array is ignored.
     // This is done so because it's not clear for the user how much space he/she should allocate for the array ahead of time.
+
+    REDGPU_2_EXPECTWG(arrayMemoryTypeIsSupported[dedicateOrMappableMemoryTypeIndex] == 1);
 
     RedHandleMemory memory = NULL;
     if (mappable == 1) {
@@ -366,9 +371,6 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
 
     pickedMemory = &stackmemForPickedMemory;
   } else {
-    unsigned char arrayMemoryTypeIsSupported[32] = {0};
-    red2InternalFillMemoryTypeIsSupportedArray(array.memoryTypesSupported, arrayMemoryTypeIsSupported);
-    
     unsigned suballocateFromMemoryOnFirstMatchPointersIndex = (unsigned)-1;
     {
       // NOTE(Constantine):
@@ -479,11 +481,16 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
   Red2Memory * pickedMemory            = NULL;
   Red2Memory   stackmemForPickedMemory = {0};
 
+  unsigned char imageMemoryTypeIsSupported[32] = {0};
+  red2InternalFillMemoryTypeIsSupportedArray(image.memoryTypesSupported, imageMemoryTypeIsSupported);
+
   if (dedicate == 1) {
     // NOTE(Constantine):
     // dedicate images use dedicateMemoryTypeIndex
     // to allocate their own dedicated memory; suballocateFromMemoryOnFirstMatchPointers array is ignored.
     // This is done so because it's not clear for the user how much space he/she should allocate for the image ahead of time.
+
+    REDGPU_2_EXPECTWG(imageMemoryTypeIsSupported[dedicateMemoryTypeIndex] == 1);
 
     RedHandleMemory memory = NULL;
     np13(redMemoryAllocate,
@@ -512,9 +519,6 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
 
     pickedMemory = &stackmemForPickedMemory;
   } else {
-    unsigned char imageMemoryTypeIsSupported[32] = {0};
-    red2InternalFillMemoryTypeIsSupportedArray(image.memoryTypesSupported, imageMemoryTypeIsSupported);
-    
     unsigned suballocateFromMemoryOnFirstMatchPointersIndex = (unsigned)-1;
     {
       // NOTE(Constantine):
