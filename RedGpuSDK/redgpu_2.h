@@ -92,18 +92,18 @@ typedef struct Red2Struct {
 // red2CreateArray
 
 typedef struct Red2Array {
-  RedHandleArray  handle;
-  RedHandleMemory handleOptionalDedicatedOrMappableMemory;
+  RedArray        array;
+  RedHandleMemory handleAllocatedDedicatedOrMappableMemoryOrPickedMemory;
 } Red2Array;
 
 // red2CreateImage
 
 typedef struct Red2Image {
-  RedHandleImage   handle;
-  RedHandleMemory  handleOptionalDedicatedMemory;
-  RedHandleTexture textureRO;                     // Color and depth-only
-  RedHandleTexture textureRW;                     // Color and depth-only
-  RedHandleTexture textureOutputRenderTarget;     // Color and depth-only
+  RedImage         image;
+  RedHandleMemory  handleAllocatedDedicatedMemoryOrPickedMemory;
+  RedHandleTexture textureRO;                 // Color and depth-only
+  RedHandleTexture textureRW;                 // Color and depth-only
+  RedHandleTexture textureOutputRenderTarget; // Color and depth-only
 } Red2Image;
 
 // red2CreateProcedureParameters

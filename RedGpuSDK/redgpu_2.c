@@ -428,8 +428,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
 
   // Filling
   Red2Array;
-  outArray->handle = array.handle;
-  outArray->handleOptionalDedicatedOrMappableMemory = (dedicate == 1 || mappable == 1) ? pickedMemory->handle : NULL;
+  outArray->array = array;
+  outArray->handleAllocatedDedicatedOrMappableMemoryOrPickedMemory = pickedMemory->handle;
 }
 
 static RedImagePartBitflags red2InternalGetFormatToImageParts(RedFormat format) {
@@ -650,11 +650,11 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
 
   // Filling
   Red2Image;
-  outImage->handle                        = image.handle;
-  outImage->handleOptionalDedicatedMemory = (dedicate == 1) ? pickedMemory->handle : NULL;
-  outImage->textureRO                     = textureRO;
-  outImage->textureRW                     = textureRW;
-  outImage->textureOutputRenderTarget     = textureOutputRenderTarget;
+  outImage->image                     = image;
+  outImage->handleAllocatedDedicatedMemoryOrPickedMemory = pickedMemory->handle;
+  outImage->textureRO                 = textureRO;
+  outImage->textureRW                 = textureRW;
+  outImage->textureOutputRenderTarget = textureOutputRenderTarget;
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, RedHandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
