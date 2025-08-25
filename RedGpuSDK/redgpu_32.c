@@ -136,7 +136,7 @@ extern __declspec(dllexport) uint64_t red32MirrorBytesOfUint64(uint64_t value) {
 }
 
 extern __declspec(dllexport) int red32StringJoin(char * joinTo, const char * joinFrom) {
-  if (joinFrom == NULL) { return; }
+  if (joinFrom == NULL) { return 0; }
 
   uint64_t start = 0;
   for (uint64_t i = 0; ; i += 1) {
