@@ -2180,7 +2180,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyHandle(RedContext context, RedHan
   }
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, unsigned * mutateOutputsArrayCurrentCount, Red2Output * mutateOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, Red2MutableOutputs * mutableOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   np9(redCallsSet,
     "context", context,
     "gpu", gpu,
@@ -2192,24 +2192,24 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGp
     "optionalLine", optionalLine,
     "optionalUserData", optionalUserData
   );
-  unsigned outputsCount = mutateOutputsArrayCurrentCount[0];
+  unsigned outputsCount = mutableOutputsArray->count;
   for (unsigned i = 0; i < outputsCount; i += 1) {
-    red2DestroyHandle(context, gpu, RED_HANDLE_TYPE_OUTPUT, mutateOutputsArray[i].handle, NULL, optionalFile, optionalLine, optionalUserData);
+    red2DestroyHandle(context, gpu, RED_HANDLE_TYPE_OUTPUT, mutableOutputsArray->items[i].handle, NULL, optionalFile, optionalLine, optionalUserData);
   }
   for (unsigned i = 0; i < outputsCount; i += 1) {
-    red2DestroyHandle(context, gpu, RED_HANDLE_TYPE_OUTPUT_DECLARATION, mutateOutputsArray[i].handleDeclaration, NULL, optionalFile, optionalLine, optionalUserData);
+    red2DestroyHandle(context, gpu, RED_HANDLE_TYPE_OUTPUT_DECLARATION, mutableOutputsArray->items[i].handleDeclaration, NULL, optionalFile, optionalLine, optionalUserData);
   }
   for (unsigned i = 0; i < outputsCount; i += 1) {
     // Filling
     Red2Output;
-    mutateOutputsArray[i].handle = NULL;
-    mutateOutputsArray[i].handleDeclaration = NULL;
+    mutableOutputsArray->items[i].handle = NULL;
+    mutableOutputsArray->items[i].handleDeclaration = NULL;
   }
-  mutateOutputsArrayCurrentCount[0] = 0;
+  mutableOutputsArray->count = 0;
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureAddressCallSetProcedureOutput address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, unsigned outputsArrayMaxCount, unsigned * mutateOutputsArrayCurrentCount, Red2Output * mutateOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  REDGPU_2_EXPECTWG((mutateOutputsArrayCurrentCount[0] + 1) <= outputsArrayMaxCount);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureAddressCallSetProcedureOutput address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, Red2MutableOutputs * mutableOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  REDGPU_2_EXPECTWG((mutableOutputsArray->count + 1) <= mutableOutputsArray->capacity);
   
   RedHandleOutputDeclaration outputDeclaration = NULL;
   np12(redCreateOutputDeclaration,
@@ -2261,12 +2261,12 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureA
     "colorsClearValuesUint", colorsClearValuesUint
   );
 
-  unsigned currentOutputsArrayIndex = mutateOutputsArrayCurrentCount[0];
+  uint64_t currentOutputsArrayIndex = mutableOutputsArray->count;
 
-  mutateOutputsArray[currentOutputsArrayIndex].handle            = output.handle;
-  mutateOutputsArray[currentOutputsArrayIndex].handleDeclaration = outputDeclaration;
+  mutableOutputsArray->items[currentOutputsArrayIndex].handle            = output.handle;
+  mutableOutputsArray->items[currentOutputsArrayIndex].handleDeclaration = outputDeclaration;
 
-  mutateOutputsArrayCurrentCount[0] = currentOutputsArrayIndex + 1;
+  mutableOutputsArray->count = currentOutputsArrayIndex + 1;
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls) {

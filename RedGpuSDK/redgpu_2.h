@@ -132,11 +132,15 @@ typedef struct Red2Output {
   RedHandleOutputDeclaration handleDeclaration;
 } Red2Output;
 
+typedef struct Red2MutableOutputs {
+  Red2Output * items;
+  uint64_t     count;
+  uint64_t     capacity;
+} Red2MutableOutputs;
+
 typedef struct Red2Calls {
-  RedCalls     calls;
-  unsigned     outputsArrayMaxCount;            // Provided by the user
-  unsigned     mutableOutputsArrayCurrentCount;
-  Red2Output * mutableOutputsArray;             // Provided by the user and mutated internally by REDGPU 2, an array of outputsArrayMaxCount elements
+  RedCalls           calls;
+  Red2MutableOutputs mutableOutputsArray; // Provided by the user
 } Red2Calls;
 
 #ifndef REDGPU_2_USER_DECLSPEC
@@ -229,7 +233,7 @@ REDGPU_DECLSPEC   void REDGPU_API   redGpuToCpuSignalUnsignal          (RedConte
 
 // Calls
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet                       (RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, unsigned * mutateOutputsArrayCurrentCount, Red2Output * mutateOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet                       (RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, Red2MutableOutputs * mutableOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_DECLSPEC   void REDGPU_API   redCallsEnd                        (RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 
 // Calls recording
@@ -239,7 +243,7 @@ REDGPU_DECLSPEC   void REDGPU_API   redCallSetDynamicViewport          (RedTypeP
 REDGPU_DECLSPEC   void REDGPU_API   redCallSetDynamicScissor           (RedTypeProcedureAddressCallSetDynamicScissor      address, RedHandleCalls calls, int x, int y, unsigned width, unsigned height);
 REDGPU_DECLSPEC   void REDGPU_API   redCallSetStructsMemory            (RedTypeProcedureAddressCallSetStructsMemory       address, RedHandleCalls calls, RedHandleStructsMemory structsMemory, RedHandleStructsMemory structsMemorySamplers);
 REDGPU_DECLSPEC   void REDGPU_API   redCallSetProcedureParameters      (RedTypeProcedureAddressCallSetProcedureParameters address, RedHandleCalls calls, RedProcedureType procedureType, RedHandleProcedureParameters procedureParameters);
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput         (RedTypeProcedureAddressCallSetProcedureOutput     address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, unsigned outputsArrayMaxCount, unsigned * mutateOutputsArrayCurrentCount, Red2Output * mutateOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput         (RedTypeProcedureAddressCallSetProcedureOutput     address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, Red2MutableOutputs * mutableOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData);
 REDGPU_DECLSPEC   void REDGPU_API   redCallEndProcedureOutput          (RedTypeProcedureAddressCallEndProcedureOutput     address, RedHandleCalls calls);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalOrderBarrier         (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalReadbackBarrier      (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
