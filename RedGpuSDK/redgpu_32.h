@@ -7,21 +7,29 @@
 extern "C" {
 #endif
 
+#ifdef __cplusplus
+#define REDGPU_32_STRUCT(STRUCT_TYPE, ...) STRUCT_TYPE{__VA_ARGS__}
+#else
+#define REDGPU_32_STRUCT(STRUCT_TYPE, ...) ((struct STRUCT_TYPE){__VA_ARGS__})
+#endif
+
 #define REDGPU_32_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(CURRENT_BYTES, ALIGNMENT) ( ((ALIGNMENT) - (CURRENT_BYTES) % (ALIGNMENT)) % (ALIGNMENT) )
 
 // Dynamic array example:
 //
 // typedef struct MyDynamicArray {
 //   MyItem * items;
-//   size_t   count;
-//   size_t   capacity;
-//   size_t   alignment;
+//   size_t count;
+//   size_t capacity;
+//   size_t alignment;
 // } MyDynamicArray;
 #define REDGPU_32_DYNAMIC_ARRAY_APPEND(ARRAY, ELEMENT)\
   do {\
+    if (ARRAY.alignment == 0) { ARRAY.alignment = 1; }\
     if (ARRAY.count >= ARRAY.capacity) {\
-      if (ARRAY.capacity == 0) { ARRAY.capacity = 256; } else { ARRAY.capacity *= 2 }\
-      ARRAY.items = red32MemoryReallocAligned(ARRAY.items, ARRAY.capacity * sizeof(ARRAY.items[0]), ARRAY.count * sizeof(ARRAY.items[0]), ARRAY.alignment);\
+      if (ARRAY.capacity == 0) { ARRAY.capacity = 256/*Must be bigger than 1*/; } else { ARRAY.capacity *= 2; }\
+      void ** items = (void **)&ARRAY.items;\
+      items[0] = red32MemoryReallocAligned(ARRAY.items, ARRAY.capacity * sizeof(ARRAY.items[0]), ARRAY.count * sizeof(ARRAY.items[0]), ARRAY.alignment);\
     }\
     ARRAY.items[ARRAY.count++] = ELEMENT;\
   } while(0)
