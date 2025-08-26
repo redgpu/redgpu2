@@ -1,4 +1,5 @@
 void red2ExpectMinimumGuarantees(RedGpuInfo* gpuInfo, char* optionalFile, int optionalLine)
+void red2ExpectMinimumGuaranteesIntelUHDGraphics730(RedGpuInfo* gpuInfo, char* optionalFile, int optionalLine)
 void red2ExpectAllMemoryToBeCoherent(RedGpuInfo* gpuInfo, char* optionalFile, int optionalLine)
 void red2ExpectMinimumImageFormatsLimitsAndFeatures(RedGpuInfo* gpuInfo, char* optionalFile, int optionalLine)
 void red2ExpectMemoryTypes(RedGpuInfo* gpuInfo, unsigned expectedMemoryHeapsCount, RedMemoryHeap* expectedMemoryHeaps, unsigned expectedMemoryTypesCount, RedMemoryType* expectedMemoryTypes, char* optionalFile, int optionalLine)

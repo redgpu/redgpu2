@@ -172,6 +172,7 @@ REDGPU_2_USER_DECLSPEC void REDGPU_2_USER_API red2Crash(const char * error, cons
 // Expect
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuarantees                    (const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuaranteesIntelUHDGraphics730 (const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectAllMemoryToBeCoherent                (const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatures (const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMemoryTypes                          (const RedGpuInfo * gpuInfo, unsigned expectedMemoryHeapsCount, const RedMemoryHeap * expectedMemoryHeaps, unsigned expectedMemoryTypesCount, const RedMemoryType * expectedMemoryTypes, const char * optionalFile, int optionalLine);

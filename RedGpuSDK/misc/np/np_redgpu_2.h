@@ -4,6 +4,10 @@
 #define _np2_red2ExpectMinimumGuarantees optionalFile
 #define _np3_red2ExpectMinimumGuarantees optionalLine
 
+#define _np1_red2ExpectMinimumGuaranteesIntelUHDGraphics730 gpuInfo
+#define _np2_red2ExpectMinimumGuaranteesIntelUHDGraphics730 optionalFile
+#define _np3_red2ExpectMinimumGuaranteesIntelUHDGraphics730 optionalLine
+
 #define _np1_red2ExpectAllMemoryToBeCoherent gpuInfo
 #define _np2_red2ExpectAllMemoryToBeCoherent optionalFile
 #define _np3_red2ExpectAllMemoryToBeCoherent optionalLine

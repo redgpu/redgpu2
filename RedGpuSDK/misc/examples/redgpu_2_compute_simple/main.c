@@ -60,26 +60,42 @@ int main() {
   REDGPU_2_EXPECTFL(context != NULL);
   REDGPU_2_EXPECTFL(context->gpusCount > 0);
 
-  np(red2ExpectMinimumGuarantees,
-    "gpuInfo", &context->gpus[0],
-    "optionalFile", __FILE__,
-    "optionalLine", __LINE__
-  );
+  RedGpuInfo * gpuInfo = &context->gpus[0];
+
+  if (gpuInfo->gpuVendorId == 4318/*NVIDIA*/) {
+    np(red2ExpectMinimumGuarantees,
+      "gpuInfo", gpuInfo,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__
+    );
+  } else if (gpuInfo->gpuVendorId == 32902/*IntelUHDGraphics*/) {
+    np(red2ExpectMinimumGuaranteesIntelUHDGraphics730,
+      "gpuInfo", gpuInfo,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__
+    );
+  } else {
+    int unsupported_by_this_example_code_gpu_vendor = 0;
+    REDGPU_2_EXPECTFL(unsupported_by_this_example_code_gpu_vendor);
+  }
   np(red2ExpectAllMemoryToBeCoherent,
-    "gpuInfo", &context->gpus[0],
+    "gpuInfo", gpuInfo,
     "optionalFile", __FILE__,
     "optionalLine", __LINE__
   );
   np(red2ExpectMinimumImageFormatsLimitsAndFeatures, 
-    "gpuInfo", &context->gpus[0],
+    "gpuInfo", gpuInfo,
     "optionalFile", __FILE__,
     "optionalLine", __LINE__
   );
 
-  RedHandleGpu gpu = context->gpus[0].gpu;
+  RedHandleGpu   gpu                  = gpuInfo->gpu;
+  const unsigned mainQueueFamilyIndex = 0;
+  RedHandleQueue mainQueue            = gpuInfo->queues[0];
 
-  // For NVIDIA GPUs and Windows 10 only for now. Tested on RTX 2060.
-  if (1) {
+  unsigned specificMemoryTypeCPUVisibleVRAM = 0;
+  unsigned specificMemoryTypeReadback       = 0;
+  if (gpuInfo->gpuVendorId == 4318/*NVIDIA*/) { // Tested on RTX 2060 and Windows 10.
     unsigned      memoryTypesCount = 0;
     RedMemoryType memoryTypes[32]  = {0};
     unsigned      memoryHeapsCount = 0;
@@ -133,8 +149,8 @@ int main() {
     memoryHeaps[2].memoryBytesCount = 224395264;
     memoryHeaps[2].isGpuVram        = 1;
 
-    np(red2ExpectMemoryTypes, 
-      "gpuInfo", &context->gpus[0],
+    np(red2ExpectMemoryTypes,
+      "gpuInfo", gpuInfo,
       "expectedMemoryHeapsCount", memoryHeapsCount,
       "expectedMemoryHeaps", memoryHeaps,
       "expectedMemoryTypesCount", memoryTypesCount,
@@ -142,11 +158,55 @@ int main() {
       "optionalFile", __FILE__,
       "optionalLine", __LINE__
     );
+
+    specificMemoryTypeCPUVisibleVRAM = 5;
+    specificMemoryTypeReadback       = 4; // The cpu cached one
+  } else if (gpuInfo->gpuVendorId == 32902/*IntelUHDGraphics*/) {
+    unsigned      memoryTypesCount = 0;
+    RedMemoryType memoryTypes[32]  = {0};
+    unsigned      memoryHeapsCount = 0;
+    RedMemoryHeap memoryHeaps[32]  = {0};
+
+    memoryTypesCount = 3;
+    memoryHeapsCount = 1;
+
+    memoryTypes[0].memoryHeapIndex = 0;
+    memoryTypes[0].isGpuVram       = 1;
+    memoryTypes[0].isCpuMappable   = 0;
+    memoryTypes[0].isCpuCoherent   = 0;
+    memoryTypes[0].isCpuCached     = 0;
+
+    memoryTypes[1].memoryHeapIndex = 0;
+    memoryTypes[1].isGpuVram       = 1;
+    memoryTypes[1].isCpuMappable   = 1;
+    memoryTypes[1].isCpuCoherent   = 1;
+    memoryTypes[1].isCpuCached     = 0;
+
+    memoryTypes[2].memoryHeapIndex = 0;
+    memoryTypes[2].isGpuVram       = 1;
+    memoryTypes[2].isCpuMappable   = 1;
+    memoryTypes[2].isCpuCoherent   = 1;
+    memoryTypes[2].isCpuCached     = 1;
+
+    memoryHeaps[0].memoryBytesCount = 2000000000;
+    memoryHeaps[0].isGpuVram        = 1;
+
+    np(red2ExpectMemoryTypes,
+      "gpuInfo", gpuInfo,
+      "expectedMemoryHeapsCount", memoryHeapsCount,
+      "expectedMemoryHeaps", memoryHeaps,
+      "expectedMemoryTypesCount", memoryTypesCount,
+      "expectedMemoryTypes", memoryTypes,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__
+    );
+
+    specificMemoryTypeCPUVisibleVRAM = 1;
+    specificMemoryTypeReadback       = 2; // The cpu cached one
+  } else {
+    int unsupported_by_this_example_code_gpu_vendor = 0;
+    REDGPU_2_EXPECTFL(unsupported_by_this_example_code_gpu_vendor);
   }
-  const unsigned specificMemoryTypeCPUVisibleVRAM = 5;
-  const unsigned specificMemoryTypeReadback       = 4;
-  const unsigned mainQueueFamilyIndex             = 0;
-  RedHandleQueue mainQueue                        = context->gpus[0].queues[0];
 
   struct HandlesToDestroy {
     RedHandleType destroyHandleType;
@@ -179,7 +239,7 @@ int main() {
     "bytesCount", sizeof(struct float4),
     "structuredBufferElementBytesCount", sizeof(unsigned),
     "initialQueueFamilyIndex", mainQueueFamilyIndex,
-    "maxAllowedOverallocationBytesCount", 0,
+    "maxAllowedOverallocationBytesCount", REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(sizeof(struct float4), 64), // Intel UHD Graphics 730 on Windows 10 aligns to 64 bytes
     "dedicate", 0,
     "mappable", 1,
     "dedicateOrMappableMemoryTypeIndex", specificMemoryTypeCPUVisibleVRAM,
@@ -202,7 +262,7 @@ int main() {
     "bytesCount", sizeof(struct float4),
     "structuredBufferElementBytesCount", sizeof(unsigned),
     "initialQueueFamilyIndex", mainQueueFamilyIndex,
-    "maxAllowedOverallocationBytesCount", 0,
+    "maxAllowedOverallocationBytesCount", REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(sizeof(struct float4), 64), // Intel UHD Graphics 730 on Windows 10 aligns to 64 bytes
     "dedicate", 0,
     "mappable", 1,
     "dedicateOrMappableMemoryTypeIndex", specificMemoryTypeCPUVisibleVRAM,
@@ -225,7 +285,7 @@ int main() {
     "bytesCount", sizeof(struct float4),
     "structuredBufferElementBytesCount", sizeof(unsigned),
     "initialQueueFamilyIndex", mainQueueFamilyIndex,
-    "maxAllowedOverallocationBytesCount", 0,
+    "maxAllowedOverallocationBytesCount", REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(sizeof(struct float4), 64), // Intel UHD Graphics 730 on Windows 10 aligns to 64 bytes
     "dedicate", 0,
     "mappable", 1,
     "dedicateOrMappableMemoryTypeIndex", specificMemoryTypeReadback,

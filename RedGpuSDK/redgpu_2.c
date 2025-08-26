@@ -197,6 +197,117 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuarantees(const RedGpuInfo
   REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeMinLod                                             >= 0); // Not supported on Redmi Note 8 on Android 11
 }
 
+REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuaranteesIntelUHDGraphics730(const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine) {
+  RedHandleGpu gpu = gpuInfo->gpu;
+  REDGPU_2_EXPECTWG(gpuInfo->maxMemoryAllocateCount                      >= REDGPU_2_EXPECTED_maxMemoryAllocateCount_4096);
+  REDGPU_2_EXPECTWG(gpuInfo->minMemoryAllocateBytesAlignment             <= REDGPU_2_EXPECTED_minMemoryAllocateBytesAlignment_4096);
+  REDGPU_2_EXPECTWG(gpuInfo->maxMemoryAllocateBytesCount                 >= REDGPU_2_EXPECTED_maxMemoryAllocateBytesCount_1073741824);
+  REDGPU_2_EXPECTWG(gpuInfo->minMemoryNonCoherentBlockBytesCount         <= REDGPU_2_EXPECTED_minMemoryNonCoherentBlockBytesCount_256);
+  REDGPU_2_EXPECTWG(gpuInfo->maxCreateSamplerCount                       >= REDGPU_2_EXPECTED_maxCreateSamplerCount_4000);
+  REDGPU_2_EXPECTWG(gpuInfo->minMemoryPageSeparationArrayImageBytesCount <= REDGPU_2_EXPECTED_minMemoryPageSeparationArrayImageBytesCount_65536);
+  REDGPU_2_EXPECTWG(gpuInfo->minArrayROCStructMemberRangeBytesAlignment  <= REDGPU_2_EXPECTED_minArrayROCStructMemberRangeBytesAlignment_256);
+  REDGPU_2_EXPECTWG(gpuInfo->maxArrayROCStructMemberRangeBytesCount      >= REDGPU_2_EXPECTED_maxArrayROCStructMemberRangeBytesCount_65536);
+  REDGPU_2_EXPECTWG(gpuInfo->minArrayRORWStructMemberRangeBytesAlignment <= REDGPU_2_EXPECTED_minArrayRORWStructMemberRangeBytesAlignment_64);
+  REDGPU_2_EXPECTWG(gpuInfo->maxArrayRORWStructMemberRangeBytesCount     >= REDGPU_2_EXPECTED_maxArrayRORWStructMemberRangeBytesCount_536870912);
+  REDGPU_2_EXPECTWG(gpuInfo->maxArrayIndexUint32Value                    == 0xFFFFFFFF);
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensions1D                        >= REDGPU_2_EXPECTED_maxImageDimensions1D_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensions2D                        >= REDGPU_2_EXPECTED_maxImageDimensions2D_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensions3D                        >= REDGPU_2_EXPECTED_maxImageDimensions3D_2048);
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageDimensionsCube                      >= REDGPU_2_EXPECTED_maxImageDimensionsCube_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageLayersCount                         >= REDGPU_2_EXPECTED_maxImageLayersCount_2048);
+  REDGPU_2_EXPECTWG(gpuInfo->maxSamplerMipLodBias                        >= REDGPU_2_EXPECTED_maxSamplerMipLodBias_15);
+  REDGPU_2_EXPECTWG(gpuInfo->maxSamplerAnisotropy                        >= REDGPU_2_EXPECTED_maxSamplerAnisotropy_16);
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsSamplerFilteringMagMin         >= REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMagMin_8);
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsSamplerFilteringMip            >= REDGPU_2_EXPECTED_precisionBitsSamplerFilteringMip_8);
+  REDGPU_2_EXPECTWG(gpuInfo->maxOutputWidth                              >= REDGPU_2_EXPECTED_maxOutputWidth_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->maxOutputHeight                             >= REDGPU_2_EXPECTED_maxOutputHeight_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->maxOutputColorsCount                        >= REDGPU_2_EXPECTED_maxOutputColorsCount_8);
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForOutputDepth    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForOutputStencil  >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForOutputColor    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->supportedMultisampleCountsForEmptyOutput    >= (RED_MULTISAMPLE_COUNT_BITFLAG_1 | RED_MULTISAMPLE_COUNT_BITFLAG_4));
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructSlotsCount                         >= REDGPU_2_EXPECTED_maxStructSlotsCount_1024);
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageArrayROCsCount             >= REDGPU_2_EXPECTED_maxStructPerStageArrayROCsCount_12);
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageArrayRORWsCount            >= 200); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageSamplersCount              >= 64); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageTextureROsCount            >= 200); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageTextureRWsCount            >= 16); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructPerStageAllResourcesCount          >= 200); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructArrayROCsCount                     >= 1800); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructArrayRORWsCount                    >= 1800); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructSamplersCount                      >= 576); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructTextureROsCount                    >= 1800); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxStructTextureRWsCount                    >= 144); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->maxProcedureParametersVariablesBytesCount   >= REDGPU_2_EXPECTED_maxProcedureParametersVariablesBytesCount_128);
+  REDGPU_2_EXPECTWG(gpuInfo->maxViewportDimensions[0]                    >= REDGPU_2_EXPECTED_maxViewportDimensionsX_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->maxViewportDimensions[1]                    >= REDGPU_2_EXPECTED_maxViewportDimensionsY_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->minViewportBoundsRange                      <= REDGPU_2_EXPECTED_minViewportBoundsRange_minus_32768);
+  REDGPU_2_EXPECTWG(gpuInfo->maxViewportBoundsRange                      >= REDGPU_2_EXPECTED_maxViewportBoundsRange_32767);
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsViewportCoordinates            >= REDGPU_2_EXPECTED_precisionBitsViewportCoordinates_8);
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsViewportBounds                 >= REDGPU_2_EXPECTED_precisionBitsViewportBounds_8);
+  REDGPU_2_EXPECTWG(gpuInfo->maxPerStageClipDistances                    >= REDGPU_2_EXPECTED_maxPerStageClipDistances_8);
+  REDGPU_2_EXPECTWG(gpuInfo->maxPerStageCullDistances                    >= REDGPU_2_EXPECTED_maxPerStageCullDistances_8);
+  REDGPU_2_EXPECTWG(gpuInfo->maxPerStageClipAndCullDistances             >= REDGPU_2_EXPECTED_maxPerStageClipAndCullDistances_8);
+  REDGPU_2_EXPECTWG(gpuInfo->maxVertexOutputLocationsCount               >= REDGPU_2_EXPECTED_maxVertexOutputLocationsCount_128);
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentInputLocationsCount              >= REDGPU_2_EXPECTED_maxFragmentInputLocationsCount_112);
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentOutputColorsCount                >= REDGPU_2_EXPECTED_maxFragmentOutputColorsCount_8);
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentOutputColorsCountBlendDualSource >= REDGPU_2_EXPECTED_maxFragmentOutputColorsCountBlendDualSource_1);
+  REDGPU_2_EXPECTWG(gpuInfo->maxFragmentOutputResourcesCount             >= REDGPU_2_EXPECTED_maxFragmentOutputResourcesCount_16);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeSharedMemoryBytesCount            >= REDGPU_2_EXPECTED_maxComputeSharedMemoryBytesCount_16384);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupsCount[0]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountX_65535);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupsCount[1]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountY_65535);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupsCount[2]                >= REDGPU_2_EXPECTED_maxComputeWorkgroupsCountZ_65535);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupInvocationsCount         >= REDGPU_2_EXPECTED_maxComputeWorkgroupInvocationsCount_1024);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupDimensions[0]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsX_1024);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupDimensions[1]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsY_1024);
+  REDGPU_2_EXPECTWG(gpuInfo->maxComputeWorkgroupDimensions[2]            >= REDGPU_2_EXPECTED_maxComputeWorkgroupDimensionsZ_64);
+  REDGPU_2_EXPECTWG(gpuInfo->minImageSampleImageFetchOffset              <= REDGPU_2_EXPECTED_minImageSampleImageFetchOffset_minus_8);
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageSampleImageFetchOffset              >= REDGPU_2_EXPECTED_maxImageSampleImageFetchOffset_7);
+  REDGPU_2_EXPECTWG(gpuInfo->minImageGatherOffset                        <= REDGPU_2_EXPECTED_minImageGatherOffset_minus_32);
+  REDGPU_2_EXPECTWG(gpuInfo->maxImageGatherOffset                        >= REDGPU_2_EXPECTED_maxImageGatherOffset_31);
+  REDGPU_2_EXPECTWG(gpuInfo->minInterpolateAtOffset                      <= -0.5f);
+  REDGPU_2_EXPECTWG(gpuInfo->maxInterpolateAtOffset                      >= 0.4375f);
+  REDGPU_2_EXPECTWG(gpuInfo->precisionBitsInterpolateAtOffset            >= 4);
+  REDGPU_2_EXPECTWG(gpuInfo->optimalCopyArrayImageRangeArrayBytesFirstBytesAlignment           <= REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayBytesFirstBytesAlignment_128);
+  REDGPU_2_EXPECTWG(gpuInfo->optimalCopyArrayImageRangeArrayTexelsCountToNextRowBytesAlignment <= REDGPU_2_EXPECTED_optimalCopyArrayImageRangeArrayTexelsCountToNextRowBytesAlignment_128);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsWsi                                                       == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsMemoryGetBudget                                           >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsFullArrayIndexUint32Value                                 == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsSamplerAnisotropy                                         == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsTextureDimensionsCubeLayered                              == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateRasterizationDepthClamp                     == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateRasterizationDepthBiasDynamic               == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateRasterizationDepthBiasClamp                 == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateMultisampleSampleShading                    == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateMultisampleAlphaToOne                       >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTest                         == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTestDynamic                  == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicCompareMask   == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicWriteMask     == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateBlendLogicOp                                >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateOutputColorsBlendVaryingPerColor            == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateOutputColorsBlendDualSource                 == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsMultisampleEmptyOutputVariableMultisampleCount            >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsMultisampleStandardSampleLocations                        == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeWritesAndAtomicsInStageVertex                      == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeWritesAndAtomicsInStageFragment                    == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeImageGatherExtended                                == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWExtendedFormats                           == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWMultisample                               >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWReadWithoutFormat                         >= 0); // Intel UHD Graphics 730 on Windows 10
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeTextureRWWriteWithoutFormat                        == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfArrayROCs              == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfArrayRORWs             == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfSamplers               == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfTextureROs             == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeDynamicallyIndexableArraysOfTextureRWs             == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeClipDistance                                       == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeCullDistance                                       == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeInt64                                              >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeFloat64                                            >= 0);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsGpuCodeMinLod                                             >= 0);
+}
+
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectAllMemoryToBeCoherent(const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine) {
   RedHandleGpu gpu = gpuInfo->gpu;
   for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
@@ -215,7 +326,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 1);
@@ -223,7 +334,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 1);
@@ -231,7 +342,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
@@ -239,7 +350,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 1);
@@ -247,7 +358,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 1);
@@ -255,7 +366,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 1);
@@ -263,7 +374,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
@@ -271,7 +382,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 1);
@@ -279,7 +390,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 1);
@@ -287,7 +398,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 1);
@@ -295,7 +406,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 1);
@@ -303,7 +414,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 1);
@@ -311,7 +422,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 1);
@@ -319,7 +430,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 1);
@@ -327,7 +438,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 1);
@@ -335,7 +446,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 1);
@@ -343,7 +454,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 1);
@@ -351,7 +462,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 1);
@@ -359,7 +470,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 1);
@@ -367,7 +478,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
@@ -375,7 +486,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 1);
@@ -383,7 +494,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 1);
@@ -391,7 +502,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 1);
@@ -399,7 +510,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -407,7 +518,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -415,7 +526,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 16384);
@@ -423,7 +534,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -431,7 +542,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -439,7 +550,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 16384);
@@ -447,7 +558,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 16384);
@@ -455,7 +566,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -463,7 +574,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 16384);
@@ -471,7 +582,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 16384);
@@ -479,7 +590,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -487,7 +598,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 16384);
@@ -495,7 +606,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 16384);
@@ -503,7 +614,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -511,7 +622,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 16384);
@@ -519,7 +630,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 16384);
@@ -527,7 +638,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -535,7 +646,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 16384);
@@ -543,7 +654,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 16384);
@@ -551,7 +662,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -559,7 +670,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -567,7 +678,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -575,7 +686,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -583,7 +694,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -591,7 +702,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -599,7 +710,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -607,7 +718,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 16384);
@@ -615,7 +726,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -623,7 +734,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -631,7 +742,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 16384);
@@ -639,7 +750,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 16384);
@@ -647,7 +758,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -655,7 +766,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 16384);
@@ -663,7 +774,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 16384);
@@ -671,7 +782,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -679,7 +790,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 16384);
@@ -687,7 +798,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 16384);
@@ -695,7 +806,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -703,7 +814,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 16384);
@@ -711,7 +822,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 16384);
@@ -719,7 +830,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -727,7 +838,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 16384);
@@ -735,7 +846,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 16384);
@@ -743,7 +854,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -751,7 +862,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -759,7 +870,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -767,7 +878,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -775,7 +886,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -783,7 +894,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_4 | RED_MULTISAMPLE_COUNT_BITFLAG_2 | RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DMultisample[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -791,7 +902,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -799,7 +910,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 16384);
@@ -807,7 +918,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -815,7 +926,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -823,7 +934,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 16384);
@@ -831,7 +942,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 16384);
@@ -839,7 +950,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -847,7 +958,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 16384);
@@ -855,7 +966,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 16384);
@@ -863,7 +974,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -871,7 +982,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 16384);
@@ -879,7 +990,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 16384);
@@ -887,7 +998,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -895,7 +1006,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 16384);
@@ -903,7 +1014,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 16384);
@@ -911,7 +1022,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -919,7 +1030,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 16384);
@@ -927,7 +1038,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 16384);
@@ -935,7 +1046,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -943,7 +1054,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 16384);
@@ -951,7 +1062,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 16384);
@@ -959,7 +1070,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -967,7 +1078,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 16384);
@@ -975,7 +1086,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 15);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions2DWithTextureDimensionsCubeAndCubeLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -983,7 +1094,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -991,7 +1102,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 2048);
@@ -999,7 +1110,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -1007,7 +1118,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -1015,7 +1126,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 2048);
@@ -1023,7 +1134,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 2048);
@@ -1031,7 +1142,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -1039,7 +1150,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 2048);
@@ -1047,7 +1158,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 2048);
@@ -1055,7 +1166,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1063,7 +1174,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 2048);
@@ -1071,7 +1182,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 2048);
@@ -1079,7 +1190,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1087,7 +1198,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 2048);
@@ -1095,7 +1206,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 2048);
@@ -1103,7 +1214,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1111,7 +1222,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 2048);
@@ -1119,7 +1230,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 2048);
@@ -1127,7 +1238,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1135,7 +1246,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -1143,7 +1254,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1151,7 +1262,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -1159,7 +1270,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -1167,7 +1278,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3D[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -1175,7 +1286,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -1183,7 +1294,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxDimensions.maxHeight >= 2048);
@@ -1191,7 +1302,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -1199,7 +1310,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -1207,7 +1318,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxDimensions.maxHeight >= 2048);
@@ -1215,7 +1326,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxDimensions.maxHeight >= 2048);
@@ -1223,7 +1334,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_8_8_8_8_UINT_TO_FLOAT_0_1_GAMMA_CORRECTED].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -1231,7 +1342,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_PRESENT_BGRA_8_8_8_8_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxDimensions.maxHeight >= 2048);
@@ -1239,7 +1350,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxDimensions.maxHeight >= 2048);
@@ -1247,7 +1358,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1255,7 +1366,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxDimensions.maxHeight >= 2048);
@@ -1263,7 +1374,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxDimensions.maxHeight >= 2048);
@@ -1271,7 +1382,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1279,7 +1390,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_16_16_16_16_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxDimensions.maxHeight >= 2048);
@@ -1287,7 +1398,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxDimensions.maxHeight >= 2048);
@@ -1295,7 +1406,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1303,7 +1414,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_R_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxDimensions.maxHeight >= 2048);
@@ -1311,7 +1422,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxDimensions.maxHeight >= 2048);
@@ -1319,7 +1430,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_SINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1327,7 +1438,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_RGBA_32_32_32_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 2048);
@@ -1335,7 +1446,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxDimensions.maxHeight >= 2048);
@@ -1343,7 +1454,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -1351,7 +1462,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxWidth >= 2048);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxDimensions.maxHeight >= 2048);
@@ -1359,7 +1470,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatur
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLevelsCount >= 12);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxLayersCount >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].supportedMultisampleCounts >= (RED_MULTISAMPLE_COUNT_BITFLAG_1));
-  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 1099511627776); // RTX 2060
+  REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].maxBytesCount >= 2147483648); // Intel UHD Graphics 730 on Windows 10. Not used: RTX 2060 on Windows 10 is 1099511627776
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions3DWithTextureDimensions2DAnd2DLayered[RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT].status == RED_STATUS_SUCCESS);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsCopyR >= 1);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsFeatures[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].supportsCopyW >= 1);
