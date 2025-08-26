@@ -34,6 +34,15 @@ extern "C" {
     ARRAY.items[ARRAY.count++] = ELEMENT;\
   } while(0)
 
+#define REDGPU_32_DYNAMIC_ARRAY_FREE(ARRAY)\
+  do {\
+    red32MemoryFree(ARRAY.items);\
+    ARRAY.items = 0;\
+    ARRAY.count = 0;\
+    ARRAY.capacity = 0;\
+    ARRAY.alignment = 0;\
+  } while(0)
+
 #ifndef REDGPU_32_DECLSPEC
 #define REDGPU_32_DECLSPEC
 #endif
