@@ -1,9 +1,14 @@
-#define STB_SPRINTF_IMPLEMENTATION
-#include "redgpu_stb_sprintf.h"
+#define REDGPU_32_DECLSPEC __declspec(dllexport)
+#define REDGPU_32_API
+
+#include "redgpu_32.h"
 
 #include <stddef.h>  // For size_t
 #include <stdint.h>  // For uint64_t
 #include <Windows.h>
+
+#define STB_SPRINTF_IMPLEMENTATION
+#include "redgpu_stb_sprintf.h"
 
 #if 0
 extern HANDLE CreateFile2              (LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition, LPCREATEFILE2_EXTENDED_PARAMETERS pCreateExParams);
@@ -11,19 +16,57 @@ extern HANDLE CreateFileMappingFromApp (HANDLE hFile, PSECURITY_ATTRIBUTES Secur
 extern PVOID  MapViewOfFileFromApp     (HANDLE hFileMappingObject, ULONG DesiredAccess, ULONG64 FileOffset, SIZE_T NumberOfBytesToMap);
 #endif
 
-extern __declspec(dllexport) void * red32MemoryCalloc(size_t bytesCount) {
-  return calloc(1, bytesCount);
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemorySet(void * pointer, int value, size_t bytesCount) {
+  uint8_t * setTo = (uint8_t *)pointer;
+  for (size_t i = 0; i < bytesCount; i += 1) {
+    setTo[i] = value;
+  }
+  return pointer;
 }
 
-extern __declspec(dllexport) void red32MemoryFree(void * pointer) {
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemoryCopy(void * pointerCopyTo, const void * pointerCopyFrom, size_t bytesCount) {
+  uint8_t *       copyTo   = (uint8_t *)pointerCopyTo;
+  const uint8_t * copyFrom = (const uint8_t *)pointerCopyFrom;
+  for (size_t i = 0; i < bytesCount; i += 1) {
+    copyTo[i] = copyFrom[i];
+  }
+  return pointerCopyTo;
+}
+
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemoryCallocAligned(size_t bytesCount, size_t alignment) {
+  uint8_t * pointer        = (uint8_t *)calloc(1, (alignment == 1 ? 0 : alignment) + bytesCount + REDGPU_32_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(bytesCount, alignment));
+  uint64_t  pointerAddress = (uint64_t)(void *)pointer;
+  pointer += REDGPU_32_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(pointerAddress, alignment);
+  return (void *)pointer;
+}
+
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemoryCalloc(size_t bytesCount) {
+  return red32MemoryCallocAligned(bytesCount, 1);
+}
+
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemoryReallocAligned(void * pointer, size_t newSizeBytesCount, size_t oldSizeBytesCount, size_t alignment) {
+  void * newpointer = red32MemoryCallocAligned(newSizeBytesCount, alignment);
+  if (pointer == NULL || newpointer == NULL) {
+    return newpointer;
+  }
+  red32MemoryCopy(newpointer, pointer, oldSizeBytesCount);
+  red32MemoryFree(pointer);
+  return newpointer;
+}
+
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemoryRealloc(void * pointer, size_t newSizeBytesCount, size_t oldSizeBytesCount) {
+  return red32MemoryReallocAligned(pointer, newSizeBytesCount, oldSizeBytesCount, 1);
+}
+
+REDGPU_32_DECLSPEC void REDGPU_32_API red32MemoryFree(void * pointer) {
   free(pointer);
 }
 
-extern __declspec(dllexport) void * red32GetModuleHandle(const char * moduleName) {
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32GetModuleHandle(const char * moduleName) {
   return GetModuleHandleA(moduleName);
 }
 
-extern __declspec(dllexport) void * red32WindowCreate(const char * title) {
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32WindowCreate(const char * title) {
   WNDCLASSEXA wndClassEx = {0};
   wndClassEx.cbSize        = sizeof(wndClassEx);
   wndClassEx.lpfnWndProc   = DefWindowProcA;
@@ -33,7 +76,7 @@ extern __declspec(dllexport) void * red32WindowCreate(const char * title) {
   return (void *)window;
 }
 
-extern __declspec(dllexport) int red32WindowDestroy(void * windowHandle) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowDestroy(void * windowHandle) {
   if (windowHandle != NULL) {
     int destroyWindowSuccess = DestroyWindow((HWND)windowHandle);
     if (destroyWindowSuccess == 0) { // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroywindow
@@ -43,7 +86,7 @@ extern __declspec(dllexport) int red32WindowDestroy(void * windowHandle) {
   return 0;
 }
 
-extern __declspec(dllexport) int red32WindowLoop() {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop() {
   int loop = 1;
   MSG msg = {0};
   while (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -56,17 +99,17 @@ extern __declspec(dllexport) int red32WindowLoop() {
   return loop;
 }
 
-extern __declspec(dllexport) void red32ConsolePrint(const char * string) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrint(const char * string) {
   DWORD _;
   WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), string, strlen(string), &_, 0);
 }
 
-extern __declspec(dllexport) void red32ConsolePrintError(const char * string) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrintError(const char * string) {
   DWORD _;
   WriteConsoleA(GetStdHandle(STD_ERROR_HANDLE), string, strlen(string), &_, 0);
 }
 
-extern __declspec(dllexport) int red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer) {
   HANDLE fd = CreateFile2((LPCWSTR)filepath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, OPEN_EXISTING, 0);
   if (fd == INVALID_HANDLE_VALUE) {
     return -1;
@@ -93,7 +136,7 @@ extern __declspec(dllexport) int red32FileMap(const unsigned short * filepath, v
   return 0;
 }
 
-extern __declspec(dllexport) int red32FileUnmap(void * fileDescriptorHandle, void * fileMappingHandle) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileDescriptorHandle, void * fileMappingHandle) {
   if (fileMappingHandle != INVALID_HANDLE_VALUE) {
     int unmapViewOfFileSuccess = UnmapViewOfFile(fileMappingHandle);
     if (unmapViewOfFileSuccess == 0) { // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
@@ -109,11 +152,11 @@ extern __declspec(dllexport) int red32FileUnmap(void * fileDescriptorHandle, voi
   return 0;
 }
 
-extern __declspec(dllexport) void red32OutputDebugString(const char * string) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32OutputDebugString(const char * string) {
   OutputDebugStringA(string);
 }
 
-extern __declspec(dllexport) uint64_t red32MirrorBytesOfUint64(uint64_t value) {
+REDGPU_32_DECLSPEC uint64_t REDGPU_32_API red32MirrorBytesOfUint64(uint64_t value) {
   uint64_t out = value;
   uint8_t * bytes = (uint8_t *)(void *)&out;
   uint8_t b1 = bytes[0];
@@ -135,7 +178,7 @@ extern __declspec(dllexport) uint64_t red32MirrorBytesOfUint64(uint64_t value) {
   return out;
 }
 
-extern __declspec(dllexport) int red32StringJoin(char * joinTo, const char * joinFrom) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32StringJoin(char * joinTo, const char * joinFrom) {
   if (joinFrom == NULL) { return 0; }
 
   uint64_t start = 0;
@@ -211,11 +254,11 @@ extern __declspec(dllexport) int red32StringJoin(char * joinTo, const char * joi
   return 0;
 }
 
-extern __declspec(dllexport) void red32Exit(int exitCode) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32Exit(int exitCode) {
   exit(exitCode);
 }
 
-extern __declspec(dllexport) int red32IntToChars(int value, char * outChars) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32IntToChars(int value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%d", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%d", value);
@@ -223,7 +266,7 @@ extern __declspec(dllexport) int red32IntToChars(int value, char * outChars) {
   return size + 1;
 }
 
-extern __declspec(dllexport) int red32UnsignedToChars(unsigned value, char * outChars) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32UnsignedToChars(unsigned value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%u", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%u", value);
@@ -231,7 +274,7 @@ extern __declspec(dllexport) int red32UnsignedToChars(unsigned value, char * out
   return size + 1;
 }
 
-extern __declspec(dllexport) int red32Int64ToChars(int64_t value, char * outChars) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32Int64ToChars(int64_t value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%lld", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%lld", value);
@@ -239,7 +282,7 @@ extern __declspec(dllexport) int red32Int64ToChars(int64_t value, char * outChar
   return size + 1;
 }
 
-extern __declspec(dllexport) int red32Uint64ToChars(uint64_t value, char * outChars) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32Uint64ToChars(uint64_t value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%llu", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%llu", value);
@@ -247,7 +290,7 @@ extern __declspec(dllexport) int red32Uint64ToChars(uint64_t value, char * outCh
   return size + 1;
 }
 
-extern __declspec(dllexport) int red32FloatToChars(float value, char * outChars) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FloatToChars(float value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%.9g", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%.9g", value);
@@ -255,7 +298,7 @@ extern __declspec(dllexport) int red32FloatToChars(float value, char * outChars)
   return size + 1;
 }
 
-extern __declspec(dllexport) int red32DoubleToChars(double value, char * outChars) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32DoubleToChars(double value, char * outChars) {
   int size = stbsp_snprintf(0, 0, "%.17g", value);
   if (outChars != 0) {
     stbsp_snprintf(outChars, size + 1, "%.17g", value);
@@ -263,7 +306,7 @@ extern __declspec(dllexport) int red32DoubleToChars(double value, char * outChar
   return size + 1;
 }
 
-extern __declspec(dllexport) void red32BinaryUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32BinaryUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
   uint8_t b = value;
   outCharsNoNullTerm[0]  = (b & 0b10000000) == 0 ? '0' : '1';
   outCharsNoNullTerm[1]  = (b & 0b01000000) == 0 ? '0' : '1';
@@ -275,7 +318,7 @@ extern __declspec(dllexport) void red32BinaryUint8ToCharsNoNullTerm(uint8_t valu
   outCharsNoNullTerm[7]  = (b & 0b00000001) == 0 ? '0' : '1';
 }
 
-extern __declspec(dllexport) void red32BinaryUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32BinaryUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
   unsigned b = value;
   outCharsNoNullTerm[0]  = (b & 0b10000000000000000000000000000000) == 0 ? '0' : '1';
   outCharsNoNullTerm[1]  = (b & 0b01000000000000000000000000000000) == 0 ? '0' : '1';
@@ -311,7 +354,7 @@ extern __declspec(dllexport) void red32BinaryUnsignedToCharsNoNullTerm(unsigned 
   outCharsNoNullTerm[31] = (b & 0b00000000000000000000000000000001) == 0 ? '0' : '1';
 }
 
-extern __declspec(dllexport) void red32BinaryUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32BinaryUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
   uint64_t b = value;
   outCharsNoNullTerm[0]  = (b & 0b1000000000000000000000000000000000000000000000000000000000000000) == 0 ? '0' : '1';
   outCharsNoNullTerm[1]  = (b & 0b0100000000000000000000000000000000000000000000000000000000000000) == 0 ? '0' : '1';
@@ -379,7 +422,7 @@ extern __declspec(dllexport) void red32BinaryUint64ToCharsNoNullTerm(uint64_t va
   outCharsNoNullTerm[63] = (b & 0b0000000000000000000000000000000000000000000000000000000000000001) == 0 ? '0' : '1';
 }
 
-extern __declspec(dllexport) void red32HexUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32HexUint8ToCharsNoNullTerm(uint8_t value, char * outCharsNoNullTerm) {
   const char * hexTable[256] = {
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",
@@ -403,7 +446,7 @@ extern __declspec(dllexport) void red32HexUint8ToCharsNoNullTerm(uint8_t value, 
   outCharsNoNullTerm[1] = hex0[1];
 }
 
-extern __declspec(dllexport) void red32HexUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32HexUnsignedToCharsNoNullTerm(unsigned value, char * outCharsNoNullTerm) {
   const char * hexTable[256] = {
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",
@@ -441,7 +484,7 @@ extern __declspec(dllexport) void red32HexUnsignedToCharsNoNullTerm(unsigned val
   outCharsNoNullTerm[7] = hex0[1];
 }
 
-extern __declspec(dllexport) void red32HexUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
+REDGPU_32_DECLSPEC void REDGPU_32_API red32HexUint64ToCharsNoNullTerm(uint64_t value, char * outCharsNoNullTerm) {
   const char * hexTable[256] = {
     "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F",
     "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "1A", "1B", "1C", "1D", "1E", "1F",

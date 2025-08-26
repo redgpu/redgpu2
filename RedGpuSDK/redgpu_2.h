@@ -134,8 +134,9 @@ typedef struct Red2Output {
 
 typedef struct Red2MutableOutputs {
   Red2Output * items;
-  uint64_t     count;
-  uint64_t     capacity;
+  size_t       count;
+  size_t       capacity;
+  size_t       alignment;
 } Red2MutableOutputs;
 
 typedef struct Red2Calls {
