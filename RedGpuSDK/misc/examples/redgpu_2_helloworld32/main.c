@@ -17,22 +17,21 @@ clang main.c redgpu.o redgpu_2.o redgpu_32.o
 #include "C:/RedGpuSDK/misc/np/np_redgpu_2.h"
 
 void red2Crash(const char * error, const char * functionName, RedHandleGpu optionalGpuHandle, const char * optionalFile, int optionalLine) {
-  char * optionalLineStr = (char *)red32MemoryCalloc(4096);
-
   char * out = (char *)red32MemoryCalloc(32768);
   ((uint64_t *)(void *)out)[0] = red32MirrorBytesOfUint64(32768);
 
+  char * optionalLineStr = (char *)red32MemoryCalloc(4096);
   red32IntToChars(optionalLine, optionalLineStr);
 
-  red32StringJoin(out, "[REDGPU 2][Crash][");
-  red32StringJoin(out, optionalFile);
-  red32StringJoin(out, ":");
-  red32StringJoin(out, optionalLineStr);
-  red32StringJoin(out, "][");
-  red32StringJoin(out, functionName);
-  red32StringJoin(out, "] ");
-  red32StringJoin(out, error);
-  red32StringJoin(out, "\n");
+  red32MirrorStringJoin(out, "[REDGPU 2][Crash][");
+  red32MirrorStringJoin(out, optionalFile);
+  red32MirrorStringJoin(out, ":");
+  red32MirrorStringJoin(out, optionalLineStr);
+  red32MirrorStringJoin(out, "][");
+  red32MirrorStringJoin(out, functionName);
+  red32MirrorStringJoin(out, "] ");
+  red32MirrorStringJoin(out, error);
+  red32MirrorStringJoin(out, "\n");
 
   red32ConsolePrintError(out);
 

@@ -178,7 +178,7 @@ REDGPU_32_DECLSPEC uint64_t REDGPU_32_API red32MirrorBytesOfUint64(uint64_t valu
   return out;
 }
 
-REDGPU_32_DECLSPEC int REDGPU_32_API red32StringJoin(char * joinTo, const char * joinFrom) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32MirrorStringJoin(char * joinTo, const char * joinFrom) {
   if (joinFrom == NULL) { return 0; }
 
   uint64_t start = 0;

@@ -31,8 +31,23 @@ extern "C" {
       void ** items = (void **)&ARRAY.items;\
       items[0] = red32MemoryReallocAligned(ARRAY.items, ARRAY.capacity * sizeof(ARRAY.items[0]), ARRAY.count * sizeof(ARRAY.items[0]), ARRAY.alignment);\
     }\
-    ARRAY.items[ARRAY.count++] = ELEMENT;\
+    if (ARRAY.items != 0) {\
+      ARRAY.items[ARRAY.count++] = ELEMENT;\
+    }\
   } while(0)
+
+#define REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(ARRAY_STRING, JOIN_STRING)\
+  if ((JOIN_STRING) != 0) {\
+    if (ARRAY_STRING.count > 0) {\
+      ARRAY_STRING.count -= 1;\
+    }\
+    for (size_t i = 0; ; i += 1) {\
+      REDGPU_32_DYNAMIC_ARRAY_APPEND(ARRAY_STRING, (JOIN_STRING)[i]);\
+      if ((JOIN_STRING)[i] == 0) {\
+        break;\
+      }\
+    }\
+  }
 
 #define REDGPU_32_DYNAMIC_ARRAY_FREE(ARRAY)\
   do {\
@@ -68,7 +83,7 @@ REDGPU_32_DECLSPEC int      REDGPU_32_API red32FileMap             (const unsign
 REDGPU_32_DECLSPEC int      REDGPU_32_API red32FileUnmap           (void * fileDescriptorHandle, void * fileMappingHandle);
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32OutputDebugString   (const char * string);
 REDGPU_32_DECLSPEC uint64_t REDGPU_32_API red32MirrorBytesOfUint64 (uint64_t value);
-REDGPU_32_DECLSPEC int      REDGPU_32_API red32StringJoin          (char * joinTo, const char * joinFrom);
+REDGPU_32_DECLSPEC int      REDGPU_32_API red32MirrorStringJoin    (char * joinTo, const char * joinFrom);
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32Exit                (int exitCode);
 
 REDGPU_32_DECLSPEC int      REDGPU_32_API red32IntToChars          (int value, char * outChars);

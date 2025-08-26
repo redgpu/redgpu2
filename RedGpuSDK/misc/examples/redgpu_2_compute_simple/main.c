@@ -1,0 +1,694 @@
+#ifndef __cplusplus
+#define REDGPU_DISABLE_NAMED_PARAMETERS
+#endif
+
+#include "C:/RedGpuSDK/redgpu_2.h"
+#include "C:/RedGpuSDK/redgpu_32.h"
+
+#include "C:/RedGpuSDK/misc/np/np.h"
+#include "C:/RedGpuSDK/misc/np/np_redgpu.h"
+#include "C:/RedGpuSDK/misc/np/np_redgpu_2.h"
+
+void red2Crash(const char * error, const char * functionName, RedHandleGpu optionalGpuHandle, const char * optionalFile, int optionalLine) {
+  char * out = (char *)red32MemoryCalloc(32768);
+  ((uint64_t *)(void *)out)[0] = red32MirrorBytesOfUint64(32768);
+
+  char * optionalLineStr = (char *)red32MemoryCalloc(4096);
+  red32IntToChars(optionalLine, optionalLineStr);
+
+  red32MirrorStringJoin(out, "[REDGPU 2][Crash][");
+  red32MirrorStringJoin(out, optionalFile);
+  red32MirrorStringJoin(out, ":");
+  red32MirrorStringJoin(out, optionalLineStr);
+  red32MirrorStringJoin(out, "][");
+  red32MirrorStringJoin(out, functionName);
+  red32MirrorStringJoin(out, "] ");
+  red32MirrorStringJoin(out, error);
+  red32MirrorStringJoin(out, "\n");
+
+  red32ConsolePrintError(out);
+
+  red32MemoryFree(optionalLineStr);
+  red32MemoryFree(out);
+
+  red32Exit(1);
+}
+
+int main() {
+  RedContext context = NULL;
+  np(redCreateContext,
+    "malloc", red32MemoryCalloc,
+    "free", red32MemoryFree,
+    "optionalMallocTagged", NULL,
+    "optionalFreeTagged", NULL,
+    "debugCallback", NULL,
+    "sdkVersion", RED_SDK_VERSION_1_0_135,
+    "sdkExtensionsCount", 0,
+    "sdkExtensions", NULL,
+    "optionalProgramName", NULL,
+    "optionalProgramVersion", 0,
+    "optionalEngineName", NULL,
+    "optionalEngineVersion", 0,
+    "optionalSettings", NULL,
+    "outContext", &context,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+
+  REDGPU_2_EXPECTFL(context != NULL);
+  REDGPU_2_EXPECTFL(context->gpusCount > 0);
+
+  np(red2ExpectMinimumGuarantees,
+    "gpuInfo", &context->gpus[0],
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__
+  );
+  np(red2ExpectAllMemoryToBeCoherent,
+    "gpuInfo", &context->gpus[0],
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__
+  );
+  np(red2ExpectMinimumImageFormatsLimitsAndFeatures, 
+    "gpuInfo", &context->gpus[0],
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__
+  );
+
+  RedHandleGpu gpu = context->gpus[0].gpu;
+
+  // For NVIDIA GPUs and Windows 10 only for now. Tested on RTX 2060.
+  if (1) {
+    unsigned      memoryTypesCount = 0;
+    RedMemoryType memoryTypes[32]  = {0};
+    unsigned      memoryHeapsCount = 0;
+    RedMemoryHeap memoryHeaps[32]  = {0};
+
+    memoryTypesCount = 6;
+    memoryHeapsCount = 3;
+
+    memoryTypes[0].memoryHeapIndex = 1;
+    memoryTypes[0].isGpuVram       = 0;
+    memoryTypes[0].isCpuMappable   = 0;
+    memoryTypes[0].isCpuCoherent   = 0;
+    memoryTypes[0].isCpuCached     = 0;
+
+    memoryTypes[1].memoryHeapIndex = 0;
+    memoryTypes[1].isGpuVram       = 1;
+    memoryTypes[1].isCpuMappable   = 0;
+    memoryTypes[1].isCpuCoherent   = 0;
+    memoryTypes[1].isCpuCached     = 0;
+
+    memoryTypes[2].memoryHeapIndex = 0;
+    memoryTypes[2].isGpuVram       = 1;
+    memoryTypes[2].isCpuMappable   = 0;
+    memoryTypes[2].isCpuCoherent   = 0;
+    memoryTypes[2].isCpuCached     = 0;
+
+    memoryTypes[3].memoryHeapIndex = 1;
+    memoryTypes[3].isGpuVram       = 0;
+    memoryTypes[3].isCpuMappable   = 1;
+    memoryTypes[3].isCpuCoherent   = 1;
+    memoryTypes[3].isCpuCached     = 0;
+
+    memoryTypes[4].memoryHeapIndex = 1;
+    memoryTypes[4].isGpuVram       = 0;
+    memoryTypes[4].isCpuMappable   = 1;
+    memoryTypes[4].isCpuCoherent   = 1;
+    memoryTypes[4].isCpuCached     = 1;
+
+    memoryTypes[5].memoryHeapIndex = 2;
+    memoryTypes[5].isGpuVram       = 1;
+    memoryTypes[5].isCpuMappable   = 1;
+    memoryTypes[5].isCpuCoherent   = 1;
+    memoryTypes[5].isCpuCached     = 0;
+
+    memoryHeaps[0].memoryBytesCount = 6244270080;
+    memoryHeaps[0].isGpuVram        = 1;
+
+    memoryHeaps[1].memoryBytesCount = 17067356160;
+    memoryHeaps[1].isGpuVram        = 0;
+
+    memoryHeaps[2].memoryBytesCount = 224395264;
+    memoryHeaps[2].isGpuVram        = 1;
+
+    np(red2ExpectMemoryTypes, 
+      "gpuInfo", &context->gpus[0],
+      "expectedMemoryHeapsCount", memoryHeapsCount,
+      "expectedMemoryHeaps", memoryHeaps,
+      "expectedMemoryTypesCount", memoryTypesCount,
+      "expectedMemoryTypes", memoryTypes,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__
+    );
+  }
+  const unsigned specificMemoryTypeCPUVisibleVRAM = 5;
+  const unsigned specificMemoryTypeReadback       = 4;
+  const unsigned mainQueueFamilyIndex             = 0;
+  RedHandleQueue mainQueue                        = context->gpus[0].queues[0];
+
+  struct HandlesToDestroy {
+    RedHandleType destroyHandleType;
+    void *        destroyHandle;
+    void *        destroyHandle2;
+  };
+
+  struct HandlesToDestroyArray {
+    struct HandlesToDestroy * items;
+    size_t                    count;
+    size_t                    capacity;
+    size_t                    alignment;
+  };
+  
+  struct HandlesToDestroyArray handlesToDestroy = {0};
+
+  struct float4 {
+    float x, y, z, w;
+  };
+
+  Red2Array array0 = {0};
+  Red2Array array1 = {0};
+  Red2Array array2 = {0};
+
+  np(red2CreateArray,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "array0",
+    "type", RED_ARRAY_TYPE_ARRAY_RW,
+    "bytesCount", sizeof(struct float4),
+    "structuredBufferElementBytesCount", sizeof(unsigned),
+    "initialQueueFamilyIndex", mainQueueFamilyIndex,
+    "maxAllowedOverallocationBytesCount", 0,
+    "dedicate", 0,
+    "mappable", 1,
+    "dedicateOrMappableMemoryTypeIndex", specificMemoryTypeCPUVisibleVRAM,
+    "suballocateFromMemoryOnFirstMatchPointersCount", 0,
+    "suballocateFromMemoryOnFirstMatchPointers", NULL,
+    "outArray", &array0,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_ARRAY,  array0.array.handle));
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_MEMORY, array0.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory));
+
+  np(red2CreateArray,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "array1",
+    "type", RED_ARRAY_TYPE_ARRAY_RW,
+    "bytesCount", sizeof(struct float4),
+    "structuredBufferElementBytesCount", sizeof(unsigned),
+    "initialQueueFamilyIndex", mainQueueFamilyIndex,
+    "maxAllowedOverallocationBytesCount", 0,
+    "dedicate", 0,
+    "mappable", 1,
+    "dedicateOrMappableMemoryTypeIndex", specificMemoryTypeCPUVisibleVRAM,
+    "suballocateFromMemoryOnFirstMatchPointersCount", 0,
+    "suballocateFromMemoryOnFirstMatchPointers", NULL,
+    "outArray", &array1,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_ARRAY,  array1.array.handle));
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_MEMORY, array1.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory));
+
+  np(red2CreateArray,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "array2",
+    "type", RED_ARRAY_TYPE_ARRAY_RW,
+    "bytesCount", sizeof(struct float4),
+    "structuredBufferElementBytesCount", sizeof(unsigned),
+    "initialQueueFamilyIndex", mainQueueFamilyIndex,
+    "maxAllowedOverallocationBytesCount", 0,
+    "dedicate", 0,
+    "mappable", 1,
+    "dedicateOrMappableMemoryTypeIndex", specificMemoryTypeReadback,
+    "suballocateFromMemoryOnFirstMatchPointersCount", 0,
+    "suballocateFromMemoryOnFirstMatchPointers", NULL,
+    "outArray", &array2,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_ARRAY,  array2.array.handle));
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_MEMORY, array2.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory));
+
+  volatile struct float4 * array0p = NULL;
+  volatile struct float4 * array1p = NULL;
+  volatile struct float4 * array2p = NULL;
+
+  {
+    np(redMemoryMap,
+      "context", context,
+      "gpu", gpu,
+      "mappableMemory", array0.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory,
+      "mappableMemoryBytesFirst", 0,
+      "mappableMemoryBytesCount", sizeof(struct float4),
+      "outVolatilePointer", (void **)&array0p,
+      "outStatuses", NULL,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+
+    array0p[0].x = 4;
+    array0p[0].y = 8;
+    array0p[0].z = 15;
+    array0p[0].w = 16;
+
+    np(redMemoryUnmap,
+      "context", context,
+      "gpu", gpu,
+      "mappableMemory", array0.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+
+    array0p = NULL;
+  }
+
+  {
+    np(redMemoryMap,
+      "context", context,
+      "gpu", gpu,
+      "mappableMemory", array1.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory,
+      "mappableMemoryBytesFirst", 0,
+      "mappableMemoryBytesCount", sizeof(struct float4),
+      "outVolatilePointer", (void **)&array1p,
+      "outStatuses", NULL,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+
+    array1p[0].x = 16;
+    array1p[0].y = 23;
+    array1p[0].z = 42;
+    array1p[0].w = 108;
+
+    np(redMemoryUnmap,
+      "context", context,
+      "gpu", gpu,
+      "mappableMemory", array1.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+
+    array1p = NULL;
+  }
+
+  RedHandleStructsMemory structsMemory = NULL;
+  np(redStructsMemoryAllocate,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "structsMemory",
+    "maxStructsCount", 1,
+    "maxStructsMembersOfTypeArrayROConstantCount", 0,
+    "maxStructsMembersOfTypeArrayROOrArrayRWCount", 3,
+    "maxStructsMembersOfTypeTextureROCount", 0,
+    "maxStructsMembersOfTypeTextureRWCount", 0,
+    "outStructsMemory", &structsMemory,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_STRUCTS_MEMORY, structsMemory));
+
+  RedStructDeclarationMember structDeclarationMembers[3] = {0};
+
+  structDeclarationMembers[0].slot            = 0;
+  structDeclarationMembers[0].type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+  structDeclarationMembers[0].count           = 1;
+  structDeclarationMembers[0].visibleToStages = RED_VISIBLE_TO_STAGE_BITFLAG_COMPUTE;
+  structDeclarationMembers[0].inlineSampler   = NULL;
+
+  structDeclarationMembers[1].slot            = 1;
+  structDeclarationMembers[1].type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+  structDeclarationMembers[1].count           = 1;
+  structDeclarationMembers[1].visibleToStages = RED_VISIBLE_TO_STAGE_BITFLAG_COMPUTE;
+  structDeclarationMembers[1].inlineSampler   = NULL;
+
+  structDeclarationMembers[2].slot            = 2;
+  structDeclarationMembers[2].type            = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+  structDeclarationMembers[2].count           = 1;
+  structDeclarationMembers[2].visibleToStages = RED_VISIBLE_TO_STAGE_BITFLAG_COMPUTE;
+  structDeclarationMembers[2].inlineSampler   = NULL;
+
+  Red2Struct structure = {0};
+  np(red2StructsMemorySuballocateStruct,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "struct",
+    "structsMemory", structsMemory,
+    "structDeclarationMembersCount", sizeof(structDeclarationMembers) / sizeof(structDeclarationMembers[0]),
+    "structDeclarationMembers", structDeclarationMembers,
+    "structDeclarationMembersArrayROCount", 0,
+    "structDeclarationMembersArrayRO", NULL,
+    "outStruct", &structure,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_STRUCT_DECLARATION, structure.handleDeclaration));
+
+  {
+    RedStructMember      structMembers[3]      = {0};
+    RedStructMemberArray structMembersArray[3] = {0};
+
+    structMembersArray[0].array                = array0.array.handle;
+    structMembersArray[0].arrayRangeBytesFirst = 0;
+    structMembersArray[0].arrayRangeBytesCount = array0.array.memoryBytesCount;
+    structMembers[0].setTo35   = 35;
+    structMembers[0].setTo0    = 0;
+    structMembers[0].structure = structure.handle;
+    structMembers[0].slot      = 0;
+    structMembers[0].first     = 0;
+    structMembers[0].count     = 1;
+    structMembers[0].type      = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    structMembers[0].textures  = NULL;
+    structMembers[0].arrays    = &structMembersArray[0];
+    structMembers[0].setTo00   = 0;
+
+    structMembersArray[1].array                = array1.array.handle;
+    structMembersArray[1].arrayRangeBytesFirst = 0;
+    structMembersArray[1].arrayRangeBytesCount = array1.array.memoryBytesCount;
+    structMembers[1].setTo35   = 35;
+    structMembers[1].setTo0    = 0;
+    structMembers[1].structure = structure.handle;
+    structMembers[1].slot      = 1;
+    structMembers[1].first     = 0;
+    structMembers[1].count     = 1;
+    structMembers[1].type      = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    structMembers[1].textures  = NULL;
+    structMembers[1].arrays    = &structMembersArray[1];
+    structMembers[1].setTo00   = 0;
+
+    structMembersArray[2].array                = array2.array.handle;
+    structMembersArray[2].arrayRangeBytesFirst = 0;
+    structMembersArray[2].arrayRangeBytesCount = array2.array.memoryBytesCount;
+    structMembers[2].setTo35   = 35;
+    structMembers[2].setTo0    = 0;
+    structMembers[2].structure = structure.handle;
+    structMembers[2].slot      = 2;
+    structMembers[2].first     = 0;
+    structMembers[2].count     = 1;
+    structMembers[2].type      = RED_STRUCT_MEMBER_TYPE_ARRAY_RO_RW;
+    structMembers[2].textures  = NULL;
+    structMembers[2].arrays    = &structMembersArray[2];
+    structMembers[2].setTo00   = 0;
+
+    np(redStructsSet,
+      "context", context,
+      "gpu", gpu,
+      "structsMembersCount", sizeof(structMembers) / sizeof(structMembers[0]),
+      "structsMembers", structMembers,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+  }
+
+  RedHandleProcedureParameters procedureParametersAdd = NULL;
+  {
+    Red2ProcedureParametersDeclaration procedureParametersDeclaration = {0};
+    procedureParametersDeclaration.variablesSlot            = 0;
+    procedureParametersDeclaration.variablesVisibleToStages = 0;
+    procedureParametersDeclaration.variablesBytesCount      = 0;
+    procedureParametersDeclaration.structsDeclarationsCount = 1;
+    procedureParametersDeclaration.structsDeclarations[0].structDeclarationMembersCount        = sizeof(structDeclarationMembers) / sizeof(structDeclarationMembers[0]);
+    procedureParametersDeclaration.structsDeclarations[0].structDeclarationMembers             = structDeclarationMembers;
+    procedureParametersDeclaration.structsDeclarations[0].structDeclarationMembersArrayROCount = 0;
+    procedureParametersDeclaration.structsDeclarations[0].structDeclarationMembersArrayRO      = NULL;
+    procedureParametersDeclaration.handlesDeclaration       = NULL;
+    np(red2CreateProcedureParameters,
+      "context", context,
+      "gpu", gpu,
+      "handleName", "procedureParameters",
+      "procedureParametersDeclaration", &procedureParametersDeclaration,
+      "outProcedureParameters", &procedureParametersAdd,
+      "outStatuses", NULL,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+  }
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_PROCEDURE_PARAMETERS, procedureParametersAdd));
+
+  RedHandleGpuCode gpuCodeAdd = NULL;
+  {
+    #include "add.cs.h"
+    np(redCreateGpuCode,
+      "context", context,
+      "gpu", gpu,
+      "handleName", "gpuCodeAdd",
+      "irBytesCount", sizeof(g_main),
+      "ir", g_main,
+      "outGpuCode", &gpuCodeAdd,
+      "outStatuses", NULL,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+  }
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_GPU_CODE, gpuCodeAdd));
+
+  RedHandleProcedure procedureAdd = NULL;
+  np(redCreateProcedureCompute,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "procedureAdd",
+    "procedureCache", NULL,
+    "procedureParameters", procedureParametersAdd,
+    "gpuCodeMainProcedureName", "main",
+    "gpuCode", gpuCodeAdd,
+    "outProcedure", &procedureAdd,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_PROCEDURE, procedureAdd));
+
+  Red2Calls calls = {0};
+  Red2Output mutableOutputs[16] = {0};
+  // Filling
+  Red2MutableOutputsArray;
+  calls.mutableOutputsArray.items     = &mutableOutputs[0];
+  calls.mutableOutputsArray.count     = 0;
+  calls.mutableOutputsArray.capacity  = 16;
+  calls.mutableOutputsArray.alignment = 1;
+  np(redCreateCallsReusable,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "calls",
+    "queueFamilyIndex", mainQueueFamilyIndex,
+    "outCalls", &calls.calls,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_CALLS, calls.calls.handle, calls.calls.memory));
+
+  RedCallProceduresAndAddresses callpa = {0};
+  np(redGetCallProceduresAndAddresses,
+    "context", context,
+    "gpu", gpu,
+    "outCallProceduresAndAddresses", &callpa,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+
+  np(red2CallsSet,
+    "context", context,
+    "gpu", gpu,
+    "calls", calls.calls.handle,
+    "callsMemory", calls.calls.memory,
+    "callsReusable", calls.calls.reusable,
+    "mutableOutputsArray", &calls.mutableOutputsArray,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  np(redCallSetStructsMemory,
+    "address", callpa.redCallSetStructsMemory,
+    "calls", calls.calls.handle,
+    "structsMemory", structsMemory,
+    "structsMemorySamplers", 0
+  );
+  np(redCallSetProcedureParameters,
+    "address", callpa.redCallSetProcedureParameters,
+    "calls", calls.calls.handle,
+    "procedureType", RED_PROCEDURE_TYPE_COMPUTE,
+    "procedureParameters", procedureParametersAdd
+  );
+  npfp(redCallSetProcedureParametersStructs, callpa.redCallSetProcedureParametersStructs,
+    "calls", calls.calls.handle,
+    "procedureType", RED_PROCEDURE_TYPE_COMPUTE,
+    "procedureParameters", procedureParametersAdd,
+    "procedureParametersDeclarationStructsDeclarationsFirst", 0,
+    "structsCount", 1,
+    "structs", &structure.handle,
+    "setTo0", 0,
+    "setTo00", 0
+  );
+  npfp(redCallSetProcedure, callpa.redCallSetProcedure,
+    "calls", calls.calls.handle,
+    "procedureType", RED_PROCEDURE_TYPE_COMPUTE,
+    "procedure", procedureAdd
+  );
+  npfp(redCallProcedureCompute, callpa.redCallProcedureCompute,
+    "calls", calls.calls.handle,
+    "workgroupsCountX", 1,
+    "workgroupsCountY", 1,
+    "workgroupsCountZ", 1
+  );
+  np(red2CallGlobalReadbackBarrier,
+    "address", callpa.redCallUsageAliasOrderBarrier,
+    "calls", calls.calls.handle
+  );
+  np(redCallsEnd,
+    "context", context,
+    "gpu", gpu,
+    "calls", calls.calls.handle,
+    "callsMemory", calls.calls.memory,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+
+  RedHandleCpuSignal cpuSignal = 0;
+  np(redCreateCpuSignal,
+    "context", context,
+    "gpu", gpu,
+    "handleName", "cpuSignal",
+    "createSignaled", 0,
+    "outCpuSignal", &cpuSignal,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_CPU_SIGNAL, cpuSignal));
+
+  RedGpuTimeline timeline = {0};
+  timeline.setTo4                            = 4;
+  timeline.setTo0                            = 0;
+  timeline.waitForAndUnsignalGpuSignalsCount = 0;
+  timeline.waitForAndUnsignalGpuSignals      = 0;
+  timeline.setTo65536                        = 0;
+  timeline.callsCount                        = 1;
+  timeline.calls                             = &calls.calls.handle;
+  timeline.signalGpuSignalsCount             = 0;
+  timeline.signalGpuSignals                  = 0;
+  np(redQueueSubmit,
+    "context", context,
+    "gpu", gpu,
+    "queue", mainQueue,
+    "timelinesCount", 1,
+    "timelines", &timeline,
+    "signalCpuSignal", cpuSignal,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  np(redCpuSignalWait,
+    "context", context,
+    "gpu", gpu,
+    "cpuSignalsCount", 1,
+    "cpuSignals", &cpuSignal,
+    "waitAll", 1,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+  np(redCpuSignalUnsignal,
+    "context", context,
+    "gpu", gpu,
+    "cpuSignalsCount", 1,
+    "cpuSignals", &cpuSignal,
+    "outStatuses", NULL,
+    "optionalFile", __FILE__,
+    "optionalLine", __LINE__,
+    "optionalUserData", NULL
+  );
+
+  struct StringArray {
+    char * items;
+    size_t count;
+    size_t capacity;
+    size_t alignment;
+  };
+  struct StringArray printString = {0};
+  {
+    np(redMemoryMap,
+      "context", context,
+      "gpu", gpu,
+      "mappableMemory", array2.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory,
+      "mappableMemoryBytesFirst", 0,
+      "mappableMemoryBytesCount", sizeof(struct float4),
+      "outVolatilePointer", (void **)&array2p,
+      "outStatuses", NULL,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+
+    char strX[512] = {0};
+    char strY[512] = {0};
+    char strZ[512] = {0};
+    char strW[512] = {0};
+    red32FloatToChars(array2p[0].x, strX);
+    red32FloatToChars(array2p[0].y, strY);
+    red32FloatToChars(array2p[0].z, strZ);
+    red32FloatToChars(array2p[0].w, strW);
+
+    // NOTE(Constantine): "array2p: 20 31 57 124"
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, "array2p: ");
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, strX);
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, " ");
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, strY);
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, " ");
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, strZ);
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, " ");
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, strW);
+    REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(printString, "\n");
+    red32ConsolePrint(printString.items);
+
+    np(redMemoryUnmap,
+      "context", context,
+      "gpu", gpu,
+      "mappableMemory", array2.handleAllocatedDedicatedOrMappableMemoryOrPickedMemory,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__,
+      "optionalUserData", NULL
+    );
+
+    array2p = NULL;
+  }
+
+  for (int64_t i = handlesToDestroy.count-1; i >= 0; i -= 1) {
+    red2DestroyHandle(context, gpu, handlesToDestroy.items[i].destroyHandleType, handlesToDestroy.items[i].destroyHandle, handlesToDestroy.items[i].destroyHandle2, __FILE__, __LINE__, NULL);
+  }
+  redDestroyContext(context, __FILE__, __LINE__, NULL);
+
+  REDGPU_32_DYNAMIC_ARRAY_FREE(printString);
+  REDGPU_32_DYNAMIC_ARRAY_FREE(handlesToDestroy);
+}

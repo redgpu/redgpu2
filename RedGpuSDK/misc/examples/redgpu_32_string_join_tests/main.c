@@ -16,14 +16,14 @@ int main() {
     char * str = (char *)red32MemoryCalloc(STRING_SIZE);
     ((uint64_t *)(void *)str)[0] = red32MirrorBytesOfUint64(STRING_SIZE);
 
-    REDGPU_2_EXPECTFL( 0 == red32StringJoin(str, "Hi") );
+    REDGPU_2_EXPECTFL( 0 == red32MirrorStringJoin(str, "Hi") );
 
     REDGPU_2_EXPECTFL( str[0] == 'H' );
     REDGPU_2_EXPECTFL( str[1] == 'i' );
     REDGPU_2_EXPECTFL( str[2] == 0   );
     REDGPU_2_EXPECTFL( ((uint64_t *)(void *)&str[2])[0] == red32MirrorBytesOfUint64(STRING_SIZE) );
 
-    REDGPU_2_EXPECTFL( 0 == red32StringJoin(str, "!!!") );
+    REDGPU_2_EXPECTFL( 0 == red32MirrorStringJoin(str, "!!!") );
 
     REDGPU_2_EXPECTFL( str[0] == 'H' );
     REDGPU_2_EXPECTFL( str[1] == 'i' );
@@ -41,9 +41,9 @@ int main() {
     char * str = (char *)red32MemoryCalloc(8);
     ((uint64_t *)(void *)str)[0] = red32MirrorBytesOfUint64(8);
 
-    REDGPU_2_EXPECTFL(  0 == red32StringJoin(str, "")  );
+    REDGPU_2_EXPECTFL(  0 == red32MirrorStringJoin(str, "")  );
 
-    REDGPU_2_EXPECTFL( -2 == red32StringJoin(str, "!") );
+    REDGPU_2_EXPECTFL( -2 == red32MirrorStringJoin(str, "!") );
   }
 
   printf("All tests are passed successfully.\n");
