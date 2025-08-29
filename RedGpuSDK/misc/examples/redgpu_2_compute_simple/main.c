@@ -543,7 +543,7 @@ int main() {
   Red2Calls calls = {0};
   Red2Output mutableOutputs[16] = {0};
   // Filling
-  Red2MutableOutputsArray;
+  Red2CallsMutableOutputsArray;
   calls.mutableOutputsArray.items     = &mutableOutputs[0];
   calls.mutableOutputsArray.count     = 0;
   calls.mutableOutputsArray.capacity  = 16;

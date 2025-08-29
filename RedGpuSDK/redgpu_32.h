@@ -23,7 +23,7 @@ extern "C" {
 //   size_t capacity;
 //   size_t alignment;
 // } MyDynamicArray;
-#define REDGPU_32_DYNAMIC_ARRAY_APPEND(ARRAY, ELEMENT)\
+#define REDGPU_32_DYNAMIC_ARRAY_APPEND_PREPARE(ARRAY)\
   do {\
     if (ARRAY.alignment == 0) { ARRAY.alignment = 1; }\
     if (ARRAY.count >= ARRAY.capacity) {\
@@ -31,6 +31,11 @@ extern "C" {
       void ** items = (void **)&ARRAY.items;\
       items[0] = red32MemoryReallocAligned(ARRAY.items, ARRAY.capacity * sizeof(ARRAY.items[0]), ARRAY.count * sizeof(ARRAY.items[0]), ARRAY.alignment);\
     }\
+  } while(0)
+
+#define REDGPU_32_DYNAMIC_ARRAY_APPEND(ARRAY, ELEMENT)\
+  do {\
+    REDGPU_32_DYNAMIC_ARRAY_APPEND_PREPARE(ARRAY);\
     if (ARRAY.items != 0) {\
       ARRAY.items[ARRAY.count++] = ELEMENT;\
     }\

@@ -2291,7 +2291,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyHandle(RedContext context, RedHan
   }
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, Red2MutableOutputsArray * mutableOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, Red2CallsMutableOutputsArray * mutableOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   np9(redCallsSet,
     "context", context,
     "gpu", gpu,
@@ -2319,7 +2319,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGp
   mutableOutputsArray->count = 0;
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureAddressCallSetProcedureOutput address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, Red2MutableOutputsArray * mutableOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureAddressCallSetProcedureOutput address, RedHandleCalls calls, RedContext context, RedHandleGpu gpu, Red2CallsMutableOutputsArray * mutableOutputsArray, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, const RedOutputMembers * outputMembers, const RedOutputMembersResolveTargets * outputMembersResolveTargets, unsigned width, unsigned height, float depthClearValue, unsigned stencilClearValue, const RedColorsClearValuesFloat * colorsClearValuesFloat, const RedColorsClearValuesSint * colorsClearValuesSint, const RedColorsClearValuesUint * colorsClearValuesUint, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   REDGPU_2_EXPECTWG((mutableOutputsArray->count + 1) <= mutableOutputsArray->capacity);
   
   RedHandleOutputDeclaration outputDeclaration = NULL;
@@ -2372,12 +2372,16 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureA
     "colorsClearValuesUint", colorsClearValuesUint
   );
 
-  uint64_t currentOutputsArrayIndex = mutableOutputsArray->count;
+  {
+    uint64_t currentOutputsArrayIndex = mutableOutputsArray->count;
 
-  mutableOutputsArray->items[currentOutputsArrayIndex].handle            = output.handle;
-  mutableOutputsArray->items[currentOutputsArrayIndex].handleDeclaration = outputDeclaration;
+    // Filling
+    Red2Output;
+    mutableOutputsArray->items[currentOutputsArrayIndex].handle            = output.handle;
+    mutableOutputsArray->items[currentOutputsArrayIndex].handleDeclaration = outputDeclaration;
 
-  mutableOutputsArray->count = currentOutputsArrayIndex + 1;
+    mutableOutputsArray->count = currentOutputsArrayIndex + 1;
+  }
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalOrderBarrier(RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls) {
