@@ -82,7 +82,6 @@ extern "C" {
     ARRAY.items = 0;\
     ARRAY.count = 0;\
     ARRAY.capacity = 0;\
-    ARRAY.alignment = 0;\
   } while(0)
 
 #ifndef REDGPU_32_DECLSPEC

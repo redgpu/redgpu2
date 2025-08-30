@@ -17,26 +17,32 @@ clang main.c redgpu.o redgpu_2.o redgpu_32.o
 #include "C:/RedGpuSDK/misc/np/np_redgpu_2.h"
 
 void red2Crash(const char * error, const char * functionName, RedHandleGpu optionalGpuHandle, const char * optionalFile, int optionalLine) {
-  char * out = (char *)red32MemoryCalloc(32768);
-  ((uint64_t *)(void *)out)[0] = red32MirrorBytesOfUint64(32768);
+  struct StringArray {
+    char * items;
+    size_t count;
+    size_t capacity;
+    size_t alignment;
+  };
+
+  struct StringArray str = {0};
 
   char * optionalLineStr = (char *)red32MemoryCalloc(4096);
   red32IntToChars(optionalLine, optionalLineStr);
 
-  red32MirrorStringJoin(out, "[REDGPU 2][Crash][");
-  red32MirrorStringJoin(out, optionalFile);
-  red32MirrorStringJoin(out, ":");
-  red32MirrorStringJoin(out, optionalLineStr);
-  red32MirrorStringJoin(out, "][");
-  red32MirrorStringJoin(out, functionName);
-  red32MirrorStringJoin(out, "] ");
-  red32MirrorStringJoin(out, error);
-  red32MirrorStringJoin(out, "\n");
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, "[REDGPU 2][Crash][");
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, optionalFile);
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, ":");
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, optionalLineStr);
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, "][");
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, functionName);
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, "] ");
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, error);
+  REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(str, "\n");
 
-  red32ConsolePrintError(out);
+  red32ConsolePrintError(str.items);
 
   red32MemoryFree(optionalLineStr);
-  red32MemoryFree(out);
+  REDGPU_32_DYNAMIC_ARRAY_FREE(str);
 
   red32Exit(1);
 }
