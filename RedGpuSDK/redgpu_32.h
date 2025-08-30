@@ -19,7 +19,7 @@ extern "C" {
 //
 // typedef struct MyDynamicArray {
 //   MyItem * items;
-//   size_t count;
+//   size_t count;     // Do not modify the count value directly, rather use REDGPU_32_DYNAMIC_ARRAY_RESIZE
 //   size_t capacity;
 //   size_t alignment;
 // } MyDynamicArray;
@@ -27,7 +27,15 @@ extern "C" {
   do {\
     if (ARRAY.alignment == 0) { ARRAY.alignment = 1; }\
     if (ARRAY.count >= ARRAY.capacity) {\
-      if (ARRAY.capacity == 0) { ARRAY.capacity = 256/*Must be bigger than 1*/; } else { ARRAY.capacity *= 2; }\
+      if (ARRAY.capacity == 0) {\
+        ARRAY.capacity = 256;\
+      } else {\
+        if (ARRAY.capacity == 1) {\
+          ARRAY.capacity = 2;\
+        } else {\
+          ARRAY.capacity *= 2;\
+        }\
+      }\
       void ** items = (void **)&ARRAY.items;\
       items[0] = red32MemoryReallocAligned(ARRAY.items, ARRAY.capacity * sizeof(ARRAY.items[0]), ARRAY.count * sizeof(ARRAY.items[0]), ARRAY.alignment);\
     }\
@@ -39,6 +47,20 @@ extern "C" {
     if (ARRAY.items != 0) {\
       ARRAY.items[ARRAY.count++] = ELEMENT;\
     }\
+  } while(0)
+
+#define REDGPU_32_DYNAMIC_ARRAY_RESIZE(ARRAY, NEW_SIZE)\
+  do {\
+    if (ARRAY.alignment == 0) { ARRAY.alignment = 1; }\
+    ARRAY.capacity = NEW_SIZE;\
+    if (NEW_SIZE == 0) {\
+      red32MemoryFree(ARRAY.items);\
+      ARRAY.items = 0;\
+    } else {\
+      void ** items = (void **)&ARRAY.items;\
+      items[0] = red32MemoryReallocAligned(ARRAY.items, ARRAY.capacity * sizeof(ARRAY.items[0]), ARRAY.count * sizeof(ARRAY.items[0]), ARRAY.alignment);\
+    }\
+    if (ARRAY.count > ARRAY.capacity) { ARRAY.count = ARRAY.capacity; }\
   } while(0)
 
 #define REDGPU_32_DYNAMIC_ARRAY_STRING_JOIN(ARRAY_STRING, JOIN_STRING)\
@@ -87,8 +109,6 @@ REDGPU_32_DECLSPEC void     REDGPU_32_API red32ConsolePrintError   (const char *
 REDGPU_32_DECLSPEC int      REDGPU_32_API red32FileMap             (const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer);
 REDGPU_32_DECLSPEC int      REDGPU_32_API red32FileUnmap           (void * fileDescriptorHandle, void * fileMappingHandle);
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32OutputDebugString   (const char * string);
-REDGPU_32_DECLSPEC uint64_t REDGPU_32_API red32MirrorBytesOfUint64 (uint64_t value);
-REDGPU_32_DECLSPEC int      REDGPU_32_API red32MirrorStringJoin    (char * joinTo, const char * joinFrom);
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32Exit                (int exitCode);
 
 REDGPU_32_DECLSPEC int      REDGPU_32_API red32IntToChars          (int value, char * outChars);

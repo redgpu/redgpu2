@@ -49,6 +49,9 @@ REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemoryReallocAligned(void * pointer
   if (pointer == NULL || newpointer == NULL) {
     return newpointer;
   }
+  if (oldSizeBytesCount > newSizeBytesCount) {
+      oldSizeBytesCount = newSizeBytesCount;
+  }
   red32MemoryCopy(newpointer, pointer, oldSizeBytesCount);
   red32MemoryFree(pointer);
   return newpointer;
@@ -154,104 +157,6 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileDescriptorHandle,
 
 REDGPU_32_DECLSPEC void REDGPU_32_API red32OutputDebugString(const char * string) {
   OutputDebugStringA(string);
-}
-
-REDGPU_32_DECLSPEC uint64_t REDGPU_32_API red32MirrorBytesOfUint64(uint64_t value) {
-  uint64_t out = value;
-  uint8_t * bytes = (uint8_t *)(void *)&out;
-  uint8_t b1 = bytes[0];
-  uint8_t b2 = bytes[1];
-  uint8_t b3 = bytes[2];
-  uint8_t b4 = bytes[3];
-  uint8_t b5 = bytes[4];
-  uint8_t b6 = bytes[5];
-  uint8_t b7 = bytes[6];
-  uint8_t b8 = bytes[7];
-  bytes[0] = b8;
-  bytes[1] = b7;
-  bytes[2] = b6;
-  bytes[3] = b5;
-  bytes[4] = b4;
-  bytes[5] = b3;
-  bytes[6] = b2;
-  bytes[7] = b1;
-  return out;
-}
-
-REDGPU_32_DECLSPEC int REDGPU_32_API red32MirrorStringJoin(char * joinTo, const char * joinFrom) {
-  if (joinFrom == NULL) { return 0; }
-
-  uint64_t start = 0;
-  for (uint64_t i = 0; ; i += 1) {
-    char c = joinTo[i];
-    if (c == 0) {
-      start = i;
-      break;
-    }
-  }
-
-  uint64_t length_mirrored = ((uint64_t *)(void *)(&joinTo[start]))[0];
-  uint64_t length = red32MirrorBytesOfUint64(length_mirrored);
-
-  // Bounds checks
-  if (1) {
-    uint64_t joinFromStrLengthNoNullTerm = 0;
-    for (uint64_t i = 0; ; i += 1) {
-      char c = joinFrom[i];
-      if (c == 0) {
-        break;
-      }
-      joinFromStrLengthNoNullTerm += sizeof(char);
-    }
-
-    // Min string length: 8 bytes (1 byte for null term + 7 bytes for string length).
-    //
-    // String example:
-    //
-    // char * str = calloc(1, 13);
-    // ((uint64_t *)(void *)str)[0] = red32MirrorBytesOfUint64(13);
-    // red32StringJoin(str, "Hi");
-    //
-    // Hi0xxxxxxx000
-    // +
-    // !!!0
-    // =
-    // Hi!!!0xxxxxxx
-    //
-    // Hi0xxxxxxx000
-    //   ^      ^
-    //   2start 13length
-    //
-    // 2 chars taken + 7 chars for string length = 9 chars taken total.
-    // 13 length - 9 chars taken total = 4 chars left to use, including for null term.
-    // So the strlen of joinFrom string must not be bigger than 4 - 1 = 3 chars.
-
-    if (length > 0b0000000011111111111111111111111111111111111111111111111111111111) {
-      return -1;
-    }
-
-    if (
-      joinFromStrLengthNoNullTerm > (length - (start + 7) - 1)
-    )
-    {
-      return -2;
-    }
-  }
-
-  uint64_t newstart = 0;
-
-  for (uint64_t i = 0; ; i += 1) {
-    char c = joinFrom[i];
-    joinTo[start + i] = c;
-    if (c == 0) {
-      newstart = start + i;
-      break;
-    }
-  }
-
-  ((uint64_t *)(void *)(&joinTo[newstart]))[0] = length_mirrored;
-
-  return 0;
 }
 
 REDGPU_32_DECLSPEC void REDGPU_32_API red32Exit(int exitCode) {
