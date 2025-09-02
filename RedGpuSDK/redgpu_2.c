@@ -169,8 +169,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuarantees(const RedGpuInfo
   REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateRasterizationDepthBiasClamp                 == 1);
   REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateMultisampleSampleShading                    == 1);
   REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateMultisampleAlphaToOne                       >= 0); // Not supported on RX 550 and RX 9070 XT on Windows
-  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTest                         == 1);
-  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTestDynamic                  == 1);
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTest                         >= 0); // Not supported on Intel HD Graphics 520 on Windows
+  REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateDepthTestBoundsTestDynamic                  >= 0); // Not supported on Intel HD Graphics 520 on Windows
   REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicCompareMask   == 1);
   REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateStencilTestFrontAndBackDynamicWriteMask     == 1);
   REDGPU_2_EXPECTWG(gpuInfo->supportsProcedureStateBlendLogicOp                                >= 0); // Not supported on Redmi Note 8 on Android 11
