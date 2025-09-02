@@ -146,13 +146,13 @@ int main() {
     memoryTypes[5].isCpuCoherent   = 1;
     memoryTypes[5].isCpuCached     = 0;
 
-    memoryHeaps[0].memoryBytesCount = 6244270080;
+    memoryHeaps[0].memoryBytesCount = 6000000000;
     memoryHeaps[0].isGpuVram        = 1;
 
-    memoryHeaps[1].memoryBytesCount = 17067356160;
+    memoryHeaps[1].memoryBytesCount = 2000000000;
     memoryHeaps[1].isGpuVram        = 0;
 
-    memoryHeaps[2].memoryBytesCount = 224395264;
+    memoryHeaps[2].memoryBytesCount = 200000000;
     memoryHeaps[2].isGpuVram        = 1;
 
     np(red2ExpectMemoryTypes,
