@@ -96,7 +96,7 @@ int main() {
   );
 
   RedHandleGpu   gpu                  = gpuInfo->gpu;
-  const unsigned mainQueueFamilyIndex = 0;
+  const unsigned mainQueueFamilyIndex = gpuInfo->queuesFamilyIndex[0];
   RedHandleQueue mainQueue            = gpuInfo->queues[0];
 
   unsigned specificMemoryTypeCPUVisibleVRAM = 0;
