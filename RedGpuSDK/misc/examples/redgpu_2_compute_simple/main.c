@@ -105,7 +105,7 @@ int main() {
     unsigned      memoryTypesCount = 0;
     RedMemoryType memoryTypes[32]  = {0};
     unsigned      memoryHeapsCount = 0;
-    RedMemoryHeap memoryHeaps[32]  = {0};
+    RedMemoryHeap memoryHeaps[16]  = {0};
 
     memoryTypesCount = 6;
     memoryHeapsCount = 3;
@@ -171,7 +171,7 @@ int main() {
     unsigned      memoryTypesCount = 0;
     RedMemoryType memoryTypes[32]  = {0};
     unsigned      memoryHeapsCount = 0;
-    RedMemoryHeap memoryHeaps[32]  = {0};
+    RedMemoryHeap memoryHeaps[16]  = {0};
 
     memoryTypesCount = 3;
     memoryHeapsCount = 1;
