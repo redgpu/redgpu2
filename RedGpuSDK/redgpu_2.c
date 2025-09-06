@@ -1793,8 +1793,19 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
     "optionalUserData", optionalUserData
   );
   
-  REDGPU_2_EXPECTWG(REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(array.memoryBytesCount, array.memoryBytesAlignment) == 0);
-  REDGPU_2_EXPECTWG((array.memoryBytesCount - bytesCount) <= maxAllowedOverallocationBytesCount);
+  if (array.handle == NULL) {
+    // Filling
+    Red2Array;
+    outArray->array = array;
+    outArray->handleAllocatedDedicatedOrMappableMemoryOrPickedMemory = NULL;
+    return;
+  }
+
+  {
+    size_t bytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(array.memoryBytesCount, array.memoryBytesAlignment);
+    REDGPU_2_EXPECTWG(bytesToNextAlignmentBoundary == 0);
+    REDGPU_2_EXPECTWG((array.memoryBytesCount - bytesCount) <= maxAllowedOverallocationBytesCount);
+  }
 
   Red2Memory * pickedMemory            = NULL;
   Red2Memory   stackmemForPickedMemory = {0};
@@ -1881,33 +1892,35 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
 
   REDGPU_2_EXPECTWG((pickedMemoryBytesFirst + array.memoryBytesCount) <= pickedMemory->bytesCount);
 
-  RedMemoryArray memoryArray = {0};
-  memoryArray.setTo1000157000  = 1000157000;
-  memoryArray.setTo0           = 0;
-  memoryArray.array            = array.handle;
-  memoryArray.memory           = pickedMemory->handle;
-  memoryArray.memoryBytesFirst = pickedMemoryBytesFirst;
-  RedStatuses opstatuses = {0};
-  np10(redMemorySet,
-    "context", context,
-    "gpu", gpu,
-    "memoryArraysCount", 1,
-    "memoryArrays", &memoryArray,
-    "memoryImagesCount", 0,
-    "memoryImages", NULL,
-    "outStatuses", &opstatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
-  );
-  red2InternalStatusesCopyFromTo(&opstatuses, outStatuses);
+  if (array.handle != NULL && pickedMemory->handle != NULL) {
+    RedMemoryArray memoryArray = {0};
+    memoryArray.setTo1000157000  = 1000157000;
+    memoryArray.setTo0           = 0;
+    memoryArray.array            = array.handle;
+    memoryArray.memory           = pickedMemory->handle;
+    memoryArray.memoryBytesFirst = pickedMemoryBytesFirst;
+    RedStatuses opstatuses = {0};
+    np10(redMemorySet,
+      "context", context,
+      "gpu", gpu,
+      "memoryArraysCount", 1,
+      "memoryArrays", &memoryArray,
+      "memoryImagesCount", 0,
+      "memoryImages", NULL,
+      "outStatuses", &opstatuses,
+      "optionalFile", optionalFile,
+      "optionalLine", optionalLine,
+      "optionalUserData", optionalUserData
+    );
+    red2InternalStatusesCopyFromTo(&opstatuses, outStatuses);
 
-  if (opstatuses.statusError == RED_STATUS_SUCCESS) {
-    // NOTE(Constantine):
-    // Be aware doing this is not thread-safe for the picked memory,
-    // and since it is not known in advance which memory will be picked,
-    // effectively it becomes not thread-safe for all the passed memory handles.
-    pickedMemory->currentSuballocateOffset += pickedMemoryBytesToNextAlignmentBoundary + array.memoryBytesCount;
+    if (opstatuses.statusError == RED_STATUS_SUCCESS) {
+      // NOTE(Constantine):
+      // Be aware doing this is not thread-safe for the picked memory,
+      // and since it is not known in advance which memory will be picked,
+      // effectively it becomes not thread-safe for all the passed memory handles.
+      pickedMemory->currentSuballocateOffset += pickedMemoryBytesToNextAlignmentBoundary + array.memoryBytesCount;
+    }
   }
 
   // Filling
@@ -1960,7 +1973,23 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
     "optionalUserData", optionalUserData
   );
 
-  REDGPU_2_EXPECTWG(REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(image.memoryBytesCount, image.memoryBytesAlignment) == 0);
+  if (image.handle == NULL) {
+    // Filling
+    Red2Image;
+    outImage->image                     = image;
+    outImage->handleAllocatedDedicatedMemoryOrPickedMemory = NULL;
+    outImage->textureRO                 = NULL;
+    outImage->textureRW                 = NULL;
+    outImage->textureOutputRenderTarget = NULL;
+    return;
+  }
+
+  // NOTE(Constantine):
+  // Sep 06, 2025: RTX 2060, NVIDIA driver on Windows 10 returns image.memoryBytesCount not aligned by image.memoryBytesAlignment.
+  if (0) {
+    size_t bytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(image.memoryBytesCount, image.memoryBytesAlignment);
+    REDGPU_2_EXPECTWG(bytesToNextAlignmentBoundary == 0);
+  }
 
   Red2Memory * pickedMemory            = NULL;
   Red2Memory   stackmemForPickedMemory = {0};
@@ -2029,33 +2058,35 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
 
   REDGPU_2_EXPECTWG((pickedMemoryBytesFirst + image.memoryBytesCount) <= pickedMemory->bytesCount);
 
-  RedMemoryImage memoryImage = {0};
-  memoryImage.setTo1000157001  = 1000157001;
-  memoryImage.setTo0           = 0;
-  memoryImage.image            = image.handle;
-  memoryImage.memory           = pickedMemory->handle;
-  memoryImage.memoryBytesFirst = pickedMemoryBytesFirst;
-  RedStatuses opstatuses = {0};
-  np10(redMemorySet,
-    "context", context,
-    "gpu", gpu,
-    "memoryArraysCount", 0,
-    "memoryArrays", NULL,
-    "memoryImagesCount", 1,
-    "memoryImages", &memoryImage,
-    "outStatuses", &opstatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
-  );
-  red2InternalStatusesCopyFromTo(&opstatuses, outStatuses);
+  if (image.handle != NULL && pickedMemory->handle != NULL) {
+    RedMemoryImage memoryImage = {0};
+    memoryImage.setTo1000157001  = 1000157001;
+    memoryImage.setTo0           = 0;
+    memoryImage.image            = image.handle;
+    memoryImage.memory           = pickedMemory->handle;
+    memoryImage.memoryBytesFirst = pickedMemoryBytesFirst;
+    RedStatuses opstatuses = {0};
+    np10(redMemorySet,
+      "context", context,
+      "gpu", gpu,
+      "memoryArraysCount", 0,
+      "memoryArrays", NULL,
+      "memoryImagesCount", 1,
+      "memoryImages", &memoryImage,
+      "outStatuses", &opstatuses,
+      "optionalFile", optionalFile,
+      "optionalLine", optionalLine,
+      "optionalUserData", optionalUserData
+    );
+    red2InternalStatusesCopyFromTo(&opstatuses, outStatuses);
 
-  if (opstatuses.statusError == RED_STATUS_SUCCESS) {
-    // NOTE(Constantine):
-    // Be aware doing this is not thread-safe for the picked memory,
-    // and since it is not known in advance which memory will be picked,
-    // effectively it becomes not thread-safe for all the passed memory handles.
-    pickedMemory->currentSuballocateOffset += pickedMemoryBytesToNextAlignmentBoundary + image.memoryBytesCount;
+    if (opstatuses.statusError == RED_STATUS_SUCCESS) {
+      // NOTE(Constantine):
+      // Be aware doing this is not thread-safe for the picked memory,
+      // and since it is not known in advance which memory will be picked,
+      // effectively it becomes not thread-safe for all the passed memory handles.
+      pickedMemory->currentSuballocateOffset += pickedMemoryBytesToNextAlignmentBoundary + image.memoryBytesCount;
+    }
   }
 
   RedHandleTexture textureRO = NULL;
