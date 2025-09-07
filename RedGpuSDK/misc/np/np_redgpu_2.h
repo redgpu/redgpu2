@@ -81,18 +81,15 @@
 #define _np10_red2CreateImage layersCount
 #define _np11_red2CreateImage multisampleCount
 #define _np12_red2CreateImage initialQueueFamilyIndex
-#define _np13_red2CreateImage createTextureRO
-#define _np14_red2CreateImage createTextureRW
-#define _np15_red2CreateImage createTextureOutputRenderTarget
-#define _np16_red2CreateImage dedicate
-#define _np17_red2CreateImage dedicateMemoryTypeIndex
-#define _np18_red2CreateImage suballocateFromMemoryOnFirstMatchPointersCount
-#define _np19_red2CreateImage suballocateFromMemoryOnFirstMatchPointers
-#define _np20_red2CreateImage outImage
-#define _np21_red2CreateImage outStatuses
-#define _np22_red2CreateImage optionalFile
-#define _np23_red2CreateImage optionalLine
-#define _np24_red2CreateImage optionalUserData
+#define _np13_red2CreateImage dedicate
+#define _np14_red2CreateImage dedicateMemoryTypeIndex
+#define _np15_red2CreateImage suballocateFromMemoryOnFirstMatchPointersCount
+#define _np16_red2CreateImage suballocateFromMemoryOnFirstMatchPointers
+#define _np17_red2CreateImage outImage
+#define _np18_red2CreateImage outStatuses
+#define _np19_red2CreateImage optionalFile
+#define _np20_red2CreateImage optionalLine
+#define _np21_red2CreateImage optionalUserData
 
 #define _np1_red2CreateProcedureParameters context
 #define _np2_red2CreateProcedureParameters gpu

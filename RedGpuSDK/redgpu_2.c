@@ -1929,25 +1929,9 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
   outArray->handleAllocatedDedicatedOrMappableMemoryOrPickedMemory = pickedMemory->handle;
 }
 
-static RedImagePartBitflags red2InternalGetFormatToImageParts(RedFormat format) {
-  // Filling
-  RedFormat;
-  if      (format == RED_FORMAT_UNDEFINED)                                 { return 0; }
-  else if (format == RED_FORMAT_DEPTH_16_UINT_TO_FLOAT_0_1)                { return RED_IMAGE_PART_BITFLAG_DEPTH; }
-  else if (format == RED_FORMAT_DEPTH_32_FLOAT)                            { return RED_IMAGE_PART_BITFLAG_DEPTH; }
-  else if (format == RED_FORMAT_DEPTH_24_UINT_TO_FLOAT_0_1_STENCIL_8_UINT) { return RED_IMAGE_PART_BITFLAG_DEPTH | RED_IMAGE_PART_BITFLAG_STENCIL; }
-  else if (format == RED_FORMAT_DEPTH_32_FLOAT_STENCIL_8_UINT)             { return RED_IMAGE_PART_BITFLAG_DEPTH | RED_IMAGE_PART_BITFLAG_STENCIL; }
-  else {
-    return RED_IMAGE_PART_BITFLAG_COLOR;
-  }
-}
-
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, unsigned initialQueueFamilyIndex, RedBool32 createTextureRO, RedBool32 createTextureRW, RedBool32 createTextureOutputRenderTarget, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, unsigned initialQueueFamilyIndex, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
   REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
-  
-  REDGPU_2_EXPECTWG(dimensions != RED_IMAGE_DIMENSIONS_2D ? (createTextureRO == 0 && createTextureRW == 0 && createTextureOutputRenderTarget == 0) : 1); // Not supported: non-2D image textures.
-  REDGPU_2_EXPECTWG(layersCount > 1 ? (createTextureOutputRenderTarget == 0) : 1); // Not supported: layered image output render target texture.
 
   RedImage image = {0};
   np20(redCreateImage,
@@ -1976,11 +1960,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
   if (image.handle == NULL) {
     // Filling
     Red2Image;
-    outImage->image                     = image;
+    outImage->image = image;
     outImage->handleAllocatedDedicatedMemoryOrPickedMemory = NULL;
-    outImage->textureRO                 = NULL;
-    outImage->textureRW                 = NULL;
-    outImage->textureOutputRenderTarget = NULL;
     return;
   }
 
@@ -2089,87 +2070,10 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
     }
   }
 
-  RedHandleTexture textureRO = NULL;
-  RedHandleTexture textureRW = NULL;
-  RedHandleTexture textureOutputRenderTarget = NULL;
-
-  RedImagePartBitflags imageParts = red2InternalGetFormatToImageParts(format);
-
-  if (imageParts == RED_IMAGE_PART_BITFLAG_COLOR || imageParts == RED_IMAGE_PART_BITFLAG_DEPTH) {
-    if (createTextureRO == 1) {
-      np17(redCreateTexture,
-        "context", context,
-        "gpu", gpu,
-        "handleName", handleName,
-        "image", image.handle,
-        "parts", imageParts,
-        "dimensions", layersCount > 1 ? RED_TEXTURE_DIMENSIONS_2D_LAYERED : RED_TEXTURE_DIMENSIONS_2D,
-        "format", format,
-        "levelsFirst", 0,
-        "levelsCount", levelsCount,
-        "layersFirst", 0,
-        "layersCount", layersCount,
-        "restrictToAccess", 0, // NOTE(Constantine): In case REDGPU X will ever come back.
-        "outTexture", &textureRO,
-        "outStatuses", outStatuses,
-        "optionalFile", optionalFile,
-        "optionalLine", optionalLine,
-        "optionalUserData", optionalUserData
-      );
-    }
-
-    if (createTextureRW == 1) {
-      np17(redCreateTexture,
-        "context", context,
-        "gpu", gpu,
-        "handleName", handleName,
-        "image", image.handle,
-        "parts", imageParts,
-        "dimensions", layersCount > 1 ? RED_TEXTURE_DIMENSIONS_2D_LAYERED : RED_TEXTURE_DIMENSIONS_2D,
-        "format", format,
-        "levelsFirst", 0,
-        "levelsCount", levelsCount,
-        "layersFirst", 0,
-        "layersCount", layersCount,
-        "restrictToAccess", 0, // NOTE(Constantine): In case REDGPU X will ever come back.
-        "outTexture", &textureRW,
-        "outStatuses", outStatuses,
-        "optionalFile", optionalFile,
-        "optionalLine", optionalLine,
-        "optionalUserData", optionalUserData
-      );
-    }
-
-    if (createTextureOutputRenderTarget == 1) {
-      np17(redCreateTexture,
-        "context", context,
-        "gpu", gpu,
-        "handleName", handleName,
-        "image", image.handle,
-        "parts", imageParts,
-        "dimensions", RED_TEXTURE_DIMENSIONS_2D,
-        "format", format,
-        "levelsFirst", 0,
-        "levelsCount", levelsCount,
-        "layersFirst", 0,
-        "layersCount", layersCount,
-        "restrictToAccess", 0, // NOTE(Constantine): In case REDGPU X will ever come back.
-        "outTexture", &textureOutputRenderTarget,
-        "outStatuses", outStatuses,
-        "optionalFile", optionalFile,
-        "optionalLine", optionalLine,
-        "optionalUserData", optionalUserData
-      );
-    }
-  }
-
   // Filling
   Red2Image;
-  outImage->image                     = image;
+  outImage->image = image;
   outImage->handleAllocatedDedicatedMemoryOrPickedMemory = pickedMemory->handle;
-  outImage->textureRO                 = textureRO;
-  outImage->textureRW                 = textureRW;
-  outImage->textureOutputRenderTarget = textureOutputRenderTarget;
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, RedHandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
