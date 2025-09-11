@@ -24,10 +24,10 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2MemoryAllocate(RedContext context, RedHa
   unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
   REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
 
-  REDGPU_2_EXPECTWG(context->gpus[gpuIndex].memoryTypes[memoryTypeIndex].isCpuMappable == 0);
+  REDGPU_2_EXPECTWG(context->gpus[gpuIndex].memoryTypes[memoryTypeIndex].isCpuMappable == 0 || !"Create mappable memory with red2CreateArray");
 
   RedHandleMemory handle = NULL;
-  np13(redMemoryAllocate,
+  np(redMemoryAllocate,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
@@ -53,7 +53,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2MemoryAllocate(RedContext context, RedHa
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleStructsMemory structsMemory, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, Red2Struct * outStruct, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedHandleStructDeclaration handleDeclaration = NULL;
-  np13(redCreateStructDeclaration,
+  np(redCreateStructDeclaration,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
@@ -69,7 +69,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct(RedContex
     "optionalUserData", optionalUserData
   );
   RedHandleStruct handle = NULL;
-  np11(redStructsMemorySuballocateStructs,
+  np(redStructsMemorySuballocateStructs,
     "context", context,
     "gpu", gpu,
     "handleNames", &handleName,
@@ -82,6 +82,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct(RedContex
     "optionalLine", optionalLine,
     "optionalUserData", optionalUserData
   );
+  // Filling
+  Red2Struct;
   outStruct->handle            = handle;
   outStruct->handleDeclaration = handleDeclaration;
 }
@@ -318,7 +320,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectAllMemoryToBeCoherent(const RedGpu
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumImageFormatsLimitsAndFeatures(const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine) {
-  // The following minimum image formats limits and features checks are based on Redmi Note 8 on Android 11.
+  // The following minimum image formats limits and features checks are mostly based on Redmi Note 8 on Android 11, unless comments tell otherwise.
   RedHandleGpu gpu = gpuInfo->gpu;
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxWidth >= 16384);
   REDGPU_2_EXPECTWG(gpuInfo->imageFormatsLimitsImageDimensions1D[RED_FORMAT_R_8_UINT_TO_FLOAT_0_1].maxDimensions.maxHeight >= 1);
@@ -1771,19 +1773,19 @@ static void red2InternalStatusesCopyFromTo(const RedStatuses * from, RedStatuses
   }
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, unsigned initialQueueFamilyIndex, uint64_t maxAllowedOverallocationBytesCount, RedBool32 dedicate, RedBool32 mappable, unsigned dedicateOrMappableMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Array * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, uint64_t maxAllowedOverallocationBytesCount, RedBool32 dedicate, RedBool32 mappable, unsigned dedicateOrMappableMemoryTypeIndex, unsigned dedicateOrMappableMemoryBitflags, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Array * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
   REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
   
   RedArray array = {0};
-  np14(redCreateArray,
+  np(redCreateArray,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
     "type", type,
     "bytesCount", bytesCount,
     "structuredBufferElementBytesCount", structuredBufferElementBytesCount,
-    "initialAccess", 0,
+    "initialAccess", initialAccess,
     "initialQueueFamilyIndex", initialQueueFamilyIndex,
     "dedicate", dedicate,
     "outArray", &array,
@@ -1823,7 +1825,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
 
     RedHandleMemory memory = NULL;
     if (mappable == 1) {
-      np13(redMemoryAllocateMappable,
+      np(redMemoryAllocateMappable,
         "context", context,
         "gpu", gpu,
         "handleName", handleName,
@@ -1831,7 +1833,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
         "array", array.handle,
         "arrayMemoryBytesCount", array.memoryBytesCount,
         "memoryTypeIndex", dedicateOrMappableMemoryTypeIndex,
-        "memoryBitflags", 0,
+        "memoryBitflags", dedicateOrMappableMemoryBitflags,
         "outMemory", &memory,
         "outStatuses", outStatuses,
         "optionalFile", optionalFile,
@@ -1839,7 +1841,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
         "optionalUserData", optionalUserData
       );
     } else {
-      np13(redMemoryAllocate,
+      np(redMemoryAllocate,
         "context", context,
         "gpu", gpu,
         "handleName", handleName,
@@ -1847,7 +1849,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
         "memoryTypeIndex", dedicateOrMappableMemoryTypeIndex,
         "dedicateToArray", array.handle,
         "dedicateToImage", NULL,
-        "memoryBitflags", 0,
+        "memoryBitflags", dedicateOrMappableMemoryBitflags,
         "outMemory", &memory,
         "outStatuses", outStatuses,
         "optionalFile", optionalFile,
@@ -1900,7 +1902,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
     memoryArray.memory           = pickedMemory->handle;
     memoryArray.memoryBytesFirst = pickedMemoryBytesFirst;
     RedStatuses opstatuses = {0};
-    np10(redMemorySet,
+    np(redMemorySet,
       "context", context,
       "gpu", gpu,
       "memoryArraysCount", 1,
@@ -1929,12 +1931,12 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandl
   outArray->handleAllocatedDedicatedOrMappableMemoryOrPickedMemory = pickedMemory->handle;
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, unsigned initialQueueFamilyIndex, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, RedAccessBitflags initialAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned dedicateMemoryBitflags, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
   REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
 
   RedImage image = {0};
-  np20(redCreateImage,
+  np(redCreateImage,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
@@ -1946,8 +1948,8 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
     "levelsCount", levelsCount,
     "layersCount", layersCount,
     "multisampleCount", multisampleCount,
-    "restrictToAccess", 0,
-    "initialAccess", 0,
+    "restrictToAccess", restrictToAccess,
+    "initialAccess", initialAccess,
     "initialQueueFamilyIndex", initialQueueFamilyIndex,
     "dedicate", dedicate,
     "outImage", &image,
@@ -1965,9 +1967,9 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
     return;
   }
 
-  // NOTE(Constantine):
-  // Sep 06, 2025: RTX 2060, NVIDIA driver on Windows 10 returns image.memoryBytesCount not aligned by image.memoryBytesAlignment.
   if (0) {
+    // NOTE(Constantine):
+    // Sep 06, 2025: RTX 2060, NVIDIA driver on Windows 10 returns image.memoryBytesCount not aligned by image.memoryBytesAlignment.
     size_t bytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(image.memoryBytesCount, image.memoryBytesAlignment);
     REDGPU_2_EXPECTWG(bytesToNextAlignmentBoundary == 0);
   }
@@ -1987,7 +1989,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
     REDGPU_2_EXPECTWG(imageMemoryTypeIsSupported[dedicateMemoryTypeIndex] == 1);
 
     RedHandleMemory memory = NULL;
-    np13(redMemoryAllocate,
+    np(redMemoryAllocate,
       "context", context,
       "gpu", gpu,
       "handleName", handleName,
@@ -1995,7 +1997,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
       "memoryTypeIndex", dedicateMemoryTypeIndex,
       "dedicateToArray", NULL,
       "dedicateToImage", image.handle,
-      "memoryBitflags", 0,
+      "memoryBitflags", dedicateMemoryBitflags,
       "outMemory", &memory,
       "outStatuses", outStatuses,
       "optionalFile", optionalFile,
@@ -2047,7 +2049,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
     memoryImage.memory           = pickedMemory->handle;
     memoryImage.memoryBytesFirst = pickedMemoryBytesFirst;
     RedStatuses opstatuses = {0};
-    np10(redMemorySet,
+    np(redMemorySet,
       "context", context,
       "gpu", gpu,
       "memoryArraysCount", 0,
@@ -2082,7 +2084,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
 
   if (procedureParametersDeclaration != NULL) {
     for (unsigned i = 0; i < procedureParametersDeclaration->structsDeclarationsCount; i += 1) {
-      np13(redCreateStructDeclaration,
+      np(redCreateStructDeclaration,
         "context", context,
         "gpu", gpu,
         "handleName", handleName,
@@ -2099,7 +2101,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
       );
     }
     if (procedureParametersDeclaration->handlesDeclaration != NULL) {
-      np13(redCreateStructDeclaration,
+      np(redCreateStructDeclaration,
         "context", context,
         "gpu", gpu,
         "handleName", handleName,
@@ -2133,7 +2135,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
     parametersDeclaration.handlesDeclaration       = handlesDeclaration;
   }
 
-  np9(redCreateProcedureParameters,
+  np(redCreateProcedureParameters,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
@@ -2153,7 +2155,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedure(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedHandleOutputDeclaration outputDeclaration = NULL;
-  np12(redCreateOutputDeclaration,
+  np(redCreateOutputDeclaration,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
@@ -2167,7 +2169,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedure(RedContext context, RedH
     "optionalLine", optionalLine,
     "optionalUserData", optionalUserData
   );
-  np19(redCreateProcedure,
+  np(redCreateProcedure,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
@@ -2227,7 +2229,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyHandle(RedContext context, RedHan
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, Red2CallsMutableOutputsArray * mutableOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  np9(redCallsSet,
+  np(redCallsSet,
     "context", context,
     "gpu", gpu,
     "calls", calls,
@@ -2258,7 +2260,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureA
   REDGPU_2_EXPECTWG((mutableOutputsArray->count + 1) <= mutableOutputsArray->capacity);
   
   RedHandleOutputDeclaration outputDeclaration = NULL;
-  np12(redCreateOutputDeclaration,
+  np(redCreateOutputDeclaration,
     "context", context,
     "gpu", gpu,
     "handleName", NULL,
@@ -2274,7 +2276,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureA
   );
 
   RedOutput output = {0};
-  np13(redCreateOutput,
+  np(redCreateOutput,
     "context", context,
     "gpu", gpu,
     "handleName", NULL,
@@ -2290,7 +2292,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureA
     "optionalUserData", optionalUserData
   );
 
-  np14(redCallSetProcedureOutput,
+  np(redCallSetProcedureOutput,
     "address", address,
     "calls", calls,
     "outputDeclaration", outputDeclaration,
