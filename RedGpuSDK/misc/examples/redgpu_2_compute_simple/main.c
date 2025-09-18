@@ -244,7 +244,7 @@ int main() {
     "type", RED_ARRAY_TYPE_ARRAY_RW,
     "bytesCount", sizeof(struct float4),
     "structuredBufferElementBytesCount", sizeof(unsigned),
-    "initialAccess", 0,
+    "restrictToAccess", 0,
     "initialQueueFamilyIndex", mainQueueFamilyIndex,
     "maxAllowedOverallocationBytesCount", REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(sizeof(struct float4), 64), // Intel UHD Graphics 730 on Windows 10 aligns to 64 bytes
     "dedicate", 0,
@@ -269,7 +269,7 @@ int main() {
     "type", RED_ARRAY_TYPE_ARRAY_RW,
     "bytesCount", sizeof(struct float4),
     "structuredBufferElementBytesCount", sizeof(unsigned),
-    "initialAccess", 0,
+    "restrictToAccess", 0,
     "initialQueueFamilyIndex", mainQueueFamilyIndex,
     "maxAllowedOverallocationBytesCount", REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(sizeof(struct float4), 64), // Intel UHD Graphics 730 on Windows 10 aligns to 64 bytes
     "dedicate", 0,
@@ -294,7 +294,7 @@ int main() {
     "type", RED_ARRAY_TYPE_ARRAY_RW,
     "bytesCount", sizeof(struct float4),
     "structuredBufferElementBytesCount", sizeof(unsigned),
-    "initialAccess", 0,
+    "restrictToAccess", 0,
     "initialQueueFamilyIndex", mainQueueFamilyIndex,
     "maxAllowedOverallocationBytesCount", REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(sizeof(struct float4), 64), // Intel UHD Graphics 730 on Windows 10 aligns to 64 bytes
     "dedicate", 0,
