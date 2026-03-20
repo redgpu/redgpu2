@@ -80,6 +80,12 @@ int main() {
       "optionalFile", __FILE__,
       "optionalLine", __LINE__
     );
+  } else if (gpuInfo->gpuVendorId == 4098/*AMDRadeon*/) {
+    np(red2ExpectMinimumGuaranteesIntelUHDGraphics730,
+      "gpuInfo", gpuInfo,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__
+    );
   } else {
     int unsupported_by_this_example_code_gpu_vendor = 0;
     REDGPU_2_EXPECTFL(unsupported_by_this_example_code_gpu_vendor);
@@ -209,6 +215,60 @@ int main() {
 
     specificMemoryTypeCPUVisibleVRAM = 1;
     specificMemoryTypeReadback       = 2; // The cpu cached one
+  } else if (gpuInfo->gpuVendorId == 4098/*AMDRadeon*/) {
+    unsigned      memoryTypesCount = 0;
+    RedMemoryType memoryTypes[32]  = {0};
+    unsigned      memoryHeapsCount = 0;
+    RedMemoryHeap memoryHeaps[32]  = {0};
+
+    memoryTypesCount = 4;
+    memoryHeapsCount = 3;
+
+    memoryTypes[0].memoryHeapIndex = 0;
+    memoryTypes[0].isGpuVram       = 1;
+    memoryTypes[0].isCpuMappable   = 0;
+    memoryTypes[0].isCpuCoherent   = 0;
+    memoryTypes[0].isCpuCached     = 0;
+
+    memoryTypes[1].memoryHeapIndex = 1;
+    memoryTypes[1].isGpuVram       = 0;
+    memoryTypes[1].isCpuMappable   = 1;
+    memoryTypes[1].isCpuCoherent   = 1;
+    memoryTypes[1].isCpuCached     = 0;
+
+    memoryTypes[2].memoryHeapIndex = 2;
+    memoryTypes[2].isGpuVram       = 1;
+    memoryTypes[2].isCpuMappable   = 1;
+    memoryTypes[2].isCpuCoherent   = 1;
+    memoryTypes[2].isCpuCached     = 0;
+
+    memoryTypes[3].memoryHeapIndex = 1;
+    memoryTypes[3].isGpuVram       = 0;
+    memoryTypes[3].isCpuMappable   = 1;
+    memoryTypes[3].isCpuCoherent   = 1;
+    memoryTypes[3].isCpuCached     = 1;
+
+    memoryHeaps[0].memoryBytesCount = 1800000000;
+    memoryHeaps[0].isGpuVram        = 1;
+
+    memoryHeaps[1].memoryBytesCount = 2000000000;
+    memoryHeaps[1].isGpuVram        = 0;
+
+    memoryHeaps[2].memoryBytesCount = 200000000;
+    memoryHeaps[2].isGpuVram        = 1;
+
+    np(red2ExpectMemoryTypes,
+      "gpuInfo", gpuInfo,
+      "expectedMemoryHeapsCount", memoryHeapsCount,
+      "expectedMemoryHeaps", memoryHeaps,
+      "expectedMemoryTypesCount", memoryTypesCount,
+      "expectedMemoryTypes", memoryTypes,
+      "optionalFile", __FILE__,
+      "optionalLine", __LINE__
+    );
+
+    specificMemoryTypeCPUVisibleVRAM = 2;
+    specificMemoryTypeReadback       = 3; // NOTE(Constantine): The cpu cached one.
   } else {
     int unsupported_by_this_example_code_gpu_vendor = 0;
     REDGPU_2_EXPECTFL(unsupported_by_this_example_code_gpu_vendor);
@@ -491,7 +551,7 @@ int main() {
     );
   }
 
-  RedHandleProcedureParameters procedureParametersAdd = NULL;
+  Red2ProcedureParametersAndDeclarations procedureParametersAdd = {0};
   {
     Red2ProcedureParametersDeclaration procedureParametersDeclaration = {0};
     procedureParametersDeclaration.variablesSlot            = 0;
@@ -515,7 +575,11 @@ int main() {
       "optionalUserData", NULL
     );
   }
-  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_PROCEDURE_PARAMETERS, procedureParametersAdd));
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_PROCEDURE_PARAMETERS, procedureParametersAdd.procedureParameters));
+  for (int i = 0; i < 7; i += 1) {
+    REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_STRUCT_DECLARATION, procedureParametersAdd.structsDeclarations[i]));
+  }
+  REDGPU_32_DYNAMIC_ARRAY_APPEND(handlesToDestroy, REDGPU_32_STRUCT(HandlesToDestroy, RED_HANDLE_TYPE_STRUCT_DECLARATION, procedureParametersAdd.handlesDeclaration));
 
   RedHandleGpuCode gpuCodeAdd = NULL;
   {
@@ -541,7 +605,7 @@ int main() {
     "gpu", gpu,
     "handleName", "procedureAdd",
     "procedureCache", NULL,
-    "procedureParameters", procedureParametersAdd,
+    "procedureParameters", procedureParametersAdd.procedureParameters,
     "gpuCodeMainProcedureName", "main",
     "gpuCode", gpuCodeAdd,
     "outProcedure", &procedureAdd,
@@ -606,12 +670,12 @@ int main() {
     "address", callpa.redCallSetProcedureParameters,
     "calls", calls.calls.handle,
     "procedureType", RED_PROCEDURE_TYPE_COMPUTE,
-    "procedureParameters", procedureParametersAdd
+    "procedureParameters", procedureParametersAdd.procedureParameters
   );
   npfp(redCallSetProcedureParametersStructs, callpa.redCallSetProcedureParametersStructs,
     "calls", calls.calls.handle,
     "procedureType", RED_PROCEDURE_TYPE_COMPUTE,
-    "procedureParameters", procedureParametersAdd,
+    "procedureParameters", procedureParametersAdd.procedureParameters,
     "procedureParametersDeclarationStructsDeclarationsFirst", 0,
     "structsCount", 1,
     "structs", &structure.handle,
