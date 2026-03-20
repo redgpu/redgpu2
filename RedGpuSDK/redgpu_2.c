@@ -2103,7 +2103,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandl
   outImage->handleAllocatedDedicatedMemoryOrPickedMemory = pickedMemory->handle;
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, RedHandleProcedureParameters * outProcedureParameters, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, Red2ProcedureParametersAndDeclarations * outProcedureParametersAndDeclarations, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedHandleStructDeclaration structsDeclarations[7] = {0};
   RedHandleStructDeclaration handlesDeclaration     = NULL;
 
@@ -2160,22 +2160,24 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
     parametersDeclaration.handlesDeclaration       = handlesDeclaration;
   }
 
+  RedHandleProcedureParameters procedureParameters = NULL;
   np(redCreateProcedureParameters,
     "context", context,
     "gpu", gpu,
     "handleName", handleName,
     "procedureParametersDeclaration", procedureParametersDeclaration == NULL ? NULL : &parametersDeclaration,
-    "outProcedureParameters", outProcedureParameters,
+    "outProcedureParameters", &procedureParameters,
     "outStatuses", outStatuses,
     "optionalFile", optionalFile,
     "optionalLine", optionalLine,
     "optionalUserData", optionalUserData
   );
 
+  outProcedureParametersAndDeclarations->procedureParameters = procedureParameters;
   for (int i = 0; i < 7; i += 1) {
-    red2DestroyHandle(context, gpu, RED_HANDLE_TYPE_STRUCT_DECLARATION, structsDeclarations[i], NULL, optionalFile, optionalLine, optionalUserData);
+    outProcedureParametersAndDeclarations->structsDeclarations[i] = structsDeclarations[i];
   }
-  red2DestroyHandle(context, gpu, RED_HANDLE_TYPE_STRUCT_DECLARATION, handlesDeclaration, NULL, optionalFile, optionalLine, optionalUserData);
+  outProcedureParametersAndDeclarations->handlesDeclaration = handlesDeclaration;
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedure(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {

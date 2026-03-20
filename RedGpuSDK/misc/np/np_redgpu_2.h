@@ -99,7 +99,7 @@
 #define _np2_red2CreateProcedureParameters gpu
 #define _np3_red2CreateProcedureParameters handleName
 #define _np4_red2CreateProcedureParameters procedureParametersDeclaration
-#define _np5_red2CreateProcedureParameters outProcedureParameters
+#define _np5_red2CreateProcedureParameters outProcedureParametersAndDeclarations
 #define _np6_red2CreateProcedureParameters outStatuses
 #define _np7_red2CreateProcedureParameters optionalFile
 #define _np8_red2CreateProcedureParameters optionalLine
