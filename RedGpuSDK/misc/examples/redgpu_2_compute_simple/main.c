@@ -568,7 +568,7 @@ int main() {
       "gpu", gpu,
       "handleName", "procedureParameters",
       "procedureParametersDeclaration", &procedureParametersDeclaration,
-      "outProcedureParameters", &procedureParametersAdd,
+      "outProcedureParametersAndDeclarations", &procedureParametersAdd,
       "outStatuses", NULL,
       "optionalFile", __FILE__,
       "optionalLine", __LINE__,
