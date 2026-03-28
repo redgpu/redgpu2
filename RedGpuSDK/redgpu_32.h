@@ -106,7 +106,7 @@ REDGPU_32_DECLSPEC int      REDGPU_32_API red32WindowLoop          ();
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32ConsolePrint        (const char * string);
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32ConsolePrintError   (const char * string);
 REDGPU_32_DECLSPEC int      REDGPU_32_API red32FileMap             (const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer);
-REDGPU_32_DECLSPEC int      REDGPU_32_API red32FileUnmap           (void * fileDescriptorHandle, void * fileMappingHandle);
+REDGPU_32_DECLSPEC int      REDGPU_32_API red32FileUnmap           (void * fileHandle, void * fileMappingDescriptorHandle, void * fileMapping);
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32OutputDebugString   (const char * string);
 REDGPU_32_DECLSPEC void     REDGPU_32_API red32Exit                (int exitCode);
 

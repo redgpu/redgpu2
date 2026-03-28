@@ -143,17 +143,23 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepat
   return 0;
 }
 
-REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileDescriptorHandle, void * fileMappingHandle) {
-  if (fileMappingHandle != INVALID_HANDLE_VALUE) {
-    int unmapViewOfFileSuccess = UnmapViewOfFile(fileMappingHandle);
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileHandle, void * fileMappingDescriptorHandle, void * fileMapping) {
+  if (fileMapping != NULL) {
+    int unmapViewOfFileSuccess = UnmapViewOfFile(fileMapping);
     if (unmapViewOfFileSuccess == 0) { // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile
       return -1;
     }
   }
-  if (fileDescriptorHandle != INVALID_HANDLE_VALUE) {
-    int closeHandleSuccess = CloseHandle(fileDescriptorHandle);
+  if (fileMappingDescriptorHandle != INVALID_HANDLE_VALUE) {
+    BOOL closeHandleSuccess = CloseHandle(fileMappingDescriptorHandle);
     if (closeHandleSuccess == 0) {     // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
       return -2;
+    }
+  }
+  if (fileHandle != INVALID_HANDLE_VALUE) {
+    BOOL closeHandleSuccess = CloseHandle(fileHandle);
+    if (closeHandleSuccess == 0) {     // "If the function fails, the return value is zero." https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle
+      return -3;
     }
   }
   return 0;
