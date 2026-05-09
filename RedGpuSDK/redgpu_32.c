@@ -10,12 +10,6 @@
 #define STB_SPRINTF_IMPLEMENTATION
 #include "redgpu_stb_sprintf.h"
 
-#if 0
-extern HANDLE CreateFile2              (LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, DWORD dwCreationDisposition, LPCREATEFILE2_EXTENDED_PARAMETERS pCreateExParams);
-extern HANDLE CreateFileMappingFromApp (HANDLE hFile, PSECURITY_ATTRIBUTES SecurityAttributes, ULONG PageProtection, ULONG64 MaximumSize, PCWSTR Name);
-extern PVOID  MapViewOfFileFromApp     (HANDLE hFileMappingObject, ULONG DesiredAccess, ULONG64 FileOffset, SIZE_T NumberOfBytesToMap);
-#endif
-
 REDGPU_32_DECLSPEC void * REDGPU_32_API red32MemorySet(void * pointer, int value, size_t bytesCount) {
   uint8_t * setTo = (uint8_t *)pointer;
   for (size_t i = 0; i < bytesCount; i += 1) {
@@ -113,30 +107,21 @@ REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrintError(const char * string
 }
 
 REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer) {
-#ifdef __MINGW32__
   HANDLE fd = CreateFileW((LPCWSTR)filepath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-#else
-  HANDLE fd = CreateFile2((LPCWSTR)filepath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, OPEN_EXISTING, 0);
-#endif
   if (fd == INVALID_HANDLE_VALUE) {
     return -1;
   }
   if (outFileDescriptorHandle != NULL) {
     outFileDescriptorHandle[0] = fd;
   }
-  size_t fsize = 0;
-  GetFileSizeEx(fd, (PLARGE_INTEGER)&fsize);
-  if (outFileDataBytesCount != NULL) {
-    outFileDataBytesCount[0] = fsize;
-  }
-  HANDLE fm = CreateFileMappingFromApp(fd, 0, PAGE_READONLY, fsize, 0);
+  HANDLE fm = CreateFileMappingA(fd, 0, PAGE_READONLY, 0, 0, 0);
   if (fm == INVALID_HANDLE_VALUE) {
     return -2;
   }
   if (outFileMappingHandle != NULL) {
     outFileMappingHandle[0] = fm;
   }
-  void * fdata = MapViewOfFileFromApp(fm, FILE_MAP_READ, 0, 0);
+  void * fdata = MapViewOfFile(fm, FILE_MAP_READ, 0, 0, 0);
   if (outFileDataPointer != NULL) {
     outFileDataPointer[0] = fdata;
   }
