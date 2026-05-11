@@ -106,7 +106,7 @@ REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrintError(const char * string
   WriteConsoleA(GetStdHandle(STD_ERROR_HANDLE), string, strlen(string), &_, 0);
 }
 
-REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, size_t * outFileDataBytesCount, void ** outFileDataPointer) {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, void ** outFileDataPointer) {
   HANDLE fd = CreateFileW((LPCWSTR)filepath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (fd == INVALID_HANDLE_VALUE) {
     return -1;
