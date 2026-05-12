@@ -2450,7 +2450,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallUsageAliasOrderBarrier(RedTypeProced
     arrayTempCallStructs[i]._3 = red2InternalRedAccessToRedVkAccess(usage.newAccess);
     arrayTempCallStructs[i]._4 = usage.queueFamilyIndexSource;
     arrayTempCallStructs[i]._5 = usage.queueFamilyIndexTarget;
-    arrayTempCallStructs[i]._6 = usage.array;
+    arrayTempCallStructs[i]._6 = (uint64_t)usage.array;
     arrayTempCallStructs[i]._7 = usage.arrayBytesFirst;
     arrayTempCallStructs[i]._8 = usage.arrayBytesCount;
   }
@@ -2467,7 +2467,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallUsageAliasOrderBarrier(RedTypeProced
     imageTempCallStructs[i]._5 = usage.newState;
     imageTempCallStructs[i]._6 = usage.queueFamilyIndexSource;
     imageTempCallStructs[i]._7 = usage.queueFamilyIndexTarget;
-    imageTempCallStructs[i]._8 = usage.image;
+    imageTempCallStructs[i]._8 = (uint64_t)usage.image;
     imageTempCallStructs[i]._9._10 = usage.imageAllParts;
     imageTempCallStructs[i]._9._11 = usage.imageLevelsFirst;
     imageTempCallStructs[i]._9._12 = usage.imageLevelsCount;

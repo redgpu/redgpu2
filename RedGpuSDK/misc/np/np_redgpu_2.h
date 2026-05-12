@@ -177,3 +177,18 @@
 #define _np1_red2CallGlobalReadbackBarrier address
 #define _np2_red2CallGlobalReadbackBarrier calls
 
+#define _np1_red2CallUsageAliasOrderBarrier address
+#define _np2_red2CallUsageAliasOrderBarrier calls
+#define _np3_red2CallUsageAliasOrderBarrier context
+#define _np4_red2CallUsageAliasOrderBarrier arrayUsagesCount
+#define _np5_red2CallUsageAliasOrderBarrier arrayUsages
+#define _np6_red2CallUsageAliasOrderBarrier arrayTempCallStructs
+#define _np7_red2CallUsageAliasOrderBarrier imageUsagesCount
+#define _np8_red2CallUsageAliasOrderBarrier imageUsages
+#define _np9_red2CallUsageAliasOrderBarrier imageTempCallStructs
+#define _np10_red2CallUsageAliasOrderBarrier aliasesCount
+#define _np11_red2CallUsageAliasOrderBarrier aliases
+#define _np12_red2CallUsageAliasOrderBarrier ordersCount
+#define _np13_red2CallUsageAliasOrderBarrier orders
+#define _np14_red2CallUsageAliasOrderBarrier dependencyByRegion
+
