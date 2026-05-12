@@ -157,6 +157,39 @@ typedef struct Red2Calls {
   Red2CallsMutableOutputsArray mutableOutputsArray; // Provided by the user
 } Red2Calls;
 
+// red2CallUsageAliasOrderBarrier
+
+typedef struct Red2UsageArrayTempCallStruct {
+  unsigned _0;
+  size_t   _1;
+  unsigned _2;
+  unsigned _3;
+  unsigned _4;
+  unsigned _5;
+  uint64_t _6;
+  uint64_t _7;
+  uint64_t _8;
+} Red2UsageArrayTempCallStruct;
+
+typedef struct Red2UsageImageTempCallStruct {
+  unsigned _0;
+  size_t   _1;
+  unsigned _2;
+  unsigned _3;
+  unsigned _4;
+  unsigned _5;
+  unsigned _6;
+  unsigned _7;
+  uint64_t _8;
+  struct {
+    unsigned _10;
+    unsigned _11;
+    unsigned _12;
+    unsigned _13;
+    unsigned _14;
+  } _9;
+} Red2UsageImageTempCallStruct;
+
 #ifndef REDGPU_2_USER_DECLSPEC
 #define REDGPU_2_USER_DECLSPEC
 #endif
@@ -262,7 +295,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput         (RedTypeP
 REDGPU_DECLSPEC   void REDGPU_API   redCallEndProcedureOutput          (RedTypeProcedureAddressCallEndProcedureOutput     address, RedHandleCalls calls);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalOrderBarrier         (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallGlobalReadbackBarrier      (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls);
-REDGPU_DECLSPEC   void REDGPU_API   redCallUsageAliasOrderBarrier      (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, unsigned imageUsagesCount, const RedUsageImage * imageUsages, unsigned aliasesCount, const RedAlias * aliases, unsigned ordersCount, const RedOrder * orders, RedBool32 dependencyByRegion);
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CallUsageAliasOrderBarrier     (RedTypeProcedureAddressCallUsageAliasOrderBarrier address, RedHandleCalls calls, RedContext context, unsigned arrayUsagesCount, const RedUsageArray * arrayUsages, Red2UsageArrayTempCallStruct * arrayTempCallStructs, unsigned imageUsagesCount, const RedUsageImage * imageUsages, Red2UsageImageTempCallStruct * imageTempCallStructs, unsigned aliasesCount, const RedAlias * aliases, unsigned ordersCount, const RedOrder * orders, RedBool32 dependencyByRegion);
 REDGPU_DECLSPEC   void REDGPU_API   redCallMark                        (RedTypeProcedureAddressCallMark                   address, RedHandleCalls calls, const char * mark);
 REDGPU_DECLSPEC   void REDGPU_API   redCallMarkSet                     (RedTypeProcedureAddressCallMarkSet                address, RedHandleCalls calls, const char * mark);
 REDGPU_DECLSPEC   void REDGPU_API   redCallMarkEnd                     (RedTypeProcedureAddressCallMarkEnd                address, RedHandleCalls calls);
