@@ -82,10 +82,13 @@ REDGPU_32_DECLSPEC void REDGPU_32_API red32MemoryFree(void * pointer) {
   free(pointer);
 }
 
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC void * REDGPU_32_API red32GetModuleHandle(const char * moduleName) {
   return GetModuleHandleA(moduleName);
 }
+#endif
 
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC void * REDGPU_32_API red32WindowCreate(const char * title) {
   WNDCLASSEXA wndClassEx = {0};
   wndClassEx.cbSize        = sizeof(wndClassEx);
@@ -95,7 +98,53 @@ REDGPU_32_DECLSPEC void * REDGPU_32_API red32WindowCreate(const char * title) {
   HWND window = CreateWindowExA(0, title, title, WS_POPUP | WS_MAXIMIZE | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, 0, 0);
   return (void *)window;
 }
+#endif
 
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC void * REDGPU_32_API red32WindowCreate(const char * title) {
+  struct X11WindowData {
+    Display * display;
+    Window    window;
+  };
+  // To free
+  struct X11WindowData * h = malloc(sizeof(struct X11WindowData));
+
+  // 1. Establish connection to the X Server
+  h->display = XOpenDisplay(NULL);
+  REDGPU_2_EXPECTFL(h->display != NULL);
+
+  int screen = DefaultScreen(h->display);
+
+  // 2. Create the window
+  #warning TODO(Constantine): Unhardcode 1920x1080 fullscreen window to the actual display size.
+  h->window = XCreateSimpleWindow(
+    h->display,
+    RootWindow(h->display, screen), // Parent window
+    0, 0,                           // Initial X, Y position
+    1920, 1080,                     // Width, Height
+    1,                              // Border width
+    BlackPixel(h->display, screen), // Border color
+    WhitePixel(h->display, screen)  // Background color
+  );
+  REDGPU_2_EXPECTFL(h->window != 0);
+
+  // 3. Register for input events (KeyPress and Window Exposure)
+  XSelectInput(h->display, h->window, ExposureMask | KeyPressMask);
+
+  // 4. Map the window to the screen (make it visible)
+  XMapWindow(h->display, h->window);
+
+  // 5. Setup window closure handling protocol
+  Atom wmDeleteMessage = XInternAtom(h->display, "WM_DELETE_WINDOW", False);
+  XSetWMProtocols(h->display, h->window, &wmDeleteMessage, 1);
+
+  #warning TODO(Constantine): Set window title.
+
+  return h;
+}
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowDestroy(void * windowHandle) {
   if (windowHandle != NULL) {
     int destroyWindowSuccess = DestroyWindow((HWND)windowHandle);
@@ -105,7 +154,26 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowDestroy(void * windowHandle) {
   }
   return 0;
 }
+#endif
 
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowDestroy(void * windowHandle) {
+  struct X11WindowData {
+    Display * display;
+    Window    window;
+  };
+  struct X11WindowData * h = windowHandle;
+
+  XDestroyWindow(h->display, h->window);
+  XCloseDisplay(h->display);
+
+  free(h);
+
+  return 0;
+}
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop() {
   int loop = 1;
   MSG msg = {0};
@@ -118,17 +186,42 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop() {
   }
   return loop;
 }
+#endif
 
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop() {
+  #warning TODO(Constantine): implement this function on Linux
+  return 1;
+}
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrint(const char * string) {
   DWORD _;
   WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), string, strlen(string), &_, 0);
 }
+#endif
 
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrint(const char * string) {
+  fprintf(stdout, "%s", string);
+}
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrintError(const char * string) {
   DWORD _;
   WriteConsoleA(GetStdHandle(STD_ERROR_HANDLE), string, strlen(string), &_, 0);
 }
+#endif
 
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrintError(const char * string) {
+  fprintf(stderr, "%s", string);
+}
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, void ** outFileDataPointer) {
   HANDLE fd = CreateFileW((LPCWSTR)filepath, FILE_READ_DATA, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
   if (fd == INVALID_HANDLE_VALUE) {
@@ -150,7 +243,16 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepat
   }
   return 0;
 }
+#endif
 
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, void ** outFileDataPointer) {
+  REDGPU_2_EXPECTFL(0 && "TODO(Constantine): implement this function on Linux.");
+  return 0;
+}
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileHandle, void * fileMappingDescriptorHandle, void * fileMapping) {
   if (fileMapping != NULL) {
     int unmapViewOfFileSuccess = UnmapViewOfFile(fileMapping);
@@ -172,10 +274,26 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileHandle, void * fi
   }
   return 0;
 }
+#endif
 
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileHandle, void * fileMappingDescriptorHandle, void * fileMapping) {
+  REDGPU_2_EXPECTFL(0 && "TODO(Constantine): implement this function on Linux.");
+  return 0;
+}
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 REDGPU_32_DECLSPEC void REDGPU_32_API red32OutputDebugString(const char * string) {
   OutputDebugStringA(string);
 }
+#endif
+
+#ifdef REDGPU_OS_LINUX
+REDGPU_32_DECLSPEC void REDGPU_32_API red32OutputDebugString(const char * string) {
+  // NOTE(Constantine): does nothing, this function is for Windows only.
+}
+#endif
 
 REDGPU_32_DECLSPEC void REDGPU_32_API red32Exit(int exitCode) {
   exit(exitCode);
