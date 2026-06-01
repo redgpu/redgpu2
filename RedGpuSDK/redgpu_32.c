@@ -1,11 +1,34 @@
+#ifdef _WIN32
+#define REDGPU_OS_WINDOWS
+#endif
+#if defined(__linux__) && !defined(__ANDROID__)
+#define REDGPU_OS_LINUX
+#endif
+#ifdef __ANDROID__
+#define REDGPU_OS_ANDROID
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
 #define REDGPU_32_DECLSPEC __declspec(dllexport)
 #define REDGPU_32_API
+#endif
+#ifdef REDGPU_OS_LINUX
+#define REDGPU_32_DECLSPEC __attribute__((visibility("default")))
+#define REDGPU_32_API
+#endif
 
+#include "redgpu_2.h"
 #include "redgpu_32.h"
 
 #include <stddef.h>  // For size_t
 #include <stdint.h>  // For uint64_t
+#ifdef REDGPU_OS_WINDOWS
 #include <Windows.h>
+#endif
+#ifdef REDGPU_OS_LINUX
+#include <stdio.h>    // For fprintf
+#include <X11/Xlib.h> // For X11 Display, Window
+#endif
 
 #define STB_SPRINTF_IMPLEMENTATION
 #include "redgpu_stb_sprintf.h"

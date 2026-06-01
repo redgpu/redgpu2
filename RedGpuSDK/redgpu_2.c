@@ -1,5 +1,37 @@
+#ifdef _WIN32
+#define REDGPU_OS_WINDOWS
+#endif
+#if defined(__linux__) && !defined(__ANDROID__)
+#define REDGPU_OS_LINUX
+#endif
+#ifdef __ANDROID__
+#define REDGPU_OS_ANDROID
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
+#define REDGPU_2_DECLSPEC __declspec(dllexport)
+#define REDGPU_2_API
+#endif
+#ifdef REDGPU_OS_LINUX
+#define REDGPU_2_DECLSPEC __attribute__((visibility("default")))
+#define REDGPU_2_API
+#endif
+
 #include "redgpu_2.h"
 #include "redgpu_wsi.h"
+
+#ifdef REDGPU_OS_LINUX
+#include <X11/Xlib.h>
+#include <xcb/xcb.h>
+#endif
+
+#ifdef REDGPU_OS_WINDOWS
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif
+#ifdef REDGPU_OS_LINUX
+#define VK_USE_PLATFORM_XLIB_KHR
+#define VK_USE_PLATFORM_XCB_KHR
+#endif
 #include "redgpu_vk.h"
 
 #ifndef __cplusplus
