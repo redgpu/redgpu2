@@ -20,14 +20,18 @@
 #include "redgpu_2.h"
 #include "redgpu_32.h"
 
-#include <stddef.h>  // For size_t
-#include <stdint.h>  // For uint64_t
+#include <stddef.h>   // For size_t
+#include <stdint.h>   // For uint64_t
 #ifdef REDGPU_OS_WINDOWS
 #include <Windows.h>
 #endif
 #ifdef REDGPU_OS_LINUX
 #include <stdio.h>    // For fprintf
 #include <X11/Xlib.h> // For X11 Display, Window
+#include <fcntl.h>    // For O_RDONLY
+#include <sys/stat.h> // For fstat
+#include <sys/mman.h> // For mmap
+#include <unistd.h>   // For close
 #endif
 
 #define STB_SPRINTF_IMPLEMENTATION
@@ -322,8 +326,40 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepat
 #endif
 
 #ifdef REDGPU_OS_LINUX
-REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, void ** outFileDataPointer) {
-  REDGPU_2_EXPECTFL(0 && "TODO(Constantine): implement this function on Linux.");
+REDGPU_32_DECLSPEC int REDGPU_32_API red32FileMap(const unsigned short * _filepath, void ** outFileDescriptorHandle, void ** outFileMappingHandle, void ** outFileDataPointer) {
+  const char * filepath = (const char *)_filepath;
+
+  int fd = open(filepath, O_RDONLY);
+  if (fd == -1) {
+    return -1;
+  }
+  if (outFileDescriptorHandle != NULL) {
+    outFileDescriptorHandle[0] = (void *)(int64_t)fd;
+  }
+
+  struct stat sb = {0};
+  if (fstat(fd, &sb) == -1) {
+    return -2;
+  }
+  if (sb.st_size == 0) {
+    return -2;
+  }
+  if (outFileMappingHandle != NULL) {
+    outFileMappingHandle[0] = (void *)sb.st_size;
+  }
+
+  // PROT_READ: memory can be read
+  // MAP_PRIVATE: modifications are private and not written to disk
+  void * fdata = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+  if (fdata == MAP_FAILED) {
+    if (outFileDataPointer != NULL) {
+      outFileDataPointer[0] = MAP_FAILED;
+    }
+    return -3;
+  }
+  if (outFileDataPointer != NULL) {
+    outFileDataPointer[0] = fdata;
+  }
   return 0;
 }
 #endif
@@ -354,7 +390,21 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileHandle, void * fi
 
 #ifdef REDGPU_OS_LINUX
 REDGPU_32_DECLSPEC int REDGPU_32_API red32FileUnmap(void * fileHandle, void * fileMappingDescriptorHandle, void * fileMapping) {
-  REDGPU_2_EXPECTFL(0 && "TODO(Constantine): implement this function on Linux.");
+  if (fileMapping != MAP_FAILED) {
+    // NOTE(Constantine): a valid fileMappingDescriptorHandle value must be passed from red32FileMap() for munmap().
+    off_t sb_st_size = (off_t)fileMappingDescriptorHandle;
+    if (sb_st_size == 0) {
+      return -2;
+    }
+    if (munmap(fileMapping, sb_st_size) == -1) { // "Upon successful completion, munmap() shall return 0; otherwise, it shall return -1 and set errno to indicate the error." https://man7.org/linux/man-pages/man3/munmap.3p.html
+      return -1;
+    }
+  }
+  if ((int)(int64_t)fileHandle >= 0) {
+    if (close((int)(int64_t)fileHandle) == -1) { // "close() returns zero on success.  On error, -1 is returned, and errno is set to indicate the error." https://man7.org/linux/man-pages/man2/close.2.html
+      return -3;
+    }
+  }
   return 0;
 }
 #endif
