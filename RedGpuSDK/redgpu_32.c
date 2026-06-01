@@ -105,6 +105,7 @@ REDGPU_32_DECLSPEC void * REDGPU_32_API red32WindowCreate(const char * title) {
   struct X11WindowData {
     Display * display;
     Window    window;
+    Atom      wmDeleteMessage;
   };
   // To free
   struct X11WindowData * h = malloc(sizeof(struct X11WindowData));
@@ -116,29 +117,75 @@ REDGPU_32_DECLSPEC void * REDGPU_32_API red32WindowCreate(const char * title) {
   int screen = DefaultScreen(h->display);
 
   // 2. Create the window
-  #warning TODO(Constantine): Unhardcode 1920x1080 fullscreen window to the actual display size.
   h->window = XCreateSimpleWindow(
     h->display,
-    RootWindow(h->display, screen), // Parent window
-    0, 0,                           // Initial X, Y position
-    1920, 1080,                     // Width, Height
-    1,                              // Border width
-    BlackPixel(h->display, screen), // Border color
-    WhitePixel(h->display, screen)  // Background color
+    RootWindow(h->display, screen),    // Parent window
+    0, 0,                              // Initial X, Y position
+    DisplayWidth(h->display, screen),  // Width
+    DisplayHeight(h->display, screen), // Height
+    1,                                 // Border width
+    BlackPixel(h->display, screen),    // Border color
+    WhitePixel(h->display, screen)     // Background color
   );
   REDGPU_2_EXPECTFL(h->window != 0);
+
+  // 2.1. Borderless fullscreen
+  if (0) // NOTE(Constantine): Nah, this 'borderless fullscreen' method can't be closed with Alt + F4 on Bazzite/SteamOS, have to Ctrl + Alt + Delete to log out of the user session, lol.
+  {
+    // 2.1 Set X11 window to borderless fullscreen
+    XSetWindowAttributes attributes = {0};
+    attributes.override_redirect = True;
+    XChangeWindowAttributes(h->display, h->window, CWOverrideRedirect, &attributes);
+    XFlush(h->display);
+  }
+  if (0) // NOTE(Constantine): Okay, this 'borderless fullscreen' method can't hide the taskbar on Bazzite/SteamOS, but you can hide it yourself via Right Mouse Button click on the taskbar -> 'Show Panel Configuration' -> 'Visibility' -> change 'Always visible' to 'Dodge windows'.
+  {
+    struct MotifWmHints {
+      unsigned long flags;
+      unsigned long functions;
+      unsigned long decorations;
+      long input_mode;
+      unsigned long status;
+    };
+
+    Atom motif_hints = XInternAtom(h->display, "_MOTIF_WM_HINTS", False);
+    struct MotifWmHints hints = {0};
+    hints.flags = 2; // MWM_HINTS_DECORATIONS
+    hints.decorations = 0; // No borders/title bar
+    XChangeProperty(h->display, h->window, motif_hints, motif_hints, 32, PropModeReplace, (unsigned char *)&hints, 5);
+  }
+
+  // 2.2. Set the window title
+  XStoreName(h->display, h->window, title);
 
   // 3. Register for input events (KeyPress and Window Exposure)
   XSelectInput(h->display, h->window, ExposureMask | KeyPressMask);
 
   // 4. Map the window to the screen (make it visible)
   XMapWindow(h->display, h->window);
+  XRaiseWindow(h->display, h->window);
+  if (1) // NOTE(Constantine): Okay, this 'borderless fullscreen' method works as it should on Bazzite/SteamOS! But only when its code is placed exactly here.
+  {
+    Atom wm_state = XInternAtom(h->display, "_NET_WM_STATE", False);
+    Atom fullscreen = XInternAtom(h->display, "_NET_WM_STATE_FULLSCREEN", False);
+
+    XEvent xev = {0};
+    xev.type = ClientMessage;
+    xev.xclient.window = h->window;
+    xev.xclient.message_type = wm_state;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = 1; // 1 = _NET_WM_STATE_ADD
+    xev.xclient.data.l[1] = fullscreen;
+    xev.xclient.data.l[2] = 0; // No second property
+    xev.xclient.data.l[3] = 0; // Source indication
+    xev.xclient.data.l[4] = 0;
+    XSendEvent(h->display, DefaultRootWindow(h->display), False, SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+  }
+  XFlush(h->display);
 
   // 5. Setup window closure handling protocol
-  Atom wmDeleteMessage = XInternAtom(h->display, "WM_DELETE_WINDOW", False);
-  XSetWMProtocols(h->display, h->window, &wmDeleteMessage, 1);
-
-  #warning TODO(Constantine): Set window title.
+  h->wmDeleteMessage = XInternAtom(h->display, "WM_DELETE_WINDOW", False);
+  XSetWMProtocols(h->display, h->window, &h->wmDeleteMessage, 1);
 
   return h;
 }
@@ -161,6 +208,7 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowDestroy(void * windowHandle) {
   struct X11WindowData {
     Display * display;
     Window    window;
+    Atom      wmDeleteMessage;
   };
   struct X11WindowData * h = windowHandle;
 
@@ -174,7 +222,7 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowDestroy(void * windowHandle) {
 #endif
 
 #ifdef REDGPU_OS_WINDOWS
-REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop() {
+REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop(void * windowHandle) {
   int loop = 1;
   MSG msg = {0};
   while (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -189,9 +237,37 @@ REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop() {
 #endif
 
 #ifdef REDGPU_OS_LINUX
-REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop() {
-  #warning TODO(Constantine): implement this function on Linux
-  return 1;
+REDGPU_32_DECLSPEC int REDGPU_32_API red32WindowLoop(void * windowHandle) {
+  struct X11WindowData {
+    Display * display;
+    Window    window;
+    Atom      wmDeleteMessage;
+  };
+  struct X11WindowData * h = windowHandle;
+
+  int loop = 1;
+  XEvent event = {0};
+  while (XPending(h->display)) {
+    XNextEvent(h->display, &event);
+
+    // Handle window redrawing
+    if (event.type == Expose) {
+      // Draw graphics or text here if desired
+    }
+
+    // Handle keyboard press
+    if (event.type == KeyPress) {
+      // Handle any keypresses here if desired
+    }
+
+    // Handle the window 'X' close button
+    if (event.type == ClientMessage) {
+      if (event.xclient.data.l[0] == h->wmDeleteMessage) {
+        loop = 0;
+      }
+    }
+  }
+  return loop;
 }
 #endif
 
