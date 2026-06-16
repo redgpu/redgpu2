@@ -285,6 +285,7 @@ REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrint(const char * string) {
 #ifdef REDGPU_OS_LINUX
 REDGPU_32_DECLSPEC void REDGPU_32_API red32ConsolePrint(const char * string) {
   fprintf(stdout, "%s", string);
+  fflush(stdout);
 }
 #endif
 
