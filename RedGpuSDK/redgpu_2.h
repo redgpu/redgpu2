@@ -17,7 +17,7 @@ extern "C" {
 #define REDGPU_2_EXPECTED_minArrayROCStructMemberRangeBytesAlignment_256     (256)
 #define REDGPU_2_EXPECTED_maxArrayROCStructMemberRangeBytesCount_65536       (65536)
 #define REDGPU_2_EXPECTED_minArrayRORWStructMemberRangeBytesAlignment_64     (64)
-#define REDGPU_2_EXPECTED_maxArrayRORWStructMemberRangeBytesCount_536870912  (536870912)
+#define REDGPU_2_EXPECTED_maxArrayRORWStructMemberRangeBytesCount_1073741820 (1073741820)
 #define REDGPU_2_EXPECTED_maxImageDimensions1D_16384                         (16384)
 #define REDGPU_2_EXPECTED_maxImageDimensions2D_16384                         (16384)
 #define REDGPU_2_EXPECTED_maxImageDimensions3D_2048                          (2048)
