@@ -1,4 +1,4 @@
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(REDGPU_32_DISABLE_WIN32)
 #define REDGPU_OS_WINDOWS
 #endif
 #if defined(__linux__) && !defined(__ANDROID__)
@@ -23,7 +23,11 @@
 #include <stddef.h>   // For size_t
 #include <stdint.h>   // For uint64_t
 #ifdef REDGPU_OS_WINDOWS
-#include <Windows.h>
+  #if defined(REDGPU_32_INCLUDE_TERMUX_WINDOWS)
+    #include "redgpu_32_termux_windows.h"
+  #else
+    #include <Windows.h>
+  #endif
 #endif
 #ifdef REDGPU_OS_LINUX
 #include <stdio.h>    // For fprintf

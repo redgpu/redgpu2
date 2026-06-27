@@ -20,6 +20,10 @@
 #include "redgpu_2.h"
 #include "redgpu_wsi.h"
 
+#ifdef REDGPU_OS_WINDOWS
+typedef void * HINSTANCE;
+typedef void * HWND;
+#endif
 #ifdef REDGPU_OS_LINUX
 #include <X11/Xlib.h>
 #include <xcb/xcb.h>
