@@ -1,128 +1,42 @@
 #ifdef _WIN32
-#define REDGPU_OS_WINDOWS
+  #define REDGPU_OS_WINDOWS
 #endif
 #if defined(__linux__) && !defined(__ANDROID__)
-#define REDGPU_OS_LINUX
+  #define REDGPU_OS_LINUX
 #endif
 #ifdef __ANDROID__
-#define REDGPU_OS_ANDROID
+  #define REDGPU_OS_ANDROID
 #endif
 
 #ifdef REDGPU_OS_WINDOWS
-#define REDGPU_2_DECLSPEC __declspec(dllexport)
-#define REDGPU_2_API
+  #define REDGPU_2_DECLSPEC __declspec(dllexport)
+  #define REDGPU_2_API
 #endif
 #ifdef REDGPU_OS_LINUX
-#define REDGPU_2_DECLSPEC __attribute__((visibility("default")))
-#define REDGPU_2_API
+  #define REDGPU_2_DECLSPEC __attribute__((visibility("default")))
+  #define REDGPU_2_API
 #endif
 
 #include "redgpu_2.h"
 #include "redgpu_wsi.h"
 
 #ifdef REDGPU_OS_WINDOWS
-typedef void * HINSTANCE;
-typedef void * HWND;
+  typedef void * HINSTANCE;
+  typedef void * HWND;
 #endif
 #ifdef REDGPU_OS_LINUX
-#include <X11/Xlib.h>
-#include <xcb/xcb.h>
+  #include <X11/Xlib.h>
+  #include <xcb/xcb.h>
 #endif
 
 #ifdef REDGPU_OS_WINDOWS
-#define VK_USE_PLATFORM_WIN32_KHR
+  #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 #ifdef REDGPU_OS_LINUX
-#define VK_USE_PLATFORM_XLIB_KHR
-#define VK_USE_PLATFORM_XCB_KHR
+  #define VK_USE_PLATFORM_XLIB_KHR
+  #define VK_USE_PLATFORM_XCB_KHR
 #endif
 #include "redgpu_vk.h"
-
-#ifndef __cplusplus
-#define REDGPU_DISABLE_NAMED_PARAMETERS
-#endif
-
-#include "misc/np/np.h"
-#include "misc/np/np_redgpu.h"
-
-static unsigned red2InternalGetGpuIndex(RedContext context, RedHandleGpu gpu) {
-  unsigned gpuIndex = (unsigned)-1;
-  for (unsigned i = 0; i < context->gpusCount; i += 1) {
-    if (context->gpus[i].gpu == gpu) {
-      gpuIndex = i;
-      break;
-    }
-  }
-  return gpuIndex;
-}
-
-REDGPU_2_DECLSPEC void REDGPU_2_API red2MemoryAllocate(RedContext context, RedHandleGpu gpu, const char * handleName, uint64_t bytesCount, unsigned memoryTypeIndex, unsigned memoryBitflags, Red2Memory * outMemory, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
-  REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
-
-  REDGPU_2_EXPECTWG(context->gpus[gpuIndex].memoryTypes[memoryTypeIndex].isCpuMappable == 0 || !"Create mappable memory with red2CreateArray");
-
-  RedHandleMemory handle = NULL;
-  np(redMemoryAllocate,
-    "context", context,
-    "gpu", gpu,
-    "handleName", handleName,
-    "bytesCount", bytesCount,
-    "memoryTypeIndex", memoryTypeIndex,
-    "dedicateToArray", 0,
-    "dedicateToImage", 0,
-    "memoryBitflags", memoryBitflags,
-    "outMemory", &handle,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
-  );
-  // Filling
-  Red2Memory;
-  outMemory->handle                   = handle;
-  outMemory->currentSuballocateOffset = 0;
-  outMemory->bytesCount               = bytesCount;
-  outMemory->gpuIndex                 = gpuIndex;
-  outMemory->memoryTypeIndex          = memoryTypeIndex;
-}
-
-REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleStructsMemory structsMemory, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, Red2Struct * outStruct, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  RedHandleStructDeclaration handleDeclaration = NULL;
-  np(redCreateStructDeclaration,
-    "context", context,
-    "gpu", gpu,
-    "handleName", handleName,
-    "structDeclarationMembersCount", structDeclarationMembersCount,
-    "structDeclarationMembers", structDeclarationMembers,
-    "structDeclarationMembersArrayROCount", structDeclarationMembersArrayROCount,
-    "structDeclarationMembersArrayRO", structDeclarationMembersArrayRO,
-    "procedureParametersHandlesDeclaration", 0,
-    "outStructDeclaration", &handleDeclaration,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
-  );
-  RedHandleStruct handle = NULL;
-  np(redStructsMemorySuballocateStructs,
-    "context", context,
-    "gpu", gpu,
-    "handleNames", &handleName,
-    "structsMemory", structsMemory,
-    "structsDeclarationsCount", 1,
-    "structsDeclarations", &handleDeclaration,
-    "outStructs", &handle,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
-  );
-  // Filling
-  Red2Struct;
-  outStruct->handle            = handle;
-  outStruct->handleDeclaration = handleDeclaration;
-}
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMinimumGuarantees(const RedGpuInfo * gpuInfo, const char * optionalFile, int optionalLine) {
   RedHandleGpu gpu = gpuInfo->gpu;
@@ -1771,372 +1685,127 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMemoryTypes(const RedGpuInfo * gpu
   }
 }
 
-static void red2InternalFillMemoryTypeIsSupportedArray(unsigned resourceMemoryTypesSupported, unsigned char * outMemoryTypeIsSupportedArrayOf32) {
-  outMemoryTypeIsSupportedArrayOf32[0]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0001)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[1]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0010)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[2]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0100)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[3]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,1000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[4]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0001,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[5]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0010,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[6]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0100,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[7]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,1000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[8]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0001,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[9]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0010,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[10] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0100,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[11] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,1000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[12] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0001,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[13] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0010,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[14] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0100,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[15] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,1000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[16] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0001,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[17] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0010,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[18] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0100,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[19] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,1000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[20] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0001,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[21] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0010,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[22] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0100,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[23] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,1000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[24] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0001,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[25] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0010,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[26] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0100,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[27] = (resourceMemoryTypesSupported & REDGPU_B32(0000,1000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[28] = (resourceMemoryTypesSupported & REDGPU_B32(0001,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[29] = (resourceMemoryTypesSupported & REDGPU_B32(0010,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[30] = (resourceMemoryTypesSupported & REDGPU_B32(0100,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-  outMemoryTypeIsSupportedArrayOf32[31] = (resourceMemoryTypesSupported & REDGPU_B32(1000,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
-}
-
-static void red2InternalStatusesCopyFromTo(const RedStatuses * from, RedStatuses * to) {
-  if (to == NULL) { return; }
-
-  if (from->status != RED_STATUS_SUCCESS) {
-    if (to->status == RED_STATUS_SUCCESS) { // NOTE(Constantine): REDGPU keeps the first non-successes only.
-      to->status            = from->status;
-      to->statusCode        = from->statusCode;
-      to->statusHresult     = from->statusHresult;
-      to->statusProcedureId = from->statusProcedureId;
-      to->statusFile        = from->statusFile;
-      to->statusLine        = from->statusLine;
-    }
-  }
-
-  if (from->statusError != RED_STATUS_SUCCESS) {
-    if (to->statusError == RED_STATUS_SUCCESS) { // NOTE(Constantine): REDGPU keeps the first errors only.
-      to->statusError            = from->statusError;
-      to->statusErrorCode        = from->statusErrorCode;
-      to->statusErrorHresult     = from->statusErrorHresult;
-      to->statusErrorProcedureId = from->statusErrorProcedureId;
-      to->statusErrorFile        = from->statusErrorFile;
-      to->statusErrorLine        = from->statusErrorLine;
-      for (int i = 0; i < 512; i += 1) {
-        to->statusErrorDescription[i] = from->statusErrorDescription[i];
-      }
-    }
-  }
-}
-
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateArray(RedContext context, RedHandleGpu gpu, const char * handleName, RedArrayType type, uint64_t bytesCount, uint64_t structuredBufferElementBytesCount, RedAccessBitflags restrictToAccess, unsigned initialQueueFamilyIndex, uint64_t maxAllowedOverallocationBytesCount, RedBool32 dedicate, RedBool32 mappable, unsigned dedicateOrMappableMemoryTypeIndex, unsigned dedicateOrMappableMemoryBitflags, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Array * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
-  REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
-  
-  RedArray array = {0};
-  np(redCreateArray,
-    "context", context,
-    "gpu", gpu,
-    "handleName", handleName,
-    "type", type,
-    "bytesCount", bytesCount,
-    "structuredBufferElementBytesCount", structuredBufferElementBytesCount,
-    "restrictToAccess", restrictToAccess,
-    "initialQueueFamilyIndex", initialQueueFamilyIndex,
-    "dedicate", dedicate,
-    "outArray", &array,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleStructsMemory structsMemory, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, Red2Struct * outStruct, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedHandleStructDeclaration handleDeclaration = NULL;
+  np(redCreateStructDeclaration,
+    context, context,
+    gpu, gpu,
+    handleName, handleName,
+    structDeclarationMembersCount, structDeclarationMembersCount,
+    structDeclarationMembers, structDeclarationMembers,
+    structDeclarationMembersArrayROCount, structDeclarationMembersArrayROCount,
+    structDeclarationMembersArrayRO, structDeclarationMembersArrayRO,
+    procedureParametersHandlesDeclaration, 0,
+    outStructDeclaration, &handleDeclaration,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
-  
-  if (array.handle == NULL) {
-    // Filling
-    Red2Array;
-    outArray->array = array;
-    outArray->handleAllocatedDedicatedOrMappableMemoryOrPickedMemory = NULL;
-    return;
-  }
-
-  {
-    size_t bytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(array.memoryBytesCount, array.memoryBytesAlignment);
-    REDGPU_2_EXPECTWG(bytesToNextAlignmentBoundary == 0);
-    REDGPU_2_EXPECTWG((array.memoryBytesCount - bytesCount) <= maxAllowedOverallocationBytesCount);
-  }
-
-  Red2Memory * pickedMemory            = NULL;
-  Red2Memory   stackmemForPickedMemory = {0};
-
-  unsigned char arrayMemoryTypeIsSupported[32] = {0};
-  red2InternalFillMemoryTypeIsSupportedArray(array.memoryTypesSupported, arrayMemoryTypeIsSupported);
-
-  if (dedicate == 1 || mappable == 1) {
-    // NOTE(Constantine):
-    // dedicate or mappable arrays use dedicateOrMappableMemoryTypeIndex
-    // to allocate their own dedicated memory; suballocateFromMemoryOnFirstMatchPointers array is ignored.
-    // This is done so because it's not clear for the user how much space he/she should allocate for the array ahead of time.
-
-    REDGPU_2_EXPECTWG(arrayMemoryTypeIsSupported[dedicateOrMappableMemoryTypeIndex] == 1);
-
-    RedHandleMemory memory = NULL;
-    if (mappable == 1) {
-      np(redMemoryAllocateMappable,
-        "context", context,
-        "gpu", gpu,
-        "handleName", handleName,
-        "dedicate", dedicate,
-        "array", array.handle,
-        "arrayMemoryBytesCount", array.memoryBytesCount,
-        "memoryTypeIndex", dedicateOrMappableMemoryTypeIndex,
-        "memoryBitflags", dedicateOrMappableMemoryBitflags,
-        "outMemory", &memory,
-        "outStatuses", outStatuses,
-        "optionalFile", optionalFile,
-        "optionalLine", optionalLine,
-        "optionalUserData", optionalUserData
-      );
-    } else {
-      np(redMemoryAllocate,
-        "context", context,
-        "gpu", gpu,
-        "handleName", handleName,
-        "bytesCount", array.memoryBytesCount,
-        "memoryTypeIndex", dedicateOrMappableMemoryTypeIndex,
-        "dedicateToArray", array.handle,
-        "dedicateToImage", NULL,
-        "memoryBitflags", dedicateOrMappableMemoryBitflags,
-        "outMemory", &memory,
-        "outStatuses", outStatuses,
-        "optionalFile", optionalFile,
-        "optionalLine", optionalLine,
-        "optionalUserData", optionalUserData
-      );
-    }
-
-    // Filling
-    Red2Memory;
-    stackmemForPickedMemory.handle                   = memory;
-    stackmemForPickedMemory.currentSuballocateOffset = 0;
-    stackmemForPickedMemory.bytesCount               = array.memoryBytesCount;
-    stackmemForPickedMemory.gpuIndex                 = gpuIndex;
-    stackmemForPickedMemory.memoryTypeIndex          = dedicateOrMappableMemoryTypeIndex;
-
-    pickedMemory = &stackmemForPickedMemory;
-  } else {
-    unsigned suballocateFromMemoryOnFirstMatchPointersIndex = (unsigned)-1;
-    {
-      // NOTE(Constantine):
-      // Currently using only the first matching memory.
-      RedBool32 suballocateFromMemoryTypeIndexFound = 0;
-      unsigned i = 0;
-      for (; i < suballocateFromMemoryOnFirstMatchPointersCount; i += 1) {
-        unsigned tryMemoryTypeIndex = suballocateFromMemoryOnFirstMatchPointers[i]->memoryTypeIndex; // NOTE(Constantine): Assumes max possible memoryTypeIndex value of 31.
-        if (arrayMemoryTypeIsSupported[tryMemoryTypeIndex] == 1) {
-          suballocateFromMemoryTypeIndexFound = 1;
-          break;
-        }
-      }
-      REDGPU_2_EXPECTWG(suballocateFromMemoryTypeIndexFound == 1);
-      suballocateFromMemoryOnFirstMatchPointersIndex = i;
-    }
-
-    pickedMemory = suballocateFromMemoryOnFirstMatchPointers[suballocateFromMemoryOnFirstMatchPointersIndex];
-  }
-
-  uint64_t pickedMemoryBytesFirst = pickedMemory->currentSuballocateOffset;
-  uint64_t pickedMemoryBytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(pickedMemoryBytesFirst, array.memoryBytesAlignment);
-  pickedMemoryBytesFirst += pickedMemoryBytesToNextAlignmentBoundary;
-
-  REDGPU_2_EXPECTWG((pickedMemoryBytesFirst + array.memoryBytesCount) <= pickedMemory->bytesCount);
-
-  if (array.handle != NULL && pickedMemory->handle != NULL) {
-    RedMemoryArray memoryArray = {0};
-    memoryArray.setTo1000157000  = 1000157000;
-    memoryArray.setTo0           = 0;
-    memoryArray.array            = array.handle;
-    memoryArray.memory           = pickedMemory->handle;
-    memoryArray.memoryBytesFirst = pickedMemoryBytesFirst;
-    RedStatuses opstatuses = {0};
-    np(redMemorySet,
-      "context", context,
-      "gpu", gpu,
-      "memoryArraysCount", 1,
-      "memoryArrays", &memoryArray,
-      "memoryImagesCount", 0,
-      "memoryImages", NULL,
-      "outStatuses", &opstatuses,
-      "optionalFile", optionalFile,
-      "optionalLine", optionalLine,
-      "optionalUserData", optionalUserData
-    );
-    red2InternalStatusesCopyFromTo(&opstatuses, outStatuses);
-
-    if (opstatuses.statusError == RED_STATUS_SUCCESS) {
-      // NOTE(Constantine):
-      // Be aware doing this is not thread-safe for the picked memory,
-      // and since it is not known in advance which memory will be picked,
-      // effectively it becomes not thread-safe for all the passed memory handles.
-      pickedMemory->currentSuballocateOffset += pickedMemoryBytesToNextAlignmentBoundary + array.memoryBytesCount;
-    }
-  }
-
+  RedHandleStruct handle = NULL;
+  np(redStructsMemorySuballocateStructs,
+    context, context,
+    gpu, gpu,
+    handleNames, &handleName,
+    structsMemory, structsMemory,
+    structsDeclarationsCount, 1,
+    structsDeclarations, &handleDeclaration,
+    outStructs, &handle,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
+  );
   // Filling
-  Red2Array;
-  outArray->array = array;
-  outArray->handleAllocatedDedicatedOrMappableMemoryOrPickedMemory = pickedMemory->handle;
+  // Red2Struct;
+  outStruct->handle            = handle;
+  outStruct->handleDeclaration = handleDeclaration;
 }
 
-REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateImage(RedContext context, RedHandleGpu gpu, const char * handleName, RedImageDimensions dimensions, RedFormat format, unsigned width, unsigned height, unsigned depth, unsigned levelsCount, unsigned layersCount, RedMultisampleCountBitflag multisampleCount, RedAccessBitflags restrictToAccess, unsigned initialQueueFamilyIndex, RedBool32 dedicate, unsigned dedicateMemoryTypeIndex, unsigned dedicateMemoryBitflags, unsigned suballocateFromMemoryOnFirstMatchPointersCount, Red2Memory ** suballocateFromMemoryOnFirstMatchPointers, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
-  unsigned gpuIndex = red2InternalGetGpuIndex(context, gpu);
-  REDGPU_2_EXPECTWG(gpuIndex != (unsigned)-1);
-
-  RedImage image = {0};
-  np(redCreateImage,
-    "context", context,
-    "gpu", gpu,
-    "handleName", handleName,
-    "dimensions", dimensions,
-    "format", format,
-    "width", width,
-    "height", height,
-    "depth", depth,
-    "levelsCount", levelsCount,
-    "layersCount", layersCount,
-    "multisampleCount", multisampleCount,
-    "restrictToAccess", restrictToAccess,
-    "initialQueueFamilyIndex", initialQueueFamilyIndex,
-    "dedicate", dedicate,
-    "outImage", &image,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateMemoryForArray(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned memoryTypeIndex, RedBool32 dedicate, Red2Array * outArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedHandleMemory memory = NULL;
+  np(redMemoryAllocate,
+    context, context,
+    gpu, gpu,
+    handleName, handleName,
+    bytesCount, outArray->array.memoryBytesCount,
+    memoryTypeIndex, memoryTypeIndex,
+    dedicateToArray, dedicate == 1 ? outArray->array.handle : NULL,
+    dedicateToImage, NULL,
+    memoryBitflags, 0,
+    outMemory, &memory,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
 
-  if (image.handle == NULL) {
-    // Filling
-    Red2Image;
-    outImage->image = image;
-    outImage->handleAllocatedDedicatedMemoryOrPickedMemory = NULL;
-    return;
-  }
-
-  if (0) {
-    // NOTE(Constantine):
-    // Sep 06, 2025: RTX 2060, NVIDIA driver on Windows 10 returns image.memoryBytesCount not aligned by image.memoryBytesAlignment.
-    size_t bytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(image.memoryBytesCount, image.memoryBytesAlignment);
-    REDGPU_2_EXPECTWG(bytesToNextAlignmentBoundary == 0);
-  }
-
-  Red2Memory * pickedMemory            = NULL;
-  Red2Memory   stackmemForPickedMemory = {0};
-
-  unsigned char imageMemoryTypeIsSupported[32] = {0};
-  red2InternalFillMemoryTypeIsSupportedArray(image.memoryTypesSupported, imageMemoryTypeIsSupported);
-
-  if (dedicate == 1) {
-    // NOTE(Constantine):
-    // dedicate images use dedicateMemoryTypeIndex
-    // to allocate their own dedicated memory; suballocateFromMemoryOnFirstMatchPointers array is ignored.
-    // This is done so because it's not clear for the user how much space he/she should allocate for the image ahead of time.
-
-    REDGPU_2_EXPECTWG(imageMemoryTypeIsSupported[dedicateMemoryTypeIndex] == 1);
-
-    RedHandleMemory memory = NULL;
-    np(redMemoryAllocate,
-      "context", context,
-      "gpu", gpu,
-      "handleName", handleName,
-      "bytesCount", image.memoryBytesCount,
-      "memoryTypeIndex", dedicateMemoryTypeIndex,
-      "dedicateToArray", NULL,
-      "dedicateToImage", image.handle,
-      "memoryBitflags", dedicateMemoryBitflags,
-      "outMemory", &memory,
-      "outStatuses", outStatuses,
-      "optionalFile", optionalFile,
-      "optionalLine", optionalLine,
-      "optionalUserData", optionalUserData
-    );
-
-    // Filling
-    Red2Memory;
-    stackmemForPickedMemory.handle                   = memory;
-    stackmemForPickedMemory.currentSuballocateOffset = 0;
-    stackmemForPickedMemory.bytesCount               = image.memoryBytesCount;
-    stackmemForPickedMemory.gpuIndex                 = gpuIndex;
-    stackmemForPickedMemory.memoryTypeIndex          = dedicateMemoryTypeIndex;
-
-    pickedMemory = &stackmemForPickedMemory;
-  } else {
-    unsigned suballocateFromMemoryOnFirstMatchPointersIndex = (unsigned)-1;
-    {
-      // NOTE(Constantine):
-      // Currently using only the first matching memory.
-      RedBool32 suballocateFromMemoryTypeIndexFound = 0;
-      unsigned i = 0;
-      for (; i < suballocateFromMemoryOnFirstMatchPointersCount; i += 1) {
-        unsigned tryMemoryTypeIndex = suballocateFromMemoryOnFirstMatchPointers[i]->memoryTypeIndex; // NOTE(Constantine): Assumes max possible memoryTypeIndex value of 31.
-        if (imageMemoryTypeIsSupported[tryMemoryTypeIndex] == 1) {
-          suballocateFromMemoryTypeIndexFound = 1;
-          break;
-        }
-      }
-      REDGPU_2_EXPECTWG(suballocateFromMemoryTypeIndexFound == 1);
-      suballocateFromMemoryOnFirstMatchPointersIndex = i;
-    }
-
-    pickedMemory = suballocateFromMemoryOnFirstMatchPointers[suballocateFromMemoryOnFirstMatchPointersIndex];
-  }
-
-  uint64_t pickedMemoryBytesFirst = pickedMemory->currentSuballocateOffset;
-  uint64_t pickedMemoryBytesToNextAlignmentBoundary = REDGPU_2_BYTES_TO_NEXT_ALIGNMENT_BOUNDARY(pickedMemoryBytesFirst, image.memoryBytesAlignment);
-  pickedMemoryBytesFirst += pickedMemoryBytesToNextAlignmentBoundary;
-
-  REDGPU_2_EXPECTWG((pickedMemoryBytesFirst + image.memoryBytesCount) <= pickedMemory->bytesCount);
-
-  if (image.handle != NULL && pickedMemory->handle != NULL) {
-    RedMemoryImage memoryImage = {0};
-    memoryImage.setTo1000157001  = 1000157001;
-    memoryImage.setTo0           = 0;
-    memoryImage.image            = image.handle;
-    memoryImage.memory           = pickedMemory->handle;
-    memoryImage.memoryBytesFirst = pickedMemoryBytesFirst;
-    RedStatuses opstatuses = {0};
-    np(redMemorySet,
-      "context", context,
-      "gpu", gpu,
-      "memoryArraysCount", 0,
-      "memoryArrays", NULL,
-      "memoryImagesCount", 1,
-      "memoryImages", &memoryImage,
-      "outStatuses", &opstatuses,
-      "optionalFile", optionalFile,
-      "optionalLine", optionalLine,
-      "optionalUserData", optionalUserData
-    );
-    red2InternalStatusesCopyFromTo(&opstatuses, outStatuses);
-
-    if (opstatuses.statusError == RED_STATUS_SUCCESS) {
-      // NOTE(Constantine):
-      // Be aware doing this is not thread-safe for the picked memory,
-      // and since it is not known in advance which memory will be picked,
-      // effectively it becomes not thread-safe for all the passed memory handles.
-      pickedMemory->currentSuballocateOffset += pickedMemoryBytesToNextAlignmentBoundary + image.memoryBytesCount;
-    }
-  }
+  RedMemoryArray memoryArray = {0};
+  memoryArray.setTo1000157000  = 1000157000;
+  memoryArray.setTo0           = 0;
+  memoryArray.array            = outArray->array.handle;
+  memoryArray.memory           = memory;
+  memoryArray.memoryBytesFirst = 0;
+  RedStatuses opstatuses = {0};
+  np(redMemorySet,
+    context, context,
+    gpu, gpu,
+    memoryArraysCount, 1,
+    memoryArrays, &memoryArray,
+    memoryImagesCount, 0,
+    memoryImages, NULL,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
+  );
 
   // Filling
-  Red2Image;
-  outImage->image = image;
-  outImage->handleAllocatedDedicatedMemoryOrPickedMemory = pickedMemory->handle;
+  // Red2Array;
+  outArray->memory = memory;
+}
+
+REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateMemoryForImage(RedContext context, RedHandleGpu gpu, const char * handleName, unsigned memoryTypeIndex, RedBool32 dedicate, Red2Image * outImage, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
+  RedHandleMemory memory = NULL;
+  np(redMemoryAllocate,
+    context, context,
+    gpu, gpu,
+    handleName, handleName,
+    bytesCount, outImage->image.memoryBytesCount,
+    memoryTypeIndex, memoryTypeIndex,
+    dedicateToArray, NULL,
+    dedicateToImage, dedicate == 1 ? outImage->image.handle : NULL,
+    memoryBitflags, 0,
+    outMemory, &memory,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
+  );
+
+  RedMemoryImage memoryImage = {0};
+  memoryImage.setTo1000157001  = 1000157001;
+  memoryImage.setTo0           = 0;
+  memoryImage.image            = outImage->image.handle;
+  memoryImage.memory           = memory;
+  memoryImage.memoryBytesFirst = 0;
+  RedStatuses opstatuses = {0};
+  np(redMemorySet,
+    context, context,
+    gpu, gpu,
+    memoryArraysCount, 0,
+    memoryArrays, NULL,
+    memoryImagesCount, 1,
+    memoryImages, &memoryImage,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
+  );
+
+  // Filling
+  // Red2Image;
+  outImage->memory = memory;
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext context, RedHandleGpu gpu, const char * handleName, const Red2ProcedureParametersDeclaration * procedureParametersDeclaration, Red2ProcedureParametersAndDeclarations * outProcedureParametersAndDeclarations, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
@@ -2146,36 +1815,36 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
   if (procedureParametersDeclaration != NULL) {
     for (unsigned i = 0; i < procedureParametersDeclaration->structsDeclarationsCount; i += 1) {
       np(redCreateStructDeclaration,
-        "context", context,
-        "gpu", gpu,
-        "handleName", handleName,
-        "structDeclarationMembersCount",        procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembersCount,
-        "structDeclarationMembers",             procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembers,
-        "structDeclarationMembersArrayROCount", procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembersArrayROCount,
-        "structDeclarationMembersArrayRO",      procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembersArrayRO,
-        "procedureParametersHandlesDeclaration", 0,
-        "outStructDeclaration", &structsDeclarations[i],
-        "outStatuses", outStatuses,
-        "optionalFile", optionalFile,
-        "optionalLine", optionalLine,
-        "optionalUserData", optionalUserData
+        context, context,
+        gpu, gpu,
+        handleName, handleName,
+        structDeclarationMembersCount,        procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembersCount,
+        structDeclarationMembers,             procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembers,
+        structDeclarationMembersArrayROCount, procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembersArrayROCount,
+        structDeclarationMembersArrayRO,      procedureParametersDeclaration->structsDeclarations[i].structDeclarationMembersArrayRO,
+        procedureParametersHandlesDeclaration, 0,
+        outStructDeclaration, &structsDeclarations[i],
+        outStatuses, outStatuses,
+        optionalFile, optionalFile,
+        optionalLine, optionalLine,
+        optionalUserData, optionalUserData
       );
     }
     if (procedureParametersDeclaration->handlesDeclaration != NULL) {
       np(redCreateStructDeclaration,
-        "context", context,
-        "gpu", gpu,
-        "handleName", handleName,
-        "structDeclarationMembersCount",        procedureParametersDeclaration->handlesDeclaration->structDeclarationMembersCount,
-        "structDeclarationMembers",             procedureParametersDeclaration->handlesDeclaration->structDeclarationMembers,
-        "structDeclarationMembersArrayROCount", procedureParametersDeclaration->handlesDeclaration->structDeclarationMembersArrayROCount,
-        "structDeclarationMembersArrayRO",      procedureParametersDeclaration->handlesDeclaration->structDeclarationMembersArrayRO,
-        "procedureParametersHandlesDeclaration", 1,
-        "outStructDeclaration", &handlesDeclaration,
-        "outStatuses", outStatuses,
-        "optionalFile", optionalFile,
-        "optionalLine", optionalLine,
-        "optionalUserData", optionalUserData
+        context, context,
+        gpu, gpu,
+        handleName, handleName,
+        structDeclarationMembersCount,        procedureParametersDeclaration->handlesDeclaration->structDeclarationMembersCount,
+        structDeclarationMembers,             procedureParametersDeclaration->handlesDeclaration->structDeclarationMembers,
+        structDeclarationMembersArrayROCount, procedureParametersDeclaration->handlesDeclaration->structDeclarationMembersArrayROCount,
+        structDeclarationMembersArrayRO,      procedureParametersDeclaration->handlesDeclaration->structDeclarationMembersArrayRO,
+        procedureParametersHandlesDeclaration, 1,
+        outStructDeclaration, &handlesDeclaration,
+        outStatuses, outStatuses,
+        optionalFile, optionalFile,
+        optionalLine, optionalLine,
+        optionalUserData, optionalUserData
       );
     }
   }
@@ -2198,15 +1867,15 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
 
   RedHandleProcedureParameters procedureParameters = NULL;
   np(redCreateProcedureParameters,
-    "context", context,
-    "gpu", gpu,
-    "handleName", handleName,
-    "procedureParametersDeclaration", procedureParametersDeclaration == NULL ? NULL : &parametersDeclaration,
-    "outProcedureParameters", &procedureParameters,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+    context, context,
+    gpu, gpu,
+    handleName, handleName,
+    procedureParametersDeclaration, procedureParametersDeclaration == NULL ? NULL : &parametersDeclaration,
+    outProcedureParameters, &procedureParameters,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
 
   outProcedureParametersAndDeclarations->procedureParameters = procedureParameters;
@@ -2219,39 +1888,39 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedureParameters(RedContext con
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedure(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleProcedureCache procedureCache, const RedOutputDeclarationMembers * outputDeclarationMembers, const RedOutputDeclarationMembersResolveSources * outputDeclarationMembersResolveSources, RedBool32 dependencyByRegion, RedBool32 dependencyByRegionAllowUsageAliasOrderBarriers, RedHandleProcedureParameters procedureParameters, const char * gpuCodeVertexMainProcedureName, RedHandleGpuCode gpuCodeVertex, const char * gpuCodeFragmentMainProcedureName, RedHandleGpuCode gpuCodeFragment, const RedProcedureState * state, const void * stateExtension, RedBool32 deriveBase, RedHandleProcedure deriveFrom, RedHandleProcedure * outProcedure, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedHandleOutputDeclaration outputDeclaration = NULL;
   np(redCreateOutputDeclaration,
-    "context", context,
-    "gpu", gpu,
-    "handleName", handleName,
-    "outputDeclarationMembers", outputDeclarationMembers,
-    "outputDeclarationMembersResolveSources", outputDeclarationMembersResolveSources,
-    "dependencyByRegion", dependencyByRegion,
-    "dependencyByRegionAllowUsageAliasOrderBarriers", dependencyByRegionAllowUsageAliasOrderBarriers,
-    "outOutputDeclaration", &outputDeclaration,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+    context, context,
+    gpu, gpu,
+    handleName, handleName,
+    outputDeclarationMembers, outputDeclarationMembers,
+    outputDeclarationMembersResolveSources, outputDeclarationMembersResolveSources,
+    dependencyByRegion, dependencyByRegion,
+    dependencyByRegionAllowUsageAliasOrderBarriers, dependencyByRegionAllowUsageAliasOrderBarriers,
+    outOutputDeclaration, &outputDeclaration,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
   np(redCreateProcedure,
-    "context", context,
-    "gpu", gpu,
-    "handleName", handleName,
-    "procedureCache", procedureCache,
-    "outputDeclaration", outputDeclaration,
-    "procedureParameters", procedureParameters,
-    "gpuCodeVertexMainProcedureName", gpuCodeVertexMainProcedureName,
-    "gpuCodeVertex", gpuCodeVertex,
-    "gpuCodeFragmentMainProcedureName", gpuCodeFragmentMainProcedureName,
-    "gpuCodeFragment", gpuCodeFragment,
-    "state", state,
-    "stateExtension", stateExtension,
-    "deriveBase", deriveBase,
-    "deriveFrom", deriveFrom,
-    "outProcedure", outProcedure,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+    context, context,
+    gpu, gpu,
+    handleName, handleName,
+    procedureCache, procedureCache,
+    outputDeclaration, outputDeclaration,
+    procedureParameters, procedureParameters,
+    gpuCodeVertexMainProcedureName, gpuCodeVertexMainProcedureName,
+    gpuCodeVertex, gpuCodeVertex,
+    gpuCodeFragmentMainProcedureName, gpuCodeFragmentMainProcedureName,
+    gpuCodeFragment, gpuCodeFragment,
+    state, state,
+    stateExtension, stateExtension,
+    deriveBase, deriveBase,
+    deriveFrom, deriveFrom,
+    outProcedure, outProcedure,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
   red2DestroyHandle(context, gpu, RED_HANDLE_TYPE_OUTPUT_DECLARATION, outputDeclaration, NULL, optionalFile, optionalLine, optionalUserData);
 }
@@ -2259,7 +1928,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CreateProcedure(RedContext context, RedH
 REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyHandle(RedContext context, RedHandleGpu gpu, RedHandleType handleType, void * handle, void * optionalHandle2, const char * optionalFile, int optionalLine, void * optionalUserData) {
   if (handle == NULL) { return; }
   // Filling
-  RedHandleType;
+  // RedHandleType;
   //if      (handleType == RED_HANDLE_TYPE_CONTEXT)              {}
   //else if (handleType == RED_HANDLE_TYPE_GPU)                  {}
   //else if (handleType == RED_HANDLE_TYPE_GPU_DEVICE)           {}
@@ -2286,22 +1955,22 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2DestroyHandle(RedContext context, RedHan
   else if (handleType == RED_HANDLE_TYPE_SURFACE)              { redDestroySurface(context, gpu, (RedHandleSurface)handle, optionalFile, optionalLine, optionalUserData); }
   else if (handleType == RED_HANDLE_TYPE_PRESENT)              { redDestroyPresent(context, gpu, (RedHandlePresent)handle, optionalFile, optionalLine, optionalUserData); }
   else {
-    RedBool32 handle_type_to_destroy_is_not_found = 1;
-    REDGPU_2_EXPECTWG(handle_type_to_destroy_is_not_found == 0);
+    RedBool32 handle_type_to_destroy_is_not_found = 0;
+    REDGPU_2_EXPECTWG(handle_type_to_destroy_is_not_found);
   }
 }
 
 REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGpu gpu, RedHandleCalls calls, RedHandleCallsMemory callsMemory, RedBool32 callsReusable, Red2CallsMutableOutputsArray * mutableOutputsArray, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   np(redCallsSet,
-    "context", context,
-    "gpu", gpu,
-    "calls", calls,
-    "callsMemory", callsMemory,
-    "callsReusable", callsReusable,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+    context, context,
+    gpu, gpu,
+    calls, calls,
+    callsMemory, callsMemory,
+    callsReusable, callsReusable,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
   unsigned outputsCount = mutableOutputsArray->count;
   for (unsigned i = 0; i < outputsCount; i += 1) {
@@ -2312,7 +1981,7 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallsSet(RedContext context, RedHandleGp
   }
   for (unsigned i = 0; i < outputsCount; i += 1) {
     // Filling
-    Red2Output;
+    // Red2Output;
     mutableOutputsArray->items[i].handle = NULL;
     mutableOutputsArray->items[i].handleDeclaration = NULL;
   }
@@ -2324,59 +1993,59 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2CallSetProcedureOutput(RedTypeProcedureA
   
   RedHandleOutputDeclaration outputDeclaration = NULL;
   np(redCreateOutputDeclaration,
-    "context", context,
-    "gpu", gpu,
-    "handleName", NULL,
-    "outputDeclarationMembers", outputDeclarationMembers,
-    "outputDeclarationMembersResolveSources", outputDeclarationMembersResolveSources,
-    "dependencyByRegion", dependencyByRegion,
-    "dependencyByRegionAllowUsageAliasOrderBarriers", dependencyByRegionAllowUsageAliasOrderBarriers,
-    "outOutputDeclaration", &outputDeclaration,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+    context, context,
+    gpu, gpu,
+    handleName, NULL,
+    outputDeclarationMembers, outputDeclarationMembers,
+    outputDeclarationMembersResolveSources, outputDeclarationMembersResolveSources,
+    dependencyByRegion, dependencyByRegion,
+    dependencyByRegionAllowUsageAliasOrderBarriers, dependencyByRegionAllowUsageAliasOrderBarriers,
+    outOutputDeclaration, &outputDeclaration,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
 
   RedOutput output = {0};
   np(redCreateOutput,
-    "context", context,
-    "gpu", gpu,
-    "handleName", NULL,
-    "outputDeclaration", outputDeclaration,
-    "outputMembers", outputMembers,
-    "outputMembersResolveTargets", outputMembersResolveTargets,
-    "width", width,
-    "height", height,
-    "outOutput", &output,
-    "outStatuses", outStatuses,
-    "optionalFile", optionalFile,
-    "optionalLine", optionalLine,
-    "optionalUserData", optionalUserData
+    context, context,
+    gpu, gpu,
+    handleName, NULL,
+    outputDeclaration, outputDeclaration,
+    outputMembers, outputMembers,
+    outputMembersResolveTargets, outputMembersResolveTargets,
+    width, width,
+    height, height,
+    outOutput, &output,
+    outStatuses, outStatuses,
+    optionalFile, optionalFile,
+    optionalLine, optionalLine,
+    optionalUserData, optionalUserData
   );
 
   np(redCallSetProcedureOutput,
-    "address", address,
-    "calls", calls,
-    "outputDeclaration", outputDeclaration,
-    "output", output.handle,
-    "inlineOutput", NULL,
-    "outputWidth", output.width,
-    "outputHeight", output.height,
-    "outputDepthStencilEnable", output.depthStencilEnable,
-    "outputColorsCount", output.colorsCount,
-    "depthClearValue", depthClearValue,
-    "stencilClearValue", stencilClearValue,
-    "colorsClearValuesFloat", colorsClearValuesFloat,
-    "colorsClearValuesSint", colorsClearValuesSint,
-    "colorsClearValuesUint", colorsClearValuesUint
+    address, address,
+    calls, calls,
+    outputDeclaration, outputDeclaration,
+    output, output.handle,
+    inlineOutput, NULL,
+    outputWidth, output.width,
+    outputHeight, output.height,
+    outputDepthStencilEnable, output.depthStencilEnable,
+    outputColorsCount, output.colorsCount,
+    depthClearValue, depthClearValue,
+    stencilClearValue, stencilClearValue,
+    colorsClearValuesFloat, colorsClearValuesFloat,
+    colorsClearValuesSint, colorsClearValuesSint,
+    colorsClearValuesUint, colorsClearValuesUint
   );
 
   {
     uint64_t currentOutputsArrayIndex = mutableOutputsArray->count;
 
     // Filling
-    Red2Output;
+    // Red2Output;
     mutableOutputsArray->items[currentOutputsArrayIndex].handle            = output.handle;
     mutableOutputsArray->items[currentOutputsArrayIndex].handleDeclaration = outputDeclaration;
 
