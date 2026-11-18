@@ -1685,6 +1685,191 @@ REDGPU_2_DECLSPEC void REDGPU_2_API red2ExpectMemoryTypes(const RedGpuInfo * gpu
   }
 }
 
+static void red2InternalFillMemoryTypeIsSupportedArray(unsigned resourceMemoryTypesSupported, unsigned char * outMemoryTypeIsSupportedArrayOf32) {
+  outMemoryTypeIsSupportedArrayOf32[0]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0001)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[1]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0010)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[2]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,0100)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[3]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0000,1000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[4]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0001,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[5]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0010,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[6]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,0100,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[7]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0000,1000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[8]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0001,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[9]  = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0010,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[10] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,0100,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[11] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0000,1000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[12] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0001,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[13] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0010,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[14] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,0100,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[15] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0000,1000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[16] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0001,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[17] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0010,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[18] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,0100,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[19] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0000,1000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[20] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0001,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[21] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0010,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[22] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,0100,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[23] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0000,1000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[24] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0001,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[25] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0010,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[26] = (resourceMemoryTypesSupported & REDGPU_B32(0000,0100,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[27] = (resourceMemoryTypesSupported & REDGPU_B32(0000,1000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[28] = (resourceMemoryTypesSupported & REDGPU_B32(0001,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[29] = (resourceMemoryTypesSupported & REDGPU_B32(0010,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[30] = (resourceMemoryTypesSupported & REDGPU_B32(0100,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+  outMemoryTypeIsSupportedArrayOf32[31] = (resourceMemoryTypesSupported & REDGPU_B32(1000,0000,0000,0000,0000,0000,0000,0000)) == 0 ? 0 : 1;
+}
+
+REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2MemoryTypeIndexPickFirstVram(const RedGpuInfo * gpuInfo, unsigned memoryTypesSupported) {
+  unsigned char arrayMemoryTypeIsSupported[32] = {0};
+  red2InternalFillMemoryTypeIsSupportedArray(memoryTypesSupported, arrayMemoryTypeIsSupported);
+
+  for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+    const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+    if (arrayMemoryTypeIsSupported[i] == 1 &&
+        type->isGpuVram     == 1 &&
+        type->isCpuMappable == 0 &&
+        type->isCpuCoherent == 0 &&
+        type->isCpuCached   == 0 &&
+        gpuInfo->memoryHeaps[type->memoryHeapIndex].isGpuVram == 1 &&
+        gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0)
+    {
+      return i;
+    }
+  }
+  for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+    const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+    if (arrayMemoryTypeIsSupported[i] == 1 &&
+        type->isGpuVram == 1 &&
+        gpuInfo->memoryHeaps[type->memoryHeapIndex].isGpuVram == 1 &&
+        gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0)
+    {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2MemoryTypeIndexPickFirstUpload(const RedGpuInfo * gpuInfo, unsigned memoryTypesSupported) {
+  unsigned char arrayMemoryTypeIsSupported[32] = {0};
+  red2InternalFillMemoryTypeIsSupportedArray(memoryTypesSupported, arrayMemoryTypeIsSupported);
+
+  for (int isGpuVram = 0; isGpuVram < 2; isGpuVram += 1) { // NOTE(Constantine): First, we look for non-VRAM heaps, then can fall back to VRAM heaps.
+    for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+      const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+      if (arrayMemoryTypeIsSupported[i] == 1 &&
+          type->isCpuMappable == 1 &&
+          type->isCpuCoherent == 1 &&
+          type->isCpuCached   == 0 &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].isGpuVram == isGpuVram &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0)
+      {
+        return i;
+      }
+    }
+    for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+      const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+      if (arrayMemoryTypeIsSupported[i] == 1 &&
+          type->isCpuMappable == 1 &&
+          type->isCpuCoherent == 1 &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].isGpuVram == isGpuVram &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0)
+      {
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2MemoryTypeIndexPickFirstReadback(const RedGpuInfo * gpuInfo, unsigned memoryTypesSupported) {
+  unsigned char arrayMemoryTypeIsSupported[32] = {0};
+  red2InternalFillMemoryTypeIsSupportedArray(memoryTypesSupported, arrayMemoryTypeIsSupported);
+
+  for (int isGpuVram = 0; isGpuVram < 2; isGpuVram += 1) { // NOTE(Constantine): First, we look for non-VRAM heaps, then can fall back to VRAM heaps.
+    for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+      const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+      if (arrayMemoryTypeIsSupported[i] == 1 &&
+          type->isCpuMappable == 1 &&
+          type->isCpuCoherent == 1 &&
+          type->isCpuCached   == 1 &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].isGpuVram == isGpuVram &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0)
+      {
+        return i;
+      }
+    }
+    for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+      const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+      if (arrayMemoryTypeIsSupported[i] == 1 &&
+          type->isCpuMappable == 1 &&
+          type->isCpuCoherent == 1 &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].isGpuVram == isGpuVram &&
+          gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0)
+      {
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+
+REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2MemoryTypeIndexPickFirstReBARdGpu(const RedGpuInfo * gpuInfo, unsigned memoryTypesSupported, uint64_t minAllowedBytesCount) {
+  unsigned char arrayMemoryTypeIsSupported[32] = {0};
+  red2InternalFillMemoryTypeIsSupportedArray(memoryTypesSupported, arrayMemoryTypeIsSupported);
+
+  for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+    const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+    if (arrayMemoryTypeIsSupported[i] == 1 &&
+      type->isCpuMappable == 1 &&
+      type->isCpuCoherent == 1 &&
+      type->isCpuCached   == 0 &&
+      gpuInfo->memoryHeaps[type->memoryHeapIndex].isGpuVram == 1 &&
+      gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0 &&
+      gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount >= minAllowedBytesCount)
+    {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+REDGPU_2_DECLSPEC unsigned REDGPU_2_API red2MemoryTypeIndexPickFirstReBARiGpu(const RedGpuInfo * gpuInfo, unsigned memoryTypesSupported, uint64_t minAllowedBytesCount) {
+  unsigned char arrayMemoryTypeIsSupported[32] = {0};
+  red2InternalFillMemoryTypeIsSupportedArray(memoryTypesSupported, arrayMemoryTypeIsSupported);
+
+  for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+    const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+    if (arrayMemoryTypeIsSupported[i] == 1 &&
+      type->isCpuMappable == 1 &&
+      type->isCpuCoherent == 1 &&
+      type->isCpuCached   == 0 &&
+      gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0 &&
+      gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount >= minAllowedBytesCount)
+    {
+      return i;
+    }
+  }
+  for (unsigned i = 0; i < gpuInfo->memoryTypesCount; i += 1) {
+    const RedMemoryType * type = &gpuInfo->memoryTypes[i];
+    if (arrayMemoryTypeIsSupported[i] == 1 &&
+      type->isCpuMappable == 1 &&
+      type->isCpuCoherent == 1 &&
+      gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount > 0 &&
+      gpuInfo->memoryHeaps[type->memoryHeapIndex].memoryBytesCount >= minAllowedBytesCount)
+    {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
 REDGPU_2_DECLSPEC void REDGPU_2_API red2StructsMemorySuballocateStruct(RedContext context, RedHandleGpu gpu, const char * handleName, RedHandleStructsMemory structsMemory, unsigned structDeclarationMembersCount, const RedStructDeclarationMember * structDeclarationMembers, unsigned structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO * structDeclarationMembersArrayRO, Red2Struct * outStruct, RedStatuses * outStatuses, const char * optionalFile, int optionalLine, void * optionalUserData) {
   RedHandleStructDeclaration handleDeclaration = NULL;
   np(redCreateStructDeclaration,

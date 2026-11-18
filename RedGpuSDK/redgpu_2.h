@@ -203,6 +203,14 @@ npf(REDGPU_2_DECLSPEC void REDGPU_2_API, red2ExpectAllMemoryToBeCoherent,       
 npf(REDGPU_2_DECLSPEC void REDGPU_2_API, red2ExpectMinimumImageFormatsLimitsAndFeatures, const RedGpuInfo *,gpuInfo, const char *,optionalFile, int,optionalLine);
 npf(REDGPU_2_DECLSPEC void REDGPU_2_API, red2ExpectMemoryTypes,                          const RedGpuInfo *,gpuInfo, unsigned,expectedMemoryHeapsCount, const RedMemoryHeap *,expectedMemoryHeaps, unsigned,expectedMemoryTypesCount, const RedMemoryType *,expectedMemoryTypes, const char *,optionalFile, int,optionalLine);
 
+// Memory
+
+npf(REDGPU_2_DECLSPEC unsigned REDGPU_2_API, red2MemoryTypeIndexPickFirstVram,           const RedGpuInfo *,gpuInfo, unsigned,memoryTypesSupported);
+npf(REDGPU_2_DECLSPEC unsigned REDGPU_2_API, red2MemoryTypeIndexPickFirstUpload,         const RedGpuInfo *,gpuInfo, unsigned,memoryTypesSupported);
+npf(REDGPU_2_DECLSPEC unsigned REDGPU_2_API, red2MemoryTypeIndexPickFirstReadback,       const RedGpuInfo *,gpuInfo, unsigned,memoryTypesSupported);
+npf(REDGPU_2_DECLSPEC unsigned REDGPU_2_API, red2MemoryTypeIndexPickFirstReBARdGpu,      const RedGpuInfo *,gpuInfo, unsigned,memoryTypesSupported, uint64_t,minAllowedBytesCount);
+npf(REDGPU_2_DECLSPEC unsigned REDGPU_2_API, red2MemoryTypeIndexPickFirstReBARiGpu,      const RedGpuInfo *,gpuInfo, unsigned,memoryTypesSupported, uint64_t,minAllowedBytesCount);
+
 // Struct
 
 npf(REDGPU_2_DECLSPEC void REDGPU_2_API, red2StructsMemorySuballocateStruct, RedContext,context, RedHandleGpu,gpu, const char *,handleName, RedHandleStructsMemory,structsMemory, unsigned,structDeclarationMembersCount, const RedStructDeclarationMember *,structDeclarationMembers, unsigned,structDeclarationMembersArrayROCount, const RedStructDeclarationMemberArrayRO *,structDeclarationMembersArrayRO, Red2Struct *,outStruct, RedStatuses *,outStatuses, const char *,optionalFile, int,optionalLine, void *,optionalUserData);
